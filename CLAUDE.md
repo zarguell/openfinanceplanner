@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Open Finance Planner is a client-side financial planning web application that runs entirely in the browser with zero dependencies. The entire application is contained in a single HTML file (`Open Finance Planner.html`, ~1750 lines) containing all CSS, JavaScript, and HTML.
+Open Finance Planner is a client-side financial planning web application that runs entirely in the browser with zero dependencies. The entire application is contained in a single HTML file (`index.html`, ~1750 lines) containing all CSS, JavaScript, and HTML.
 
 ## Tech Stack
 
@@ -15,13 +15,13 @@ Open Finance Planner is a client-side financial planning web application that ru
 
 ## Running the Application
 
-Simply open `Open Finance Planner.html` in a modern browser (Chrome 90+, Firefox 88+, Safari 14+). No build, test, or lint commands required.
+Simply open `index.html` in a modern browser (Chrome 90+, Firefox 88+, Safari 14+). No build, test, or lint commands required.
 
 ## Architecture
 
 ### Single-File Structure
 
-The entire application is in `Open Finance Planner.html` with this structure:
+The entire application is in `index.html` with this structure:
 
 1. **CSS** (lines 8-899): All styles including CSS custom properties, dark mode, responsive design
 2. **HTML Body** (lines 900-1400): Modal templates, sidebar, content areas
@@ -175,6 +175,6 @@ See `/docs/tasks.md` for prioritized roadmap across 10 phases of development.
 
 ## Key Files
 
-- `Open Finance Planner.html` - Entire application (this is the only code file)
+- `index.html` - Entire application (this is the only code file)
 - `docs/architecture.md` - Comprehensive technical architecture documentation
 - `docs/tasks.md` - Detailed task list and implementation roadmap
