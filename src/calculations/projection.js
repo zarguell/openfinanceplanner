@@ -14,7 +14,7 @@ export function getAccountGrowthRate(accountType, assumptions) {
     '401k': assumptions.equityGrowthRate,
     'IRA': assumptions.equityGrowthRate,
     'Roth': assumptions.equityGrowthRate,
-    'Taxable': assumptions.equityGrowthRate * 0.8, // Lower due to annual taxes
+    'Taxable': assumptions.equityGrowthRate * 0.8, // 20% reduction for annual tax drag on dividends/capital gains
     'HSA': assumptions.equityGrowthRate
   };
   return rates[accountType] || assumptions.equityGrowthRate;
