@@ -1,3 +1,21 @@
+# Open Finance Planner - Development Tasks
+
+## ✅ Completed: Modular Refactoring (January 2026)
+
+The single-file implementation has been successfully refactored into a modular architecture:
+
+- ✅ Extracted domain models (Plan, Account, Expense) into `src/core/models/`
+- ✅ Separated calculation logic into pure functions in `src/calculations/`
+- ✅ Created versioned storage layer with schema validation
+- ✅ Extracted UI controller into `src/ui/AppController.js`
+- ✅ Separated CSS into modular files (variables, base, layout, components)
+- ✅ Established testing infrastructure with unit tests for core models
+- ✅ Updated all documentation
+
+**Next Phase:** Focus on enhancing calculation accuracy (tax engine, RMDs, Roth conversions) before adding UI features.
+
+---
+
 Created a complete working prototype of Retirement Planner Pro with:
 
 **Core Features Implemented:**
