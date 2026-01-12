@@ -1,13 +1,20 @@
+# Open Finance Planner - Architecture Documentation
+
 ## Project Overview
 
-This is a client-side financial planning web application that provides comprehensive financial projection capabilities similar to commercial tools. The application runs entirely in the browser, persists data using localStorage, and supports JSON import/export for data portability. Core functionality includes multi-account projections, tax-aware calculations, expense modeling, and growth simulations with extensible business rules for complex financial strategies.
+Open Finance Planner is a client-side financial planning application that provides comprehensive financial projection capabilities. The application runs entirely in the browser, persists data using localStorage, and supports JSON import/export for data portability.
+
+**Current Status:** Modular Architecture (Post-Refactoring)
+
+The codebase has been refactored from a single-file implementation into a layered, modular architecture with clear separation of concerns. This establishes the foundation for complex financial planning rules and future scaling.
 
 ## Tech Stack Selection
 
-**Vanilla JavaScript (ES2020+)**
-- Zero build process or framework dependencies ensures maximum accessibility and longevity
-- Native browser APIs provide sufficient capabilities for all required functionality
-- Eliminates framework churn and reduces maintenance burden for open source contributors
+**Vanilla JavaScript (ES2020+) with ES6 Modules**
+- Zero build process or framework dependencies
+- Native ES6 import/export for code organization
+- Modular architecture with clear layer separation
+- Eliminates framework churn and reduces maintenance burden
 
 **Web Storage API**
 - localStorage provides 5-10MB of persistent storage per domain
