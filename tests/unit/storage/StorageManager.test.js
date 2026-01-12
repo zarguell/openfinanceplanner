@@ -14,6 +14,13 @@ global.localStorage = {
   },
   clear() {
     this.store = {};
+  },
+  get length() {
+    return Object.keys(this.store).length;
+  },
+  key(index) {
+    const keys = Object.keys(this.store);
+    return keys[index] || null;
   }
 };
 
