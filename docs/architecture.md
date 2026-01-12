@@ -1,6 +1,6 @@
 ## Project Overview
 
-This is a client-side retirement planning web application that provides comprehensive financial projection capabilities similar to commercial tools. The application runs entirely in the browser, persists data using localStorage, and supports JSON import/export for data portability. Core functionality includes multi-account projections, tax-aware calculations, expense modeling, and growth simulations with extensible business rules for complex financial strategies.
+This is a client-side financial planning web application that provides comprehensive financial projection capabilities similar to commercial tools. The application runs entirely in the browser, persists data using localStorage, and supports JSON import/export for data portability. Core functionality includes multi-account projections, tax-aware calculations, expense modeling, and growth simulations with extensible business rules for complex financial strategies.
 
 ## Tech Stack Selection
 
