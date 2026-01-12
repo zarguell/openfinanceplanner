@@ -1,0 +1,13 @@
+{
+  "name": "open-finance-planner",
+  "version": "0.1.0",
+  "description": "Client-side financial planning application",
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 8080",
+    "test": "echo \"Testing framework TBD\" && exit 0"
+  },
+  "keywords": ["financial", "planning", "retirement", "calculator"],
+  "author": "zarguell <zac.arguelles@gmail.com>",
+  "license": "MIT"
+}
