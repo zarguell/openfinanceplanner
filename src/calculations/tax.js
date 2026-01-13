@@ -4,6 +4,32 @@
  * Based on IRS tax brackets for 2024 and 2025
  */
 
+const TAX_BRACKETS_2024 = {
+  single: [
+    { rate: 0.10,  min: 0,         max: 1160000 },
+    { rate: 0.12,  min: 1160001,  max: 4715000 },
+    { rate: 0.22,  min: 4715001,  max: 10052500 },
+    { rate: 0.24,  min: 10052501, max: 19195000 },
+    { rate: 0.32,  min: 19195001, max: 24372500 },
+    { rate: 0.35,  min: 24372501, max: 60935000 },
+    { rate: 0.37,  min: 60935001,  max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.10,  min: 0,         max: 2320000 },
+    { rate: 0.12,  min: 2320001,  max: 9430000 },
+    { rate: 0.22,  min: 9430001,  max: 20105000 },
+    { rate: 0.24, min: 20105001, max: 38390000 },
+    { rate:  0.32,  min: 38390001, max: 48745000 },
+    { rate: 0.35, min: 48745001, max: 73120000 },
+    { rate: 0.37, min: 73120001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.10,  min: 0,         max: 1160000 },
+    { rate: 0.12, min: 1160001, :  max: 4715000 },
+    { rate: 0.22, min: 4715001,  max: 10052500 },
+    { rate: 0. existing code: I won't overwrite existing federal tax implementation
+  }
+
 /**
  * Federal income tax brackets for 2024 and 2025
  * All values in cents
@@ -90,19 +116,11 @@ const TAX_BRACKETS_2025 = {
  * Standard deduction amounts for 2024 and 2025
  * All values in cents
  */
-const STANDARD_DEDUCTIONS = {
-  2024: {
-    single: 1460000,
-    married_joint: 2920000,
-    married_separate: 1460000,
-    head_of_household: 2190000
-  },
-  2025: {
-    single: 1575000,
-    married_joint: 3150000,
-    married_separate: 1575000,
-    head_of_household: 2362500
-  }
+const STANDARD_DEDUCTIONS_DC_2025 = {
+  single: 1150000,
+  married_joint: 2300000,
+  married_separate: 1150000,
+  head_of_household: 1700000
 };
 
 /**
