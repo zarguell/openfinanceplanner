@@ -32,6 +32,14 @@ export function validatePlanSchema(planData) {
     errors.push('Plan must have a taxProfile object');
   }
 
+  if (!planData.taxProfile.state || typeof planData.taxProfile.state !== 'string') {
+    errors.push('taxProfile.state must be a string (e.g., "DC", "CA", "NY", or null)');
+  }
+
+  if (planData.taxProfile.state && !['DC', 'CA', 'NY', null, ''].includes(planData.taxProfile.state)) {
+    errors.push('taxProfile.state must be a valid state code (DC, CA, NY, or null)');
+  }
+
   if (!planData.assumptions || typeof planData.assumptions !== 'object') {
     errors.push('Plan must have an assumptions object');
   }

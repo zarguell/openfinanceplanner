@@ -20,31 +20,31 @@ export function testFederalTax() {
   console.log('Testing calculateFederalTax...');
 
   const tax1 = calculateFederalTax(5000000, 'single', 2025);
-  console.assert(tax1 === 673750, 'Test 1 failed: $50,000 income should be $6,737.50 tax');
+  console.assert(tax1 === 387150, 'Test 1 failed: $50,000 income should be $3,871.50 tax');
   console.assert(
-    tax1 / 5000000 === 0.13475,
-    'Test 1 failed: Effective rate should be 13.475%'
+    tax1 / 5000000 === 0.07743,
+    'Test 1 failed: Effective rate should be 7.743%'
   );
 
   const tax2 = calculateFederalTax(10000000, 'single', 2024);
-  console.assert(tax2 === 1811740, 'Test 2 failed: $100,000 income should be $18,117.40 tax');
+  console.assert(tax2 === 1384100, 'Test 2 failed: $100,000 income should be $13,841.00 tax');
   console.assert(
-    tax2 / 10000000 === 0.181174,
-    'Test 2 failed: Effective rate should be 18.12%'
+    tax2 / 10000000 === 0.13841,
+    'Test 2 failed: Effective rate should be 13.841%'
   );
 
   const tax3 = calculateFederalTax(5000000, 'married_joint', 2025);
-  console.assert(tax3 === 568000, 'Test 3 failed: $50,000 income should be $5,680.00 tax');
+  console.assert(tax3 === 185000, 'Test 3 failed: $50,000 income should be $1,850.00 tax');
   console.assert(
-    tax3 / 5000000 === 0.1136,
-    'Test 3 failed: Effective rate should be 11.36%'
+    tax3 / 5000000 === 0.0370,
+    'Test 3 failed: Effective rate should be 3.70%'
   );
 
   const tax4 = calculateFederalTax(0, 'single', 2025);
   console.assert(tax4 === 0, 'Test 4 failed: $0 income should be $0 tax');
   console.assert(
-    tax4 / 0 === 0,
-    'Test 4 failed: Zero division should not cause error'
+    tax4 === 0,
+    'Test 4 failed: Zero income should be $0 tax'
   );
 
   console.log('All federal tax tests passed! ✓');
@@ -61,17 +61,17 @@ export function testCapitalGainsTax() {
   );
 
   const tax2 = calculateLongTermCapitalGainsTax(10000000, 'married_joint', 2025);
-  console.assert(tax2 === 1500000, 'Test 2 failed: $100,000 gains in 15% bracket should be $15,000 tax');
+  console.assert(tax2 === 49500, 'Test 2 failed: $100,000 gains (96.7K in 0% bracket + 3.3K in 15% bracket) should be $495.00 tax');
   console.assert(
-    tax2 / 10000000 === 0.15,
-    'Test 2 failed: Effective rate should be 15%'
+    tax2 / 10000000 === 0.00495,
+    'Test 2 failed: Effective rate should be 0.495%'
   );
 
   const tax3 = calculateShortTermCapitalGainsTax(5000000, 'single', 2025);
-  console.assert(tax3 === 673750, 'Test 3 failed: $50,000 short-term gains should be taxed at 22% marginal rate');
+  console.assert(tax3 === 387150, 'Test 3 failed: $50,000 short-term gains should be taxed as ordinary income = $3,871.50');
   console.assert(
-    tax3 / 5000000 === 0.13475,
-    'Test 3 failed: Effective rate should be 13.475%'
+    tax3 / 5000000 === 0.07743,
+    'Test 3 failed: Effective rate should be 7.743%'
   );
 
   console.log('All capital gains tests passed! ✓');
@@ -96,14 +96,14 @@ export function testSocialSecurityAndMedicareTax() {
   );
 
   const medicareTax2 = calculateMedicareTax(25000000, 'single', 2025);
-  console.assert(medicareTax2 === 362500, 'Test 3 failed: Medicare tax for $250,000 should be $3,625.00 ($2,000 @ 1.45% + $48,000 @ 0.9%)');
+  console.assert(medicareTax2 === 407500, 'Test 3 failed: Medicare tax for $250,000 should be $4,075.00 ($3,625 @ 1.45% + $450 @ 0.9% additional)');
   console.assert(
-    medicareTax2 / 25000000 === 0.0145,
-    'Test 3 failed: Medicare effective rate should be 1.45%'
+    medicareTax2 / 25000000 === 0.0163,
+    'Test 3 failed: Medicare effective rate should be 1.63%'
   );
 
   const fica1 = calculateFicaTax(10000000, 'single', 2025);
-  console.assert(fica1.totalFicaTax === 1236820, 'Test 4 failed: FICA tax should be $10,918.20 (SS: $10,918.20 + Medicare: $1,450.00)');
+  console.assert(fica1.totalFicaTax === 765000, 'Test 4 failed: FICA tax should be $7,650.00 (SS: $6,200.00 + Medicare: $1,450.00)');
   console.assert(
     fica1.ssTax / 10000000 === 0.062,
     'Test 4 failed: SS portion should be 6.2%'
@@ -156,6 +156,7 @@ export function testRMD() {
 
   const rmd2 = calculateRMD(100000000, 75, 2025);
   const expectedRmd2 = Math.round(100000000 / 24.7);
+  console.log(`Test 2: RMD for age 75 = ${rmd2}, expected ${expectedRmd2}`);
   console.assert(
     rmd2 === expectedRmd2,
     'Test 2 failed: RMD for age 75 should be balance / 24.7'

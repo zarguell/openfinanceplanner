@@ -12,7 +12,8 @@ export class Plan {
       currentAge,
       retirementAge,
       filingStatus: 'single',
-      taxYear: 2025
+      taxYear: 2025,
+      state: null
     };
     this.assumptions = {
       inflationRate: 0.03,
@@ -57,7 +58,7 @@ export class Plan {
       name: this.name,
       created: this.created,
       lastModified: this.lastModified,
-      taxProfile: { ...this.taxProfile, taxYear: this.taxProfile.taxYear },
+      taxProfile: { ...this.taxProfile, state: this.taxProfile.state, taxYear: this.taxProfile.taxYear },
       assumptions: { ...this.assumptions },
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
       expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp)
@@ -73,6 +74,9 @@ export class Plan {
     plan.taxProfile = data.taxProfile;
     if (data.taxProfile.taxYear) {
       plan.taxProfile.taxYear = data.taxProfile.taxYear;
+    }
+    if (data.taxProfile.state) {
+      plan.taxProfile.state = data.taxProfile.state;
     }
 
     plan.assumptions = data.assumptions;

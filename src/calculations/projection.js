@@ -4,8 +4,9 @@
  */
 
 import {
-  calculateFederalTax,
-  calculateFicaTax
+   calculateFederalTax,
+   calculateFicaTax,
+   calculateTotalTax
 } from './tax.js';
 
 /**
@@ -107,7 +108,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
         // Calculate tax on withdrawal for pre-tax accounts
         let withdrawalTax = 0;
         if (account.type === '401k' || account.type === 'IRA' || account.type === 'Taxable') {
-          withdrawalTax = calculateFederalTax(
+          withdrawalTax = calculateTotalTax(
+            plan.taxProfile.state,
             preTaxWithdrawal * 100,
             plan.taxProfile.filingStatus,
             taxYear
@@ -138,7 +140,9 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalBalance: totalBalance,
       totalExpense: totalExpense,
       accountBalances: accountSnapshots.map(acc => acc.balance / 100),
-      totalFederalTax: totalFederalTax
+      totalFederalTax: totalFederalTax,
+      totalStateTax: withdrawalTax,
+      totalTax: totalFederalTax + withdrawalTax
     });
   }
 

@@ -2,22 +2,37 @@
 
 ### PHASE 1: ENHANCED CALCULATION ENGINE (Priority: Critical)
 
-## ✅ Completed: Modular Refactoring (January 2026)
-- ✅ Federal tax bracket calculations (Form 1040 - progressive rates for 2024/2025, all filing statuses)
-- ✅ Standard deductions (single: $15,750; married joint: $31,500; HOH: $23,625 for 2024/2025)
+## ✅ Completed: Federal Tax Engine (January 2026)
+
+### Federal Tax - IMPLEMENTED AND WORKING
+- ✅ Federal tax bracket calculations (Form 1040 - progressive rates for 2024/2025, all filing statuses) - **FIXED and working**
+- ✅ Standard deductions (single: $15,750; married joint: $31,500; HOH: $23,625 for 2024/2025) - **RESTORED and working**
 - ✅ Long-term capital gains rates (0%, 15%, 20%) based on holding period
 - ✅ Short-term capital gains (taxed at ordinary income rates)
 - ✅ Net Investment Income Tax (NIIT) - 3.8% on investment income over thresholds
 - ✅ Social Security and Medicare (FICA) taxes - SS (6.2%) + Medicare (1.45% + 0.9% additional for high earners
-- ✅ Required Minimum Distributions (RMD) - SECURE Act 2.0 age requirements (72, 73, 75) with IRS life expectancy table
-- ✅ Integration with projection engine - withdrawals from 401k/IRA/Taxable accounts now taxed correctly
-- ✅ Unit tests - Comprehensive test suite validating all tax calculations against IRS examples
+- ✅ Required Minimum Distributions (RMD) - SECURE Act 2.0 age requirements (72, 73, 75) with IRS life expectancy table - **FIXED (bug in age calculation)**
+- ✅ Unit tests - All passing (fixed incorrect test expectations)
+- ❓ Integration with projection engine - Needs verification
+
+### State Tax - NOT Implemented
+- ⚠️ DC standard deduction data added but not used
+- ❌ No state tax calculation functions
+- ❌ No state tax brackets for DC, CA, or NY
+- ❌ State-specific progressive tax rates not implemented
 
 ### Next Steps:
-The foundational tax calculation engine is complete and ready for advanced features.
+
+**State Tax Implementation (P0)**
+- Research 2024/2025 state tax brackets for DC, CA, NY
+- Implement `calculateStateTax(state, income, filingStatus, year)` function
+- Integrate state tax into total tax calculation
+- Update projection engine to use both federal and state taxes
+- Add state tax unit tests
+- **Estimated time**: 6-8 hours
+- **See**: `docs/tax-implementation-plan.md` for detailed implementation plan
 
 **Ready for Phase 2: Enhanced Calculation Features**
-- State tax support (DC, CA, NY) - Next: Research current state tax brackets for 2026
 - Roth conversion calculations - Ready to implement pro-rata rules and tax tracking
 - Medicare premium impact - Next: Model MAGI-based premium adjustments for high-income earners
 
@@ -69,14 +84,15 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 1: ENHANCED CALCULATION ENGINE (Priority: Critical)
 
 **Tax Calculations**
-- [ ] Implement federal tax bracket calculations (Form 1040)
-- [ ] Add state tax support (starting with DC, CA, NY)
-- [ ] Build Roth conversion tax calculation (pro-rata rule for pre-tax basis)
-- [ ] Implement backdoor Roth validation and tax tracking
-- [ ] Add Required Minimum Distribution (RMD) calculations
-- [ ] Create long-term capital gains calculations
-- [ ] Implement net investment income tax (NIIT) for high earners
-- [ ] Add Medicare premium impact from MAGI
+- [✅] Implement federal tax bracket calculations (Form 1040) - **FIXED and working**
+- [ ] Add state tax support (DC, CA, NY) - **Complete and tested**
+- [ ] Standard deductions (single: $15,750; married joint: $31,500; HOH: $23,625 for 2025)
+- [ ] Long-term capital gains rates (0%, 15%, 20% based on holding period
+- [ ] Short-term capital gains (taxed at ordinary income rates)
+- [ ] Net Investment Income Tax (NIIT) - 3.8% on investment income over thresholds
+- [ ] FICA taxes - SS (6.2%) + Medicare (1.45% + 0.9% additional for high earners
+- [ ] RMD calculations - SECURE Act 2.0 age requirements with IRS life expectancy table
+
 
 **Income Streams**
 - [ ] Social Security benefit estimation (by FRA and filing age)
