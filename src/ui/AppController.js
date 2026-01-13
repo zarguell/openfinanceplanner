@@ -273,7 +273,7 @@ export class AppController {
       return;
     }
 
-    this.projectionResults = project(this.currentPlan, 40);
+    this.projectionResults = project(this.currentPlan, 40, 2025);
     this.renderProjectionResults();
     this.switchTab('projection');
   }

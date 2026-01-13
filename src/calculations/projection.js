@@ -3,6 +3,11 @@
  * No side effects, no state mutations, testable in isolation
  */
 
+import {
+  calculateFederalTax,
+  calculateFicaTax
+} from './tax.js';
+
 /**
  * Get growth rate for account type based on assumptions
  * @param {string} accountType - Account type (401k, IRA, Roth, etc.)
@@ -61,9 +66,10 @@ export function calculateTotalExpenses(expenses, yearOffset, inflationRate) {
  * Project a financial plan year by year
  * @param {object} plan - Plan object with accounts, expenses, taxProfile, assumptions
  * @param {number} yearsToProject - Number of years to project
+ * @param {number} taxYear - Tax year to use for calculations (2024 or 2025)
  * @returns {Array} Array of yearly projection results
  */
-export function project(plan, yearsToProject = 40) {
+export function project(plan, yearsToProject = 40, taxYear = 2025) {
   const results = [];
   const accountSnapshots = plan.accounts.map(acc => ({
     ...acc,
@@ -85,17 +91,33 @@ export function project(plan, yearsToProject = 40) {
       plan.assumptions.inflationRate
     );
 
-    // Apply growth and contributions/distributions
     let totalBalance = 0;
+    let totalFederalTax = 0;
+
     for (let i = 0; i < accountSnapshots.length; i++) {
       let balance = accountSnapshots[i].balance / 100;
+      const account = plan.accounts[i];
 
       if (!isRetired) {
         // Accumulation phase: add contributions
-        balance += plan.accounts[i].annualContribution || 0;
+        balance += account.annualContribution || 0;
       } else {
-        // Distribution phase: withdraw proportionally from accounts
-        balance -= totalExpense / plan.accounts.length;
+        const preTaxWithdrawal = totalExpense / plan.accounts.length;
+
+        // Calculate tax on withdrawal for pre-tax accounts
+        let withdrawalTax = 0;
+        if (account.type === '401k' || account.type === 'IRA' || account.type === 'Taxable') {
+          withdrawalTax = calculateFederalTax(
+            preTaxWithdrawal * 100,
+            plan.taxProfile.filingStatus,
+            taxYear
+          );
+        }
+
+        const afterTaxWithdrawal = preTaxWithdrawal - (withdrawalTax / 100);
+
+        balance -= afterTaxWithdrawal;
+        totalFederalTax += withdrawalTax / 100;
       }
 
       // Apply investment growth
@@ -115,7 +137,8 @@ export function project(plan, yearsToProject = 40) {
       isRetired: isRetired,
       totalBalance: totalBalance,
       totalExpense: totalExpense,
-      accountBalances: accountSnapshots.map(acc => acc.balance / 100)
+      accountBalances: accountSnapshots.map(acc => acc.balance / 100),
+      totalFederalTax: totalFederalTax
     });
   }
 
