@@ -171,10 +171,66 @@ const ACCOUNT_PRIORITY = {
 
 **Integration with Projection Engine**:
 - RMD requirements calculated first for all Traditional accounts
+- Roth conversions executed before withdrawals (if enabled)
+- Conversions use three strategies: fixed, bracket-fill, percentage
 - Total withdrawal needed = max(deficit, total RMDs)
 - Strategy allocates withdrawals across accounts
 - All monetary values in cents (integers)
 - Pure functions (no side effects, easy to test)
+
+#### Roth Conversion Module Details
+**Implementation**: `src/calculations/roth-conversions.js`
+- Implements multiple Roth conversion strategies for tax-efficient retirement planning
+- Supports tax impact analysis and net benefit calculations
+- Handles pro-rata basis for mixed IRAs (pre-tax + after-tax)
+- Tracks 5-year rule for penalty-free withdrawals
+
+**Available Strategies**:
+
+1. **Fixed Annual Conversion**
+   - Convert same amount every year (if available)
+   - Simple approach, predictable tax impact
+   - Ignores RMDs (conversions are separate)
+
+2. **Bracket-Fill Conversion**
+   - Convert just enough to fill up to top of current tax bracket
+   - Maximizes conversions at current marginal rate
+   - Requires knowing current taxable income
+
+3. **Percentage-Based Conversion**
+   - Convert a fixed percentage of traditional balance each year
+   - Adapts to balance changes (market growth)
+   - Common approach: 5-10% annually
+
+4. **Backdoor Roth Conversion**
+   - Convert after-tax contributions (basis) to Roth
+   - Tax-free since taxes already paid on the money
+   - Applies to after-tax 401(k) contributions or non-deductible IRA contributions
+
+**Exported Functions**:
+- `calculateConversionTax()` - Tax impact of conversion
+- `calculateBracketFillConversion()` - Fill to top of bracket
+- `calculateFixedConversion()` - Fixed annual amount
+- `calculatePercentageConversion()` - Percentage of balance
+- `calculateBackdoorRothConversion()` - After-tax basis conversion
+- `calculateProRataBasis()` - Pro-rata basis for mixed IRAs
+- `isPenaltyFree()` - Check 5-year rule compliance
+- `optimizeConversionsAcrossYears()` - Multi-year conversion planning
+- `analyzeConversion()` - Net benefit analysis
+
+**Integration with Projection**:
+- Conversions executed after RMD calculations, before withdrawals
+- Conversion amount taxed as ordinary income that year
+- Balance transferred: Traditional decreased, Roth increased
+- Conversion taxes added to yearly tax totals
+- Results include `rothConversions` field showing annual conversions
+
+**Schema Support**:
+- `plan.rothConversions.enabled` - Whether conversions enabled
+- `plan.rothConversions.strategy` - Strategy: 'fixed' | 'bracket-fill' | 'percentage'
+- `plan.rothConversions.annualAmount` - Fixed amount (cents)
+- `plan.rothConversions.percentage` - Percentage (decimal)
+- `plan.rothConversions.bracketTop` - Bracket top (cents) for bracket-fill
 
 ### ProjectionRunner API
 ```javascript

@@ -8,11 +8,16 @@ import {
    calculateTotalTax,
    calculateLongTermCapitalGainsTax,
    calculateFicaTax
- } from './tax.js';
+  } from './tax.js';
 import { calculateRMDForAccount, mustTakeRMD } from './rmd.js';
  import { calculateSocialSecurityForYear } from './social-security.js';
  import { calculateTotalIncome } from './income.js';
  import { calculateWithdrawals } from './withdrawal-strategies.js';
+ import {
+   calculateFixedConversion,
+   calculateBracketFillConversion,
+   calculatePercentageConversion
+ } from './roth-conversions.js';
 
 /**
  * Get growth rate for account type based on assumptions
@@ -159,6 +164,79 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     const totalRmdAmount = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0) / 100;
     const totalRmdWithdrawalCents = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0);
 
+    // Calculate Roth conversions (if enabled)
+    let rothConversionAmount = 0;
+    let rothConversionTax = 0;
+    let rothConversionIncome = 0;
+
+    if (plan.rothConversions && plan.rothConversions.enabled && year > 0) {
+      const traditionalAccounts = accountSnapshots
+        .map((acc, idx) => ({ acc, original: plan.accounts[idx], idx }))
+        .filter(({ acc }) => acc.type === '401k' || acc.type === 'IRA');
+
+      const totalTraditionalBalance = traditionalAccounts.reduce((sum, { acc }) => sum + acc.balance, 0);
+
+      if (totalTraditionalBalance > 0) {
+        const strategy = plan.rothConversions.strategy || 'fixed';
+        const maxConversion = totalTraditionalBalance - totalRmdWithdrawalCents;
+
+        switch (strategy) {
+          case 'fixed':
+            const annualAmount = (plan.rothConversions.annualAmount || 0) * 100;
+            rothConversionAmount = Math.min(annualAmount, maxConversion);
+            break;
+
+          case 'bracket-fill':
+            const bracketTop = (plan.rothConversions.bracketTop || 89450) * 100;
+            const taxableIncome = totalIncome * 100 + socialSecurityIncome * 100;
+            rothConversionAmount = Math.min(
+              calculateBracketFillConversion(taxableIncome, bracketTop, totalTraditionalBalance),
+              maxConversion
+            );
+            break;
+
+          case 'percentage':
+            const percentage = plan.rothConversions.percentage || 0.10;
+            rothConversionAmount = Math.min(
+              calculatePercentageConversion(percentage, totalTraditionalBalance),
+              maxConversion
+            );
+            break;
+        }
+
+        rothConversionAmount = Math.max(0, rothConversionAmount);
+
+        if (rothConversionAmount > 0) {
+          rothConversionIncome = rothConversionAmount;
+          const taxResult = calculateTotalTax(
+            plan.taxProfile.state,
+            rothConversionAmount + totalIncome * 100 + socialSecurityIncome * 100,
+            plan.taxProfile.filingStatus,
+            taxYear
+          );
+
+          const taxResultWithoutConversion = calculateTotalTax(
+            plan.taxProfile.state,
+            totalIncome * 100 + socialSecurityIncome * 100,
+            plan.taxProfile.filingStatus,
+            taxYear
+          );
+
+          rothConversionTax = {
+            federalTax: (taxResult.federalTax - taxResultWithoutConversion.federalTax) / 100,
+            stateTax: (taxResult.stateTax - taxResultWithoutConversion.stateTax) / 100
+          };
+
+          const rothAccountIndex = plan.accounts.findIndex(acc => acc.type === 'Roth');
+          if (rothAccountIndex >= 0) {
+            const traditionalAccountIndex = traditionalAccounts[0].idx;
+            accountSnapshots[traditionalAccountIndex].balance -= rothConversionAmount;
+            accountSnapshots[rothAccountIndex].balance += rothConversionAmount;
+          }
+        }
+      }
+    }
+
     // Calculate total withdrawal needed (deficit + RMDs)
     let totalWithdrawalNeeded = 0;
     if (netCashFlow < 0) {
@@ -218,8 +296,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
         // Roth and HSA: tax-free withdrawals
       }
 
-      totalFederalTax += federalTax;
-      totalStateTax += stateTax;
+      totalFederalTax += federalTax + (rothConversionTax.federalTax || 0);
+      totalStateTax += stateTax + (rothConversionTax.stateTax || 0);
 
       // Apply withdrawal
       balance -= withdrawalAmount;
@@ -245,6 +323,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalStateTax: totalStateTax,
       totalFicaTax: totalFicaTax,
       totalRmdAmount: totalRmdAmount,
+      rothConversions: rothConversionAmount,
       totalTax: totalFederalTax + totalStateTax + totalFicaTax
     });
   }
