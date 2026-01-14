@@ -12,6 +12,7 @@ export class Plan {
       currentAge,
       retirementAge,
       filingStatus: 'single',
+      federalTaxRate: 0.24,
       taxYear: 2025,
       state: null
     };
@@ -77,6 +78,10 @@ export class Plan {
     }
     if (data.taxProfile.state) {
       plan.taxProfile.state = data.taxProfile.state;
+    }
+    // Migration: ensure federalTaxRate exists for old plans
+    if (plan.taxProfile.federalTaxRate === undefined) {
+      plan.taxProfile.federalTaxRate = 0.24;
     }
 
     plan.assumptions = data.assumptions;
