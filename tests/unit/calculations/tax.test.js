@@ -8,6 +8,7 @@ import {
   calculateLongTermCapitalGainsTax,
   calculateShortTermCapitalGainsTax,
   calculateCapitalGainsTax,
+  calculateNetInvestmentIncomeTax,
   calculateSocialSecurityTax,
   calculateMedicareTax,
   calculateFicaTax,
@@ -50,6 +51,44 @@ export function testFederalTax() {
   console.log('All federal tax tests passed! ✓');
 }
 
+export function testNetInvestmentIncomeTax() {
+  console.log('Testing Net Investment Income Tax calculations...');
+
+  // Test below threshold - no NIIT
+  const niit1 = calculateNetInvestmentIncomeTax(5000000, 15000000, 'single', 2025);
+  console.assert(niit1 === 0, 'Test 1 failed: MAGI $150K (below $200K threshold) should have $0 NIIT');
+  console.assert(
+    niit1 === 0,
+    'Test 1 failed: No NIIT below threshold'
+  );
+
+  // Test above threshold - NIIT applies
+  const niit2 = calculateNetInvestmentIncomeTax(10000000, 25000000, 'single', 2025);
+  console.assert(niit2 === 380000, 'Test 2 failed: $100K investment income with MAGI $250K should have $3,800 NIIT (3.8%)');
+  console.assert(
+    niit2 / 10000000 === 0.038,
+    'Test 2 failed: NIIT rate should be 3.8%'
+  );
+
+  // Test where investment income limits NIIT
+  const niit3 = calculateNetInvestmentIncomeTax(10000000, 30000000, 'single', 2025);
+  console.assert(niit3 === 380000, 'Test 3 failed: $100K investment income with MAGI $300K should still have $3,800 NIIT (limited by investment income)');
+  console.assert(
+    niit3 / 10000000 === 0.038,
+    'Test 3 failed: NIIT should be limited by investment income'
+  );
+
+  // Test married joint threshold
+  const niit4 = calculateNetInvestmentIncomeTax(5000000, 26000000, 'married_joint', 2025);
+  console.assert(niit4 === 190000, 'Test 4 failed: $50K investment income with MAGI $260K (married joint) should have $1,900 NIIT');
+  console.assert(
+    niit4 / 5000000 === 0.038,
+    'Test 4 failed: NIIT rate should be 3.8% for married joint'
+  );
+
+  console.log('All NIIT tests passed! ✓');
+}
+
 export function testCapitalGainsTax() {
   console.log('Testing capital gains tax calculations...');
 
@@ -73,6 +112,17 @@ export function testCapitalGainsTax() {
     tax3 / 5000000 === 0.07743,
     'Test 3 failed: Effective rate should be 7.743%'
   );
+
+  // Test updated calculateCapitalGainsTax function with NIIT
+  const cgTax1 = calculateCapitalGainsTax(5000000, 0, 15000000, 'single', 2025);
+  console.assert(cgTax1.totalTax === 0, 'Test 4 failed: $50K LTCG with MAGI $150K should have $0 total tax (no NIIT below threshold)');
+  console.assert(cgTax1.ordinaryTax === 0, 'Test 4 failed: Ordinary LTCG tax should be $0');
+  console.assert(cgTax1.niit === 0, 'Test 4 failed: NIIT should be $0 below threshold');
+
+  const cgTax2 = calculateCapitalGainsTax(10000000, 0, 25000000, 'single', 2025);
+  console.assert(cgTax2.totalTax === 380000, 'Test 5 failed: $100K LTCG with MAGI $250K should have $3,800 total tax');
+  console.assert(cgTax2.ordinaryTax === 0, 'Test 5 failed: Ordinary LTCG tax should be $0 (in 0% bracket)');
+  console.assert(cgTax2.niit === 380000, 'Test 5 failed: NIIT should be $3,800');
 
   console.log('All capital gains tests passed! ✓');
 }
@@ -176,6 +226,13 @@ export function runAllTests() {
   }
 
   try {
+    testNetInvestmentIncomeTax();
+  } catch (error) {
+    console.error('NIIT tests failed:', error.message);
+    return false;
+  }
+
+  try {
     testCapitalGainsTax();
   } catch (error) {
     console.error('Capital gains tests failed:', error.message);
@@ -206,6 +263,7 @@ export function runAllTests() {
   console.log('\n=== All Tests Completed Successfully! ===\n');
   console.log('Summary:');
   console.log('- Federal income tax calculations: PASSED');
+  console.log('- Net Investment Income Tax calculations: PASSED');
   console.log('- Capital gains tax calculations: PASSED');
   console.log('- Social Security and Medicare tax calculations: PASSED');
   console.log('- Standard deduction retrieval: PASSED');

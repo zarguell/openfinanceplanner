@@ -81,7 +81,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Standard deductions (single: $15,750; married joint: $31,500; HOH: $23,625 for 2025)
 - [ ] Long-term capital gains rates (0%, 15%, 20% based on holding period
 - [ ] Short-term capital gains (taxed at ordinary income rates)
-- [ ] Net Investment Income Tax (NIIT) - 3.8% on investment income over thresholds
+- [x] Net Investment Income Tax (NIIT) - 3.8% on investment income over thresholds
 - [ ] FICA taxes - SS (6.2%) + Medicare (1.45% + 0.9% additional for high earners
 - [ ] RMD calculations - SECURE Act 2.0 age requirements with IRS life expectancy table
 

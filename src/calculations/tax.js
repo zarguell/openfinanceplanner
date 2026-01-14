@@ -2171,18 +2171,67 @@ export function calculateShortTermCapitalGainsTax(gain, filingStatus, year = 202
 }
 
 /**
- * Calculate total capital gains tax (long-term + short-term)
- * @param {number} longTermGain - Long-term capital gain in cents
- * @param {number} shortTermGain - Short-term capital gain in cents
+ * Calculate Net Investment Income Tax (NIIT) - 3.8% on investment income over MAGI thresholds
+ * @param {number} investmentIncome - Total investment income in cents
+ * @param {number} magi - Modified Adjusted Gross Income in cents
  * @param {string} filingStatus - Filing status
  * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Total capital gains tax in cents
+ * @returns {number} NIIT tax liability in cents
  */
-export function calculateCapitalGainsTax(longTermGain, shortTermGain, filingStatus, year = 2025) {
+export function calculateNetInvestmentIncomeTax(investmentIncome, magi, filingStatus, year = 2025) {
+  // NIIT thresholds (same for 2024 and 2025)
+  const thresholds = {
+    single: 20000000, // $200,000
+    married_joint: 25000000, // $250,000
+    married_separate: 12500000, // $125,000
+    head_of_household: 20000000 // $200,000
+  };
+
+  const threshold = thresholds[filingStatus];
+  if (!threshold) {
+    throw new Error(`Invalid filing status for NIIT: ${filingStatus}`);
+  }
+
+  // NIIT applies if MAGI exceeds threshold
+  if (magi <= threshold) {
+    return 0;
+  }
+
+  // NIIT rate is 3.8%
+  const niitRate = 0.038;
+
+  // NIIT applies to the lesser of:
+  // 1. Net investment income, or
+  // 2. MAGI exceeding the threshold
+  const taxableAmount = Math.min(investmentIncome, magi - threshold);
+
+  return Math.round(taxableAmount * niitRate);
+}
+
+/**
+ * Calculate total capital gains tax (long-term + short-term + NIIT)
+ * @param {number} longTermGain - Long-term capital gain in cents
+ * @param {number} shortTermGain - Short-term capital gain in cents
+ * @param {number} magi - Modified Adjusted Gross Income in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @returns {object} Capital gains tax breakdown with ordinary tax, niit, and total
+ */
+export function calculateCapitalGainsTax(longTermGain, shortTermGain, magi, filingStatus, year = 2025) {
   const longTermTax = calculateLongTermCapitalGainsTax(longTermGain, filingStatus, year);
   const shortTermTax = calculateShortTermCapitalGainsTax(shortTermGain, filingStatus, year);
 
-  return longTermTax + shortTermTax;
+  // NIIT applies to net capital gains
+  const totalCapitalGains = longTermGain + shortTermGain;
+  const niit = calculateNetInvestmentIncomeTax(totalCapitalGains, magi, filingStatus, year);
+
+  const ordinaryTax = longTermTax + shortTermTax;
+
+  return {
+    ordinaryTax,
+    niit,
+    totalTax: ordinaryTax + niit
+  };
 }
 
 /**
