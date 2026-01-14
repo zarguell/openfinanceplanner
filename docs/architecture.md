@@ -219,15 +219,65 @@ const ACCOUNT_PRIORITY = {
 - `analyzeConversion()` - Net benefit analysis
 
 **Integration with Projection**:
-- Conversions executed after RMD calculations, before withdrawals
-- Conversion amount taxed as ordinary income that year
-- Balance transferred: Traditional decreased, Roth increased
-- Conversion taxes added to yearly tax totals
-- Results include `rothConversions` field showing annual conversions
+  - Conversions executed after RMD calculations, before withdrawals
+  - Conversion amount taxed as ordinary income that year
+  - Balance transferred: Traditional decreased, Roth increased
+  - Conversion taxes added to yearly tax totals
+  - Results include `rothConversions` field showing annual conversions
+  
+**Schema Support**:
+  - `plan.rothConversions.enabled` - Whether conversions enabled
+  - `plan.rothConversions.strategy` - Strategy: 'fixed' | 'bracket-fill' | 'percentage'
+
+#### QCD Module Details
+**Implementation**: `src/calculations/qcd.js`
+- Implements Qualified Charitable Distribution (QCD) calculations for tax-efficient charitable giving
+- Supports three QCD strategies: fixed amount, percentage of balance, RMD-based
+- Calculates tax benefit of QCDs vs. taxable withdrawals
+- Enforces IRS rules: age 70½+ requirement, $100,000 annual limit per person
+- Handles pro-rata distribution across multiple eligible accounts
+
+**Available Strategies**:
+
+1. **Fixed Annual QCD**
+   - Donate same fixed amount each year (e.g., $10,000/year)
+   - Simple approach, predictable tax savings
+   - Capped at $100,000 per IRS rules
+
+2. **Percentage-Based QCD**
+   - Donate a fixed percentage of Traditional account balance each year
+   - Adapts to balance changes (market growth/decreases)
+   - Common approach: 5-10% annually
+
+3. **RMD-Based QCD**
+   - Donate the full RMD amount to charity instead of taking it as taxable income
+   - Maximizes tax savings by eliminating RMD taxes entirely
+   - Only applies if QCDs don't exceed $100,000 limit
+
+**Exported Functions**:
+- `mustTakeQCD(age)` - Check if user must take QCD (age 70.5+)
+- `canAccountTakeQCD(accountType)` - Check if account type eligible (IRA, 401k only)
+- `calculateQCDForAccount(account, qcdSettings, rmdAmount)` - Calculate QCD for specific account
+- `calculateTotalQCD(accounts, qcdSettings, totalRmdCents)` - Calculate total QCDs across all accounts
+- `getQCDLimit()` - Returns IRS annual limit ($100,000)
+- `getQCDMinimumAge()` - Returns minimum age for QCDs (70.5 years)
+- `calculateQCDTaxBenefit(qcdAmount, marginalTaxRate)` - Calculate tax savings from QCDs
+- `validateQCDSettings(qcdSettings)` - Validate QCD configuration
+
+**Integration with Projection**:
+- QCDs calculated after RMD requirements are determined
+- QCDs count toward RMD requirement (reduce required RMD withdrawal)
+- QCDs deducted from account balances before growth and withdrawals
+- QCDs are tax-free (no federal/state tax on charitable distribution)
+- Results include `totalQCD` field showing annual QCD amounts
+- QCDs only apply to IRA and 401k accounts (Roth, HSA, Taxable excluded)
 
 **Schema Support**:
-- `plan.rothConversions.enabled` - Whether conversions enabled
-- `plan.rothConversions.strategy` - Strategy: 'fixed' | 'bracket-fill' | 'percentage'
+- `plan.qcdSettings.enabled` - Whether QCDs enabled
+- `plan.qcdSettings.strategy` - Strategy: 'fixed' | 'percentage' | 'rmd'
+- `plan.qcdSettings.annualAmount` - Fixed annual amount (in cents)
+- `plan.qcdSettings.percentage` - Percentage for percentage strategy (0-1)
+- `plan.qcdSettings.marginalTaxRate` - Marginal tax rate for benefit calc (0-1)
 - `plan.rothConversions.annualAmount` - Fixed amount (cents)
 - `plan.rothConversions.percentage` - Percentage (decimal)
 - `plan.rothConversions.bracketTop` - Bracket top (cents) for bracket-fill

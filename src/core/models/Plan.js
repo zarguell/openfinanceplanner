@@ -44,6 +44,13 @@ export class Plan {
       percentage: 0.05,
       bracketTop: 0
     };
+    this.qcdSettings = {
+      enabled: false,
+      strategy: 'fixed',
+      annualAmount: 0,
+      percentage: 0.1,
+      marginalTaxRate: 0.24
+    };
   }
 
   generateId() {
@@ -95,6 +102,7 @@ export class Plan {
       socialSecurity: { ...this.socialSecurity },
       withdrawalStrategy: this.withdrawalStrategy,
       rothConversions: { ...this.rothConversions },
+      qcdSettings: { ...this.qcdSettings },
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
       expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp),
       incomes: this.incomes.map(inc => inc.toJSON ? inc.toJSON() : inc)
@@ -142,6 +150,15 @@ export class Plan {
       percentage: 0.05,
       bracketTop: 0,
       ...data.rothConversions
+    };
+
+    plan.qcdSettings = {
+      enabled: false,
+      strategy: 'fixed',
+      annualAmount: 0,
+      percentage: 0.1,
+      marginalTaxRate: 0.24,
+      ...data.qcdSettings
     };
 
     plan.accounts = data.accounts || [];

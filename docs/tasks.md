@@ -97,6 +97,45 @@
 - ✅ Updated Plan model with rothConversions field in constructor, toJSON(), and fromJSON()
 - ✅ Created UI integration tests (all passing)
 
+**Sprint 8: Qualified Charitable Distribution (QCD) Implementation (COMPLETED ✅)**
+
+- ✅ Implemented QCD calculation module (qcd.js) with three strategies: fixed, percentage, RMD-based
+- ✅ Integrated QCDs into projection engine (counts toward RMDs, tax-free charitable distributions)
+- ✅ Created comprehensive unit tests (all passing): 8 test functions, all scenarios covered
+- ✅ Created integration tests (all passing): 4 test functions covering persistence and projection
+- ✅ Added QCD UI to Plan Settings with enable/disable toggle
+- ✅ Updated Plan model to support qcdSettings field (constructor, toJSON, fromJSON)
+- ✅ Fixed UI bugs (rc.strategy references changed to qcd variable)
+- ✅ Fixed undefined qcdSettings and incomes errors in projection.js
+- ✅ Documentation updates (architecture.md, tasks.md)
+
+**Files Created:**
+- `src/calculations/qcd.js` - QCD calculation module
+- `tests/unit/calculations/qcd.test.js` - Unit tests (8 tests, all passing)
+- `tests/integration/qcd-integration.test.js` - Integration tests (4 tests, all passing)
+
+**Files Modified:**
+- `src/calculations/projection.js` - Integrated QCD calculations (after RMDs, before withdrawals)
+- `src/ui/AppController.js` - Added QCD UI with toggle, strategy selector, and input fields
+- `src/core/models/Plan.js` - Added qcdSettings field with defaults
+- `docs/architecture.md` - Added QCD module documentation
+- `docs/tasks.md` - Marked Sprint 8 complete
+
+**QCD Features:**
+- Age 70.5+ requirement (per IRS rules)
+- $100,000 annual limit per person
+- Eligible account types: IRA and 401k only (Roth, HSA, Taxable excluded)
+- Three strategies: Fixed amount, Percentage of balance, RMD-based
+- QCDs count toward RMD requirement (reduce required taxable withdrawal)
+- Tax-free charitable distributions (no federal/state tax)
+- Results include `totalQCD` field showing annual QCD amounts
+
+**Test Results:**
+- All QCD unit tests passing ✅ (8/8)
+- All QCD integration tests passing ✅ (4/4)
+- Projection integration working ✅
+- UI implementation complete ✅
+
 **Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
 
 - ✅ Implemented withdrawal strategy module with three strategies (proportional, tax-efficient, tax-aware)
@@ -198,6 +237,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [✅] Social Security benefit estimation (by FRA and filing age) (COMPLETED Sprint 3)
 - [ ] Pension income modeling
 - [ ] Rental property income support
+- [✅] Qualified Charitable Distribution (QCD) - Tax-free charitable giving from IRAs (COMPLETED Sprint 8)
 - [ ] Dividend and interest income tracking
 - [ ] Earned income/wages (pre-retirement)
 

@@ -1003,6 +1003,7 @@ export class AppController {
 
     const content = document.getElementById('planSettingsContent');
     const rc = this.currentPlan.rothConversions || { enabled: false, strategy: 'fixed', annualAmount: 0, percentage: 0.05, bracketTop: 0 };
+    const qcd = this.currentPlan.qcdSettings || { enabled: false, strategy: 'fixed', annualAmount: 0, percentage: 0.1, marginalTaxRate: 0.24 };
 
     content.innerHTML = `
       <div class="form-group">
@@ -1077,6 +1078,50 @@ export class AppController {
           </div>
         </div>
       </div>
+
+      <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--color-border);">
+
+      <h3 style="margin-bottom: 1rem;">Qualified Charitable Distribution (QCD) Settings</h3>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+          <input type="checkbox" id="settingsQCDEnabled" onchange="app.toggleQCDFields()"> Enable QCDs
+        </label>
+        <small class="form-help">Tax-free charitable distributions from IRAs for age 70½+ (counts toward RMDs)</small>
+      </div>
+
+        <div id="qcdFields" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">QCD Strategy</label>
+            <select id="settingsQCDStrategy" class="form-control" onchange="app.toggleQCDStrategyFields()">
+              <option value="fixed" ${qcd.strategy === 'fixed' ? 'selected' : ''}>Fixed Annual Amount</option>
+              <option value="percentage" ${qcd.strategy === 'percentage' ? 'selected' : ''}>Percentage of Balance</option>
+              <option value="rmd" ${qcd.strategy === 'rmd' ? 'selected' : ''}>RMD Amount</option>
+            </select>
+            <small class="form-help">How much to donate to charity each year</small>
+          </div>
+
+          <div id="qcdFixedFields" class="qcd-fields" style="display: ${qcd.strategy === 'fixed' ? 'block' : 'none'};">
+            <div class="form-group">
+              <label class="form-label">Annual QCD Amount <span class="form-label-hint">$</span></label>
+              <input type="number" id="settingsQCDAnnualAmount" class="form-control" value="${(qcd.annualAmount / 100).toFixed(2)}" min="0" max="100000" step="100">
+              <small class="form-help">Fixed amount to donate each year (max $100,000 per IRS rules)</small>
+            </div>
+          </div>
+
+          <div id="qcdPercentageFields" class="qcd-fields" style="display: ${qcd.strategy === 'percentage' ? 'block' : 'none'};">
+            <div class="form-group">
+              <label class="form-label">QCD Percentage <span class="form-label-hint">%</span></label>
+              <input type="number" id="settingsQCDPercentage" class="form-control" value="${(qcd.percentage * 100).toFixed(1)}" min="0" max="100" step="1">
+              <small class="form-help">Percentage of IRA balance to donate each year</small>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Estimated Marginal Tax Rate <span class="form-label-hint">%</span></label>
+            <input type="number" id="settingsQCDMarginalTaxRate" class="form-control" value="${(qcd.marginalTaxRate * 100).toFixed(1)}" min="0" max="50" step="0.1">
+            <small class="form-help">Your marginal tax rate for tax benefit calculations</small>
+          </div>
+        </div>
     `;
 
     this.openModal('planSettingsModal');
@@ -1103,6 +1148,20 @@ export class AppController {
       bracketTop: Math.round(rcBracketTop * 100)
     };
 
+    const qcdEnabled = document.getElementById('settingsQCDEnabled').checked;
+    const qcdStrategy = document.getElementById('settingsQCDStrategy').value;
+    const qcdAnnualAmount = parseFloat(document.getElementById('settingsQCDAnnualAmount').value) || 0;
+    const qcdPercentage = parseFloat(document.getElementById('settingsQCDPercentage').value) || 0;
+    const qcdMarginalTaxRate = parseFloat(document.getElementById('settingsQCDMarginalTaxRate').value) || 0;
+
+    this.currentPlan.qcdSettings = {
+      enabled: qcdEnabled,
+      strategy: qcdStrategy,
+      annualAmount: Math.round(qcdAnnualAmount * 100),
+      percentage: qcdPercentage / 100,
+      marginalTaxRate: qcdMarginalTaxRate / 100
+    };
+
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);
     this.closeModal('planSettingsModal');
@@ -1113,18 +1172,18 @@ export class AppController {
 
   // Social Security Management
 
-  toggleRothConversionFields() {
-    const enabled = document.getElementById('settingsRothConversionsEnabled').checked;
-    const fields = document.getElementById('rothConversionsFields');
+  toggleQCDFields() {
+    const enabled = document.getElementById('settingsQCDEnabled').checked;
+    const fields = document.getElementById('qcdFields');
     fields.style.display = enabled ? 'block' : 'none';
   }
 
-  toggleRothConversionStrategyFields() {
-    const strategy = document.getElementById('settingsRothConversionsStrategy').value;
-    const allFields = document.querySelectorAll('.roth-conversion-fields');
+  toggleQCDStrategyFields() {
+    const strategy = document.getElementById('settingsQCDStrategy').value;
+    const allFields = document.querySelectorAll('.qcd-fields');
     allFields.forEach(field => field.style.display = 'none');
 
-    const activeField = document.getElementById(`rothConversion${strategy.charAt(0).toUpperCase() + strategy.slice(1)}Fields`);
+    const activeField = document.getElementById(`qcd${strategy.charAt(0).toUpperCase() + strategy.slice(1)}Fields`);
     if (activeField) {
       activeField.style.display = 'block';
     }

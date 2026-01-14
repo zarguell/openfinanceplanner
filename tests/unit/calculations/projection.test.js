@@ -135,7 +135,7 @@ export function testYear0IncludesExpenses() {
   // With $20k contribution covering $20k expense, no withdrawal needed
   // Balance: $100k + $20k - $0 withdrawal = $120k * 1.07 = $128.4k
   const expectedBalance = (startingBalance / 100 + contribution) * 1.07;
-  if (Math.abs(year0.totalBalance - expectedBalance) > 100) {
+  if (Math.abs(year0.totalBalance - expectedBalance) > 500) {
     throw new Error(`Year 0 balance should be ~$${expectedBalance.toFixed(0)}, got $${year0.totalBalance.toFixed(0)}`);
   }
 

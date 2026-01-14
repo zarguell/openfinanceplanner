@@ -10,6 +10,7 @@ import {
    calculateFicaTax
   } from './tax.js';
 import { calculateRMDForAccount, mustTakeRMD } from './rmd.js';
+import { calculateTotalQCD, calculateQCDForAccount } from './qcd.js';
  import { calculateSocialSecurityForYear } from './social-security.js';
  import { calculateTotalIncome } from './income.js';
  import { calculateWithdrawals } from './withdrawal-strategies.js';
@@ -110,7 +111,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
 
     // Calculate total earned income for this year
     const totalIncome = calculateTotalIncome(
-      plan.incomes,
+      plan.incomes || [],
       year,
       plan.assumptions.inflationRate
     );
@@ -163,6 +164,18 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     });
     const totalRmdAmount = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0) / 100;
     const totalRmdWithdrawalCents = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0);
+
+    let totalQCDAmount = 0;
+    const qcdSettingsWithAge = { ...(plan.qcdSettings || { enabled: false }), currentAge: age };
+    const totalQCDCents = calculateTotalQCD(
+      accountSnapshots.map((acc, idx) => ({ ...plan.accounts[idx], balance: acc.balance })),
+      qcdSettingsWithAge,
+      totalRmdWithdrawalCents
+    );
+
+    if (plan.qcdSettings && plan.qcdSettings.enabled) {
+      totalQCDAmount = totalQCDCents / 100;
+    }
 
     // Calculate Roth conversions (if enabled)
     let rothConversionAmount = 0;
@@ -237,12 +250,31 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       }
     }
 
-    // Calculate total withdrawal needed (deficit + RMDs)
     let totalWithdrawalNeeded = 0;
     if (netCashFlow < 0) {
       totalWithdrawalNeeded = Math.abs(netCashFlow);
     }
-    totalWithdrawalNeeded = Math.max(totalWithdrawalNeeded, totalRmdWithdrawalCents);
+
+    const rmdAfterQCD = Math.max(0, totalRmdWithdrawalCents - totalQCDCents);
+    totalWithdrawalNeeded = Math.max(totalWithdrawalNeeded, rmdAfterQCD);
+
+    if (plan.qcdSettings && plan.qcdSettings.enabled && totalQCDCents > 0) {
+      const qcdSettingsWithAge = { ...(plan.qcdSettings || {}), currentAge: age };
+
+      accountSnapshots.forEach((acc, idx) => {
+        const account = plan.accounts[idx];
+        const qcdForAccount = calculateQCDForAccount(
+          { ...account, balance: acc.balance },
+          qcdSettingsWithAge,
+          rmdRequirements[idx] || 0
+        );
+
+        if (qcdForAccount > 0) {
+          accountSnapshots[idx].balance -= qcdForAccount;
+          totalBalance -= qcdForAccount / 100;
+        }
+      });
+    }
 
     // Use withdrawal strategy to allocate across accounts
     const withdrawalStrategy = plan.withdrawalStrategy || 'proportional';
@@ -323,6 +355,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalStateTax: totalStateTax,
       totalFicaTax: totalFicaTax,
       totalRmdAmount: totalRmdAmount,
+      totalQCD: totalQCDAmount,
       rothConversions: rothConversionAmount,
       totalTax: totalFederalTax + totalStateTax + totalFicaTax
     });
