@@ -390,6 +390,7 @@ export class AppController {
     const finalBalance = this.projectionResults[this.projectionResults.length - 1].totalBalance;
     const retirementBalance = this.projectionResults.find(r => r.isRetired)?.totalBalance || 0;
     const retirementYear = this.projectionResults.find(r => r.isRetired)?.year || '-';
+    const yearsProjected = this.projectionResults.length - 1; // Subtract 1 since projection includes year 0
 
     let monteCarloSection = '';
     if (this.monteCarloResults) {
@@ -457,12 +458,12 @@ export class AppController {
           <div class="result-card">
             <div class="result-label">Total Federal Tax Paid</div>
             <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalFederalTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
-            <div class="result-sublabel">Over ${yearsToProject} years</div>
+            <div class="result-sublabel">Over ${yearsProjected} years</div>
           </div>
           <div class="result-card">
             <div class="result-label">Total State Tax Paid</div>
             <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalStateTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
-            <div class="result-sublabel">Over ${yearsToProject} years</div>
+            <div class="result-sublabel">Over ${yearsProjected} years</div>
           </div>
           <div class="result-card">
             <div class="result-label">Total FICA Tax Paid</div>
