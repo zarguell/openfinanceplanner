@@ -29,7 +29,7 @@ export class Plan {
       enabled: false,
       birthYear: new Date().getFullYear() - currentAge, // Rough estimate, user will override
       monthlyBenefit: 0, // Monthly benefit at FRA in today's dollars
-      filingAge: retirementAge // Default to retirement age
+      filingAge: 67 // Default to 67 (most common Full Retirement Age)
     };
     this.accounts = [];
     this.expenses = [];
