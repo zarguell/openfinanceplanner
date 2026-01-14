@@ -123,6 +123,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     for (let i = 0; i < accountSnapshots.length; i++) {
       let balance = accountSnapshots[i].balance / 100;
       const account = plan.accounts[i];
+      let withdrawalAmount = 0;
 
       if (!isRetired) {
         // Accumulation phase: add contributions (after FICA taxes)
@@ -131,7 +132,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       } else {
         // Distribution phase: withdrawals for expenses
         const netExpense = Math.max(0, totalExpense - socialSecurityIncome);
-        let withdrawalAmount = netExpense / plan.accounts.length;
+        withdrawalAmount = netExpense / plan.accounts.length;
 
         // Add RMD if required for qualified accounts
         const rmdAge = getRmdAgeRequirement(new Date().getFullYear() - startAge);
@@ -188,12 +189,14 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
         balance -= withdrawalAmount;
       }
 
-      // Apply investment growth
-      const growthRate = getAccountGrowthRate(
-        plan.accounts[i].type,
-        plan.assumptions
-      );
-      balance *= (1 + growthRate);
+      // Apply investment growth (only during accumulation phase)
+      if (!isRetired) {
+        const growthRate = getAccountGrowthRate(
+          plan.accounts[i].type,
+          plan.assumptions
+        );
+        balance *= (1 + growthRate);
+      }
 
       accountSnapshots[i].balance = balance * 100;
       totalBalance += balance;
