@@ -12,6 +12,7 @@ import {
    getRmdAgeRequirement
 } from './tax.js';
 import { calculateSocialSecurityForYear } from './social-security.js';
+import { calculateTotalIncome } from './income.js';
 
 /**
  * Get growth rate for account type based on assumptions
@@ -96,6 +97,13 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       plan.assumptions.inflationRate
     );
 
+    // Calculate total earned income for this year
+    const totalIncome = calculateTotalIncome(
+      plan.incomes,
+      year,
+      plan.assumptions.inflationRate
+    );
+
     // Calculate Social Security income for this year
     const socialSecurityIncome = calculateSocialSecurityForYear(
       plan.socialSecurity,
@@ -114,32 +122,39 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     // Calculate total contributions across all accounts
     const totalContributions = plan.accounts.reduce((sum, acc) => sum + (acc.annualContribution || 0), 0);
 
-    // Calculate FICA taxes on pre-retirement contributions (proxy for income)
-    if (!isRetired && totalContributions > 0) {
-      const ficaResult = calculateFicaTax(Math.round(totalContributions * 100), plan.taxProfile.filingStatus, taxYear);
+    // Calculate FICA taxes on earned income (not just contributions)
+    if (!isRetired && totalIncome > 0) {
+      const ficaResult = calculateFicaTax(Math.round(totalIncome * 100), plan.taxProfile.filingStatus, taxYear);
       totalFicaTax = ficaResult.totalFicaTax / 100;
     }
 
     // Calculate net cash flow for this year
-    // Positive = adding to portfolio, Negative = withdrawing from portfolio
-    const netCashFlow = totalContributions + socialSecurityIncome - totalExpense;
+    // Pre-retirement: Income - Expenses = surplus/deficit (surplus goes to savings, deficit requires withdrawals)
+    // Post-retirement: SS + withdrawals from accounts - Expenses
+    const netCashFlow = totalIncome + socialSecurityIncome - totalExpense;
 
     for (let i = 0; i < accountSnapshots.length; i++) {
       let balance = accountSnapshots[i].balance / 100;
       const account = plan.accounts[i];
       const contribution = account.annualContribution || 0;
 
-      // Determine this account's share of expenses (proportional to balance or equal split)
-      const totalCurrentBalance = accountSnapshots.reduce((sum, acc) => sum + acc.balance, 0);
-      const accountShare = totalCurrentBalance > 0
-        ? accountSnapshots[i].balance / totalCurrentBalance
-        : 1 / plan.accounts.length;
+      // Calculate withdrawal needs based on total cash flow
+      // Positive netCashFlow means surplus (goes to contributions)
+      // Negative netCashFlow means deficit (requires withdrawals)
+      let withdrawalForExpenses = 0;
 
-      // Calculate net expense after contributions and Social Security
-      const netExpenseAfterIncome = Math.max(0, totalExpense - socialSecurityIncome - totalContributions);
-      
-      // This account's withdrawal for expenses (proportional to balance)
-      let withdrawalForExpenses = netExpenseAfterIncome * accountShare;
+      if (netCashFlow < 0) {
+        // We have a deficit - need to withdraw from accounts
+        const totalDeficit = Math.abs(netCashFlow);
+
+        // Determine this account's share of withdrawals (proportional to balance or equal split)
+        const totalCurrentBalance = accountSnapshots.reduce((sum, acc) => sum + acc.balance, 0);
+        const accountShare = totalCurrentBalance > 0
+          ? accountSnapshots[i].balance / totalCurrentBalance
+          : 1 / plan.accounts.length;
+
+        withdrawalForExpenses = totalDeficit * accountShare;
+      }
 
       // Add contribution to balance
       balance += contribution;
@@ -207,6 +222,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       age: age,
       isRetired: isRetired,
       totalBalance: totalBalance,
+      totalIncome: totalIncome,
       totalExpense: totalExpense,
       socialSecurityIncome: socialSecurityIncome,
       accountBalances: accountSnapshots.map(acc => acc.balance / 100),

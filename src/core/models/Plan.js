@@ -1,3 +1,5 @@
+import { Income } from './Income.js';
+
 /**
  * Plan - Core domain model for financial plans
  * Pure business logic with no UI dependencies
@@ -33,6 +35,7 @@ export class Plan {
     };
     this.accounts = [];
     this.expenses = [];
+    this.incomes = [];
   }
 
   generateId() {
@@ -59,6 +62,16 @@ export class Plan {
     this.touch();
   }
 
+  addIncome(income) {
+    this.incomes.push(income);
+    this.touch();
+  }
+
+  removeIncome(incomeId) {
+    this.incomes = this.incomes.filter(inc => inc.id !== incomeId);
+    this.touch();
+  }
+
   touch() {
     this.lastModified = new Date().toISOString();
   }
@@ -73,7 +86,8 @@ export class Plan {
       assumptions: { ...this.assumptions },
       socialSecurity: { ...this.socialSecurity },
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
-      expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp)
+      expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp),
+      incomes: this.incomes.map(inc => inc.toJSON ? inc.toJSON() : inc)
     };
   }
 
@@ -113,6 +127,7 @@ export class Plan {
 
     plan.accounts = data.accounts || [];
     plan.expenses = data.expenses || [];
+    plan.incomes = data.incomes ? data.incomes.map(inc => inc.fromJSON ? inc.fromJSON(inc) : Income.fromJSON(inc)) : [];
     return plan;
   }
 }

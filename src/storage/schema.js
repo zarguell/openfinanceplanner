@@ -107,6 +107,44 @@ export function validatePlanSchema(planData) {
     errors.push('Plan must have an expenses array');
   }
 
+  // Validate incomes array
+  if (!Array.isArray(planData.incomes)) {
+    errors.push('Plan must have an incomes array');
+  }
+
+  // Validate individual income items
+  if (planData.incomes) {
+    planData.incomes.forEach((income, index) => {
+      if (!income.id || typeof income.id !== 'string') {
+        errors.push(`Income ${index} must have a valid id`);
+      }
+
+      if (!income.name || typeof income.name !== 'string') {
+        errors.push(`Income ${index} must have a valid name`);
+      }
+
+      if (typeof income.baseAmount !== 'number' || income.baseAmount < 0) {
+        errors.push(`Income ${index} baseAmount must be a non-negative number (in cents)`);
+      }
+
+      if (typeof income.startYear !== 'number' || income.startYear < 0) {
+        errors.push(`Income ${index} startYear must be a non-negative number`);
+      }
+
+      if (income.endYear !== null && income.endYear !== undefined && (typeof income.endYear !== 'number' || income.endYear < income.startYear)) {
+        errors.push(`Income ${index} endYear must be null or a number >= startYear`);
+      }
+
+      if (!['salary', 'business', 'pension', 'rental', 'dividends', 'other'].includes(income.type)) {
+        errors.push(`Income ${index} type must be one of: salary, business, pension, rental, dividends, other`);
+      }
+
+      if (typeof income.growthRate !== 'number' || income.growthRate < -0.1 || income.growthRate > 0.2) {
+        errors.push(`Income ${index} growthRate must be a number between -10% and 20%`);
+      }
+    });
+  }
+
   return {
     valid: errors.length === 0,
     errors
