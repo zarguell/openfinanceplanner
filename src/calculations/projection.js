@@ -94,6 +94,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
 
     let totalBalance = 0;
     let totalFederalTax = 0;
+    let totalStateTax = 0;
 
     for (let i = 0; i < accountSnapshots.length; i++) {
       let balance = accountSnapshots[i].balance / 100;
@@ -106,20 +107,21 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
         const preTaxWithdrawal = totalExpense / plan.accounts.length;
 
         // Calculate tax on withdrawal for pre-tax accounts
-        let withdrawalTax = 0;
         if (account.type === '401k' || account.type === 'IRA' || account.type === 'Taxable') {
-          withdrawalTax = calculateTotalTax(
+          const taxResult = calculateTotalTax(
             plan.taxProfile.state,
             preTaxWithdrawal * 100,
             plan.taxProfile.filingStatus,
             taxYear
           );
+          totalFederalTax += taxResult.federalTax / 100;
+          totalStateTax += (taxResult.stateTax || 0) / 100;
+
+          const afterTaxWithdrawal = preTaxWithdrawal - ((taxResult.federalTax + (taxResult.stateTax || 0)) / 100);
+          balance -= afterTaxWithdrawal;
+        } else {
+          balance -= preTaxWithdrawal;
         }
-
-        const afterTaxWithdrawal = preTaxWithdrawal - (withdrawalTax / 100);
-
-        balance -= afterTaxWithdrawal;
-        totalFederalTax += withdrawalTax / 100;
       }
 
       // Apply investment growth
@@ -141,8 +143,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalExpense: totalExpense,
       accountBalances: accountSnapshots.map(acc => acc.balance / 100),
       totalFederalTax: totalFederalTax,
-      totalStateTax: withdrawalTax,
-      totalTax: totalFederalTax + withdrawalTax
+      totalStateTax: totalStateTax,
+      totalTax: totalFederalTax + totalStateTax
     });
   }
 
