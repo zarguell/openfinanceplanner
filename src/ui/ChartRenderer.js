@@ -39,10 +39,6 @@ export class ChartRenderer {
     const retirementIndex = retirementData ?
       projectionResults.indexOf(retirementData) : -1;
 
-    const retirementData = projectionResults.find(r => r.isRetired);
-    const retirementIndex = retirementData ?
-      projectionResults.indexOf(retirementData) : -1;
-
     const ctx = canvas.getContext('2d');
     const chart = new Chart(ctx, {
       type: 'line',
