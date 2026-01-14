@@ -7,9 +7,7 @@ import {
    calculateFederalTax,
    calculateTotalTax,
    calculateLongTermCapitalGainsTax,
-   calculateFicaTax,
-   calculateRMD,
-   getRmdAgeRequirement
+   calculateFicaTax
  } from './tax.js';
 import { calculateRMDForAccount, mustTakeRMD } from './rmd.js';
  import { calculateSocialSecurityForYear } from './social-security.js';
