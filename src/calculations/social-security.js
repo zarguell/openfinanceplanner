@@ -9,40 +9,28 @@
  * @returns {object} { years: number, months: number } - FRA in years and months
  */
 export function calculateFullRetirementAge(birthYear) {
-  // Based on SSA retirement age chart
-  const fraTable = {
-    1937: { years: 65, months: 0 },
-    1938: { years: 65, months: 2 },
-    1939: { years: 65, months: 4 },
-    1940: { years: 65, months: 6 },
-    1941: { years: 65, months: 8 },
-    1942: { years: 65, months: 10 },
-    1943: { years: 66, months: 0 },
-    1944: { years: 66, months: 2 },
-    1945: { years: 66, months: 4 },
-    1946: { years: 66, months: 6 },
-    1947: { years: 66, months: 8 },
-    1948: { years: 66, months: 10 },
-    1949: { years: 67, months: 0 },
-    1950: { years: 67, months: 0 },
-    1951: { years: 67, months: 0 },
-    1952: { years: 67, months: 0 },
-    1953: { years: 67, months: 0 },
-    1954: { years: 66, months: 0 },
-    1955: { years: 66, months: 2 },
-    1956: { years: 66, months: 4 },
-    1957: { years: 66, months: 6 },
-    1958: { years: 66, months: 8 },
-    1959: { years: 66, months: 10 }
-  };
-
   if (birthYear <= 1937) {
     return { years: 65, months: 0 };
   } else if (birthYear >= 1960) {
     return { years: 67, months: 0 };
-  } else {
-    return fraTable[birthYear] || { years: 67, months: 0 };
+  } else if (birthYear >= 1943 && birthYear <= 1954) {
+    return { years: 66, months: 0 };
+  } else if (birthYear === 1955) {
+    return { years: 66, months: 2 };
+  } else if (birthYear === 1956) {
+    return { years: 66, months: 4 };
+  } else if (birthYear === 1957) {
+    return { years: 66, months: 6 };
+  } else if (birthYear === 1958) {
+    return { years: 66, months: 8 };
+  } else if (birthYear === 1959) {
+    return { years: 66, months: 10 };
+  } else if (birthYear >= 1938 && birthYear <= 1942) {
+    const months = (birthYear - 1937) * 2;
+    return { years: 65, months: months };
   }
+
+  return { years: 67, months: 0 };
 }
 
 /**
@@ -162,6 +150,35 @@ export function estimatePIA(averageIndexedEarnings) {
   }
 
   return pia;
+}
+
+/**
+ * Calculate taxable portion of Social Security benefits
+ * @param {number} annualSSBenefit - Annual Social Security benefit amount
+ * @param {number} provisionalIncome - Provisional income (AGI + tax-exempt interest + 50% of SS)
+ * @param {string} filingStatus - Tax filing status
+ * @returns {object} { taxableAmount: number, effectiveTaxRate: number }
+ */
+export function calculateTaxableSocialSecurity(annualSSBenefit, provisionalIncome, filingStatus) {
+  let taxableAmount = 0;
+
+  const thresholds = filingStatus === 'married_joint'
+    ? { first: 32000, second: 44000 }
+    : { first: 25000, second: 34000 };
+
+  if (provisionalIncome > thresholds.second) {
+    taxableAmount = Math.min(annualSSBenefit * 0.85, annualSSBenefit);
+  } else if (provisionalIncome > thresholds.first) {
+    taxableAmount = Math.min(
+      annualSSBenefit * 0.5 + (provisionalIncome - thresholds.first) * 0.5,
+      annualSSBenefit
+    );
+  }
+
+  return {
+    taxableAmount: Math.round(taxableAmount),
+    effectiveTaxRate: annualSSBenefit > 0 ? taxableAmount / annualSSBenefit : 0
+  };
 }
 
 /**

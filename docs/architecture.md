@@ -85,6 +85,11 @@ TaxEngine.validateBackdoorRothEligibility(income, filingStatus) → boolean
 TaxEngine.calculateRMD(accountBalance, age) → number
 TaxEngine.mustTakeRMD(age, birthYear) → boolean
 TaxEngine.calculateTotalRMD(accounts, age) → number
+
+// Social Security Benefits
+TaxEngine.calculateSocialSecurityBenefit(pia, birthYear, filingAge) → number
+TaxEngine.calculateTaxableSocialSecurity(annualBenefit, provisionalIncome, filingStatus) → object
+TaxEngine.estimatePIA(averageIndexedEarnings) → number
 ```
 
 #### RMD Module Details
@@ -103,6 +108,23 @@ TaxEngine.calculateTotalRMD(accounts, age) → number
 - `calculateRMDForAccount(account, age)` - Account-specific RMD
 - `calculateTotalRMD(accounts, age)` - Sum of RMDs across all accounts
 - `getRMDDeadline(age, birthYear)` - Returns deadline string
+
+#### Social Security Module Details
+**Implementation**: `src/calculations/social-security.js`
+- Full Retirement Age (FRA) determination based on birth year (62-67, depending on birth year)
+- Primary Insurance Amount (PIA) calculation with 2025 bend points
+- Early claiming reductions (5.5%/month first 36 months, 5/12% thereafter)
+- Delayed retirement credits (8% per year, maximum at age 70)
+- Social Security taxation (50%/85% based on provisional income thresholds)
+- Cost-of-Living Adjustment (COLA) calculations for inflation
+
+**Exported Functions**:
+- `calculateFullRetirementAge(birthYear)` - Returns FRA in years and months
+- `calculateSocialSecurityBenefit(pia, birthYear, filingAge, currentYear, retirementYear, colaRate)` - Monthly benefit
+- `calculateSocialSecurityForYear(socialSecurity, yearOffset, currentAge, retirementAge, inflationRate)` - Annual SS for year
+- `calculateTaxableSocialSecurity(annualBenefit, provisionalIncome, filingStatus)` - Returns taxable portion
+- `estimatePIA(averageIndexedEarnings)` - Estimates monthly PIA from AIME
+- `getClaimingStrategyOptions()` - Returns common claiming age strategies
 
 ### ProjectionRunner API
 ```javascript
