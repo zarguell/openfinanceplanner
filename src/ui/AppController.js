@@ -451,7 +451,35 @@ export class AppController {
 
       <div class="card">
         <div class="card-header">
-          <h3>Deterministic Projection</h3>
+          <h3>Tax Breakdown Summary</h3>
+        </div>
+        <div class="results-grid">
+          <div class="result-card">
+            <div class="result-label">Total Federal Tax Paid</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalFederalTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-sublabel">Over ${yearsToProject} years</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total State Tax Paid</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalStateTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-sublabel">Over ${yearsToProject} years</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total FICA Tax Paid</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalFicaTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-sublabel">Pre-retirement only</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total RMD Withdrawals</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalRmdAmount, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-sublabel">Required minimum distributions</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Year-by-Year Projection</h3>
         </div>
         <div class="table-responsive">
           <table>
@@ -461,6 +489,10 @@ export class AppController {
                 <th>Age</th>
                 <th class="number-cell">Balance</th>
                 <th class="number-cell">Expenses</th>
+                <th class="number-cell">SS Income</th>
+                <th class="number-cell">Federal Tax</th>
+                <th class="number-cell">State Tax</th>
+                <th class="number-cell">FICA Tax</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -471,6 +503,10 @@ export class AppController {
                   <td>${row.age}</td>
                   <td class="number-cell">$${row.totalBalance.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
                   <td class="number-cell">$${row.totalExpense.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
+                  <td class="number-cell">$${row.socialSecurityIncome.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
+                  <td class="number-cell">$${row.totalFederalTax.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
+                  <td class="number-cell">$${row.totalStateTax.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
+                  <td class="number-cell">$${row.totalFicaTax.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
                   <td>${row.isRetired ? '<span class="badge badge-success">Retired</span>' : '<span class="badge badge-warning">Saving</span>'}</td>
                 </tr>
               `).join('')}

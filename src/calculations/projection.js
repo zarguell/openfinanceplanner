@@ -5,7 +5,11 @@
 
 import {
    calculateFederalTax,
-   calculateTotalTax
+   calculateTotalTax,
+   calculateLongTermCapitalGainsTax,
+   calculateFicaTax,
+   calculateRMD,
+   getRmdAgeRequirement
 } from './tax.js';
 import { calculateSocialSecurityForYear } from './social-security.js';
 
@@ -102,32 +106,86 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     );
 
     let totalBalance = 0;
-    let totalTax = 0;
+    let totalFederalTax = 0;
+    let totalStateTax = 0;
+    let totalFicaTax = 0;
+    let totalRmdAmount = 0;
+
+    // Calculate pre-tax income for FICA calculations
+    const preTaxIncome = plan.accounts.reduce((sum, acc) => sum + (acc.annualContribution || 0), 0);
+
+    // Calculate FICA taxes on pre-retirement income
+    if (!isRetired && preTaxIncome > 0) {
+      const ficaResult = calculateFicaTax(Math.round(preTaxIncome * 100), plan.taxProfile.filingStatus, taxYear);
+      totalFicaTax = ficaResult.totalFicaTax / 100; // Convert cents to dollars
+    }
 
     for (let i = 0; i < accountSnapshots.length; i++) {
       let balance = accountSnapshots[i].balance / 100;
       const account = plan.accounts[i];
 
       if (!isRetired) {
-        // Accumulation phase: add contributions
-        balance += account.annualContribution || 0;
+        // Accumulation phase: add contributions (after FICA taxes)
+        const contribution = account.annualContribution || 0;
+        balance += contribution;
       } else {
-        // Net expenses after Social Security income
+        // Distribution phase: withdrawals for expenses
         const netExpense = Math.max(0, totalExpense - socialSecurityIncome);
-        const preTaxWithdrawal = netExpense / plan.accounts.length;
+        let withdrawalAmount = netExpense / plan.accounts.length;
 
-        // MVP: Use user-estimated tax rate for simplicity
-        // Apply tax on withdrawal for pre-tax accounts only
-        if (account.type === '401k' || account.type === 'IRA' || account.type === 'Taxable') {
-          const taxAmount = preTaxWithdrawal * plan.taxProfile.estimatedTaxRate;
-          totalTax += taxAmount;
-
-          const afterTaxWithdrawal = preTaxWithdrawal - taxAmount;
-          balance -= afterTaxWithdrawal;
-        } else {
-          // Roth accounts and HSA: no tax on withdrawals
-          balance -= preTaxWithdrawal;
+        // Add RMD if required for qualified accounts
+        const rmdAge = getRmdAgeRequirement(new Date().getFullYear() - startAge);
+        if (age >= rmdAge && (account.type === '401k' || account.type === 'IRA' || account.type === 'Roth')) {
+          const rmd = calculateRMD(Math.round(balance * 100), age, taxYear) / 100;
+          withdrawalAmount = Math.max(withdrawalAmount, rmd);
+          totalRmdAmount += rmd;
         }
+
+        // Calculate taxes based on account type
+        let taxAmount = 0;
+        let federalTax = 0;
+        let stateTax = 0;
+
+        if (account.type === '401k' || account.type === 'IRA') {
+          // Traditional retirement accounts: withdrawals taxed as ordinary income
+          const taxResult = calculateTotalTax(
+            plan.taxProfile.state,
+            Math.round(withdrawalAmount * 100),
+            plan.taxProfile.filingStatus,
+            taxYear
+          );
+          federalTax = taxResult.federalTax / 100;
+          stateTax = taxResult.stateTax / 100;
+          taxAmount = federalTax + stateTax;
+        } else if (account.type === 'Taxable') {
+          // Taxable accounts: assume long-term capital gains tax on withdrawals
+          // This is a simplification - in reality, cost basis would be tracked
+          federalTax = calculateLongTermCapitalGainsTax(
+            Math.round(withdrawalAmount * 100),
+            plan.taxProfile.filingStatus,
+            taxYear
+          ) / 100;
+          // State capital gains tax rates vary, using ordinary income rate as approximation
+          const stateTaxResult = calculateTotalTax(
+            plan.taxProfile.state,
+            Math.round(withdrawalAmount * 100),
+            plan.taxProfile.filingStatus,
+            taxYear
+          );
+          stateTax = stateTaxResult.stateTax / 100;
+          taxAmount = federalTax + stateTax;
+        } else if (account.type === 'Roth' || account.type === 'HSA') {
+          // Roth and HSA: qualified withdrawals are tax-free
+          taxAmount = 0;
+          federalTax = 0;
+          stateTax = 0;
+        }
+
+        totalFederalTax += federalTax;
+        totalStateTax += stateTax;
+
+        // Withdraw full amount from account (taxes are paid separately)
+        balance -= withdrawalAmount;
       }
 
       // Apply investment growth
@@ -149,9 +207,11 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalExpense: totalExpense,
       socialSecurityIncome: socialSecurityIncome,
       accountBalances: accountSnapshots.map(acc => acc.balance / 100),
-      totalFederalTax: totalTax, // MVP: Combined federal + state tax
-      totalStateTax: 0, // MVP: Included in estimatedTaxRate
-      totalTax: totalTax
+      totalFederalTax: totalFederalTax,
+      totalStateTax: totalStateTax,
+      totalFicaTax: totalFicaTax,
+      totalRmdAmount: totalRmdAmount,
+      totalTax: totalFederalTax + totalStateTax + totalFicaTax
     });
   }
 
