@@ -406,374 +406,1461 @@ const NY_STANDARD_DEDUCTIONS_2025 = {
 };
 
 /**
- * Social Security wage base limits
+ * ALABAMA - 2025 Tax Brackets
+ * Progressive rates: 2%, 4%, 5%
  * All values in cents
  */
-const SS_WAGE_BASE = {
-  2024: 16860000,
-  2025: 17610000
-};
-
-/**
- * Get tax brackets for a given year and filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @param {string} filingStatus - Filing status ('single', 'married_joint', 'married_separate', 'head_of_household')
- * @returns {Array} Tax brackets for the year and status
- */
-export function getTaxBrackets(year, filingStatus) {
-  const brackets = year === 2024 ? TAX_BRACKETS_2024 : TAX_BRACKETS_2025;
-
-  if (!brackets || !brackets[filingStatus]) {
-    throw new Error(`Invalid filing status or year: ${filingStatus}, ${year}`);
-  }
-
-  return brackets[filingStatus];
-}
-
-/**
- * Get standard deduction for a given year and filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @param {string} filingStatus - Filing status
- * @returns {number} Standard deduction in cents
- */
-export function getStandardDeduction(year, filingStatus) {
-  const deductions = year === 2024 ? STANDARD_DEDUCTIONS[2024] : STANDARD_DEDUCTIONS[2025];
-
-  if (!deductions || !deductions[filingStatus]) {
-    throw new Error(`Invalid filing status or year: ${filingStatus}, ${year}`);
-  }
-
-  return deductions[filingStatus];
-}
-
-/**
- * Calculate federal income tax using progressive brackets
- * @param {number} income - Taxable income in cents
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Tax liability in cents
- */
-export function calculateFederalTax(income, filingStatus, year = 2025) {
-  const brackets = getTaxBrackets(year, filingStatus);
-  const standardDeduction = getStandardDeduction(year, filingStatus);
-
-  const taxableIncome = Math.max(0, income - standardDeduction);
-
-  let totalTax = 0;
-  let remainingIncome = taxableIncome;
-
-  for (const bracket of brackets) {
-    if (remainingIncome <= 0) break;
-
-    const taxableInBracket = Math.min(
-      remainingIncome,
-      bracket.max === Infinity ? remainingIncome : (bracket.max - bracket.min + 1)
-    );
-
-    const taxInBracket = taxableInBracket * bracket.rate;
-    totalTax += taxInBracket;
-
-    remainingIncome -= taxableInBracket;
-  }
-
-  return Math.round(totalTax);
-}
-
-/**
- * Calculate effective tax rate
- * @param {number} tax - Total tax in cents
- * @param {number} income - Gross income in cents
- * @returns {number} Effective tax rate as decimal
- */
-export function calculateEffectiveTaxRate(tax, income) {
-  if (income <= 0) return 0;
-  return tax / income;
-}
-
-/**
- * Calculate marginal tax rate for a given income
- * @param {number} income - Taxable income in cents
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Marginal tax rate as decimal
- */
-export function getMarginalTaxRate(income, filingStatus, year = 2025) {
-  const brackets = getTaxBrackets(year, filingStatus);
-  const standardDeduction = getStandardDeduction(year, filingStatus);
-  const taxableIncome = Math.max(0, income - standardDeduction);
-
-  for (const bracket of brackets) {
-    if (taxableIncome >= bracket.min && (taxableIncome <= bracket.max || bracket.max === Infinity)) {
-      return bracket.rate;
-    }
-  }
-
-  return 0.37;
-}
-
-/**
- * Calculate Social Security tax (6.2% on wages up to wage base)
- * @param {number} wages - Wages in cents
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Social Security tax in cents
- */
-export function calculateSocialSecurityTax(wages, year = 2025) {
-  const wageBase = SS_WAGE_BASE[year] || SS_WAGE_BASE[2025];
-  const taxableWages = Math.min(wages, wageBase);
-  return Math.round(taxableWages * 0.062);
-}
-
-/**
- * Calculate Medicare tax (1.45% on all wages + 0.9% additional on wages over threshold)
- * @param {number} wages - Wages in cents
- * @param {string} filingStatus - Filing status for additional Medicare threshold
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Total Medicare tax in cents
- */
-export function calculateMedicareTax(wages, filingStatus, year = 2025) {
-  const additionalMedicareThresholds = {
-    single: 20000000,
-    married_joint: 25000000,
-    married_separate: 12500000,
-    head_of_household: 20000000
-  };
-
-  const threshold = additionalMedicareThresholds[filingStatus] || additionalMedicareThresholds.single;
-  const additionalMedicareTaxable = Math.max(0, wages - threshold);
-  const additionalMedicareTax = Math.round(additionalMedicareTaxable * 0.009);
-
-  const standardMedicareTax = Math.round(wages * 0.0145);
-
-  return standardMedicareTax + additionalMedicareTax;
-}
-
-/**
- * Calculate total FICA tax (Social Security + Medicare)
- * @param {number} wages - Wages in cents
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {object} Object with ssTax, medicareTax, and totalFicaTax
- */
-export function calculateFicaTax(wages, filingStatus, year = 2025) {
-  const ssTax = calculateSocialSecurityTax(wages, year);
-  const medicareTax = calculateMedicareTax(wages, filingStatus, year);
-
-  return {
-    ssTax,
-    medicareTax,
-    totalFicaTax: ssTax + medicareTax
-  };
-}
-
-/**
- * Long-term capital gains tax brackets and thresholds
- * All values in cents
- */
-const LT_CAPITAL_GAINS_2024 = {
+const AL_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.00,  min: 0,         max: 4702500 },
-    { rate: 0.15,  min: 4702501,  max: 51890000 },
-    { rate: 0.20,  min: 51890001,  max: Infinity }
+    { rate: 0.02, min: 0,       max: 50000 },
+    { rate: 0.04, min: 50001,   max: 300000 },
+    { rate: 0.05, min: 300001,  max: Infinity }
   ],
   married_joint: [
-    { rate: 0.00,  min: 0,         max: 9405000 },
-    { rate: 0.15,  min: 9405001,  max: 58375000 },
-    { rate: 0.20,  min: 58375001,  max: Infinity }
+    { rate: 0.02, min: 0,       max: 100000 },
+    { rate: 0.04, min: 100001,  max: 600000 },
+    { rate: 0.05, min: 600001,  max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.02, min: 0,       max: 50000 },
+    { rate: 0.04, min: 50001,   max: 300000 },
+    { rate: 0.05, min: 300001,  max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.02, min: 0,       max: 50000 },
+    { rate: 0.04, min: 50001,   max: 300000 },
+    { rate: 0.05, min: 300001,  max: Infinity }
   ]
 };
 
-const LT_CAPITAL_GAINS_2025 = {
+const AL_STANDARD_DEDUCTIONS_2025 = {
+  single: 300000,
+  married_joint: 850000,
+  married_separate: 425000,
+  head_of_household: 520000
+};
+
+/**
+ * ARKANSAS - 2025 Tax Brackets
+ * Progressive rates: 0%, 2%, 3%, 3.4%, 3.9%
+ * All values in cents
+ */
+const AR_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.00,  min: 0,         max: 4835000 },
-    { rate: 0.15,  min: 4835001,  max: 53340000 },
-    { rate: 0.20,  min: 53340001,  max: Infinity }
+    { rate: 0.00, min: 0,       max: 549900 },
+    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.03, min: 1089901, max: 1559900 },
+    { rate: 0.034, min: 1559901, max: 2569900 },
+    { rate: 0.039, min: 2569901, max: 92300000 }
   ],
   married_joint: [
-    { rate: 0.00,  min: 0,         max: 9670000 },
-    { rate: 0.15,  min: 9670001,  max: 60005000 },
-    { rate: 0.20,  min: 60005001,  max: Infinity }
+    { rate: 0.00, min: 0,       max: 549900 },
+    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.03, min: 1089901, max: 1559900 },
+    { rate: 0.034, min: 1559901, max: 2569900 },
+    { rate: 0.039, min: 2569901, max: 92300000 }
+  ],
+  married_separate: [
+    { rate: 0.00, min: 0,       max: 549900 },
+    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.03, min: 1089901, max: 1559900 },
+    { rate: 0.034, min: 1559901, max: 2569900 },
+    { rate: 0.039, min: 2569901, max: 92300000 }
+  ],
+  head_of_household: [
+    { rate: 0.00, min: 0,       max: 549900 },
+    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.03, min: 1089901, max: 1559900 },
+    { rate: 0.034, min: 1559901, max: 2569900 },
+    { rate: 0.039, min: 2569901, max: 92300000 }
   ]
 };
 
+const AR_STANDARD_DEDUCTIONS_2025 = {
+  single: 241000,
+  married_joint: 482000,
+  married_separate: 241000,
+  head_of_household: 241000
+};
+
 /**
- * Net Investment Income Tax (NIIT) thresholds
+ * COLORADO - 2025 Tax Brackets
+ * Flat rate: 4.4%
  * All values in cents
  */
-const NIIT_THRESHOLDS = {
-  single: 20000000,
-  married_joint: 25000000,
-  married_separate: 12500000,
-  head_of_household: 20000000
+const CO_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.044, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.044, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.044, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.044, min: 0, max: Infinity }]
 };
 
-const RMD_AGE_REQUIREMENTS = {
-  'before_1950': 70.5,
-  '1950-1951': 72,
-  '1951-1959': 73,
-  '1960_or_later': 75
-};
-
-/**
- * Calculate long-term capital gains tax
- * @param {number} gains - Capital gains amount in cents
- * @param {string} filingStatus - Filing status ('single', 'married_joint')
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Capital gains tax in cents
- */
-export function calculateLongTermCapitalGainsTax(gains, filingStatus, year = 2025) {
-  const brackets = year === 2024 ? LT_CAPITAL_GAINS_2024 : LT_CAPITAL_GAINS_2025;
-
-  if (!brackets || !brackets[filingStatus]) {
-    throw new Error(`Invalid filing status or year: ${filingStatus}, ${year}`);
-  }
-
-  let totalTax = 0;
-  let remainingGains = gains;
-
-  for (const bracket of brackets[filingStatus]) {
-    if (remainingGains <= 0) break;
-
-    const taxableInBracket = Math.min(
-      remainingGains,
-      bracket.max === Infinity ? remainingGains : (bracket.max - bracket.min + 1)
-    );
-
-    const taxInBracket = taxableInBracket * bracket.rate;
-    totalTax += taxInBracket;
-
-    remainingGains -= taxableInBracket;
-  }
-
-  return Math.round(totalTax);
-}
-
-/**
- * Calculate short-term capital gains tax (taxed as ordinary income)
- * @param {number} gains - Capital gains amount in cents
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Capital gains tax in cents
- */
-export function calculateShortTermCapitalGainsTax(gains, filingStatus, year = 2025) {
-  return calculateFederalTax(gains, filingStatus, year);
-}
-
-/**
- * Calculate capital gains tax based on holding period
- * @param {number} gains - Capital gains amount in cents
- * @param {number} holdingPeriodMonths - Months held (<=12 = short-term, >12 = long-term)
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} Capital gains tax in cents
- */
-export function calculateCapitalGainsTax(gains, holdingPeriodMonths, filingStatus, year = 2025) {
-  if (holdingPeriodMonths <= 12) {
-    return calculateShortTermCapitalGainsTax(gains, filingStatus, year);
-  }
-  return calculateLongTermCapitalGainsTax(gains, filingStatus, year);
-}
-
-/**
- * Calculate Net Investment Income Tax (NIIT) - 3.8% on investment income over threshold
- * @param {number} netInvestmentIncome - Net investment income in cents
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} NIIT in cents
- */
-export function calculateNIIT(netInvestmentIncome, filingStatus, year = 2025) {
-  const threshold = NIIT_THRESHOLDS[filingStatus] || NIIT_THRESHOLDS.single;
-  const incomeOverThreshold = Math.max(0, netInvestmentIncome - threshold);
-  return Math.round(incomeOverThreshold * 0.038);
-}
-
-/**
- * Get RMD age requirement based on birth year
- * @param {number} birthYear - Birth year
- * @returns {number} RMD age requirement
- */
-export function getRmdAgeRequirement(birthYear) {
-  if (birthYear < 1950) return RMD_AGE_REQUIREMENTS['before_1950'];
-  if (birthYear < 1951) return RMD_AGE_REQUIREMENTS['1950-1951'];
-  if (birthYear < 1960) return RMD_AGE_REQUIREMENTS['1951-1959'];
-  return RMD_AGE_REQUIREMENTS['1960_or_later'];
-}
-
-/**
- * IRS Uniform Lifetime Table for RMD calculations (2024)
- * Based on life expectancy factors by age
- */
-const RMD_LIFE_EXPECTANCY_FACTORS = {
-  72: 27.4,
-  73: 26.5,
-  74: 25.5,
-  75: 24.7,
-  76: 23.8,
-  77: 23.1,
-  78: 22.4,
-  79: 21.7,
-  80: 21.1,
-  81: 20.5,
-  82: 19.9,
-  83: 19.3,
-  84: 18.7,
-  85: 18.0,
-  86: 17.3,
-  87: 16.6,
-  88: 15.9,
-  89: 15.2,
-  90: 14.4,
-  91: 13.7,
-  92: 13.1,
-  93: 12.5,
-  94: 11.9,
-  95: 11.4,
-  96: 10.9,
-  97: 10.4,
-  98: 9.9,
-  99: 9.4,
-  100: 8.9,
-  101: 8.4,
-  102: 7.9,
-  103: 7.5,
-  104: 7.1,
-  105: 6.7,
-  106: 6.4,
-  107: 6.0,
-  108: 5.7,
-  109: 5.4,
-  110: 5.1,
-  111: 4.8,
-  112: 4.6,
-  113: 4.4,
-  114: 4.2,
-  115: 4.0
+const CO_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
 };
 
 /**
- * Calculate Required Minimum Distribution (RMD) for a given year and account balance
- * @param {number} accountBalance - Account balance at end of previous year (cents)
- * @param {number} age - Account owner's age
- * @param {number} year - Tax year
- * @returns {number} RMD amount in cents
+ * CONNECTICUT - 2025 Tax Brackets
+ * Progressive rates: 2%-6.99%
+ * All values in cents
  */
-export function calculateRMD(accountBalance, age, year = 2025) {
-  if (age < 72) {
-    return 0;
-  }
+const CT_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.02, min: 0, max: 2000000 },
+    { rate: 0.024, min: 2000001, max: 10000000 },
+    { rate: 0.033, min: 10000001, max: 20000000 },
+    { rate: 0.035, min: 20000001, max: 40000000 },
+    { rate: 0.039, min: 40000001, max: 60000000 },
+    { rate: 0.043, min: 60000001, max: 80000000 },
+    { rate: 0.049, min: 80000001, max: 100000000 },
+    { rate: 0.05, min: 100000001, max: 150000000 },
+    { rate: 0.052, min: 150000001, max: 200000000 },
+    { rate: 0.054, min: 200000001, max: 250000000 },
+    { rate: 0.055, min: 250000001, max: 500000000 },
+    { rate: 0.0699, min: 500000001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.02, min: 0, max: 4000000 },
+    { rate: 0.024, min: 4000001, max: 20000000 },
+    { rate: 0.033, min: 20000001, max: 40000000 },
+    { rate: 0.035, min: 40000001, max: 80000000 },
+    { rate: 0.039, min: 80000001, max: 120000000 },
+    { rate: 0.043, min: 120000001, max: 160000000 },
+    { rate: 0.049, min: 160000001, max: 200000000 },
+    { rate: 0.05, min: 200000001, max: 300000000 },
+    { rate: 0.052, min: 300000001, max: 400000000 },
+    { rate: 0.054, min: 400000001, max: 500000000 },
+    { rate: 0.055, min: 500000001, max: 1000000000 },
+    { rate: 0.0699, min: 1000000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.02, min: 0, max: 2000000 },
+    { rate: 0.024, min: 2000001, max: 10000000 },
+    { rate: 0.033, min: 10000001, max: 20000000 },
+    { rate: 0.035, min: 20000001, max: 40000000 },
+    { rate: 0.039, min: 40000001, max: 60000000 },
+    { rate: 0.043, min: 60000001, max: 80000000 },
+    { rate: 0.049, min: 80000001, max: 100000000 },
+    { rate: 0.05, min: 100000001, max: 150000000 },
+    { rate: 0.052, min: 150000001, max: 200000000 },
+    { rate: 0.054, min: 200000001, max: 250000000 },
+    { rate: 0.055, min: 250000001, max: 500000000 },
+    { rate: 0.0699, min: 500000001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.02, min: 0, max: 3200000 },
+    { rate: 0.024, min: 3200001, max: 16000000 },
+    { rate: 0.033, min: 16000001, max: 32000000 },
+    { rate: 0.035, min: 32000001, max: 64000000 },
+    { rate: 0.039, min: 64000001, max: 96000000 },
+    { rate: 0.043, min: 96000001, max: 128000000 },
+    { rate: 0.049, min: 128000001, max: 160000000 },
+    { rate: 0.05, min: 160000001, max: 240000000 },
+    { rate: 0.052, min: 240000001, max: 320000000 },
+    { rate: 0.054, min: 320000001, max: 400000000 },
+    { rate: 0.055, min: 400000001, max: 800000000 },
+    { rate: 0.0699, min: 800000001, max: Infinity }
+  ]
+};
 
-  const lifeExpectancyFactor = RMD_LIFE_EXPECTANCY_FACTORS[age];
+const CT_STANDARD_DEDUCTIONS_2025 = {
+  single: 1275000,
+  married_joint: 2550000,
+  married_separate: 1275000,
+  head_of_household: 1912500
+};
 
-  if (!lifeExpectancyFactor) {
-    throw new Error(`No life expectancy factor available for age ${age}`);
-  }
+/**
+ * DELAWARE - 2025 Tax Brackets
+ * Progressive rates: 2.2%-6.6%
+ * All values in cents
+ */
+const DE_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.022, min: 0, max: 2000000 },
+    { rate: 0.039, min: 2000001, max: 5000000 },
+    { rate: 0.048, min: 5000001, max: 10000000 },
+    { rate: 0.052, min: 10000001, max: 20000000 },
+    { rate: 0.055, min: 20000001, max: 60000000 },
+    { rate: 0.066, min: 60000001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.022, min: 0, max: 2000000 },
+    { rate: 0.039, min: 2000001, max: 5000000 },
+    { rate: 0.048, min: 5000001, max: 10000000 },
+    { rate: 0.052, min: 10000001, max: 20000000 },
+    { rate: 0.055, min: 20000001, max: 60000000 },
+    { rate: 0.066, min: 60000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.022, min: 0, max: 2000000 },
+    { rate: 0.039, min: 2000001, max: 5000000 },
+    { rate: 0.048, min: 5000001, max: 10000000 },
+    { rate: 0.052, min: 10000001, max: 20000000 },
+    { rate: 0.055, min: 20000001, max: 60000000 },
+    { rate: 0.066, min: 60000001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.022, min: 0, max: 2000000 },
+    { rate: 0.039, min: 2000001, max: 5000000 },
+    { rate: 0.048, min: 5000001, max: 10000000 },
+    { rate: 0.052, min: 10000001, max: 20000000 },
+    { rate: 0.055, min: 20000001, max: 60000000 },
+    { rate: 0.066, min: 60000001, max: Infinity }
+  ]
+};
 
-  const rmdAmount = accountBalance / lifeExpectancyFactor;
-  return Math.round(rmdAmount);
-}
+const DE_STANDARD_DEDUCTIONS_2025 = {
+  single: 325000,
+  married_joint: 325000,
+  married_separate: 325000,
+  head_of_household: 325000
+};
+
+/**
+ * GEORGIA - 2025 Tax Brackets
+ * Flat rate: 5.39% (reduced to 5.19% July 1, 2025)
+ * All values in cents
+ */
+const GA_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.0539, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.0539, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.0539, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.0539, min: 0, max: Infinity }]
+};
+
+const GA_STANDARD_DEDUCTIONS_2025 = {
+  single: 1200000,
+  married_joint: 2400000,
+  married_separate: 1200000,
+  head_of_household: 1200000
+};
+
+/**
+ * HAWAII - 2025 Tax Brackets
+ * Progressive rates: 1.4%-11%
+ * All values in cents
+ */
+const HI_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.014, min: 0, max: 240000 },
+    { rate: 0.032, min: 240001, max: 560000 },
+    { rate: 0.055, min: 560001, max: 880000 },
+    { rate: 0.072, min: 880001, max: 1280000 },
+    { rate: 0.093, min: 1280001, max: 2520000 },
+    { rate: 0.10, min: 2520001, max: 20000000 },
+    { rate: 0.11, min: 20000001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.014, min: 0, max: 480000 },
+    { rate: 0.032, min: 480001, max: 1120000 },
+    { rate: 0.055, min: 1120001, max: 1760000 },
+    { rate: 0.072, min: 1760001, max: 2560000 },
+    { rate: 0.093, min: 2560001, max: 5040000 },
+    { rate: 0.10, min: 5040001, max: 40000000 },
+    { rate: 0.11, min: 40000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.014, min: 0, max: 240000 },
+    { rate: 0.032, min: 240001, max: 560000 },
+    { rate: 0.055, min: 560001, max: 880000 },
+    { rate: 0.072, min: 880001, max: 1280000 },
+    { rate: 0.093, min: 1280001, max: 2520000 },
+    { rate: 0.10, min: 2520001, max: 20000000 },
+    { rate: 0.11, min: 20000001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.014, min: 0, max: 360000 },
+    { rate: 0.032, min: 360001, max: 840000 },
+    { rate: 0.055, min: 840001, max: 1320000 },
+    { rate: 0.072, min: 1320001, max: 1920000 },
+    { rate: 0.093, min: 1920001, max: 3780000 },
+    { rate: 0.10, min: 3780001, max: 30000000 },
+    { rate: 0.11, min: 30000001, max: Infinity }
+  ]
+};
+
+const HI_STANDARD_DEDUCTIONS_2025 = {
+  single: 440000,
+  married_joint: 880000,
+  married_separate: 440000,
+  head_of_household: 660000
+};
+
+/**
+ * IDAHO - 2025 Tax Brackets
+ * Flat rate: 5.3%
+ * All values in cents
+ */
+const ID_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.053, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.053, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.053, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.053, min: 0, max: Infinity }]
+};
+
+const ID_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * ILLINOIS - 2025 Tax Brackets
+ * Flat rate: 4.95%
+ * All values in cents
+ */
+const IL_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.0495, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.0495, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.0495, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.0495, min: 0, max: Infinity }]
+};
+
+const IL_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * INDIANA - 2025 Tax Brackets
+ * Flat rate: 3.0%
+ * All values in cents
+ */
+const IN_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.03, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.03, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.03, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.03, min: 0, max: Infinity }]
+};
+
+const IN_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * IOWA - 2025 Tax Brackets
+ * Flat rate: 3.8%
+ * All values in cents
+ */
+const IA_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.038, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.038, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.038, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.038, min: 0, max: Infinity }]
+};
+
+const IA_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * KANSAS - 2025 Tax Brackets
+ * Progressive rates: 5.2%, 5.58%
+ * All values in cents
+ */
+const KS_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.052, min: 0, max: 2300000 },
+    { rate: 0.0558, min: 2300001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.052, min: 0, max: 4600000 },
+    { rate: 0.0558, min: 4600001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.052, min: 0, max: 2300000 },
+    { rate: 0.0558, min: 2300001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.052, min: 0, max: 2300000 },
+    { rate: 0.0558, min: 2300001, max: Infinity }
+  ]
+};
+
+const KS_STANDARD_DEDUCTIONS_2025 = {
+  single: 360500,
+  married_joint: 824000,
+  married_separate: 412000,
+  head_of_household: 618000
+};
+
+/**
+ * KENTUCKY - 2025 Tax Brackets
+ * Flat rate: 4.0% (reducing to 3.5% in 2026)
+ * All values in cents
+ */
+const KY_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.04, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.04, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.04, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.04, min: 0, max: Infinity }]
+};
+
+const KY_STANDARD_DEDUCTIONS_2025 = {
+  single: 327000,
+  married_joint: 654000,
+  married_separate: 327000,
+  head_of_household: 327000
+};
+
+/**
+ * LOUISIANA - 2025 Tax Brackets
+ * Flat rate: 3.0%
+ * All values in cents
+ */
+const LA_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.03, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.03, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.03, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.03, min: 0, max: Infinity }]
+};
+
+const LA_STANDARD_DEDUCTIONS_2025 = {
+  single: 1250000,
+  married_joint: 2500000,
+  married_separate: 1250000,
+  head_of_household: 1250000
+};
+
+/**
+ * MAINE - 2025 Tax Brackets
+ * Progressive rates: 5.8%-7.15%
+ * All values in cents
+ */
+const ME_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.058, min: 0, max: 2605000 },
+    { rate: 0.0675, min: 2605001, max: 6160000 },
+    { rate: 0.0715, min: 6160001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.058, min: 0, max: 5210000 },
+    { rate: 0.0675, min: 5210001, max: 12320000 },
+    { rate: 0.0715, min: 12320001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.058, min: 0, max: 2605000 },
+    { rate: 0.0675, min: 2605001, max: 6160000 },
+    { rate: 0.0715, min: 6160001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.058, min: 0, max: 3907500 },
+    { rate: 0.0675, min: 3907501, max: 9240000 },
+    { rate: 0.0715, min: 9240001, max: Infinity }
+  ]
+};
+
+const ME_STANDARD_DEDUCTIONS_2025 = {
+  single: 1530000,
+  married_joint: 3060000,
+  married_separate: 1530000,
+  head_of_household: 2295000
+};
+
+/**
+ * MARYLAND - 2025 Tax Brackets
+ * Progressive rates: 2%-5.75%
+ * All values in cents
+ */
+const MD_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.02, min: 0, max: 100000 },
+    { rate: 0.03, min: 100001, max: 200000 },
+    { rate: 0.04, min: 200001, max: 300000 },
+    { rate: 0.0475, min: 300001, max: 15000000 },
+    { rate: 0.0525, min: 15000001, max: 25000000 },
+    { rate: 0.0575, min: 25000001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.02, min: 0, max: 100000 },
+    { rate: 0.03, min: 100001, max: 200000 },
+    { rate: 0.04, min: 200001, max: 300000 },
+    { rate: 0.0475, min: 300001, max: 15000000 },
+    { rate: 0.0525, min: 15000001, max: 25000000 },
+    { rate: 0.0575, min: 25000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.02, min: 0, max: 100000 },
+    { rate: 0.03, min: 100001, max: 200000 },
+    { rate: 0.04, min: 200001, max: 300000 },
+    { rate: 0.0475, min: 300001, max: 15000000 },
+    { rate: 0.0525, min: 15000001, max: 25000000 },
+    { rate: 0.0575, min: 25000001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.02, min: 0, max: 100000 },
+    { rate: 0.03, min: 100001, max: 200000 },
+    { rate: 0.04, min: 200001, max: 300000 },
+    { rate: 0.0475, min: 300001, max: 15000000 },
+    { rate: 0.0525, min: 15000001, max: 25000000 },
+    { rate: 0.0575, min: 25000001, max: Infinity }
+  ]
+};
+
+const MD_STANDARD_DEDUCTIONS_2025 = {
+  single: 335000,
+  married_joint: 670000,
+  married_separate: 335000,
+  head_of_household: 335000
+};
+
+/**
+ * MASSACHUSETTS - 2025 Tax Brackets
+ * Flat rate: 5% (ordinary); 9% (high-income surtax)
+ * All values in cents
+ */
+const MA_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.05, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.05, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.05, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.05, min: 0, max: Infinity }]
+};
+
+const MA_STANDARD_DEDUCTIONS_2025 = {
+  single: 440000,
+  married_joint: 880000,
+  married_separate: 440000,
+  head_of_household: 880000
+};
+
+/**
+ * MICHIGAN - 2025 Tax Brackets
+ * Flat rate: 4.25%
+ * All values in cents
+ */
+const MI_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.0425, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.0425, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.0425, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.0425, min: 0, max: Infinity }]
+};
+
+const MI_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * MINNESOTA - 2025 Tax Brackets
+ * Progressive rates: 5.35%-9.85%
+ * All values in cents
+ */
+const MN_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0535, min: 0, max: 3007000 },
+    { rate: 0.068, min: 3007001, max: 7931000 },
+    { rate: 0.0785, min: 7931001, max: 13320000 },
+    { rate: 0.0985, min: 13320001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0535, min: 0, max: 4484000 },
+    { rate: 0.068, min: 4484001, max: 11846000 },
+    { rate: 0.0785, min: 11846001, max: 19970000 },
+    { rate: 0.0985, min: 19970001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0535, min: 0, max: 2242000 },
+    { rate: 0.068, min: 2242001, max: 5923000 },
+    { rate: 0.0785, min: 5923001, max: 9985000 },
+    { rate: 0.0985, min: 9985001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0535, min: 0, max: 3007000 },
+    { rate: 0.068, min: 3007001, max: 7931000 },
+    { rate: 0.0785, min: 7931001, max: 13320000 },
+    { rate: 0.0985, min: 13320001, max: Infinity }
+  ]
+};
+
+const MN_STANDARD_DEDUCTIONS_2025 = {
+  single: 1495000,
+  married_joint: 2990000,
+  married_separate: 1495000,
+  head_of_household: 2245000
+};
+
+/**
+ * MISSISSIPPI - 2025 Tax Brackets
+ * Progressive rates: 0%-4.7%
+ * All values in cents
+ */
+const MS_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.044, min: 1000001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.044, min: 1000001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.044, min: 1000001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.044, min: 1000001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: Infinity }
+  ]
+};
+
+const MS_STANDARD_DEDUCTIONS_2025 = {
+  single: 230000,
+  married_joint: 460000,
+  married_separate: 230000,
+  head_of_household: 340000
+};
+
+/**
+ * MISSOURI - 2025 Tax Brackets
+ * Progressive rates: 2%-4.7%
+ * All values in cents
+ */
+const MO_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.02, min: 0, max: 131300 },
+    { rate: 0.025, min: 131301, max: 262600 },
+    { rate: 0.03, min: 262601, max: 393900 },
+    { rate: 0.035, min: 393901, max: 525200 },
+    { rate: 0.04, min: 525201, max: 656500 },
+    { rate: 0.045, min: 656501, max: 787800 },
+    { rate: 0.047, min: 787801, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.02, min: 0, max: 131300 },
+    { rate: 0.025, min: 131301, max: 262600 },
+    { rate: 0.03, min: 262601, max: 393900 },
+    { rate: 0.035, min: 393901, max: 525200 },
+    { rate: 0.04, min: 525201, max: 656500 },
+    { rate: 0.045, min: 656501, max: 787800 },
+    { rate: 0.047, min: 787801, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.02, min: 0, max: 131300 },
+    { rate: 0.025, min: 131301, max: 262600 },
+    { rate: 0.03, min: 262601, max: 393900 },
+    { rate: 0.035, min: 393901, max: 525200 },
+    { rate: 0.04, min: 525201, max: 656500 },
+    { rate: 0.045, min: 656501, max: 787800 },
+    { rate: 0.047, min: 787801, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.02, min: 0, max: 131300 },
+    { rate: 0.025, min: 131301, max: 262600 },
+    { rate: 0.03, min: 262601, max: 393900 },
+    { rate: 0.035, min: 393901, max: 525200 },
+    { rate: 0.04, min: 525201, max: 656500 },
+    { rate: 0.045, min: 656501, max: 787800 },
+    { rate: 0.047, min: 787801, max: Infinity }
+  ]
+};
+
+const MO_STANDARD_DEDUCTIONS_2025 = {
+  single: 1575000,
+  married_joint: 3150000,
+  married_separate: 1575000,
+  head_of_household: 2362500
+};
+
+/**
+ * MONTANA - 2025 Tax Brackets
+ * Progressive rates: 4.7%-5.9%
+ * All values in cents
+ */
+const MT_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.047, min: 0, max: 360000 },
+    { rate: 0.059, min: 360001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.047, min: 0, max: 360000 },
+    { rate: 0.059, min: 360001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.047, min: 0, max: 360000 },
+    { rate: 0.059, min: 360001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.047, min: 0, max: 360000 },
+    { rate: 0.059, min: 360001, max: Infinity }
+  ]
+};
+
+const MT_STANDARD_DEDUCTIONS_2025 = {
+  single: 450000,
+  married_joint: 1150000,
+  married_separate: 450000,
+  head_of_household: 675000
+};
+
+/**
+ * NEBRASKA - 2025 Tax Brackets
+ * Progressive rates: 2.46%-5.2%
+ * All values in cents
+ */
+const NE_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0246, min: 0, max: 370000 },
+    { rate: 0.0351, min: 370001, max: 920000 },
+    { rate: 0.052, min: 920001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0246, min: 0, max: 370000 },
+    { rate: 0.0351, min: 370001, max: 920000 },
+    { rate: 0.052, min: 920001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0246, min: 0, max: 370000 },
+    { rate: 0.0351, min: 370001, max: 920000 },
+    { rate: 0.052, min: 920001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0246, min: 0, max: 370000 },
+    { rate: 0.0351, min: 370001, max: 920000 },
+    { rate: 0.052, min: 920001, max: Infinity }
+  ]
+};
+
+const NE_STANDARD_DEDUCTIONS_2025 = {
+  single: 790000,
+  married_joint: 1720000,
+  married_separate: 790000,
+  head_of_household: 1185000
+};
+
+/**
+ * NEW JERSEY - 2025 Tax Brackets
+ * Progressive rates: 1.4%-10.75% (applied to federal tax liability)
+ * All values in cents
+ */
+const NJ_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.014, min: 0, max: 2000000 },
+    { rate: 0.0175, min: 2000001, max: 3500000 },
+    { rate: 0.035, min: 3500001, max: 4000000 },
+    { rate: 0.05525, min: 4000001, max: 7500000 },
+    { rate: 0.0637, min: 7500001, max: 50000000 },
+    { rate: 0.0897, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.014, min: 0, max: 2000000 },
+    { rate: 0.0175, min: 2000001, max: 3500000 },
+    { rate: 0.035, min: 3500001, max: 4000000 },
+    { rate: 0.05525, min: 4000001, max: 7500000 },
+    { rate: 0.0637, min: 7500001, max: 50000000 },
+    { rate: 0.0897, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.014, min: 0, max: 2000000 },
+    { rate: 0.0175, min: 2000001, max: 3500000 },
+    { rate: 0.035, min: 3500001, max: 4000000 },
+    { rate: 0.05525, min: 4000001, max: 7500000 },
+    { rate: 0.0637, min: 7500001, max: 50000000 },
+    { rate: 0.0897, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.014, min: 0, max: 2000000 },
+    { rate: 0.0175, min: 2000001, max: 3500000 },
+    { rate: 0.035, min: 3500001, max: 4000000 },
+    { rate: 0.05525, min: 4000001, max: 7500000 },
+    { rate: 0.0637, min: 7500001, max: 50000000 },
+    { rate: 0.0897, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ]
+};
+
+const NJ_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * NEW MEXICO - 2025 Tax Brackets
+ * Progressive rates: 1.5%-5.9%
+ * All values in cents
+ */
+const NM_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.015, min: 0, max: 550000 },
+    { rate: 0.032, min: 550001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: 1600000 },
+    { rate: 0.049, min: 1600001, max: 2100000 },
+    { rate: 0.059, min: 2100001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.015, min: 0, max: 550000 },
+    { rate: 0.032, min: 550001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: 1600000 },
+    { rate: 0.049, min: 1600001, max: 2100000 },
+    { rate: 0.059, min: 2100001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.015, min: 0, max: 550000 },
+    { rate: 0.032, min: 550001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: 1600000 },
+    { rate: 0.049, min: 1600001, max: 2100000 },
+    { rate: 0.059, min: 2100001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.015, min: 0, max: 550000 },
+    { rate: 0.032, min: 550001, max: 1100000 },
+    { rate: 0.047, min: 1100001, max: 1600000 },
+    { rate: 0.049, min: 1600001, max: 2100000 },
+    { rate: 0.059, min: 2100001, max: Infinity }
+  ]
+};
+
+const NM_STANDARD_DEDUCTIONS_2025 = {
+  single: 1500000,
+  married_joint: 3000000,
+  married_separate: 1500000,
+  head_of_household: 2250000
+};
+
+/**
+ * NORTH CAROLINA - 2025 Tax Brackets
+ * Flat rate: 4.25%
+ * All values in cents
+ */
+const NC_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.0425, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.0425, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.0425, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.0425, min: 0, max: Infinity }]
+};
+
+const NC_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * NORTH DAKOTA - 2025 Tax Brackets
+ * Progressive rates: 1.1%-2.9%
+ * All values in cents
+ */
+const ND_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.011, min: 0, max: 4669500 },
+    { rate: 0.0204, min: 4669501, max: 14008500 },
+    { rate: 0.0227, min: 14008501, max: 23347500 },
+    { rate: 0.0264, min: 23347501, max: 28017000 },
+    { rate: 0.029, min: 28017001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.011, min: 0, max: 4669500 },
+    { rate: 0.0204, min: 4669501, max: 14008500 },
+    { rate: 0.0227, min: 14008501, max: 23347500 },
+    { rate: 0.0264, min: 23347501, max: 28017000 },
+    { rate: 0.029, min: 28017001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.011, min: 0, max: 4669500 },
+    { rate: 0.0204, min: 4669501, max: 14008500 },
+    { rate: 0.0227, min: 14008501, max: 23347500 },
+    { rate: 0.0264, min: 23347501, max: 28017000 },
+    { rate: 0.029, min: 28017001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.011, min: 0, max: 4669500 },
+    { rate: 0.0204, min: 4669501, max: 14008500 },
+    { rate: 0.0227, min: 14008501, max: 23347500 },
+    { rate: 0.0264, min: 23347501, max: 28017000 },
+    { rate: 0.029, min: 28017001, max: Infinity }
+  ]
+};
+
+const ND_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * OHIO - 2025 Tax Brackets
+ * Flat rate: 2.75% (on income over $26,050; income at/below $26,050 untaxed)
+ * All values in cents
+ */
+const OH_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.0275, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.0275, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.0275, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.0275, min: 0, max: Infinity }]
+};
+
+const OH_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * OKLAHOMA - 2025 Tax Brackets
+ * Progressive rates: 0.25%-4.75%
+ * All values in cents
+ */
+const OK_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0025, min: 0, max: 1000000 },
+    { rate: 0.007, min: 1000001, max: 2500000 },
+    { rate: 0.011, min: 2500001, max: 3750000 },
+    { rate: 0.015, min: 3750001, max: 4900000 },
+    { rate: 0.027, min: 4900001, max: 7200000 },
+    { rate: 0.036, min: 7200001, max: 12200000 },
+    { rate: 0.0475, min: 12200001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0025, min: 0, max: 1000000 },
+    { rate: 0.007, min: 1000001, max: 2500000 },
+    { rate: 0.011, min: 2500001, max: 3750000 },
+    { rate: 0.015, min: 3750001, max: 4900000 },
+    { rate: 0.027, min: 4900001, max: 7200000 },
+    { rate: 0.036, min: 7200001, max: 12200000 },
+    { rate: 0.0475, min: 12200001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0025, min: 0, max: 1000000 },
+    { rate: 0.007, min: 1000001, max: 2500000 },
+    { rate: 0.011, min: 2500001, max: 3750000 },
+    { rate: 0.015, min: 3750001, max: 4900000 },
+    { rate: 0.027, min: 4900001, max: 7200000 },
+    { rate: 0.036, min: 7200001, max: 12200000 },
+    { rate: 0.0475, min: 12200001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0025, min: 0, max: 1000000 },
+    { rate: 0.007, min: 1000001, max: 2500000 },
+    { rate: 0.011, min: 2500001, max: 3750000 },
+    { rate: 0.015, min: 3750001, max: 4900000 },
+    { rate: 0.027, min: 4900001, max: 7200000 },
+    { rate: 0.036, min: 7200001, max: 12200000 },
+    { rate: 0.0475, min: 12200001, max: Infinity }
+  ]
+};
+
+const OK_STANDARD_DEDUCTIONS_2025 = {
+  single: 635000,
+  married_joint: 1270000,
+  married_separate: 635000,
+  head_of_household: 952500
+};
+
+/**
+ * OREGON - 2025 Tax Brackets
+ * Progressive rates: 4.75%-9.9%
+ * All values in cents
+ */
+const OR_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0475, min: 0, max: 405000 },
+    { rate: 0.0675, min: 405001, max: 1030000 },
+    { rate: 0.0875, min: 1030001, max: 12500000 },
+    { rate: 0.099, min: 12500001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0475, min: 0, max: 810000 },
+    { rate: 0.0675, min: 810001, max: 2060000 },
+    { rate: 0.0875, min: 2060001, max: 25000000 },
+    { rate: 0.099, min: 25000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0475, min: 0, max: 405000 },
+    { rate: 0.0675, min: 405001, max: 1030000 },
+    { rate: 0.0875, min: 1030001, max: 12500000 },
+    { rate: 0.099, min: 12500001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0475, min: 0, max: 607500 },
+    { rate: 0.0675, min: 607501, max: 1545000 },
+    { rate: 0.0875, min: 1545001, max: 18750000 },
+    { rate: 0.099, min: 18750001, max: Infinity }
+  ]
+};
+
+const OR_STANDARD_DEDUCTIONS_2025 = {
+  single: 283500,
+  married_joint: 567000,
+  married_separate: 283500,
+  head_of_household: 425250
+};
+
+/**
+ * PENNSYLVANIA - 2025 Tax Brackets
+ * Flat rate: 3.07%
+ * All values in cents
+ */
+const PA_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.0307, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.0307, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.0307, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.0307, min: 0, max: Infinity }]
+};
+
+const PA_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * RHODE ISLAND - 2025 Tax Brackets
+ * Progressive rates: 3.75%-5.99%
+ * All values in cents
+ */
+const RI_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0375, min: 0, max: 7345000 },
+    { rate: 0.0475, min: 7345001, max: 16695000 },
+    { rate: 0.0599, min: 16695001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0375, min: 0, max: 7345000 },
+    { rate: 0.0475, min: 7345001, max: 16695000 },
+    { rate: 0.0599, min: 16695001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0375, min: 0, max: 7345000 },
+    { rate: 0.0475, min: 7345001, max: 16695000 },
+    { rate: 0.0599, min: 16695001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0375, min: 0, max: 7345000 },
+    { rate: 0.0475, min: 7345001, max: 16695000 },
+    { rate: 0.0599, min: 16695001, max: Infinity }
+  ]
+};
+
+const RI_STANDARD_DEDUCTIONS_2025 = {
+  single: 1090000,
+  married_joint: 2180000,
+  married_separate: 1090000,
+  head_of_household: 1635000
+};
+
+/**
+ * SOUTH CAROLINA - 2025 Tax Brackets
+ * Progressive rates: 0%-6.2%
+ * All values in cents
+ */
+const SC_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.03, min: 360001, max: 360100 },
+    { rate: 0.031, min: 360101, max: 360200 },
+    { rate: 0.032, min: 360201, max: 360300 },
+    { rate: 0.033, min: 360301, max: 360400 },
+    { rate: 0.034, min: 360401, max: 360500 },
+    { rate: 0.035, min: 360501, max: 360600 },
+    { rate: 0.036, min: 360601, max: 360700 },
+    { rate: 0.037, min: 360701, max: 360800 },
+    { rate: 0.038, min: 360801, max: 360900 },
+    { rate: 0.039, min: 360901, max: 361000 },
+    { rate: 0.04, min: 361001, max: 361100 },
+    { rate: 0.041, min: 361101, max: 361200 },
+    { rate: 0.042, min: 361201, max: 361300 },
+    { rate: 0.043, min: 361301, max: 361400 },
+    { rate: 0.044, min: 361401, max: 361500 },
+    { rate: 0.045, min: 361501, max: 361600 },
+    { rate: 0.046, min: 361601, max: 361700 },
+    { rate: 0.047, min: 361701, max: 361800 },
+    { rate: 0.048, min: 361801, max: 361900 },
+    { rate: 0.049, min: 361901, max: 362000 },
+    { rate: 0.05, min: 362001, max: 362100 },
+    { rate: 0.051, min: 362101, max: 362200 },
+    { rate: 0.052, min: 362201, max: 362300 },
+    { rate: 0.053, min: 362301, max: 362400 },
+    { rate: 0.054, min: 362401, max: 362500 },
+    { rate: 0.055, min: 362501, max: 362600 },
+    { rate: 0.056, min: 362601, max: 362700 },
+    { rate: 0.057, min: 362701, max: 362800 },
+    { rate: 0.058, min: 362801, max: 362900 },
+    { rate: 0.059, min: 362901, max: 363000 },
+    { rate: 0.06, min: 363001, max: 363100 },
+    { rate: 0.061, min: 363101, max: 363200 },
+    { rate: 0.062, min: 363201, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.03, min: 360001, max: 360100 },
+    { rate: 0.031, min: 360101, max: 360200 },
+    { rate: 0.032, min: 360201, max: 360300 },
+    { rate: 0.033, min: 360301, max: 360400 },
+    { rate: 0.034, min: 360401, max: 360500 },
+    { rate: 0.035, min: 360501, max: 360600 },
+    { rate: 0.036, min: 360601, max: 360700 },
+    { rate: 0.037, min: 360701, max: 360800 },
+    { rate: 0.038, min: 360801, max: 360900 },
+    { rate: 0.039, min: 360901, max: 361000 },
+    { rate: 0.04, min: 361001, max: 361100 },
+    { rate: 0.041, min: 361101, max: 361200 },
+    { rate: 0.042, min: 361201, max: 361300 },
+    { rate: 0.043, min: 361301, max: 361400 },
+    { rate: 0.044, min: 361401, max: 361500 },
+    { rate: 0.045, min: 361501, max: 361600 },
+    { rate: 0.046, min: 361601, max: 361700 },
+    { rate: 0.047, min: 361701, max: 361800 },
+    { rate: 0.048, min: 361801, max: 361900 },
+    { rate: 0.049, min: 361901, max: 362000 },
+    { rate: 0.05, min: 362001, max: 362100 },
+    { rate: 0.051, min: 362101, max: 362200 },
+    { rate: 0.052, min: 362201, max: 362300 },
+    { rate: 0.053, min: 362301, max: 362400 },
+    { rate: 0.054, min: 362401, max: 362500 },
+    { rate: 0.055, min: 362501, max: 362600 },
+    { rate: 0.056, min: 362601, max: 362700 },
+    { rate: 0.057, min: 362701, max: 362800 },
+    { rate: 0.058, min: 362801, max: 362900 },
+    { rate: 0.059, min: 362901, max: 363000 },
+    { rate: 0.06, min: 363001, max: 363100 },
+    { rate: 0.061, min: 363101, max: 363200 },
+    { rate: 0.062, min: 363201, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.03, min: 360001, max: 360100 },
+    { rate: 0.031, min: 360101, max: 360200 },
+    { rate: 0.032, min: 360201, max: 360300 },
+    { rate: 0.033, min: 360301, max: 360400 },
+    { rate: 0.034, min: 360401, max: 360500 },
+    { rate: 0.035, min: 360501, max: 360600 },
+    { rate: 0.036, min: 360601, max: 360700 },
+    { rate: 0.037, min: 360701, max: 360800 },
+    { rate: 0.038, min: 360801, max: 360900 },
+    { rate: 0.039, min: 360901, max: 361000 },
+    { rate: 0.04, min: 361001, max: 361100 },
+    { rate: 0.041, min: 361101, max: 361200 },
+    { rate: 0.042, min: 361201, max: 361300 },
+    { rate: 0.043, min: 361301, max: 361400 },
+    { rate: 0.044, min: 361401, max: 361500 },
+    { rate: 0.045, min: 361501, max: 361600 },
+    { rate: 0.046, min: 361601, max: 361700 },
+    { rate: 0.047, min: 361701, max: 361800 },
+    { rate: 0.048, min: 361801, max: 361900 },
+    { rate: 0.049, min: 361901, max: 362000 },
+    { rate: 0.05, min: 362001, max: 362100 },
+    { rate: 0.051, min: 362101, max: 362200 },
+    { rate: 0.052, min: 362201, max: 362300 },
+    { rate: 0.053, min: 362301, max: 362400 },
+    { rate: 0.054, min: 362401, max: 362500 },
+    { rate: 0.055, min: 362501, max: 362600 },
+    { rate: 0.056, min: 362601, max: 362700 },
+    { rate: 0.057, min: 362701, max: 362800 },
+    { rate: 0.058, min: 362801, max: 362900 },
+    { rate: 0.059, min: 362901, max: 363000 },
+    { rate: 0.06, min: 363001, max: 363100 },
+    { rate: 0.061, min: 363101, max: 363200 },
+    { rate: 0.062, min: 363201, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.03, min: 360001, max: 360100 },
+    { rate: 0.031, min: 360101, max: 360200 },
+    { rate: 0.032, min: 360201, max: 360300 },
+    { rate: 0.033, min: 360301, max: 360400 },
+    { rate: 0.034, min: 360401, max: 360500 },
+    { rate: 0.035, min: 360501, max: 360600 },
+    { rate: 0.036, min: 360601, max: 360700 },
+    { rate: 0.037, min: 360701, max: 360800 },
+    { rate: 0.038, min: 360801, max: 360900 },
+    { rate: 0.039, min: 360901, max: 361000 },
+    { rate: 0.04, min: 361001, max: 361100 },
+    { rate: 0.041, min: 361101, max: 361200 },
+    { rate: 0.042, min: 361201, max: 361300 },
+    { rate: 0.043, min: 361301, max: 361400 },
+    { rate: 0.044, min: 361401, max: 361500 },
+    { rate: 0.045, min: 361501, max: 361600 },
+    { rate: 0.046, min: 361601, max: 361700 },
+    { rate: 0.047, min: 361701, max: 361800 },
+    { rate: 0.048, min: 361801, max: 361900 },
+    { rate: 0.049, min: 361901, max: 362000 },
+    { rate: 0.05, min: 362001, max: 362100 },
+    { rate: 0.051, min: 362101, max: 362200 },
+    { rate: 0.052, min: 362201, max: 362300 },
+    { rate: 0.053, min: 362301, max: 362400 },
+    { rate: 0.054, min: 362401, max: 362500 },
+    { rate: 0.055, min: 362501, max: 362600 },
+    { rate: 0.056, min: 362601, max: 362700 },
+    { rate: 0.057, min: 362701, max: 362800 },
+    { rate: 0.058, min: 362801, max: 362900 },
+    { rate: 0.059, min: 362901, max: 363000 },
+    { rate: 0.06, min: 363001, max: 363100 },
+    { rate: 0.061, min: 363101, max: 363200 },
+    { rate: 0.062, min: 363201, max: Infinity }
+  ]
+};
+
+const SC_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * UTAH - 2025 Tax Brackets
+ * Flat rate: 4.5%
+ * All values in cents
+ */
+const UT_TAX_BRACKETS_2025 = {
+  single: [{ rate: 0.045, min: 0, max: Infinity }],
+  married_joint: [{ rate: 0.045, min: 0, max: Infinity }],
+  married_separate: [{ rate: 0.045, min: 0, max: Infinity }],
+  head_of_household: [{ rate: 0.045, min: 0, max: Infinity }]
+};
+
+const UT_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
+ * VERMONT - 2025 Tax Brackets
+ * Progressive rates: 3.35%-8.75%
+ * All values in cents
+ */
+const VT_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0335, min: 0, max: 4540000 },
+    { rate: 0.066, min: 4540001, max: 10940000 },
+    { rate: 0.076, min: 10940001, max: 22950000 },
+    { rate: 0.0875, min: 22950001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0335, min: 0, max: 9080000 },
+    { rate: 0.066, min: 9080001, max: 21880000 },
+    { rate: 0.076, min: 21880001, max: 45900000 },
+    { rate: 0.0875, min: 45900001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0335, min: 0, max: 4540000 },
+    { rate: 0.066, min: 4540001, max: 10940000 },
+    { rate: 0.076, min: 10940001, max: 22950000 },
+    { rate: 0.0875, min: 22950001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0335, min: 0, max: 6810000 },
+    { rate: 0.066, min: 6810001, max: 16410000 },
+    { rate: 0.076, min: 16410001, max: 34425000 },
+    { rate: 0.0875, min: 34425001, max: Infinity }
+  ]
+};
+
+const VT_STANDARD_DEDUCTIONS_2025 = {
+  single: 740000,
+  married_joint: 1485000,
+  married_separate: 740000,
+  head_of_household: 1110000
+};
+
+/**
+ * VIRGINIA - 2025 Tax Brackets
+ * Progressive rates: 2%-5.75%
+ * All values in cents
+ */
+const VA_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.02, min: 0, max: 300000 },
+    { rate: 0.03, min: 300001, max: 500000 },
+    { rate: 0.0575, min: 500001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.02, min: 0, max: 300000 },
+    { rate: 0.03, min: 300001, max: 500000 },
+    { rate: 0.0575, min: 500001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.02, min: 0, max: 300000 },
+    { rate: 0.03, min: 300001, max: 500000 },
+    { rate: 0.0575, min: 500001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.02, min: 0, max: 300000 },
+    { rate: 0.03, min: 300001, max: 500000 },
+    { rate: 0.0575, min: 500001, max: Infinity }
+  ]
+};
+
+const VA_STANDARD_DEDUCTIONS_2025 = {
+  single: 875000,
+  married_joint: 1750000,
+  married_separate: 875000,
+  head_of_household: 875000
+};
+
+/**
+ * WASHINGTON D.C. - 2025 Tax Brackets
+ * Progressive rates: 4%-10.75%
+ * All values in cents
+ */
+const DC_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
+    { rate: 0.0925, min: 25000001, max: 50000000 },
+    { rate: 0.0975, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
+    { rate: 0.0925, min: 25000001, max: 50000000 },
+    { rate: 0.0975, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
+    { rate: 0.0925, min: 25000001, max: 50000000 },
+    { rate: 0.0975, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
+    { rate: 0.0925, min: 25000001, max: 50000000 },
+    { rate: 0.0975, min: 50000001, max: 100000000 },
+    { rate: 0.1075, min: 100000001, max: Infinity }
+  ]
+};
+
+const DC_STANDARD_DEDUCTIONS_2025 = {
+  single: 1500000,
+  married_joint: 3000000,
+  married_separate: 1500000,
+  head_of_household: 2250000
+};
+
+/**
+ * WEST VIRGINIA - 2025 Tax Brackets
+ * Progressive rates: 2.22%-4.82%
+ * All values in cents
+ */
+const WV_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0222, min: 0, max: 1000000 },
+    { rate: 0.0265, min: 1000001, max: 2500000 },
+    { rate: 0.0309, min: 2500001, max: 4000000 },
+    { rate: 0.0352, min: 4000001, max: 6000000 },
+    { rate: 0.0395, min: 6000001, max: 8000000 },
+    { rate: 0.0438, min: 8000001, max: 10000000 },
+    { rate: 0.0482, min: 10000001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0222, min: 0, max: 1000000 },
+    { rate: 0.0265, min: 1000001, max: 2500000 },
+    { rate: 0.0309, min: 2500001, max: 4000000 },
+    { rate: 0.0352, min: 4000001, max: 6000000 },
+    { rate: 0.0395, min: 6000001, max: 8000000 },
+    { rate: 0.0438, min: 8000001, max: 10000000 },
+    { rate: 0.0482, min: 10000001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0222, min: 0, max: 1000000 },
+    { rate: 0.0265, min: 1000001, max: 2500000 },
+    { rate: 0.0309, min: 2500001, max: 4000000 },
+    { rate: 0.0352, min: 4000001, max: 6000000 },
+    { rate: 0.0395, min: 6000001, max: 8000000 },
+    { rate: 0.0438, min: 8000001, max: 10000000 },
+    { rate: 0.0482, min: 10000001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0222, min: 0, max: 1000000 },
+    { rate: 0.0265, min: 1000001, max: 2500000 },
+    { rate: 0.0309, min: 2500001, max: 4000000 },
+    { rate: 0.0352, min: 4000001, max: 6000000 },
+    { rate: 0.0395, min: 6000001, max: 8000000 },
+    { rate: 0.0438, min: 8000001, max: 10000000 },
+    { rate: 0.0482, min: 10000001, max: Infinity }
+  ]
+};
+
+const WV_STANDARD_DEDUCTIONS_2025 = {
+  single: 200000,
+  married_joint: 400000,
+  married_separate: 200000,
+  head_of_household: 200000
+};
+
+/**
+ * WISCONSIN - 2025 Tax Brackets
+ * Progressive rates: 3.5%-7.65%
+ * All values in cents
+ */
+const WI_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.035, min: 0, max: 1468000 },
+    { rate: 0.044, min: 1468001, max: 5048000 },
+    { rate: 0.053, min: 5048001, max: 32329000 },
+    { rate: 0.0765, min: 32329001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.035, min: 0, max: 2192000 },
+    { rate: 0.044, min: 2192001, max: 7572000 },
+    { rate: 0.053, min: 7572001, max: 48493500 },
+    { rate: 0.0765, min: 48493501, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.035, min: 0, max: 1096000 },
+    { rate: 0.044, min: 1096001, max: 3786000 },
+    { rate: 0.053, min: 3786001, max: 24246750 },
+    { rate: 0.0765, min: 24246751, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.035, min: 0, max: 1832000 },
+    { rate: 0.044, min: 1832001, max: 6310000 },
+    { rate: 0.053, min: 6310001, max: 40361100 },
+    { rate: 0.0765, min: 40361101, max: Infinity }
+  ]
+};
+
+const WI_STANDARD_DEDUCTIONS_2025 = {
+  single: 1500000,
+  married_joint: 3000000,
+  married_separate: 1500000,
+  head_of_household: 2250000
+};
 
 /**
  * Get state tax brackets for given state, year, and filing status
- * @param {string} state - State abbreviation ('DC', 'CA', 'NY', or null)
+ * @param {string} state - State abbreviation (2-letter code or null)
  * @param {number} year - Tax year (2024 or 2025)
  * @param {string} filingStatus - Filing status
  * @returns {Array} State tax brackets
@@ -783,36 +1870,76 @@ export function getStateTaxBrackets(state, year, filingStatus) {
 
   const upperState = state.toUpperCase();
 
-  if (upperState === 'DC') {
-    const dcBrackets = year === 2024 ? DC_TAX_BRACKETS_2024 : DC_TAX_BRACKETS_2025;
-    if (!dcBrackets || !dcBrackets[filingStatus]) {
-      throw new Error(`Invalid filing status for DC: ${filingStatus}`);
-    }
-    return dcBrackets[filingStatus];
+  // States with no income tax - return empty brackets
+  const noTaxStates = ['AK', 'FL', 'NV', 'SD', 'TN', 'TX', 'WA', 'WY', 'NH'];
+  if (noTaxStates.includes(upperState)) {
+    return [{ rate: 0.0, min: 0, max: Infinity }];
   }
 
-  if (upperState === 'CA') {
-    const caBrackets = year === 2024 ? CA_TAX_BRACKETS_2024 : CA_TAX_BRACKETS_2025;
-    if (!caBrackets || !caBrackets[filingStatus]) {
-      throw new Error(`Invalid filing status for CA: ${filingStatus}`);
-    }
-    return caBrackets[filingStatus];
+  // All other states - return their respective brackets
+  const stateMappings = {
+    'AL': year === 2024 ? AL_TAX_BRACKETS_2024 : AL_TAX_BRACKETS_2025,
+    'AR': year === 2024 ? AR_TAX_BRACKETS_2024 : AR_TAX_BRACKETS_2025,
+    'AZ': year === 2024 ? AZ_TAX_BRACKETS_2024 : AZ_TAX_BRACKETS_2025,
+    'CA': year === 2024 ? CA_TAX_BRACKETS_2024 : CA_TAX_BRACKETS_2025,
+    'CO': year === 2024 ? CO_TAX_BRACKETS_2024 : CO_TAX_BRACKETS_2025,
+    'CT': year === 2024 ? CT_TAX_BRACKETS_2024 : CT_TAX_BRACKETS_2025,
+    'DC': year === 2024 ? DC_TAX_BRACKETS_2024 : DC_TAX_BRACKETS_2025,
+    'DE': year === 2024 ? DE_TAX_BRACKETS_2024 : DE_TAX_BRACKETS_2025,
+    'GA': year === 2024 ? GA_TAX_BRACKETS_2024 : GA_TAX_BRACKETS_2025,
+    'HI': year === 2024 ? HI_TAX_BRACKETS_2024 : HI_TAX_BRACKETS_2025,
+    'IA': year === 2024 ? IA_TAX_BRACKETS_2024 : IA_TAX_BRACKETS_2025,
+    'ID': year === 2024 ? ID_TAX_BRACKETS_2024 : ID_TAX_BRACKETS_2025,
+    'IL': year === 2024 ? IL_TAX_BRACKETS_2024 : IL_TAX_BRACKETS_2025,
+    'IN': year === 2024 ? IN_TAX_BRACKETS_2024 : IN_TAX_BRACKETS_2025,
+    'KS': year === 2024 ? KS_TAX_BRACKETS_2024 : KS_TAX_BRACKETS_2025,
+    'KY': year === 2024 ? KY_TAX_BRACKETS_2024 : KY_TAX_BRACKETS_2025,
+    'LA': year === 2024 ? LA_TAX_BRACKETS_2024 : LA_TAX_BRACKETS_2025,
+    'MA': year === 2024 ? MA_TAX_BRACKETS_2024 : MA_TAX_BRACKETS_2025,
+    'MD': year === 2024 ? MD_TAX_BRACKETS_2024 : MD_TAX_BRACKETS_2025,
+    'ME': year === 2024 ? ME_TAX_BRACKETS_2024 : ME_TAX_BRACKETS_2025,
+    'MI': year === 2024 ? MI_TAX_BRACKETS_2024 : MI_TAX_BRACKETS_2025,
+    'MN': year === 2024 ? MN_TAX_BRACKETS_2024 : MN_TAX_BRACKETS_2025,
+    'MO': year === 2024 ? MO_TAX_BRACKETS_2024 : MO_TAX_BRACKETS_2025,
+    'MS': year === 2024 ? MS_TAX_BRACKETS_2024 : MS_TAX_BRACKETS_2025,
+    'MT': year === 2024 ? MT_TAX_BRACKETS_2024 : MT_TAX_BRACKETS_2025,
+    'NC': year === 2024 ? NC_TAX_BRACKETS_2024 : NC_TAX_BRACKETS_2025,
+    'ND': year === 2024 ? ND_TAX_BRACKETS_2024 : ND_TAX_BRACKETS_2025,
+    'NE': year === 2024 ? NE_TAX_BRACKETS_2024 : NE_TAX_BRACKETS_2025,
+    'NH': year === 2024 ? NH_TAX_BRACKETS_2024 : NH_TAX_BRACKETS_2025,
+    'NJ': year === 2024 ? NJ_TAX_BRACKETS_2024 : NJ_TAX_BRACKETS_2025,
+    'NM': year === 2024 ? NM_TAX_BRACKETS_2024 : NM_TAX_BRACKETS_2025,
+    'NV': year === 2024 ? NV_TAX_BRACKETS_2024 : NV_TAX_BRACKETS_2025,
+    'NY': year === 2024 ? NY_TAX_BRACKETS_2024 : NY_TAX_BRACKETS_2025,
+    'OH': year === 2024 ? OH_TAX_BRACKETS_2024 : OH_TAX_BRACKETS_2025,
+    'OK': year === 2024 ? OK_TAX_BRACKETS_2024 : OK_TAX_BRACKETS_2025,
+    'OR': year === 2024 ? OR_TAX_BRACKETS_2024 : OR_TAX_BRACKETS_2025,
+    'PA': year === 2024 ? PA_TAX_BRACKETS_2024 : PA_TAX_BRACKETS_2025,
+    'RI': year === 2024 ? RI_TAX_BRACKETS_2024 : RI_TAX_BRACKETS_2025,
+    'SC': year === 2024 ? SC_TAX_BRACKETS_2024 : SC_TAX_BRACKETS_2025,
+    'SD': year === 2024 ? SD_TAX_BRACKETS_2024 : SD_TAX_BRACKETS_2025,
+    'TN': year === 2024 ? TN_TAX_BRACKETS_2024 : TN_TAX_BRACKETS_2025,
+    'TX': year === 2024 ? TX_TAX_BRACKETS_2024 : TX_TAX_BRACKETS_2025,
+    'UT': year === 2024 ? UT_TAX_BRACKETS_2024 : UT_TAX_BRACKETS_2025,
+    'VA': year === 2024 ? VA_TAX_BRACKETS_2024 : VA_TAX_BRACKETS_2025,
+    'VT': year === 2024 ? VT_TAX_BRACKETS_2024 : VT_TAX_BRACKETS_2025,
+    'WA': year === 2024 ? WA_TAX_BRACKETS_2024 : WA_TAX_BRACKETS_2025,
+    'WI': year === 2024 ? WI_TAX_BRACKETS_2024 : WI_TAX_BRACKETS_2025,
+    'WV': year === 2024 ? WV_TAX_BRACKETS_2024 : WV_TAX_BRACKETS_2025,
+    'WY': year === 2024 ? WY_TAX_BRACKETS_2024 : WY_TAX_BRACKETS_2025
+  };
+
+  const brackets = stateMappings[upperState];
+  if (!brackets || !brackets[filingStatus]) {
+    throw new Error(`Invalid filing status for ${state}: ${filingStatus}`);
   }
 
-  if (upperState === 'NY') {
-    const nyBrackets = year === 2024 ? NY_TAX_BRACKETS_2024 : NY_TAX_BRACKETS_2025;
-    if (!nyBrackets || !nyBrackets[filingStatus]) {
-      throw new Error(`Invalid filing status for NY: ${filingStatus}`);
-    }
-    return nyBrackets[filingStatus];
-  }
-
-  throw new Error(`Unsupported state: ${state}. Supported states: DC, CA, NY`);
+  return brackets[filingStatus];
 }
 
 /**
  * Get state standard deduction
- * @param {string} state - State abbreviation ('DC', 'CA', 'NY', or null)
+ * @param {string} state - State abbreviation ('AL', 'AK', etc., or null)
  * @param {number} year - Tax year (2024 or 2025)
  * @param {string} filingStatus - Filing status
  * @returns {number} Standard deduction in cents
@@ -822,85 +1949,69 @@ export function getStateStandardDeduction(state, year, filingStatus) {
 
   const upperState = state.toUpperCase();
 
-  if (upperState === 'DC') {
-    const dcDeductions = year === 2024 ? DC_STANDARD_DEDUCTIONS_2024 : DC_STANDARD_DEDUCTIONS_2025;
-    if (!dcDeductions || !dcDeductions[filingStatus]) {
-      throw new Error(`Invalid filing status for DC: ${filingStatus}`);
-    }
-    return dcDeductions[filingStatus];
+  // States with no income tax
+  const noTaxStates = ['AK', 'FL', 'NV', 'SD', 'TN', 'TX', 'WA', 'WY', 'NH'];
+  if (noTaxStates.includes(upperState)) {
+    return 0;
   }
 
-  if (upperState === 'CA') {
-    const caDeductions = year === 2024 ? CA_STANDARD_DEDUCTIONS_2024 : CA_STANDARD_DEDUCTIONS_2025;
-    if (!caDeductions || !caDeductions[filingStatus]) {
-      throw new Error(`Invalid filing status for CA: ${filingStatus}`);
-    }
-    return caDeductions[filingStatus];
-  }
-
-  if (upperState === 'NY') {
-    const nyDeductions = year === 2024 ? NY_STANDARD_DEDUCTIONS_2024 : NY_STANDARD_DEDUCTIONS_2025;
-    if (!nyDeductions || !nyDeductions[filingStatus]) {
-      throw new Error(`Invalid filing status for NY: ${filingStatus}`);
-    }
-    return nyDeductions[filingStatus];
-  }
-
-  throw new Error(`Unsupported state: ${state}. Supported states: DC, CA, NY`);
-}
-
-/**
- * Calculate state income tax
- * @param {string} state - State abbreviation ('DC', 'CA', 'NY', or null)
- * @param {number} income - Taxable income in cents
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {number} State tax liability in cents
- */
-export function calculateStateTax(state, income, filingStatus, year = 2025) {
-  if (!state) return 0;
-
-  const brackets = getStateTaxBrackets(state, year, filingStatus);
-  const standardDeduction = getStateStandardDeduction(state, year, filingStatus);
-
-  const taxableIncome = Math.max(0, income - standardDeduction);
-
-  let totalTax = 0;
-  let remainingIncome = taxableIncome;
-
-  for (const bracket of brackets) {
-    if (remainingIncome <= 0) break;
-
-    const taxableInBracket = Math.min(
-      remainingIncome,
-      bracket.max === Infinity ? remainingIncome : (bracket.max - bracket.min + 1)
-    );
-
-    const taxInBracket = taxableInBracket * bracket.rate;
-    totalTax += taxInBracket;
-
-    remainingIncome -= taxableInBracket;
-  }
-
-  return Math.round(totalTax);
-}
-
-/**
- * Calculate total income tax (federal + state)
- * @param {string} state - State abbreviation ('DC', 'CA', 'NY', or null)
- * @param {number} income - Gross income in cents
- * @param {string} filingStatus - Filing status
- * @param {number} year - Tax year (2024 or 2025)
- * @returns {object} Tax breakdown with federal, state, and total
- */
-export function calculateTotalTax(state, income, filingStatus, year = 2025) {
-  const federalTax = calculateFederalTax(income, filingStatus, year);
-  const stateTax = calculateStateTax(state, income, filingStatus, year);
-
-  return {
-    federalTax,
-    stateTax,
-    totalTax: federalTax + stateTax
+  // All other states - return their respective deductions
+  const deductionMappings = {
+    'AL': year === 2024 ? AL_STANDARD_DEDUCTIONS_2024 : AL_STANDARD_DEDUCTIONS_2025,
+    'AR': year === 2024 ? AR_STANDARD_DEDUCTIONS_2024 : AR_STANDARD_DEDUCTIONS_2025,
+    'AZ': year === 2024 ? AZ_STANDARD_DEDUCTIONS_2024 : AZ_STANDARD_DEDUCTIONS_2025,
+    'CA': year === 2024 ? CA_STANDARD_DEDUCTIONS_2024 : CA_STANDARD_DEDUCTIONS_2025,
+    'CO': year === 2024 ? CO_STANDARD_DEDUCTIONS_2024 : CO_STANDARD_DEDUCTIONS_2025,
+    'CT': year === 2024 ? CT_STANDARD_DEDUCTIONS_2024 : CT_STANDARD_DEDUCTIONS_2025,
+    'DC': year === 2024 ? DC_STANDARD_DEDUCTIONS_2024 : DC_STANDARD_DEDUCTIONS_2025,
+    'DE': year === 2024 ? DE_STANDARD_DEDUCTIONS_2024 : DE_STANDARD_DEDUCTIONS_2025,
+    'GA': year === 2024 ? GA_STANDARD_DEDUCTIONS_2024 : GA_STANDARD_DEDUCTIONS_2025,
+    'HI': year === 2024 ? HI_STANDARD_DEDUCTIONS_2024 : HI_STANDARD_DEDUCTIONS_2025,
+    'IA': year === 2024 ? IA_STANDARD_DEDUCTIONS_2024 : IA_STANDARD_DEDUCTIONS_2025,
+    'ID': year === 2024 ? ID_STANDARD_DEDUCTIONS_2024 : ID_STANDARD_DEDUCTIONS_2025,
+    'IL': year === 2024 ? IL_STANDARD_DEDUCTIONS_2024 : IL_STANDARD_DEDUCTIONS_2025,
+    'IN': year === 2024 ? IN_STANDARD_DEDUCTIONS_2024 : IN_STANDARD_DEDUCTIONS_2025,
+    'KS': year === 2024 ? KS_STANDARD_DEDUCTIONS_2024 : KS_STANDARD_DEDUCTIONS_2025,
+    'KY': year === 2024 ? KY_STANDARD_DEDUCTIONS_2024 : KY_STANDARD_DEDUCTIONS_2025,
+    'LA': year === 2024 ? LA_STANDARD_DEDUCTIONS_2024 : LA_STANDARD_DEDUCTIONS_2025,
+    'MA': year === 2024 ? MA_STANDARD_DEDUCTIONS_2024 : MA_STANDARD_DEDUCTIONS_2025,
+    'MD': year === 2024 ? MD_STANDARD_DEDUCTIONS_2024 : MD_STANDARD_DEDUCTIONS_2025,
+    'ME': year === 2024 ? ME_STANDARD_DEDUCTIONS_2024 : ME_STANDARD_DEDUCTIONS_2025,
+    'MI': year === 2024 ? MI_STANDARD_DEDUCTIONS_2024 : MI_STANDARD_DEDUCTIONS_2025,
+    'MN': year === 2024 ? MN_STANDARD_DEDUCTIONS_2024 : MN_STANDARD_DEDUCTIONS_2025,
+    'MO': year === 2024 ? MO_STANDARD_DEDUCTIONS_2024 : MO_STANDARD_DEDUCTIONS_2025,
+    'MS': year === 2024 ? MS_STANDARD_DEDUCTIONS_2024 : MS_STANDARD_DEDUCTIONS_2025,
+    'MT': year === 2024 ? MT_STANDARD_DEDUCTIONS_2024 : MT_STANDARD_DEDUCTIONS_2025,
+    'NC': year === 2024 ? NC_STANDARD_DEDUCTIONS_2024 : NC_STANDARD_DEDUCTIONS_2025,
+    'ND': year === 2024 ? ND_STANDARD_DEDUCTIONS_2024 : ND_STANDARD_DEDUCTIONS_2025,
+    'NE': year === 2024 ? NE_STANDARD_DEDUCTIONS_2024 : NE_STANDARD_DEDUCTIONS_2025,
+    'NH': year === 2024 ? NH_STANDARD_DEDUCTIONS_2024 : NH_STANDARD_DEDUCTIONS_2025,
+    'NJ': year === 2024 ? NJ_STANDARD_DEDUCTIONS_2024 : NJ_STANDARD_DEDUCTIONS_2025,
+    'NM': year === 2024 ? NM_STANDARD_DEDUCTIONS_2024 : NM_STANDARD_DEDUCTIONS_2025,
+    'NV': year === 2024 ? NV_STANDARD_DEDUCTIONS_2024 : NV_STANDARD_DEDUCTIONS_2025,
+    'NY': year === 2024 ? NY_STANDARD_DEDUCTIONS_2024 : NY_STANDARD_DEDUCTIONS_2025,
+    'OH': year === 2024 ? OH_STANDARD_DEDUCTIONS_2024 : OH_STANDARD_DEDUCTIONS_2025,
+    'OK': year === 2024 ? OK_STANDARD_DEDUCTIONS_2024 : OK_STANDARD_DEDUCTIONS_2025,
+    'OR': year === 2024 ? OR_STANDARD_DEDUCTIONS_2024 : OR_STANDARD_DEDUCTIONS_2025,
+    'PA': year === 2024 ? PA_STANDARD_DEDUCTIONS_2024 : PA_STANDARD_DEDUCTIONS_2025,
+    'RI': year === 2024 ? RI_STANDARD_DEDUCTIONS_2024 : RI_STANDARD_DEDUCTIONS_2025,
+    'SC': year === 2024 ? SC_STANDARD_DEDUCTIONS_2024 : SC_STANDARD_DEDUCTIONS_2025,
+    'SD': year === 2024 ? SD_STANDARD_DEDUCTIONS_2024 : SD_STANDARD_DEDUCTIONS_2025,
+    'TN': year === 2024 ? TN_STANDARD_DEDUCTIONS_2024 : TN_STANDARD_DEDUCTIONS_2025,
+    'TX': year === 2024 ? TX_STANDARD_DEDUCTIONS_2024 : TX_STANDARD_DEDUCTIONS_2025,
+    'UT': year === 2024 ? UT_STANDARD_DEDUCTIONS_2024 : UT_STANDARD_DEDUCTIONS_2025,
+    'VA': year === 2024 ? VA_STANDARD_DEDUCTIONS_2024 : VA_STANDARD_DEDUCTIONS_2025,
+    'VT': year === 2024 ? VT_STANDARD_DEDUCTIONS_2024 : VT_STANDARD_DEDUCTIONS_2025,
+    'WA': year === 2024 ? WA_STANDARD_DEDUCTIONS_2024 : WA_STANDARD_DEDUCTIONS_2025,
+    'WI': year === 2024 ? WI_STANDARD_DEDUCTIONS_2024 : WI_STANDARD_DEDUCTIONS_2025,
+    'WV': year === 2024 ? WV_STANDARD_DEDUCTIONS_2024 : WV_STANDARD_DEDUCTIONS_2025,
+    'WY': year === 2024 ? WY_STANDARD_DEDUCTIONS_2024 : WY_STANDARD_DEDUCTIONS_2025
   };
-}
 
+  const deductions = deductionMappings[upperState];
+  if (!deductions || !deductions[filingStatus]) {
+    throw new Error(`Invalid filing status for ${state}: ${filingStatus}`);
+  }
+
+  return deductions[filingStatus];
+}
