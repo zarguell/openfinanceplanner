@@ -4,7 +4,7 @@
   "description": "Client-side financial planning application",
   "type": "module",
   "scripts": {
-    "serve": "python3 -m http.server 8080",
+    "serve": "python3 -m http.server 3030",
     "test": "echo \"Testing framework TBD\" && exit 0"
   },
   "keywords": ["financial", "planning", "retirement", "calculator"],

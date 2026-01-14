@@ -93,7 +93,7 @@ Create: `package.json`
   "description": "Client-side financial planning application",
   "type": "module",
   "scripts": {
-    "serve": "python3 -m http.server 8080",
+    "serve": "python3 -m http.server 3030",
     "test": "echo \"Testing framework TBD\" && exit 0"
   },
   "keywords": ["financial", "planning", "retirement", "calculator"],
@@ -1877,7 +1877,7 @@ Open `index.html` in a modern browser (Chrome 90+, Firefox 88+, Safari 14+).
 
 For development with auto-reload:
 ```bash
-npm run serve  # Runs python3 HTTP server on port 8080
+npm run serve  # Runs python3 HTTP server on port 3030
 ```
 
 Running tests:
@@ -2462,7 +2462,7 @@ A client-side financial planning application that runs entirely in your browser 
 2. **Or use the dev server:**
    ```bash
    npm run serve
-   # Navigate to http://localhost:8080
+   # Navigate to http://localhost:3030
    ```
 
 ## Project Status

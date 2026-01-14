@@ -23,7 +23,7 @@ A client-side financial planning application that runs entirely in your browser 
 2. **Or use the dev server:**
    ```bash
    npm run serve
-   # Navigate to http://localhost:8080
+   # Navigate to http://localhost:3030
    ```
 
 ## Project Status

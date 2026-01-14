@@ -19,7 +19,7 @@ Open `index.html` in a modern browser (Chrome 90+, Firefox 88+, Safari 14+).
 
 For development with auto-reload:
 ```bash
-npm run serve  # Runs python3 HTTP server on port 8080
+npm run serve  # Runs python3 HTTP server on port 3030
 ```
 
 Running tests:
