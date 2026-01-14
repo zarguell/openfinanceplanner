@@ -179,7 +179,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       // Per SECURE Act 2.0: RMDs start at age 73 (or 72 if turned 72 in 2023)
       let rmdAmount = 0;
       if ((account.type === '401k' || account.type === 'IRA') && mustTakeRMD(age)) {
-        rmdAmount = calculateRMDForAccount({ ...account, balance: balance * 100 }, age);
+        const rmdAmountInCents = calculateRMDForAccount({ ...account, balance: balance * 100 }, age);
+        rmdAmount = rmdAmountInCents / 100;
         totalRmdAmount += rmdAmount;
       }
 
