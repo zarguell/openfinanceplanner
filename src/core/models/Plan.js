@@ -27,7 +27,7 @@ export class Plan {
     };
     this.socialSecurity = {
       enabled: false,
-      birthYear: currentAge - (new Date().getFullYear() - 2000), // Rough estimate, user will override
+      birthYear: new Date().getFullYear() - currentAge, // Rough estimate, user will override
       monthlyBenefit: 0, // Monthly benefit at FRA in today's dollars
       filingAge: retirementAge // Default to retirement age
     };
@@ -105,7 +105,7 @@ export class Plan {
     // Merge socialSecurity with defaults for backward compatibility
     plan.socialSecurity = {
       enabled: false,
-      birthYear: plan.taxProfile.currentAge - (new Date().getFullYear() - 2000),
+      birthYear: new Date().getFullYear() - plan.taxProfile.currentAge,
       monthlyBenefit: 0,
       filingAge: plan.taxProfile.retirementAge,
       ...data.socialSecurity // Override with saved data

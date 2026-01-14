@@ -2077,3 +2077,229 @@ export function calculateTotalTax(state, income, filingStatus, year = 2025) {
     totalTax: federalTax + stateTax
   };
 }
+
+/**
+ * Long-term capital gains tax brackets for 2024 and 2025
+ * All values in cents
+ */
+const LTCG_BRACKETS_2024 = {
+  single: [
+    { rate: 0.00, min: 0, max: 4892500 },
+    { rate: 0.15, min: 4892501, max: 51890000 },
+    { rate: 0.20, min: 51890001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.00, min: 0, max: 9785000 },
+    { rate: 0.15, min: 9785001, max: 103780000 },
+    { rate: 0.20, min: 103780001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.00, min: 0, max: 4892500 },
+    { rate: 0.15, min: 4892501, max: 51890000 },
+    { rate: 0.20, min: 51890001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.00, min: 0, max: 7357500 },
+    { rate: 0.15, min: 7357501, max: 77940000 },
+    { rate: 0.20, min: 77940001, max: Infinity }
+  ]
+};
+
+const LTCG_BRACKETS_2025 = {
+  single: [
+    { rate: 0.00, min: 0, max: 4920500 },
+    { rate: 0.15, min: 4920501, max: 52305000 },
+    { rate: 0.20, min: 52305001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.00, min: 0, max: 9841000 },
+    { rate: 0.15, min: 9841001, max: 104610000 },
+    { rate: 0.20, min: 104610001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.00, min: 0, max: 4920500 },
+    { rate: 0.15, min: 4920501, max: 52305000 },
+    { rate: 0.20, min: 52305001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.00, min: 0, max: 7381000 },
+    { rate: 0.15, min: 7381001, max: 78340000 },
+    { rate: 0.20, min: 78340001, max: Infinity }
+  ]
+};
+
+/**
+ * Calculate long-term capital gains tax
+ * @param {number} gain - Capital gain in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @returns {number} Long-term capital gains tax in cents
+ */
+export function calculateLongTermCapitalGainsTax(gain, filingStatus, year = 2025) {
+  const brackets = year === 2024 ? LTCG_BRACKETS_2024 : LTCG_BRACKETS_2025;
+
+  let totalTax = 0;
+  let remainingGain = gain;
+
+  for (const bracket of brackets[filingStatus]) {
+    if (remainingGain <= 0) break;
+
+    const taxableInBracket = Math.min(
+      remainingGain,
+      bracket.max === Infinity ? remainingGain : (bracket.max - bracket.min + 1)
+    );
+
+    const taxInBracket = Math.round(taxableInBracket * bracket.rate);
+    totalTax += taxInBracket;
+
+    remainingGain -= taxableInBracket;
+  }
+
+  return totalTax;
+}
+
+/**
+ * Calculate short-term capital gains tax (taxed as ordinary income)
+ * @param {number} gain - Capital gain in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @returns {number} Short-term capital gains tax in cents
+ */
+export function calculateShortTermCapitalGainsTax(gain, filingStatus, year = 2025) {
+  // Short-term capital gains are taxed as ordinary income
+  return calculateFederalTax(gain, filingStatus, year);
+}
+
+/**
+ * Calculate total capital gains tax (long-term + short-term)
+ * @param {number} longTermGain - Long-term capital gain in cents
+ * @param {number} shortTermGain - Short-term capital gain in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @returns {number} Total capital gains tax in cents
+ */
+export function calculateCapitalGainsTax(longTermGain, shortTermGain, filingStatus, year = 2025) {
+  const longTermTax = calculateLongTermCapitalGainsTax(longTermGain, filingStatus, year);
+  const shortTermTax = calculateShortTermCapitalGainsTax(shortTermGain, filingStatus, year);
+
+  return longTermTax + shortTermTax;
+}
+
+/**
+ * Calculate Social Security tax (6.2% on wages up to $176,100 in 2025)
+ * @param {number} wages - Wages in cents
+ * @param {number} year - Tax year
+ * @returns {number} Social Security tax in cents
+ */
+export function calculateSocialSecurityTax(wages, year = 2025) {
+  const ssWageBase = year === 2024 ? 16860000 : 17610000; // $168,600 for 2024, $176,100 for 2025
+  const taxableWages = Math.min(wages, ssWageBase);
+  return Math.round(taxableWages * 0.062);
+}
+
+/**
+ * Calculate Medicare tax (1.45% + additional 0.9% for high earners)
+ * @param {number} wages - Wages in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year
+ * @returns {number} Medicare tax in cents
+ */
+export function calculateMedicareTax(wages, filingStatus, year = 2025) {
+  const baseRate = 0.0145;
+  const additionalRate = 0.009;
+
+  // Additional Medicare tax threshold (same for all filing statuses in 2024/2025)
+  const threshold = 20000000; // $200,000
+
+  const baseTax = Math.round(wages * baseRate);
+  const additionalTax = wages > threshold ? Math.round((wages - threshold) * additionalRate) : 0;
+
+  return baseTax + additionalTax;
+}
+
+/**
+ * Calculate total FICA tax (Social Security + Medicare)
+ * @param {number} wages - Wages in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year
+ * @returns {object} FICA tax breakdown with ssTax, medicareTax, and totalFicaTax
+ */
+export function calculateFicaTax(wages, filingStatus, year = 2025) {
+  const ssTax = calculateSocialSecurityTax(wages, year);
+  const medicareTax = calculateMedicareTax(wages, filingStatus, year);
+
+  return {
+    ssTax,
+    medicareTax,
+    totalFicaTax: ssTax + medicareTax
+  };
+}
+
+/**
+ * Get federal standard deduction
+ * @param {number} year - Tax year (2024 or 2025)
+ * @param {string} filingStatus - Filing status
+ * @returns {number} Standard deduction in cents
+ */
+export function getStandardDeduction(year, filingStatus) {
+  const deductions = year === 2024 ? STANDARD_DEDUCTIONS[2024] : STANDARD_DEDUCTIONS[2025];
+  return deductions[filingStatus];
+}
+
+/**
+ * Get RMD age requirement based on birth year (SECURE Act 2.0)
+ * @param {number} birthYear - Year of birth
+ * @returns {number} Age when RMDs must begin
+ */
+export function getRmdAgeRequirement(birthYear) {
+  if (birthYear <= 1950) {
+    return 72;
+  } else {
+    return 73;
+  }
+}
+
+/**
+ * Calculate Required Minimum Distribution (RMD)
+ * @param {number} balance - Account balance in cents
+ * @param {number} age - Current age
+ * @param {number} year - Tax year
+ * @returns {number} RMD amount in cents
+ */
+export function calculateRMD(balance, age, year = 2025) {
+  // IRS life expectancy table (simplified)
+  const lifeExpectancyTable = {
+    72: 25.6,
+    73: 24.7,
+    74: 23.8,
+    75: 22.9,
+    76: 22.0,
+    77: 21.1,
+    78: 20.2,
+    79: 19.4,
+    80: 18.5,
+    81: 17.7,
+    82: 16.8,
+    83: 16.0,
+    84: 15.2,
+    85: 14.4,
+    86: 13.7,
+    87: 12.9,
+    88: 12.2,
+    89: 11.5,
+    90: 10.8,
+    91: 10.1,
+    92: 9.5,
+    93: 8.9,
+    94: 8.3,
+    95: 7.8,
+    96: 7.3,
+    97: 6.8,
+    98: 6.4,
+    99: 6.0,
+    100: 5.6
+  };
+
+  const divisor = lifeExpectancyTable[age] || 5.6; // Minimum divisor
+  return Math.round(balance / divisor);
+}
