@@ -9,6 +9,7 @@ export class Income {
     this.baseAmount = annualAmountInDollars * 100; // Store in cents
     this.startYear = startYear; // Years from now
     this.endYear = null;
+    this.isOneTime = false; // True for one-time income events
     this.type = type; // 'salary', 'business', 'pension', 'rental', 'dividends', 'other'
     this.growthRate = 0.03; // Annual growth rate (raises, business growth, etc.)
   }
@@ -37,6 +38,7 @@ export class Income {
       baseAmount: this.baseAmount,
       startYear: this.startYear,
       endYear: this.endYear,
+      isOneTime: this.isOneTime,
       type: this.type,
       growthRate: this.growthRate
     };
@@ -51,6 +53,7 @@ export class Income {
     );
     income.id = data.id;
     income.endYear = data.endYear || null;
+    income.isOneTime = data.isOneTime || false;
     income.growthRate = data.growthRate !== undefined ? data.growthRate : 0.03;
     return income;
   }

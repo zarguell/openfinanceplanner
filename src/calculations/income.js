@@ -15,6 +15,12 @@ export function calculateIncomeForYear(income, yearOffset, inflationRate) {
     return 0;
   }
 
+  // For one-time income, only appears in start year
+  if (income.isOneTime) {
+    return yearOffset === income.startYear ? income.baseAmount / 100 : 0;
+  }
+
+  // For recurring income, check end year
   if (income.endYear && yearOffset > income.endYear) {
     return 0;
   }

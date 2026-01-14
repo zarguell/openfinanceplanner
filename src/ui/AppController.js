@@ -831,6 +831,17 @@ export class AppController {
           <input type="number" id="incomeStartYear" class="form-control" placeholder="0" min="0" step="1" value="0">
         </div>
         <div class="form-group">
+          <label class="form-label">End Year <span class="form-label-hint"># of years from now (optional)</span></label>
+          <input type="number" id="incomeEndYear" class="form-control" placeholder="leave empty for ongoing" min="0" step="1">
+          <small class="form-help">Leave empty for income that continues indefinitely</small>
+        </div>
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+            <input type="checkbox" id="incomeIsOneTime"> One-time income event
+          </label>
+          <small class="form-help">Check if this is a one-time payment (e.g., bonus, inheritance)</small>
+        </div>
+        <div class="form-group">
           <label class="form-label">Annual Growth Rate <span class="form-label-hint">%</span></label>
           <input type="number" id="incomeGrowthRate" class="form-control" placeholder="3.0" min="-10" max="20" step="0.1" value="3.0">
           <small class="form-help">Expected annual raise or income growth (e.g., 3% for salary increases)</small>
@@ -849,6 +860,8 @@ export class AppController {
     const type = document.getElementById('incomeType').value;
     const amount = parseFloat(document.getElementById('incomeAmount').value) || 0;
     const startYear = parseInt(document.getElementById('incomeStartYear').value) || 0;
+    const endYear = document.getElementById('incomeEndYear').value ? parseInt(document.getElementById('incomeEndYear').value) : null;
+    const isOneTime = document.getElementById('incomeIsOneTime').checked;
     const growthRate = parseFloat(document.getElementById('incomeGrowthRate').value) / 100 || 0.03;
 
     if (!name || !amount) {
@@ -856,7 +869,14 @@ export class AppController {
       return;
     }
 
+    if (endYear !== null && endYear <= startYear) {
+      alert('End year must be greater than start year');
+      return;
+    }
+
     const income = new Income(name, amount, startYear, type);
+    income.endYear = endYear;
+    income.isOneTime = isOneTime;
     income.growthRate = growthRate;
     this.currentPlan.addIncome(income);
     StorageManager.savePlan(this.currentPlan);

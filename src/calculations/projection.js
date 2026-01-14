@@ -43,6 +43,12 @@ export function calculateExpenseForYear(expense, yearOffset, inflationRate) {
     return 0;
   }
 
+  // For one-time expenses, only appears in start year
+  if (expense.isOneTime) {
+    return yearOffset === expense.startYear ? expense.baseAmount / 100 : 0;
+  }
+
+  // For recurring expenses, check end year
   if (expense.endYear && yearOffset > expense.endYear) {
     return 0;
   }
@@ -119,8 +125,17 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     let totalFicaTax = 0;
     let totalRmdAmount = 0;
 
-    // Calculate total contributions across all accounts
-    const totalContributions = plan.accounts.reduce((sum, acc) => sum + (acc.annualContribution || 0), 0);
+    // Calculate total contributions across all accounts (considering timing and one-time flags)
+    const totalContributions = plan.accounts.reduce((sum, acc) => {
+      // Check if we're in the contribution window
+      if (year < (acc.contributionStartYear || 0)) return sum;
+      if (acc.contributionEndYear && year > acc.contributionEndYear) return sum;
+
+      // For one-time contributions, only contribute in the start year
+      if (acc.isOneTimeContribution && year !== (acc.contributionStartYear || 0)) return sum;
+
+      return sum + (acc.annualContribution || 0);
+    }, 0);
 
     // Calculate FICA taxes on earned income (not just contributions)
     if (!isRetired && totalIncome > 0) {

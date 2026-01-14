@@ -9,6 +9,9 @@ export class Account {
     this.type = type; // '401k', 'IRA', 'Roth', 'HSA', 'Taxable'
     this.balance = balanceInDollars * 100; // Store in cents
     this.annualContribution = 0;
+    this.contributionStartYear = 0; // Years from now when contributions start
+    this.contributionEndYear = null; // Years from now when contributions end (null for ongoing)
+    this.isOneTimeContribution = false; // True for one-time lump sum contributions
     this.withdrawalRate = 0.04;
   }
 
@@ -23,6 +26,9 @@ export class Account {
       type: this.type,
       balance: this.balance,
       annualContribution: this.annualContribution,
+      contributionStartYear: this.contributionStartYear,
+      contributionEndYear: this.contributionEndYear,
+      isOneTimeContribution: this.isOneTimeContribution,
       withdrawalRate: this.withdrawalRate
     };
   }
@@ -31,6 +37,9 @@ export class Account {
     const account = new Account(data.name, data.type, data.balance / 100);
     account.id = data.id;
     account.annualContribution = data.annualContribution || 0;
+    account.contributionStartYear = data.contributionStartYear !== undefined ? data.contributionStartYear : 0;
+    account.contributionEndYear = data.contributionEndYear || null;
+    account.isOneTimeContribution = data.isOneTimeContribution || false;
     account.withdrawalRate = data.withdrawalRate || 0.04;
     return account;
   }

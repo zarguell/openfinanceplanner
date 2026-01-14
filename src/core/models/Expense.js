@@ -9,6 +9,7 @@ export class Expense {
     this.baseAmount = annualAmountInDollars * 100; // Store in cents
     this.startYear = startYear; // Years from now
     this.endYear = null;
+    this.isOneTime = false; // True for one-time expenses
     this.inflationAdjusted = inflationAdjusted;
   }
 
@@ -23,6 +24,7 @@ export class Expense {
       baseAmount: this.baseAmount,
       startYear: this.startYear,
       endYear: this.endYear,
+      isOneTime: this.isOneTime,
       inflationAdjusted: this.inflationAdjusted
     };
   }
@@ -36,6 +38,7 @@ export class Expense {
     );
     expense.id = data.id;
     expense.endYear = data.endYear || null;
+    expense.isOneTime = data.isOneTime || false;
     return expense;
   }
 }
