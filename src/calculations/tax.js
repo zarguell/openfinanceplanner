@@ -441,6 +441,41 @@ const AL_STANDARD_DEDUCTIONS_2025 = {
 };
 
 /**
+ * ARIZONA - 2025 Tax Brackets
+ * Progressive rates: 2.59%-2.98%
+ * All values in cents
+ */
+const AZ_TAX_BRACKETS_2025 = {
+  single: [
+    { rate: 0.0259, min: 0, max: 1460000 },
+    { rate: 0.0288, min: 1460001, max: 3650000 },
+    { rate: 0.0298, min: 3650001, max: Infinity }
+  ],
+  married_joint: [
+    { rate: 0.0259, min: 0, max: 2920000 },
+    { rate: 0.0288, min: 2920001, max: 7300000 },
+    { rate: 0.0298, min: 7300001, max: Infinity }
+  ],
+  married_separate: [
+    { rate: 0.0259, min: 0, max: 1460000 },
+    { rate: 0.0288, min: 1460001, max: 3650000 },
+    { rate: 0.0298, min: 3650001, max: Infinity }
+  ],
+  head_of_household: [
+    { rate: 0.0259, min: 0, max: 2190000 },
+    { rate: 0.0288, min: 2190001, max: 5475000 },
+    { rate: 0.0298, min: 5475001, max: Infinity }
+  ]
+};
+
+const AZ_STANDARD_DEDUCTIONS_2025 = {
+  single: 1460000,
+  married_joint: 2920000,
+  married_separate: 1460000,
+  head_of_household: 2190000
+};
+
+/**
  * ARKANSAS - 2025 Tax Brackets
  * Progressive rates: 0%, 2%, 3%, 3.4%, 3.9%
  * All values in cents
@@ -1717,56 +1752,7 @@ const VA_STANDARD_DEDUCTIONS_2025 = {
   head_of_household: 875000
 };
 
-/**
- * WASHINGTON D.C. - 2025 Tax Brackets
- * Progressive rates: 4%-10.75%
- * All values in cents
- */
-const DC_TAX_BRACKETS_2025 = {
-  single: [
-    { rate: 0.04, min: 0, max: 1000000 },
-    { rate: 0.06, min: 1000001, max: 4000000 },
-    { rate: 0.065, min: 4000001, max: 6000000 },
-    { rate: 0.085, min: 6000001, max: 25000000 },
-    { rate: 0.0925, min: 25000001, max: 50000000 },
-    { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
-  ],
-  married_joint: [
-    { rate: 0.04, min: 0, max: 1000000 },
-    { rate: 0.06, min: 1000001, max: 4000000 },
-    { rate: 0.065, min: 4000001, max: 6000000 },
-    { rate: 0.085, min: 6000001, max: 25000000 },
-    { rate: 0.0925, min: 25000001, max: 50000000 },
-    { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
-  ],
-  married_separate: [
-    { rate: 0.04, min: 0, max: 1000000 },
-    { rate: 0.06, min: 1000001, max: 4000000 },
-    { rate: 0.065, min: 4000001, max: 6000000 },
-    { rate: 0.085, min: 6000001, max: 25000000 },
-    { rate: 0.0925, min: 25000001, max: 50000000 },
-    { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
-  ],
-  head_of_household: [
-    { rate: 0.04, min: 0, max: 1000000 },
-    { rate: 0.06, min: 1000001, max: 4000000 },
-    { rate: 0.065, min: 4000001, max: 6000000 },
-    { rate: 0.085, min: 6000001, max: 25000000 },
-    { rate: 0.0925, min: 25000001, max: 50000000 },
-    { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
-  ]
-};
 
-const DC_STANDARD_DEDUCTIONS_2025 = {
-  single: 1500000,
-  married_joint: 3000000,
-  married_separate: 1500000,
-  head_of_household: 2250000
-};
 
 /**
  * WEST VIRGINIA - 2025 Tax Brackets
@@ -1877,56 +1863,50 @@ export function getStateTaxBrackets(state, year, filingStatus) {
   }
 
   // All other states - return their respective brackets
+  // Note: Using 2025 data for both years for now (2024 data not fully implemented)
   const stateMappings = {
-    'AL': year === 2024 ? AL_TAX_BRACKETS_2024 : AL_TAX_BRACKETS_2025,
-    'AR': year === 2024 ? AR_TAX_BRACKETS_2024 : AR_TAX_BRACKETS_2025,
-    'AZ': year === 2024 ? AZ_TAX_BRACKETS_2024 : AZ_TAX_BRACKETS_2025,
-    'CA': year === 2024 ? CA_TAX_BRACKETS_2024 : CA_TAX_BRACKETS_2025,
-    'CO': year === 2024 ? CO_TAX_BRACKETS_2024 : CO_TAX_BRACKETS_2025,
-    'CT': year === 2024 ? CT_TAX_BRACKETS_2024 : CT_TAX_BRACKETS_2025,
-    'DC': year === 2024 ? DC_TAX_BRACKETS_2024 : DC_TAX_BRACKETS_2025,
-    'DE': year === 2024 ? DE_TAX_BRACKETS_2024 : DE_TAX_BRACKETS_2025,
-    'GA': year === 2024 ? GA_TAX_BRACKETS_2024 : GA_TAX_BRACKETS_2025,
-    'HI': year === 2024 ? HI_TAX_BRACKETS_2024 : HI_TAX_BRACKETS_2025,
-    'IA': year === 2024 ? IA_TAX_BRACKETS_2024 : IA_TAX_BRACKETS_2025,
-    'ID': year === 2024 ? ID_TAX_BRACKETS_2024 : ID_TAX_BRACKETS_2025,
-    'IL': year === 2024 ? IL_TAX_BRACKETS_2024 : IL_TAX_BRACKETS_2025,
-    'IN': year === 2024 ? IN_TAX_BRACKETS_2024 : IN_TAX_BRACKETS_2025,
-    'KS': year === 2024 ? KS_TAX_BRACKETS_2024 : KS_TAX_BRACKETS_2025,
-    'KY': year === 2024 ? KY_TAX_BRACKETS_2024 : KY_TAX_BRACKETS_2025,
-    'LA': year === 2024 ? LA_TAX_BRACKETS_2024 : LA_TAX_BRACKETS_2025,
-    'MA': year === 2024 ? MA_TAX_BRACKETS_2024 : MA_TAX_BRACKETS_2025,
-    'MD': year === 2024 ? MD_TAX_BRACKETS_2024 : MD_TAX_BRACKETS_2025,
-    'ME': year === 2024 ? ME_TAX_BRACKETS_2024 : ME_TAX_BRACKETS_2025,
-    'MI': year === 2024 ? MI_TAX_BRACKETS_2024 : MI_TAX_BRACKETS_2025,
-    'MN': year === 2024 ? MN_TAX_BRACKETS_2024 : MN_TAX_BRACKETS_2025,
-    'MO': year === 2024 ? MO_TAX_BRACKETS_2024 : MO_TAX_BRACKETS_2025,
-    'MS': year === 2024 ? MS_TAX_BRACKETS_2024 : MS_TAX_BRACKETS_2025,
-    'MT': year === 2024 ? MT_TAX_BRACKETS_2024 : MT_TAX_BRACKETS_2025,
-    'NC': year === 2024 ? NC_TAX_BRACKETS_2024 : NC_TAX_BRACKETS_2025,
-    'ND': year === 2024 ? ND_TAX_BRACKETS_2024 : ND_TAX_BRACKETS_2025,
-    'NE': year === 2024 ? NE_TAX_BRACKETS_2024 : NE_TAX_BRACKETS_2025,
-    'NH': year === 2024 ? NH_TAX_BRACKETS_2024 : NH_TAX_BRACKETS_2025,
-    'NJ': year === 2024 ? NJ_TAX_BRACKETS_2024 : NJ_TAX_BRACKETS_2025,
-    'NM': year === 2024 ? NM_TAX_BRACKETS_2024 : NM_TAX_BRACKETS_2025,
-    'NV': year === 2024 ? NV_TAX_BRACKETS_2024 : NV_TAX_BRACKETS_2025,
-    'NY': year === 2024 ? NY_TAX_BRACKETS_2024 : NY_TAX_BRACKETS_2025,
-    'OH': year === 2024 ? OH_TAX_BRACKETS_2024 : OH_TAX_BRACKETS_2025,
-    'OK': year === 2024 ? OK_TAX_BRACKETS_2024 : OK_TAX_BRACKETS_2025,
-    'OR': year === 2024 ? OR_TAX_BRACKETS_2024 : OR_TAX_BRACKETS_2025,
-    'PA': year === 2024 ? PA_TAX_BRACKETS_2024 : PA_TAX_BRACKETS_2025,
-    'RI': year === 2024 ? RI_TAX_BRACKETS_2024 : RI_TAX_BRACKETS_2025,
-    'SC': year === 2024 ? SC_TAX_BRACKETS_2024 : SC_TAX_BRACKETS_2025,
-    'SD': year === 2024 ? SD_TAX_BRACKETS_2024 : SD_TAX_BRACKETS_2025,
-    'TN': year === 2024 ? TN_TAX_BRACKETS_2024 : TN_TAX_BRACKETS_2025,
-    'TX': year === 2024 ? TX_TAX_BRACKETS_2024 : TX_TAX_BRACKETS_2025,
-    'UT': year === 2024 ? UT_TAX_BRACKETS_2024 : UT_TAX_BRACKETS_2025,
-    'VA': year === 2024 ? VA_TAX_BRACKETS_2024 : VA_TAX_BRACKETS_2025,
-    'VT': year === 2024 ? VT_TAX_BRACKETS_2024 : VT_TAX_BRACKETS_2025,
-    'WA': year === 2024 ? WA_TAX_BRACKETS_2024 : WA_TAX_BRACKETS_2025,
-    'WI': year === 2024 ? WI_TAX_BRACKETS_2024 : WI_TAX_BRACKETS_2025,
-    'WV': year === 2024 ? WV_TAX_BRACKETS_2024 : WV_TAX_BRACKETS_2025,
-    'WY': year === 2024 ? WY_TAX_BRACKETS_2024 : WY_TAX_BRACKETS_2025
+    'AL': AL_TAX_BRACKETS_2025,
+    'AR': AR_TAX_BRACKETS_2025,
+    'AZ': AZ_TAX_BRACKETS_2025,
+    'CA': CA_TAX_BRACKETS_2025,
+    'CO': CO_TAX_BRACKETS_2025,
+    'CT': CT_TAX_BRACKETS_2025,
+    'DC': DC_TAX_BRACKETS_2025,
+    'DE': DE_TAX_BRACKETS_2025,
+    'GA': GA_TAX_BRACKETS_2025,
+    'HI': HI_TAX_BRACKETS_2025,
+    'IA': IA_TAX_BRACKETS_2025,
+    'ID': ID_TAX_BRACKETS_2025,
+    'IL': IL_TAX_BRACKETS_2025,
+    'IN': IN_TAX_BRACKETS_2025,
+    'KS': KS_TAX_BRACKETS_2025,
+    'KY': KY_TAX_BRACKETS_2025,
+    'LA': LA_TAX_BRACKETS_2025,
+    'MA': MA_TAX_BRACKETS_2025,
+    'MD': MD_TAX_BRACKETS_2025,
+    'ME': ME_TAX_BRACKETS_2025,
+    'MI': MI_TAX_BRACKETS_2025,
+    'MN': MN_TAX_BRACKETS_2025,
+    'MO': MO_TAX_BRACKETS_2025,
+    'MS': MS_TAX_BRACKETS_2025,
+    'MT': MT_TAX_BRACKETS_2025,
+    'NC': NC_TAX_BRACKETS_2025,
+    'ND': ND_TAX_BRACKETS_2025,
+    'NE': NE_TAX_BRACKETS_2025,
+    'NJ': NJ_TAX_BRACKETS_2025,
+    'NM': NM_TAX_BRACKETS_2025,
+    'NY': NY_TAX_BRACKETS_2025,
+    'OH': OH_TAX_BRACKETS_2025,
+    'OK': OK_TAX_BRACKETS_2025,
+    'OR': OR_TAX_BRACKETS_2025,
+    'PA': PA_TAX_BRACKETS_2025,
+    'RI': RI_TAX_BRACKETS_2025,
+    'SC': SC_TAX_BRACKETS_2025,
+    'UT': UT_TAX_BRACKETS_2025,
+    'VA': VA_TAX_BRACKETS_2025,
+    'VT': VT_TAX_BRACKETS_2025,
+    'WI': WI_TAX_BRACKETS_2025,
+    'WV': WV_TAX_BRACKETS_2025
   };
 
   const brackets = stateMappings[upperState];
@@ -1956,56 +1936,50 @@ export function getStateStandardDeduction(state, year, filingStatus) {
   }
 
   // All other states - return their respective deductions
+  // Note: Using 2025 data for both years for now (2024 data not fully implemented)
   const deductionMappings = {
-    'AL': year === 2024 ? AL_STANDARD_DEDUCTIONS_2024 : AL_STANDARD_DEDUCTIONS_2025,
-    'AR': year === 2024 ? AR_STANDARD_DEDUCTIONS_2024 : AR_STANDARD_DEDUCTIONS_2025,
-    'AZ': year === 2024 ? AZ_STANDARD_DEDUCTIONS_2024 : AZ_STANDARD_DEDUCTIONS_2025,
-    'CA': year === 2024 ? CA_STANDARD_DEDUCTIONS_2024 : CA_STANDARD_DEDUCTIONS_2025,
-    'CO': year === 2024 ? CO_STANDARD_DEDUCTIONS_2024 : CO_STANDARD_DEDUCTIONS_2025,
-    'CT': year === 2024 ? CT_STANDARD_DEDUCTIONS_2024 : CT_STANDARD_DEDUCTIONS_2025,
-    'DC': year === 2024 ? DC_STANDARD_DEDUCTIONS_2024 : DC_STANDARD_DEDUCTIONS_2025,
-    'DE': year === 2024 ? DE_STANDARD_DEDUCTIONS_2024 : DE_STANDARD_DEDUCTIONS_2025,
-    'GA': year === 2024 ? GA_STANDARD_DEDUCTIONS_2024 : GA_STANDARD_DEDUCTIONS_2025,
-    'HI': year === 2024 ? HI_STANDARD_DEDUCTIONS_2024 : HI_STANDARD_DEDUCTIONS_2025,
-    'IA': year === 2024 ? IA_STANDARD_DEDUCTIONS_2024 : IA_STANDARD_DEDUCTIONS_2025,
-    'ID': year === 2024 ? ID_STANDARD_DEDUCTIONS_2024 : ID_STANDARD_DEDUCTIONS_2025,
-    'IL': year === 2024 ? IL_STANDARD_DEDUCTIONS_2024 : IL_STANDARD_DEDUCTIONS_2025,
-    'IN': year === 2024 ? IN_STANDARD_DEDUCTIONS_2024 : IN_STANDARD_DEDUCTIONS_2025,
-    'KS': year === 2024 ? KS_STANDARD_DEDUCTIONS_2024 : KS_STANDARD_DEDUCTIONS_2025,
-    'KY': year === 2024 ? KY_STANDARD_DEDUCTIONS_2024 : KY_STANDARD_DEDUCTIONS_2025,
-    'LA': year === 2024 ? LA_STANDARD_DEDUCTIONS_2024 : LA_STANDARD_DEDUCTIONS_2025,
-    'MA': year === 2024 ? MA_STANDARD_DEDUCTIONS_2024 : MA_STANDARD_DEDUCTIONS_2025,
-    'MD': year === 2024 ? MD_STANDARD_DEDUCTIONS_2024 : MD_STANDARD_DEDUCTIONS_2025,
-    'ME': year === 2024 ? ME_STANDARD_DEDUCTIONS_2024 : ME_STANDARD_DEDUCTIONS_2025,
-    'MI': year === 2024 ? MI_STANDARD_DEDUCTIONS_2024 : MI_STANDARD_DEDUCTIONS_2025,
-    'MN': year === 2024 ? MN_STANDARD_DEDUCTIONS_2024 : MN_STANDARD_DEDUCTIONS_2025,
-    'MO': year === 2024 ? MO_STANDARD_DEDUCTIONS_2024 : MO_STANDARD_DEDUCTIONS_2025,
-    'MS': year === 2024 ? MS_STANDARD_DEDUCTIONS_2024 : MS_STANDARD_DEDUCTIONS_2025,
-    'MT': year === 2024 ? MT_STANDARD_DEDUCTIONS_2024 : MT_STANDARD_DEDUCTIONS_2025,
-    'NC': year === 2024 ? NC_STANDARD_DEDUCTIONS_2024 : NC_STANDARD_DEDUCTIONS_2025,
-    'ND': year === 2024 ? ND_STANDARD_DEDUCTIONS_2024 : ND_STANDARD_DEDUCTIONS_2025,
-    'NE': year === 2024 ? NE_STANDARD_DEDUCTIONS_2024 : NE_STANDARD_DEDUCTIONS_2025,
-    'NH': year === 2024 ? NH_STANDARD_DEDUCTIONS_2024 : NH_STANDARD_DEDUCTIONS_2025,
-    'NJ': year === 2024 ? NJ_STANDARD_DEDUCTIONS_2024 : NJ_STANDARD_DEDUCTIONS_2025,
-    'NM': year === 2024 ? NM_STANDARD_DEDUCTIONS_2024 : NM_STANDARD_DEDUCTIONS_2025,
-    'NV': year === 2024 ? NV_STANDARD_DEDUCTIONS_2024 : NV_STANDARD_DEDUCTIONS_2025,
-    'NY': year === 2024 ? NY_STANDARD_DEDUCTIONS_2024 : NY_STANDARD_DEDUCTIONS_2025,
-    'OH': year === 2024 ? OH_STANDARD_DEDUCTIONS_2024 : OH_STANDARD_DEDUCTIONS_2025,
-    'OK': year === 2024 ? OK_STANDARD_DEDUCTIONS_2024 : OK_STANDARD_DEDUCTIONS_2025,
-    'OR': year === 2024 ? OR_STANDARD_DEDUCTIONS_2024 : OR_STANDARD_DEDUCTIONS_2025,
-    'PA': year === 2024 ? PA_STANDARD_DEDUCTIONS_2024 : PA_STANDARD_DEDUCTIONS_2025,
-    'RI': year === 2024 ? RI_STANDARD_DEDUCTIONS_2024 : RI_STANDARD_DEDUCTIONS_2025,
-    'SC': year === 2024 ? SC_STANDARD_DEDUCTIONS_2024 : SC_STANDARD_DEDUCTIONS_2025,
-    'SD': year === 2024 ? SD_STANDARD_DEDUCTIONS_2024 : SD_STANDARD_DEDUCTIONS_2025,
-    'TN': year === 2024 ? TN_STANDARD_DEDUCTIONS_2024 : TN_STANDARD_DEDUCTIONS_2025,
-    'TX': year === 2024 ? TX_STANDARD_DEDUCTIONS_2024 : TX_STANDARD_DEDUCTIONS_2025,
-    'UT': year === 2024 ? UT_STANDARD_DEDUCTIONS_2024 : UT_STANDARD_DEDUCTIONS_2025,
-    'VA': year === 2024 ? VA_STANDARD_DEDUCTIONS_2024 : VA_STANDARD_DEDUCTIONS_2025,
-    'VT': year === 2024 ? VT_STANDARD_DEDUCTIONS_2024 : VT_STANDARD_DEDUCTIONS_2025,
-    'WA': year === 2024 ? WA_STANDARD_DEDUCTIONS_2024 : WA_STANDARD_DEDUCTIONS_2025,
-    'WI': year === 2024 ? WI_STANDARD_DEDUCTIONS_2024 : WI_STANDARD_DEDUCTIONS_2025,
-    'WV': year === 2024 ? WV_STANDARD_DEDUCTIONS_2024 : WV_STANDARD_DEDUCTIONS_2025,
-    'WY': year === 2024 ? WY_STANDARD_DEDUCTIONS_2024 : WY_STANDARD_DEDUCTIONS_2025
+    'AL': AL_STANDARD_DEDUCTIONS_2025,
+    'AR': AR_STANDARD_DEDUCTIONS_2025,
+    'AZ': AZ_STANDARD_DEDUCTIONS_2025,
+    'CA': CA_STANDARD_DEDUCTIONS_2025,
+    'CO': CO_STANDARD_DEDUCTIONS_2025,
+    'CT': CT_STANDARD_DEDUCTIONS_2025,
+    'DC': DC_STANDARD_DEDUCTIONS_2025,
+    'DE': DE_STANDARD_DEDUCTIONS_2025,
+    'GA': GA_STANDARD_DEDUCTIONS_2025,
+    'HI': HI_STANDARD_DEDUCTIONS_2025,
+    'IA': IA_STANDARD_DEDUCTIONS_2025,
+    'ID': ID_STANDARD_DEDUCTIONS_2025,
+    'IL': IL_STANDARD_DEDUCTIONS_2025,
+    'IN': IN_STANDARD_DEDUCTIONS_2025,
+    'KS': KS_STANDARD_DEDUCTIONS_2025,
+    'KY': KY_STANDARD_DEDUCTIONS_2025,
+    'LA': LA_STANDARD_DEDUCTIONS_2025,
+    'MA': MA_STANDARD_DEDUCTIONS_2025,
+    'MD': MD_STANDARD_DEDUCTIONS_2025,
+    'ME': ME_STANDARD_DEDUCTIONS_2025,
+    'MI': MI_STANDARD_DEDUCTIONS_2025,
+    'MN': MN_STANDARD_DEDUCTIONS_2025,
+    'MO': MO_STANDARD_DEDUCTIONS_2025,
+    'MS': MS_STANDARD_DEDUCTIONS_2025,
+    'MT': MT_STANDARD_DEDUCTIONS_2025,
+    'NC': NC_STANDARD_DEDUCTIONS_2025,
+    'ND': ND_STANDARD_DEDUCTIONS_2025,
+    'NE': NE_STANDARD_DEDUCTIONS_2025,
+    'NJ': NJ_STANDARD_DEDUCTIONS_2025,
+    'NM': NM_STANDARD_DEDUCTIONS_2025,
+    'NY': NY_STANDARD_DEDUCTIONS_2025,
+    'OH': OH_STANDARD_DEDUCTIONS_2025,
+    'OK': OK_STANDARD_DEDUCTIONS_2025,
+    'OR': OR_STANDARD_DEDUCTIONS_2025,
+    'PA': PA_STANDARD_DEDUCTIONS_2025,
+    'RI': RI_STANDARD_DEDUCTIONS_2025,
+    'SC': SC_STANDARD_DEDUCTIONS_2025,
+    'UT': UT_STANDARD_DEDUCTIONS_2025,
+    'VA': VA_STANDARD_DEDUCTIONS_2025,
+    'VT': VT_STANDARD_DEDUCTIONS_2025,
+    'WI': WI_STANDARD_DEDUCTIONS_2025,
+    'WV': WV_STANDARD_DEDUCTIONS_2025
   };
 
   const deductions = deductionMappings[upperState];
@@ -2014,4 +1988,92 @@ export function getStateStandardDeduction(state, year, filingStatus) {
   }
 
   return deductions[filingStatus];
+}
+
+/**
+ * Calculate federal income tax
+ * @param {number} income - Taxable income in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @returns {number} Federal tax liability in cents
+ */
+export function calculateFederalTax(income, filingStatus, year = 2025) {
+  const brackets = year === 2024 ? TAX_BRACKETS_2024 : TAX_BRACKETS_2025;
+  const deduction = year === 2024 ? STANDARD_DEDUCTIONS[2024] : STANDARD_DEDUCTIONS[2025];
+
+  const taxableIncome = Math.max(0, income - deduction[filingStatus]);
+
+  let totalTax = 0;
+  let remainingIncome = taxableIncome;
+
+  for (const bracket of brackets[filingStatus]) {
+    if (remainingIncome <= 0) break;
+
+    const taxableInBracket = Math.min(
+      remainingIncome,
+      bracket.max === Infinity ? remainingIncome : (bracket.max - bracket.min + 1)
+    );
+
+    const taxInBracket = Math.round(taxableInBracket * bracket.rate);
+    totalTax += taxInBracket;
+
+    remainingIncome -= taxableInBracket;
+  }
+
+  return totalTax;
+}
+
+/**
+ * Calculate state income tax
+ * @param {string} state - State abbreviation ('DC', 'CA', 'NY', etc.)
+ * @param {number} income - Taxable income in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @returns {number} State tax liability in cents
+ */
+export function calculateStateTax(state, income, filingStatus, year = 2025) {
+  if (!state) return 0;
+
+  const brackets = getStateTaxBrackets(state, year, filingStatus);
+  const deduction = getStateStandardDeduction(state, year, filingStatus);
+
+  const taxableIncome = Math.max(0, income - deduction);
+
+  let totalTax = 0;
+  let remainingIncome = taxableIncome;
+
+  for (const bracket of brackets) {
+    if (remainingIncome <= 0) break;
+
+    const taxableInBracket = Math.min(
+      remainingIncome,
+      bracket.max === Infinity ? remainingIncome : (bracket.max - bracket.min + 1)
+    );
+
+    const taxInBracket = Math.round(taxableInBracket * bracket.rate);
+    totalTax += taxInBracket;
+
+    remainingIncome -= taxableInBracket;
+  }
+
+  return totalTax;
+}
+
+/**
+ * Calculate total income tax (federal + state)
+ * @param {string} state - State abbreviation ('DC', 'CA', 'NY', or null)
+ * @param {number} income - Gross income in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year
+ * @returns {object} Tax breakdown with federal, state, and total
+ */
+export function calculateTotalTax(state, income, filingStatus, year = 2025) {
+  const federalTax = calculateFederalTax(income, filingStatus, year);
+  const stateTax = state ? calculateStateTax(state, income, filingStatus, year) : 0;
+
+  return {
+    federalTax,
+    stateTax,
+    totalTax: federalTax + stateTax
+  };
 }

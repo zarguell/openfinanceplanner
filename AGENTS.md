@@ -109,6 +109,20 @@ All domain models are in `src/core/models/`:
 - `calculateTotalExpenses(expenses, yearOffset, inflationRate)` - Sums all expenses for year
 - `project(plan, yearsToProject)` - Main year-by-year projection loop
 
+`src/calculations/tax.js` contains tax calculation functions:
+
+- `calculateFederalTax(income, filingStatus, year)` - Calculates federal income tax
+- `calculateStateTax(state, income, filingStatus, year)` - Calculates state income tax
+- `calculateTotalTax(state, income, filingStatus, year)` - Calculates combined federal + state tax
+- `getStateTaxBrackets(state, year, filingStatus)` - Gets state-specific tax brackets
+- `getStateStandardDeduction(state, year, filingStatus)` - Gets state standard deduction
+
+**Tax Calculation Features:**
+- Federal tax brackets for 2024/2025 (7 progressive brackets, 4 filing statuses)
+- State tax systems for all 50 states + DC (progressive, flat-rate, and no-tax states)
+- Combined federal + state tax calculations integrated into retirement projections
+- Comprehensive test coverage for all US states and territories
+
 **Important**: All calculation functions are pure (no side effects, no state mutations). This makes them easy to test and reason about.
 
 ### Storage Layer
@@ -143,7 +157,8 @@ Plans stored in localStorage as `ofp_plan_{uuid}`:
     currentAge: number,
     retirementAge: number,
     filingStatus: "single|married_joint|married_separate|head",
-    federalTaxRate: number (decimal)
+    federalTaxRate: number (decimal),
+    state: string | null  // 2-letter state code (e.g., "DC", "CA", "NY") or null
   },
   assumptions: {
     inflationRate: number (decimal),
