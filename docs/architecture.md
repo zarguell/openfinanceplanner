@@ -80,7 +80,29 @@ TaxEngine.getApplicableRules(accountType, age) → Rule[]
 // Roth-specific operations
 TaxEngine.calculateRothConversionTax(amount, traditionalBalance, basis) → number
 TaxEngine.validateBackdoorRothEligibility(income, filingStatus) → boolean
+
+// Required Minimum Distributions (RMD)
+TaxEngine.calculateRMD(accountBalance, age) → number
+TaxEngine.mustTakeRMD(age, birthYear) → boolean
+TaxEngine.calculateTotalRMD(accounts, age) → number
 ```
+
+#### RMD Module Details
+**Implementation**: `src/calculations/rmd.js`
+- Implements IRS Uniform Lifetime Table (ages 72-120)
+- Supports SECURE Act 2.0: RMDs start at age 73 (or 72 if born in 1951)
+- Exemptions: Roth IRAs, HSAs, and taxable brokerage accounts
+- Only applies to tax-advantaged retirement accounts (401k, traditional IRA)
+- Life expectancy factors capped at age 120+
+
+**Exported Functions**:
+- `getLifeExpectancyFactor(age)` - Returns IRS life expectancy factor
+- `calculateRMD(accountBalance, age)` - Basic RMD calculation
+- `mustTakeRMD(age, birthYear)` - Determines if RMD required
+- `getRMDStartAge(birthYear)` - Returns 72 (born 1951) or 73 (all others)
+- `calculateRMDForAccount(account, age)` - Account-specific RMD
+- `calculateTotalRMD(accounts, age)` - Sum of RMDs across all accounts
+- `getRMDDeadline(age, birthYear)` - Returns deadline string
 
 ### ProjectionRunner API
 ```javascript

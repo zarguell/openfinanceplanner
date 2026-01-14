@@ -35,6 +35,25 @@
 **Ready for Phase 7: Testing & Quality**
 - Integration tests passing - All core functionality validated
 
+**Sprint 2: Required Minimum Distribution (RMD) Implementation (COMPLETED ✅)**
+
+- ✅ Implemented IRS Uniform Lifetime Table (ages 72-120)
+- ✅ Added SECURE Act 2.0 support: RMDs start at age 73 (or 72 if born in 1951)
+- ✅ RMD calculations for 401k and traditional IRA accounts
+- ✅ Exemptions for Roth IRA, HSA, and taxable brokerage accounts
+- ✅ Integration with projection engine (withdrawals must cover expenses or RMDs, whichever is greater)
+- ✅ Comprehensive unit tests for all RMD functions
+- ✅ Documentation updates (architecture.md)
+
+**Files Created:**
+- `src/calculations/rmd.js` - RMD calculation module
+- `tests/unit/calculations/rmd.test.js` - RMD unit tests
+
+**Files Modified:**
+- `src/calculations/projection.js` - Integrated RMD calculations
+- `docs/architecture.md` - Added RMD module documentation
+- `docs/tasks.md` - Marked Sprint 2 complete
+
 **Status:** Core tax calculation foundation (80% of Phase 1) is production-ready for accurate financial projections.
 The single-file implementation has been successfully refactored into a modular architecture:
 
@@ -83,7 +102,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Short-term capital gains (taxed at ordinary income rates)
 - [x] Net Investment Income Tax (NIIT) - 3.8% on investment income over thresholds
 - [ ] FICA taxes - SS (6.2%) + Medicare (1.45% + 0.9% additional for high earners
-- [ ] RMD calculations - SECURE Act 2.0 age requirements with IRS life expectancy table
+- [✅] RMD calculations - SECURE Act 2.0 age requirements with IRS life expectancy table (COMPLETED Sprint 2)
 
 
 **Income Streams**

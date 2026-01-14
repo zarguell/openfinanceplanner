@@ -10,9 +10,10 @@ import {
    calculateFicaTax,
    calculateRMD,
    getRmdAgeRequirement
-} from './tax.js';
-import { calculateSocialSecurityForYear } from './social-security.js';
-import { calculateTotalIncome } from './income.js';
+ } from './tax.js';
+import { calculateRMDForAccount, mustTakeRMD } from './rmd.js';
+ import { calculateSocialSecurityForYear } from './social-security.js';
+ import { calculateTotalIncome } from './income.js';
 
 /**
  * Get growth rate for account type based on assumptions
@@ -174,14 +175,12 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       // Add contribution to balance
       balance += contribution;
 
-      // RMD calculations for retired individuals with qualified accounts
+      // RMD calculations for qualified accounts (401k, IRA)
+      // Per SECURE Act 2.0: RMDs start at age 73 (or 72 if turned 72 in 2023)
       let rmdAmount = 0;
-      if (isRetired && (account.type === '401k' || account.type === 'IRA')) {
-        const rmdAge = getRmdAgeRequirement(new Date().getFullYear() - startAge);
-        if (age >= rmdAge) {
-          rmdAmount = calculateRMD(Math.round(balance * 100), age, taxYear) / 100;
-          totalRmdAmount += rmdAmount;
-        }
+      if ((account.type === '401k' || account.type === 'IRA') && mustTakeRMD(age)) {
+        rmdAmount = calculateRMDForAccount({ ...account, balance: balance * 100 }, age);
+        totalRmdAmount += rmdAmount;
       }
 
       // Total withdrawal is the greater of expense need or RMD requirement
