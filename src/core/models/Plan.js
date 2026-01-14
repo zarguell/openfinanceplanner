@@ -36,7 +36,14 @@ export class Plan {
     this.accounts = [];
     this.expenses = [];
     this.incomes = [];
-    this.withdrawalStrategy = 'proportional'; // Default to proportional withdrawals
+    this.withdrawalStrategy = 'proportional';
+    this.rothConversions = {
+      enabled: false,
+      strategy: 'fixed',
+      annualAmount: 0,
+      percentage: 0.05,
+      bracketTop: 0
+    };
   }
 
   generateId() {
@@ -87,6 +94,7 @@ export class Plan {
       assumptions: { ...this.assumptions },
       socialSecurity: { ...this.socialSecurity },
       withdrawalStrategy: this.withdrawalStrategy,
+      rothConversions: { ...this.rothConversions },
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
       expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp),
       incomes: this.incomes.map(inc => inc.toJSON ? inc.toJSON() : inc)
@@ -124,7 +132,16 @@ export class Plan {
       birthYear: new Date().getFullYear() - plan.taxProfile.currentAge,
       monthlyBenefit: 0,
       filingAge: plan.taxProfile.retirementAge,
-      ...data.socialSecurity // Override with saved data
+      ...data.socialSecurity
+    };
+
+    plan.rothConversions = {
+      enabled: false,
+      strategy: 'fixed',
+      annualAmount: 0,
+      percentage: 0.05,
+      bracketTop: 0,
+      ...data.rothConversions
     };
 
     plan.accounts = data.accounts || [];

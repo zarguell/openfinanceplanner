@@ -1002,6 +1002,8 @@ export class AppController {
     if (!this.currentPlan) return;
 
     const content = document.getElementById('planSettingsContent');
+    const rc = this.currentPlan.rothConversions || { enabled: false, strategy: 'fixed', annualAmount: 0, percentage: 0.05, bracketTop: 0 };
+
     content.innerHTML = `
       <div class="form-group">
         <label class="form-label">Plan Name</label>
@@ -1029,6 +1031,52 @@ export class AppController {
         </select>
         <small class="form-help">Strategy for ordering withdrawals from accounts in retirement</small>
       </div>
+
+      <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--color-border);">
+
+      <h3 style="margin-bottom: 1rem;">Roth Conversion Settings</h3>
+      <div class="form-group">
+        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+          <input type="checkbox" id="settingsRothConversionsEnabled" onchange="app.toggleRothConversionFields()"> Enable Roth Conversions
+        </label>
+        <small class="form-help">Convert Traditional IRA/401(k) funds to Roth IRA for tax-free growth</small>
+      </div>
+
+      <div id="rothConversionsFields" style="display: none;">
+        <div class="form-group">
+          <label class="form-label">Conversion Strategy</label>
+          <select id="settingsRothConversionsStrategy" class="form-control" onchange="app.toggleRothConversionStrategyFields()">
+            <option value="fixed" ${rc.strategy === 'fixed' ? 'selected' : ''}>Fixed Annual Amount</option>
+            <option value="bracket-fill" ${rc.strategy === 'bracket-fill' ? 'selected' : ''}>Fill to Tax Bracket Top</option>
+            <option value="percentage" ${rc.strategy === 'percentage' ? 'selected' : ''}>Percentage of Balance</option>
+          </select>
+          <small class="form-help">How much to convert each year</small>
+        </div>
+
+        <div id="rothConversionFixedFields" class="roth-conversion-fields" style="display: ${rc.strategy === 'fixed' ? 'block' : 'none'};">
+          <div class="form-group">
+            <label class="form-label">Annual Conversion Amount <span class="form-label-hint">$</span></label>
+            <input type="number" id="settingsRothConversionsAnnualAmount" class="form-control" value="${(rc.annualAmount / 100).toFixed(2)}" min="0" step="100">
+            <small class="form-help">Fixed amount to convert each year (subject to available balance)</small>
+          </div>
+        </div>
+
+        <div id="rothConversionBracketFillFields" class="roth-conversion-fields" style="display: ${rc.strategy === 'bracket-fill' ? 'block' : 'none'};">
+          <div class="form-group">
+            <label class="form-label">Fill to Bracket Top <span class="form-label-hint">$</span></label>
+            <input type="number" id="settingsRothConversionsBracketTop" class="form-control" value="${(rc.bracketTop / 100).toFixed(2)}" min="0" step="1000">
+            <small class="form-help">Convert up to this income level in your current tax bracket</small>
+          </div>
+        </div>
+
+        <div id="rothConversionPercentageFields" class="roth-conversion-fields" style="display: ${rc.strategy === 'percentage' ? 'block' : 'none'};">
+          <div class="form-group">
+            <label class="form-label">Conversion Percentage <span class="form-label-hint">%</span></label>
+            <input type="number" id="settingsRothConversionsPercentage" class="form-control" value="${(rc.percentage * 100).toFixed(1)}" min="0" max="100" step="1">
+            <small class="form-help">Percentage of Traditional balance to convert each year (e.g., 5%)</small>
+          </div>
+        </div>
+      </div>
     `;
 
     this.openModal('planSettingsModal');
@@ -1041,6 +1089,20 @@ export class AppController {
     this.currentPlan.taxProfile.estimatedTaxRate = parseFloat(document.getElementById('settingsEstimatedTaxRate').value) / 100;
     this.currentPlan.withdrawalStrategy = document.getElementById('settingsWithdrawalStrategy').value;
 
+    const rcEnabled = document.getElementById('settingsRothConversionsEnabled').checked;
+    const rcStrategy = document.getElementById('settingsRothConversionsStrategy').value;
+    const rcAnnualAmount = parseFloat(document.getElementById('settingsRothConversionsAnnualAmount').value) || 0;
+    const rcPercentage = parseFloat(document.getElementById('settingsRothConversionsPercentage').value) || 0;
+    const rcBracketTop = parseFloat(document.getElementById('settingsRothConversionsBracketTop').value) || 0;
+
+    this.currentPlan.rothConversions = {
+      enabled: rcEnabled,
+      strategy: rcStrategy,
+      annualAmount: Math.round(rcAnnualAmount * 100),
+      percentage: rcPercentage / 100,
+      bracketTop: Math.round(rcBracketTop * 100)
+    };
+
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);
     this.closeModal('planSettingsModal');
@@ -1050,6 +1112,23 @@ export class AppController {
   }
 
   // Social Security Management
+
+  toggleRothConversionFields() {
+    const enabled = document.getElementById('settingsRothConversionsEnabled').checked;
+    const fields = document.getElementById('rothConversionsFields');
+    fields.style.display = enabled ? 'block' : 'none';
+  }
+
+  toggleRothConversionStrategyFields() {
+    const strategy = document.getElementById('settingsRothConversionsStrategy').value;
+    const allFields = document.querySelectorAll('.roth-conversion-fields');
+    allFields.forEach(field => field.style.display = 'none');
+
+    const activeField = document.getElementById(`rothConversion${strategy.charAt(0).toUpperCase() + strategy.slice(1)}Fields`);
+    if (activeField) {
+      activeField.style.display = 'block';
+    }
+  }
 
   toggleSocialSecurity() {
     const enabled = document.getElementById('socialSecurityEnabled').checked;

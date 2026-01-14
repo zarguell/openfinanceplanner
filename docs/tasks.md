@@ -60,14 +60,19 @@
 - ✅ Created comprehensive unit tests (all passing)
 - ✅ Created integration tests (all passing)
 - ✅ Documentation updates (architecture.md)
+- ✅ Added Roth Conversion UI to Plan Settings
+- ✅ Updated Plan model to support rothConversions field
 
 **Files Created:**
 - `src/calculations/roth-conversions.js` - Roth conversion module
 - `tests/unit/calculations/roth-conversions.test.js` - Unit tests
 - `tests/integration/roth-conversions-integration.test.js` - Integration tests
+- `tests/integration/roth-conversions-ui.test.js` - UI integration tests
 
 **Files Modified:**
 - `src/calculations/projection.js` - Integrated Roth conversions
+- `src/ui/AppController.js` - Added Roth Conversion UI
+- `src/core/models/Plan.js` - Added rothConversions support
 - `docs/architecture.md` - Added Roth conversion documentation
 - `docs/tasks.md` - Marked Sprint 6 tasks complete
 
@@ -75,8 +80,22 @@
 - All unit tests passing ✅
 - All integration tests passing ✅
 - Full-flow test passing ✅
+- UI integration tests passing ✅
 - Three conversion strategies working: fixed, bracket-fill, percentage
 - RMD integration working with conversions ✅
+
+**Sprint 7: Roth Conversion UI (COMPLETED ✅)**
+
+- ✅ Added Roth Conversion enable/disable toggle to Plan Settings
+- ✅ Added Roth Conversion strategy selector (fixed/bracket-fill/percentage)
+- ✅ Added strategy-specific input fields:
+  - Fixed: Annual conversion amount
+  - Percentage: Conversion percentage
+  - Bracket-fill: Bracket top income level
+- ✅ Implemented toggle functions for showing/hiding fields
+- ✅ Implemented save logic for Roth Conversion settings
+- ✅ Updated Plan model with rothConversions field in constructor, toJSON(), and fromJSON()
+- ✅ Created UI integration tests (all passing)
 
 **Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
 
