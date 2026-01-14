@@ -5,6 +5,7 @@
 import { Plan } from '../core/models/Plan.js';
 import { Account } from '../core/models/Account.js';
 import { Expense } from '../core/models/Expense.js';
+import { Income } from '../core/models/Income.js';
 import { project } from '../calculations/projection.js';
 import { runMonteCarloSimulation, getSuccessProbabilityWithConfidence } from '../calculations/monte-carlo.js';
 import { StorageManager } from '../storage/StorageManager.js';
@@ -56,6 +57,9 @@ export class AppController {
       this.currentPlan.expenses = planData.expenses.map(exp =>
         exp instanceof Expense ? exp : Expense.fromJSON(exp)
       );
+      this.currentPlan.incomes = planData.incomes ? planData.incomes.map(inc =>
+        inc instanceof Income ? inc : Income.fromJSON(inc)
+      ) : [];
 
       this.renderPlanUI();
       this.loadPlansList();
@@ -73,6 +77,7 @@ export class AppController {
         <button class="tab active" onclick="app.switchTab('overview')">Overview</button>
         <button class="tab" onclick="app.switchTab('assumptions')">Assumptions</button>
         <button class="tab" onclick="app.switchTab('socialsecurity')">Social Security</button>
+        <button class="tab" onclick="app.switchTab('income')">Income</button>
         <button class="tab" onclick="app.switchTab('accounts')">Accounts</button>
         <button class="tab" onclick="app.switchTab('expenses')">Expenses</button>
         <button class="tab" onclick="app.switchTab('projection')">Projection</button>
@@ -168,6 +173,11 @@ export class AppController {
         </div>
       </div>
 
+      <div id="incomeTab" class="tab-content">
+        <div id="incomesList"></div>
+        <button class="btn btn-primary" onclick="app.showAddIncomeModal()" style="margin-top: 1rem;">+ Add Income</button>
+      </div>
+
       <div id="accountsTab" class="tab-content">
         <div id="accountsList"></div>
         <button class="btn btn-primary" onclick="app.showAddAccountModal()" style="margin-top: 1rem;">+ Add Account</button>
@@ -187,6 +197,7 @@ export class AppController {
     this.populateSocialSecurityFields();
     this.renderAccountsList();
     this.renderExpensesList();
+    this.renderIncomesList();
     this.renderOverviewSummary();
   }
 
@@ -289,6 +300,44 @@ export class AppController {
     });
   }
 
+  renderIncomesList() {
+    const container = document.getElementById('incomesList');
+    container.innerHTML = '';
+
+    if (this.currentPlan.incomes.length === 0) {
+      container.innerHTML = '<p class="text-muted">No income configured yet. Add one to model your earnings.</p>';
+      return;
+    }
+
+    this.currentPlan.incomes.forEach(income => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-header">
+          <h4>${this.escapeHtml(income.name)} <span class="badge badge-success">${income.type}</span></h4>
+          <div class="card-actions">
+            <button class="btn btn-danger btn-small" onclick="app.deleteIncome('${income.id}')">Delete</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <div class="result-label">Annual Amount</div>
+            <div class="result-value">$${(income.baseAmount / 100).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+          </div>
+          <div>
+            <div class="result-label">Starts Year</div>
+            <div class="result-value">${income.startYear}</div>
+          </div>
+          <div>
+            <div class="result-label">Growth Rate</div>
+            <div class="result-value">${(income.growthRate * 100).toFixed(1)}%</div>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
   renderOverviewSummary() {
     const container = document.getElementById('overviewResults');
     const totalBalance = this.currentPlan.accounts.reduce((sum, acc) => sum + acc.balance / 100, 0);
@@ -325,6 +374,7 @@ export class AppController {
       'overview': 'overviewTab',
       'assumptions': 'assumptionsTab',
       'socialsecurity': 'socialsecurityTab',
+      'income': 'incomeTab',
       'accounts': 'accountsTab',
       'expenses': 'expensesTab',
       'projection': 'projectionTab'
@@ -744,6 +794,81 @@ export class AppController {
     this.currentPlan.removeExpense(expenseId);
     StorageManager.savePlan(this.currentPlan);
     this.renderExpensesList();
+  }
+
+  // Income Management
+
+  showAddIncomeModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay active';
+    modal.id = 'addIncomeModal';
+    modal.innerHTML = `
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Add Income</h2>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Income Name</label>
+          <input type="text" id="incomeName" class="form-control" placeholder="e.g., Software Engineer Salary">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Income Type</label>
+          <select id="incomeType" class="form-control">
+            <option value="salary">Salary/Wages</option>
+            <option value="business">Business Income</option>
+            <option value="pension">Pension</option>
+            <option value="rental">Rental Income</option>
+            <option value="dividends">Qualified Dividends</option>
+            <option value="other">Other Income</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Annual Amount <span class="form-label-hint">$</span></label>
+          <input type="number" id="incomeAmount" class="form-control" placeholder="80000" min="0" step="1000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Start Year <span class="form-label-hint"># of years from now</span></label>
+          <input type="number" id="incomeStartYear" class="form-control" placeholder="0" min="0" step="1" value="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Annual Growth Rate <span class="form-label-hint">%</span></label>
+          <input type="number" id="incomeGrowthRate" class="form-control" placeholder="3.0" min="-10" max="20" step="0.1" value="3.0">
+          <small class="form-help">Expected annual raise or income growth (e.g., 3% for salary increases)</small>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="document.getElementById('addIncomeModal').remove()">Cancel</button>
+          <button class="btn btn-primary" onclick="app.addIncome()">Add</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  addIncome() {
+    const name = document.getElementById('incomeName').value.trim();
+    const type = document.getElementById('incomeType').value;
+    const amount = parseFloat(document.getElementById('incomeAmount').value) || 0;
+    const startYear = parseInt(document.getElementById('incomeStartYear').value) || 0;
+    const growthRate = parseFloat(document.getElementById('incomeGrowthRate').value) / 100 || 0.03;
+
+    if (!name || !amount) {
+      alert('Please fill required fields');
+      return;
+    }
+
+    const income = new Income(name, amount, startYear, type);
+    income.growthRate = growthRate;
+    this.currentPlan.addIncome(income);
+    StorageManager.savePlan(this.currentPlan);
+    this.renderIncomesList();
+    document.getElementById('addIncomeModal').remove();
+  }
+
+  deleteIncome(incomeId) {
+    if (!confirm('Delete this income?')) return;
+    this.currentPlan.removeIncome(incomeId);
+    StorageManager.savePlan(this.currentPlan);
+    this.renderIncomesList();
   }
 
   // Import/Export
