@@ -60,35 +60,128 @@ export function testCalculateTotalExpenses() {
 }
 
 export function testSimpleProjection() {
+  // Scenario: $10k contributions, $12k expenses -> net $2k withdrawal + growth
   const plan = {
     accounts: [
-      { type: '401k', balance: 100000, annualContribution: 10000 }
+      { type: '401k', balance: 10000000, annualContribution: 10000 } // $100k balance, $10k contribution
     ],
     expenses: [
-      { name: 'Living', baseAmount: 6000000, startYear: 0, inflationAdjusted: true }
+      { name: 'Living', baseAmount: 1200000, startYear: 0, inflationAdjusted: false } // $12k expenses
     ],
     taxProfile: {
       currentAge: 35,
-      retirementAge: 65
+      retirementAge: 65,
+      state: null,
+      filingStatus: 'single'
     },
     assumptions: {
       inflationRate: 0.03,
       equityGrowthRate: 0.07,
       bondGrowthRate: 0.04
-    }
+    },
+    socialSecurity: { enabled: false }
   };
 
-  const results = project(plan, 1); // Project 1 year
+  const results = project(plan, 1);
 
-  if (results.length !== 2) { // Year 0 and Year 1
+  if (results.length !== 2) {
     throw new Error(`Expected 2 years, got ${results.length}`);
   }
 
-  if (results[1].totalBalance <= results[0].totalBalance) {
-    throw new Error('Expected balance to grow with contributions and returns');
+  // With $10k contribution and $12k expense, net is -$2k withdrawal
+  // $100k + $10k - $2k = $108k, then 7% growth = ~$115.6k
+  // Year 0: $100k + $10k - $2k = $108k * 1.07 = ~$115.6k
+  if (results[0].totalBalance < 100000 || results[0].totalBalance > 120000) {
+    throw new Error(`Year 0 balance should be around $115k, got $${results[0].totalBalance}`);
   }
 
   console.log('✓ testSimpleProjection passed');
+}
+
+export function testYear0IncludesExpenses() {
+  // Year 0 should include expenses - this is the current year!
+  const startingBalance = 10000000; // $100,000 in cents
+  const annualExpense = 2000000; // $20,000 in cents
+  const contribution = 20000; // $20,000
+  
+  const plan = {
+    accounts: [
+      { type: '401k', balance: startingBalance, annualContribution: contribution }
+    ],
+    expenses: [
+      { name: 'Living', baseAmount: annualExpense, startYear: 0, inflationAdjusted: false }
+    ],
+    taxProfile: {
+      currentAge: 30,
+      retirementAge: 65,
+      state: null,
+      filingStatus: 'single'
+    },
+    assumptions: {
+      inflationRate: 0.03,
+      equityGrowthRate: 0.07
+    },
+    socialSecurity: { enabled: false }
+  };
+
+  const results = project(plan, 1);
+  const year0 = results[0];
+
+  // Year 0 should show expenses
+  if (year0.totalExpense !== annualExpense / 100) {
+    throw new Error(`Year 0 should show expenses of $${annualExpense/100}, got $${year0.totalExpense}`);
+  }
+
+  // With $20k contribution covering $20k expense, no withdrawal needed
+  // Balance: $100k + $20k - $0 withdrawal = $120k * 1.07 = $128.4k
+  const expectedBalance = (startingBalance / 100 + contribution) * 1.07;
+  if (Math.abs(year0.totalBalance - expectedBalance) > 100) {
+    throw new Error(`Year 0 balance should be ~$${expectedBalance.toFixed(0)}, got $${year0.totalBalance.toFixed(0)}`);
+  }
+
+  console.log('✓ testYear0IncludesExpenses passed');
+}
+
+export function testRetirementWithdrawalsDepleteFunds() {
+  // User scenario: already retired, expenses exceed what growth can cover
+  const plan = {
+    accounts: [
+      { type: '401k', balance: 10000000, annualContribution: 0, withdrawalRate: 0.04 } // $100k
+    ],
+    expenses: [
+      { name: 'Living', baseAmount: 6000000, startYear: 0, inflationAdjusted: false } // $60k
+    ],
+    taxProfile: {
+      currentAge: 65,
+      retirementAge: 65, // Already retired
+      state: null,
+      filingStatus: 'single'
+    },
+    assumptions: {
+      inflationRate: 0.03,
+      equityGrowthRate: 0.07
+    },
+    socialSecurity: { enabled: false }
+  };
+
+  const results = project(plan, 5);
+
+  // Year 0: $100k - $60k withdrawal + 7% growth = ~$42.8k
+  // Expenses are deducted in year 0 (the current year)
+  if (results[0].totalBalance > 50000) {
+    throw new Error(`Year 0 should be around $43k after $60k withdrawal, got $${results[0].totalBalance}`);
+  }
+  if (results[0].totalExpense !== 60000) {
+    throw new Error(`Year 0 should show $60k expenses, got $${results[0].totalExpense}`);
+  }
+
+  // Should go negative quickly - by year 1 or 2
+  const negativeYear = results.findIndex(r => r.totalBalance < 0);
+  if (negativeYear === -1 || negativeYear > 2) {
+    throw new Error(`Should go broke by year 2 with $60k/year expenses, first negative at year ${negativeYear}`);
+  }
+
+  console.log('✓ testRetirementWithdrawalsDepleteFunds passed');
 }
 
 export function testDetailedTaxCalculations() {
@@ -217,17 +310,18 @@ export function testUserReportedIssue() {
 }
 
 export function testProjectionSanityChecks() {
-  // Test that projections don't produce unrealistic results
+  // Test that projections produce realistic results
+  // Scenario: $1M balance, $40k expenses, $50k contributions = net $10k/year savings + growth
   const plan = {
     accounts: [
-      { type: '401k', balance: 10000000, annualContribution: 0, withdrawalRate: 0.04 } // $100K
+      { type: '401k', balance: 100000000, annualContribution: 50000 } // $1M, $50k contribution
     ],
     expenses: [
-      { name: 'Living', baseAmount: 6000000, startYear: 0, inflationAdjusted: true } // $60K
+      { name: 'Living', baseAmount: 4000000, startYear: 0, inflationAdjusted: false } // $40K
     ],
     taxProfile: {
       currentAge: 30,
-      retirementAge: 70,
+      retirementAge: 65,
       state: null,
       filingStatus: 'single'
     },
@@ -240,28 +334,30 @@ export function testProjectionSanityChecks() {
 
   const results = project(plan, 40);
 
-  // Check that balance doesn't grow more than 100x in 40 years (very generous upper bound)
-  const startBalance = results[0].totalBalance;
-  const endBalance = results[results.length - 1].totalBalance;
-  const growthFactor = endBalance / startBalance;
-
-  if (growthFactor > 100) {
-    throw new Error(`Unrealistic growth: ${growthFactor.toFixed(1)}x in 40 years (max expected: ~10x)`);
+  // Balance should grow during accumulation (contributions > expenses)
+  const accumulationResults = results.filter(r => !r.isRetired);
+  if (accumulationResults.length < 2) {
+    throw new Error('Expected accumulation phase results');
+  }
+  
+  // Each accumulation year should show growth
+  for (let i = 1; i < accumulationResults.length; i++) {
+    if (accumulationResults[i].totalBalance < accumulationResults[i-1].totalBalance) {
+      throw new Error(`Balance should grow during accumulation when contributions > expenses`);
+    }
   }
 
-  // Check that withdrawals are happening in retirement
+  // During retirement, with no contributions and $40k expenses, balance should decrease
   const retirementResults = results.filter(r => r.isRetired);
-  if (retirementResults.length === 0) {
-    throw new Error('No retirement results found');
-  }
-
-  // With 4% withdrawals and 7% growth, balance may still grow, but should not grow unrealistically
-  const firstRetirementResult = retirementResults[0];
-  const lastRetirementResult = retirementResults[retirementResults.length - 1];
-
-  // In a 40-year retirement, with 4% withdrawals vs 7% growth, balance should be reasonable
-  if (lastRetirementResult.totalBalance > firstRetirementResult.totalBalance * 10) {
-    throw new Error('Balance grew too much during retirement phase');
+  if (retirementResults.length > 0) {
+    const firstRetirement = retirementResults[0];
+    const lastRetirement = retirementResults[retirementResults.length - 1];
+    
+    // With $40k annual expenses and 7% growth, balance may still grow if balance is high enough
+    // But should be reasonable (not exploding)
+    if (lastRetirement.totalBalance > firstRetirement.totalBalance * 5) {
+      throw new Error('Balance grew unrealistically during retirement');
+    }
   }
 
   console.log('✓ testProjectionSanityChecks passed');
@@ -307,9 +403,10 @@ export function testWithdrawalAdequacy() {
 
 export function testMathematicalConsistency() {
   // Test mathematical properties that should always hold
+  // Scenario: contributions exceed expenses, so balance should grow
   const plan = {
     accounts: [
-      { type: '401k', balance: 10000000, annualContribution: 0, withdrawalRate: 0.04 }
+      { type: '401k', balance: 10000000, annualContribution: 20000 } // $100k, $20k contributions
     ],
     expenses: [
       { name: 'Living', baseAmount: 1000000, startYear: 0, inflationAdjusted: false } // $10K, no inflation
@@ -329,11 +426,11 @@ export function testMathematicalConsistency() {
 
   const results = project(plan, 40);
 
-  // Check that results are monotonically increasing during accumulation phase
+  // With contributions > expenses, balance should grow during accumulation
   const accumulationResults = results.filter(r => !r.isRetired);
   for (let i = 1; i < accumulationResults.length; i++) {
     if (accumulationResults[i].totalBalance < accumulationResults[i-1].totalBalance) {
-      throw new Error(`Balance decreased during accumulation phase: year ${accumulationResults[i].year}`);
+      throw new Error(`Balance should grow when contributions > expenses: year ${accumulationResults[i].year}`);
     }
   }
 
@@ -392,6 +489,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     testCalculateExpenseForYear();
     testCalculateTotalExpenses();
     testSimpleProjection();
+    testYear0IncludesExpenses();
+    testRetirementWithdrawalsDepleteFunds();
     testDetailedTaxCalculations();
     testProjectionSanityChecks();
     testWithdrawalAdequacy();

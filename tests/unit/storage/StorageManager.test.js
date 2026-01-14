@@ -33,6 +33,7 @@ export function testSaveAndLoadPlan() {
     taxProfile: {
       currentAge: 35,
       retirementAge: 65,
+      estimatedTaxRate: 0.25,
       filingStatus: 'single',
       federalTaxRate: 0.22
     },
@@ -63,8 +64,8 @@ export function testSaveAndLoadPlan() {
 export function testListPlans() {
   global.localStorage.clear();
 
-  const plan1 = { id: 'plan_1', name: 'Plan 1', created: new Date().toISOString(), lastModified: new Date().toISOString(), taxProfile: {}, assumptions: {}, accounts: [], expenses: [] };
-  const plan2 = { id: 'plan_2', name: 'Plan 2', created: new Date().toISOString(), lastModified: new Date().toISOString(), taxProfile: {}, assumptions: {}, accounts: [], expenses: [] };
+  const plan1 = { id: 'plan_1', name: 'Plan 1', created: new Date().toISOString(), lastModified: new Date().toISOString(), taxProfile: { estimatedTaxRate: 0.25 }, assumptions: { inflationRate: 0.03, equityGrowthRate: 0.07 }, accounts: [], expenses: [] };
+  const plan2 = { id: 'plan_2', name: 'Plan 2', created: new Date().toISOString(), lastModified: new Date().toISOString(), taxProfile: { estimatedTaxRate: 0.25 }, assumptions: { inflationRate: 0.03, equityGrowthRate: 0.07 }, accounts: [], expenses: [] };
 
   StorageManager.savePlan(plan1);
   StorageManager.savePlan(plan2);

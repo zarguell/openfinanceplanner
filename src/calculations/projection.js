@@ -111,44 +111,58 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     let totalFicaTax = 0;
     let totalRmdAmount = 0;
 
-    // Calculate pre-tax income for FICA calculations
-    const preTaxIncome = plan.accounts.reduce((sum, acc) => sum + (acc.annualContribution || 0), 0);
+    // Calculate total contributions across all accounts
+    const totalContributions = plan.accounts.reduce((sum, acc) => sum + (acc.annualContribution || 0), 0);
 
-    // Calculate FICA taxes on pre-retirement income
-    if (!isRetired && preTaxIncome > 0) {
-      const ficaResult = calculateFicaTax(Math.round(preTaxIncome * 100), plan.taxProfile.filingStatus, taxYear);
-      totalFicaTax = ficaResult.totalFicaTax / 100; // Convert cents to dollars
+    // Calculate FICA taxes on pre-retirement contributions (proxy for income)
+    if (!isRetired && totalContributions > 0) {
+      const ficaResult = calculateFicaTax(Math.round(totalContributions * 100), plan.taxProfile.filingStatus, taxYear);
+      totalFicaTax = ficaResult.totalFicaTax / 100;
     }
+
+    // Calculate net cash flow for this year
+    // Positive = adding to portfolio, Negative = withdrawing from portfolio
+    const netCashFlow = totalContributions + socialSecurityIncome - totalExpense;
 
     for (let i = 0; i < accountSnapshots.length; i++) {
       let balance = accountSnapshots[i].balance / 100;
       const account = plan.accounts[i];
-      let withdrawalAmount = 0;
+      const contribution = account.annualContribution || 0;
 
-      if (!isRetired) {
-        // Accumulation phase: add contributions (after FICA taxes)
-        const contribution = account.annualContribution || 0;
-        balance += contribution;
-      } else {
-        // Distribution phase: withdrawals for expenses
-        const netExpense = Math.max(0, totalExpense - socialSecurityIncome);
-        withdrawalAmount = netExpense / plan.accounts.length;
+      // Determine this account's share of expenses (proportional to balance or equal split)
+      const totalCurrentBalance = accountSnapshots.reduce((sum, acc) => sum + acc.balance, 0);
+      const accountShare = totalCurrentBalance > 0
+        ? accountSnapshots[i].balance / totalCurrentBalance
+        : 1 / plan.accounts.length;
 
-        // Add RMD if required for qualified accounts
+      // Calculate net expense after contributions and Social Security
+      const netExpenseAfterIncome = Math.max(0, totalExpense - socialSecurityIncome - totalContributions);
+      
+      // This account's withdrawal for expenses (proportional to balance)
+      let withdrawalForExpenses = netExpenseAfterIncome * accountShare;
+
+      // Add contribution to balance
+      balance += contribution;
+
+      // RMD calculations for retired individuals with qualified accounts
+      let rmdAmount = 0;
+      if (isRetired && (account.type === '401k' || account.type === 'IRA')) {
         const rmdAge = getRmdAgeRequirement(new Date().getFullYear() - startAge);
-        if (age >= rmdAge && (account.type === '401k' || account.type === 'IRA' || account.type === 'Roth')) {
-          const rmd = calculateRMD(Math.round(balance * 100), age, taxYear) / 100;
-          withdrawalAmount = Math.max(withdrawalAmount, rmd);
-          totalRmdAmount += rmd;
+        if (age >= rmdAge) {
+          rmdAmount = calculateRMD(Math.round(balance * 100), age, taxYear) / 100;
+          totalRmdAmount += rmdAmount;
         }
+      }
 
-        // Calculate taxes based on account type
-        let taxAmount = 0;
-        let federalTax = 0;
-        let stateTax = 0;
+      // Total withdrawal is the greater of expense need or RMD requirement
+      const withdrawalAmount = Math.max(withdrawalForExpenses, rmdAmount);
 
+      // Calculate taxes on withdrawals
+      let federalTax = 0;
+      let stateTax = 0;
+
+      if (withdrawalAmount > 0) {
         if (account.type === '401k' || account.type === 'IRA') {
-          // Traditional retirement accounts: withdrawals taxed as ordinary income
           const taxResult = calculateTotalTax(
             plan.taxProfile.state,
             Math.round(withdrawalAmount * 100),
@@ -157,16 +171,12 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
           );
           federalTax = taxResult.federalTax / 100;
           stateTax = taxResult.stateTax / 100;
-          taxAmount = federalTax + stateTax;
         } else if (account.type === 'Taxable') {
-          // Taxable accounts: assume long-term capital gains tax on withdrawals
-          // This is a simplification - in reality, cost basis would be tracked
           federalTax = calculateLongTermCapitalGainsTax(
             Math.round(withdrawalAmount * 100),
             plan.taxProfile.filingStatus,
             taxYear
           ) / 100;
-          // State capital gains tax rates vary, using ordinary income rate as approximation
           const stateTaxResult = calculateTotalTax(
             plan.taxProfile.state,
             Math.round(withdrawalAmount * 100),
@@ -174,29 +184,19 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
             taxYear
           );
           stateTax = stateTaxResult.stateTax / 100;
-          taxAmount = federalTax + stateTax;
-        } else if (account.type === 'Roth' || account.type === 'HSA') {
-          // Roth and HSA: qualified withdrawals are tax-free
-          taxAmount = 0;
-          federalTax = 0;
-          stateTax = 0;
         }
-
-        totalFederalTax += federalTax;
-        totalStateTax += stateTax;
-
-        // Withdraw full amount from account (taxes are paid separately)
-        balance -= withdrawalAmount;
+        // Roth and HSA: tax-free withdrawals
       }
 
-      // Apply investment growth (only during accumulation phase)
-      if (!isRetired) {
-        const growthRate = getAccountGrowthRate(
-          plan.accounts[i].type,
-          plan.assumptions
-        );
-        balance *= (1 + growthRate);
-      }
+      totalFederalTax += federalTax;
+      totalStateTax += stateTax;
+
+      // Apply withdrawal
+      balance -= withdrawalAmount;
+
+      // Apply investment growth
+      const growthRate = getAccountGrowthRate(account.type, plan.assumptions);
+      balance *= (1 + growthRate);
 
       accountSnapshots[i].balance = balance * 100;
       totalBalance += balance;
