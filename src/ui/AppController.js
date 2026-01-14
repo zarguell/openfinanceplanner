@@ -72,6 +72,7 @@ export class AppController {
       <div class="tabs">
         <button class="tab active" onclick="app.switchTab('overview')">Overview</button>
         <button class="tab" onclick="app.switchTab('assumptions')">Assumptions</button>
+        <button class="tab" onclick="app.switchTab('socialsecurity')">Social Security</button>
         <button class="tab" onclick="app.switchTab('accounts')">Accounts</button>
         <button class="tab" onclick="app.switchTab('expenses')">Expenses</button>
         <button class="tab" onclick="app.switchTab('projection')">Projection</button>
@@ -117,6 +118,56 @@ export class AppController {
         </div>
       </div>
 
+      <div id="socialsecurityTab" class="tab-content">
+        <div class="card">
+          <div class="card-header">
+            <h3>Social Security Benefits</h3>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="socialSecurityEnabled" onchange="app.toggleSocialSecurity()">
+                Include Social Security income in projections
+              </label>
+            </div>
+          </div>
+          <div id="socialSecurityFields" style="display: none;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Birth Year</label>
+                <input type="number" id="birthYear" class="form-control" min="1900" max="2100">
+                <small class="form-help">Used to calculate Full Retirement Age (FRA)</small>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Monthly Benefit at FRA <span class="form-label-hint">$</span></label>
+                <input type="number" id="monthlyBenefit" class="form-control" step="10" min="0" max="5000">
+                <small class="form-help">Monthly benefit amount at your Full Retirement Age</small>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Filing Age</label>
+                <select id="filingAge" class="form-control">
+                  <option value="62">62 (Early - reduced benefits)</option>
+                  <option value="63">63 (Early - reduced benefits)</option>
+                  <option value="64">64 (Early - reduced benefits)</option>
+                  <option value="65">65 (FRA for some - check your FRA)</option>
+                  <option value="66">66 (FRA for some - check your FRA)</option>
+                  <option value="67">67 (FRA for most - check your FRA)</option>
+                  <option value="68">68 (Delayed - increased benefits)</option>
+                  <option value="69">69 (Delayed - increased benefits)</option>
+                  <option value="70">70 (Delayed - maximum benefits)</option>
+                </select>
+                <small class="form-help">Age when you plan to start claiming benefits</small>
+              </div>
+            </div>
+            <div id="socialSecurityEstimate" class="alert alert-info" style="margin-top: 1rem; display: none;">
+              <strong>Estimated Annual Benefit:</strong> $<span id="estimatedAnnualBenefit">-</span><br>
+              <strong>Full Retirement Age:</strong> <span id="estimatedFRA">-</span>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="app.saveSocialSecurity()" style="margin-top: 1rem;">Save Social Security Settings</button>
+        </div>
+      </div>
+
       <div id="accountsTab" class="tab-content">
         <div id="accountsList"></div>
         <button class="btn btn-primary" onclick="app.showAddAccountModal()" style="margin-top: 1rem;">+ Add Account</button>
@@ -133,6 +184,7 @@ export class AppController {
     `;
 
     this.populateAssumptionFields();
+    this.populateSocialSecurityFields();
     this.renderAccountsList();
     this.renderExpensesList();
     this.renderOverviewSummary();
@@ -144,6 +196,20 @@ export class AppController {
     document.getElementById('bondGrowthRate').value = (this.currentPlan.assumptions.bondGrowthRate * 100).toFixed(2);
     document.getElementById('equityVolatility').value = (this.currentPlan.assumptions.equityVolatility * 100).toFixed(1);
     document.getElementById('bondVolatility').value = (this.currentPlan.assumptions.bondVolatility * 100).toFixed(1);
+  }
+
+  populateSocialSecurityFields() {
+    const ss = this.currentPlan.socialSecurity;
+    document.getElementById('socialSecurityEnabled').checked = ss.enabled;
+
+    if (ss.enabled) {
+      document.getElementById('socialSecurityFields').style.display = 'block';
+      document.getElementById('birthYear').value = ss.birthYear || '';
+      document.getElementById('monthlyBenefit').value = ss.monthlyBenefit || '';
+      document.getElementById('filingAge').value = ss.filingAge || this.currentPlan.taxProfile.retirementAge;
+    } else {
+      document.getElementById('socialSecurityFields').style.display = 'none';
+    }
   }
 
   renderAccountsList() {
@@ -258,6 +324,7 @@ export class AppController {
     const contentMap = {
       'overview': 'overviewTab',
       'assumptions': 'assumptionsTab',
+      'socialsecurity': 'socialsecurityTab',
       'accounts': 'accountsTab',
       'expenses': 'expensesTab',
       'projection': 'projectionTab'
@@ -737,6 +804,58 @@ export class AppController {
     this.renderPlanUI();
     this.loadPlansList();
     alert('Settings saved!');
+  }
+
+  // Social Security Management
+
+  toggleSocialSecurity() {
+    const enabled = document.getElementById('socialSecurityEnabled').checked;
+    const fields = document.getElementById('socialSecurityFields');
+    const estimate = document.getElementById('socialSecurityEstimate');
+
+    if (enabled) {
+      fields.style.display = 'block';
+      estimate.style.display = 'none';
+    } else {
+      fields.style.display = 'none';
+      estimate.style.display = 'none';
+    }
+  }
+
+  saveSocialSecurity() {
+    const enabled = document.getElementById('socialSecurityEnabled').checked;
+    const birthYear = parseInt(document.getElementById('birthYear').value);
+    const monthlyBenefit = parseFloat(document.getElementById('monthlyBenefit').value);
+    const filingAge = parseInt(document.getElementById('filingAge').value);
+
+    if (enabled) {
+      if (!birthYear || !monthlyBenefit || !filingAge) {
+        alert('Please fill all Social Security fields');
+        return;
+      }
+
+      // Import the calculation function
+      import('./social-security.js').then(({ calculateFullRetirementAge, calculateSocialSecurityBenefit }) => {
+        const fra = calculateFullRetirementAge(birthYear);
+        const annualBenefit = calculateSocialSecurityBenefit(monthlyBenefit, birthYear, filingAge, new Date().getFullYear(), new Date().getFullYear() + (filingAge - this.currentPlan.taxProfile.currentAge), this.currentPlan.assumptions.inflationRate) * 12;
+
+        // Update estimate display
+        document.getElementById('estimatedAnnualBenefit').textContent = annualBenefit.toLocaleString('en-US', {minimumFractionDigits: 0});
+        document.getElementById('estimatedFRA').textContent = `${fra.years} years ${fra.months} months`;
+        document.getElementById('socialSecurityEstimate').style.display = 'block';
+      });
+    }
+
+    this.currentPlan.socialSecurity = {
+      enabled,
+      birthYear: birthYear || 0,
+      monthlyBenefit: monthlyBenefit || 0,
+      filingAge: filingAge || this.currentPlan.taxProfile.retirementAge
+    };
+
+    this.currentPlan.touch();
+    StorageManager.savePlan(this.currentPlan);
+    alert('Social Security settings saved!');
   }
 
   // Modal Helpers

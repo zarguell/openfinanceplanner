@@ -7,6 +7,7 @@ import {
    calculateFederalTax,
    calculateTotalTax
 } from './tax.js';
+import { calculateSocialSecurityForYear } from './social-security.js';
 
 /**
  * Get growth rate for account type based on assumptions
@@ -91,6 +92,15 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       plan.assumptions.inflationRate
     );
 
+    // Calculate Social Security income for this year
+    const socialSecurityIncome = calculateSocialSecurityForYear(
+      plan.socialSecurity,
+      year,
+      startAge,
+      plan.taxProfile.retirementAge,
+      plan.assumptions.inflationRate
+    );
+
     let totalBalance = 0;
     let totalTax = 0;
 
@@ -102,7 +112,9 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
         // Accumulation phase: add contributions
         balance += account.annualContribution || 0;
       } else {
-        const preTaxWithdrawal = totalExpense / plan.accounts.length;
+        // Net expenses after Social Security income
+        const netExpense = Math.max(0, totalExpense - socialSecurityIncome);
+        const preTaxWithdrawal = netExpense / plan.accounts.length;
 
         // MVP: Use user-estimated tax rate for simplicity
         // Apply tax on withdrawal for pre-tax accounts only
@@ -135,6 +147,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       isRetired: isRetired,
       totalBalance: totalBalance,
       totalExpense: totalExpense,
+      socialSecurityIncome: socialSecurityIncome,
       accountBalances: accountSnapshots.map(acc => acc.balance / 100),
       totalFederalTax: totalTax, // MVP: Combined federal + state tax
       totalStateTax: 0, // MVP: Included in estimatedTaxRate

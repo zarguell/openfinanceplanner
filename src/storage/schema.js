@@ -76,6 +76,29 @@ export function validatePlanSchema(planData) {
     errors.push('assumptions.bondGrowthRate must be a number between -50% and 50%');
   }
 
+  // Validate socialSecurity (optional, defaults provided)
+  if (planData.socialSecurity !== undefined && typeof planData.socialSecurity !== 'object') {
+    errors.push('socialSecurity must be an object if provided');
+  }
+
+  if (planData.socialSecurity) {
+    if (typeof planData.socialSecurity.enabled !== 'boolean') {
+      errors.push('socialSecurity.enabled must be a boolean');
+    }
+
+    if (planData.socialSecurity.birthYear !== undefined && (typeof planData.socialSecurity.birthYear !== 'number' || planData.socialSecurity.birthYear < 1900 || planData.socialSecurity.birthYear > 2100)) {
+      errors.push('socialSecurity.birthYear must be a number between 1900 and 2100');
+    }
+
+    if (planData.socialSecurity.monthlyBenefit !== undefined && (typeof planData.socialSecurity.monthlyBenefit !== 'number' || planData.socialSecurity.monthlyBenefit < 0 || planData.socialSecurity.monthlyBenefit > 5000)) {
+      errors.push('socialSecurity.monthlyBenefit must be a number between 0 and 5000');
+    }
+
+    if (planData.socialSecurity.filingAge !== undefined && (typeof planData.socialSecurity.filingAge !== 'number' || planData.socialSecurity.filingAge < 62 || planData.socialSecurity.filingAge > 70)) {
+      errors.push('socialSecurity.filingAge must be a number between 62 and 70');
+    }
+  }
+
   if (!Array.isArray(planData.accounts)) {
     errors.push('Plan must have an accounts array');
   }

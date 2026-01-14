@@ -25,6 +25,12 @@ export class Plan {
       equityVolatility: 0.12, // 12% annual volatility for stocks
       bondVolatility: 0.04    // 4% annual volatility for bonds
     };
+    this.socialSecurity = {
+      enabled: false,
+      birthYear: currentAge - (new Date().getFullYear() - 2000), // Rough estimate, user will override
+      monthlyBenefit: 0, // Monthly benefit at FRA in today's dollars
+      filingAge: retirementAge // Default to retirement age
+    };
     this.accounts = [];
     this.expenses = [];
   }
@@ -65,6 +71,7 @@ export class Plan {
       lastModified: this.lastModified,
       taxProfile: { ...this.taxProfile, state: this.taxProfile.state, taxYear: this.taxProfile.taxYear },
       assumptions: { ...this.assumptions },
+      socialSecurity: { ...this.socialSecurity },
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
       expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp)
     };
@@ -93,6 +100,15 @@ export class Plan {
       equityVolatility: 0.12,
       bondVolatility: 0.04,
       ...data.assumptions // Override with saved data
+    };
+
+    // Merge socialSecurity with defaults for backward compatibility
+    plan.socialSecurity = {
+      enabled: false,
+      birthYear: plan.taxProfile.currentAge - (new Date().getFullYear() - 2000),
+      monthlyBenefit: 0,
+      filingAge: plan.taxProfile.retirementAge,
+      ...data.socialSecurity // Override with saved data
     };
 
     plan.accounts = data.accounts || [];
