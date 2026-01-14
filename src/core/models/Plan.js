@@ -3,7 +3,7 @@
  * Pure business logic with no UI dependencies
  */
 export class Plan {
-  constructor(name, currentAge, retirementAge) {
+  constructor(name, currentAge, retirementAge, estimatedTaxRate = 0.25) {
     this.id = this.generateId();
     this.name = name;
     this.created = new Date().toISOString();
@@ -11,6 +11,8 @@ export class Plan {
     this.taxProfile = {
       currentAge,
       retirementAge,
+      estimatedTaxRate, // MVP: User-estimated tax rate (federal + state combined)
+      // Keep legacy fields for future advanced features
       filingStatus: 'single',
       federalTaxRate: 0.24,
       taxYear: 2025,
@@ -67,19 +69,16 @@ export class Plan {
   }
 
   static fromJSON(data) {
-    const plan = new Plan(data.name, data.taxProfile.currentAge, data.taxProfile.retirementAge);
+    // Use estimatedTaxRate if available, otherwise default to 0.25
+    const estimatedTaxRate = data.taxProfile.estimatedTaxRate !== undefined ? data.taxProfile.estimatedTaxRate : 0.25;
+    const plan = new Plan(data.name, data.taxProfile.currentAge, data.taxProfile.retirementAge, estimatedTaxRate);
     plan.id = data.id;
     plan.created = data.created;
     plan.lastModified = data.lastModified;
 
-    plan.taxProfile = data.taxProfile;
-    if (data.taxProfile.taxYear) {
-      plan.taxProfile.taxYear = data.taxProfile.taxYear;
-    }
-    if (data.taxProfile.state) {
-      plan.taxProfile.state = data.taxProfile.state;
-    }
-    // Migration: ensure federalTaxRate exists for old plans
+    plan.taxProfile = { ...data.taxProfile }; // Copy all taxProfile data
+
+    // Ensure legacy fields exist for backward compatibility
     if (plan.taxProfile.federalTaxRate === undefined) {
       plan.taxProfile.federalTaxRate = 0.24;
     }

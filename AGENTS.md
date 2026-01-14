@@ -156,9 +156,12 @@ Plans stored in localStorage as `ofp_plan_{uuid}`:
   taxProfile: {
     currentAge: number,
     retirementAge: number,
+    estimatedTaxRate: number (decimal), // MVP: User-estimated combined federal + state tax rate
+    // Legacy fields preserved for future advanced features:
     filingStatus: "single|married_joint|married_separate|head",
     federalTaxRate: number (decimal),
-    state: string | null  // 2-letter state code (e.g., "DC", "CA", "NY") or null
+    state: string | null, // 2-letter state code (e.g., "DC", "CA", "NY") or null
+    taxYear: number
   },
   assumptions: {
     inflationRate: number (decimal),

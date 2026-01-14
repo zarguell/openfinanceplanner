@@ -637,17 +637,9 @@ export class AppController {
         <input type="number" id="settingsRetirementAge" class="form-control" value="${this.currentPlan.taxProfile.retirementAge}">
       </div>
       <div class="form-group">
-        <label class="form-label">Filing Status</label>
-        <select id="settingsFilingStatus" class="form-control">
-          <option value="single" ${this.currentPlan.taxProfile.filingStatus === 'single' ? 'selected' : ''}>Single</option>
-          <option value="married_joint" ${this.currentPlan.taxProfile.filingStatus === 'married_joint' ? 'selected' : ''}>Married Filing Jointly</option>
-          <option value="married_separate" ${this.currentPlan.taxProfile.filingStatus === 'married_separate' ? 'selected' : ''}>Married Filing Separately</option>
-          <option value="head" ${this.currentPlan.taxProfile.filingStatus === 'head' ? 'selected' : ''}>Head of Household</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Federal Tax Rate <span class="form-label-hint">%</span></label>
-        <input type="number" id="settingsFederalTax" class="form-control" value="${(this.currentPlan.taxProfile.federalTaxRate * 100).toFixed(1)}" step="0.1">
+        <label class="form-label">Estimated Tax Rate <span class="form-label-hint">%</span></label>
+        <input type="number" id="settingsEstimatedTaxRate" class="form-control" value="${(this.currentPlan.taxProfile.estimatedTaxRate * 100).toFixed(1)}" step="0.1" min="0" max="50">
+        <small class="form-help">Combined federal + state tax rate for retirement withdrawals (e.g., 25% = 0.25)</small>
       </div>
     `;
 
@@ -658,8 +650,7 @@ export class AppController {
     this.currentPlan.name = document.getElementById('settingsPlanName').value.trim();
     this.currentPlan.taxProfile.currentAge = parseInt(document.getElementById('settingsCurrentAge').value);
     this.currentPlan.taxProfile.retirementAge = parseInt(document.getElementById('settingsRetirementAge').value);
-    this.currentPlan.taxProfile.filingStatus = document.getElementById('settingsFilingStatus').value;
-    this.currentPlan.taxProfile.federalTaxRate = parseFloat(document.getElementById('settingsFederalTax').value) / 100;
+    this.currentPlan.taxProfile.estimatedTaxRate = parseFloat(document.getElementById('settingsEstimatedTaxRate').value) / 100;
 
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);

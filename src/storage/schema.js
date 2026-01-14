@@ -32,11 +32,17 @@ export function validatePlanSchema(planData) {
     errors.push('Plan must have a taxProfile object');
   }
 
-  if (planData.taxProfile.state !== null && (typeof planData.taxProfile.state !== 'string' || planData.taxProfile.state === '')) {
+  // MVP: Use estimatedTaxRate instead of detailed tax calculations
+  if (typeof planData.taxProfile.estimatedTaxRate !== 'number' || planData.taxProfile.estimatedTaxRate < 0 || planData.taxProfile.estimatedTaxRate > 1) {
+    errors.push('taxProfile.estimatedTaxRate must be a number between 0 and 1 (e.g., 0.25 for 25%)');
+  }
+
+  // Optional: Keep state field for future advanced features
+  if (planData.taxProfile.state !== null && planData.taxProfile.state !== undefined && (typeof planData.taxProfile.state !== 'string' || planData.taxProfile.state === '')) {
     errors.push('taxProfile.state must be a string (e.g., "DC", "CA", "NY") or null');
   }
 
-  if (planData.taxProfile.state !== null && ![
+  if (planData.taxProfile.state !== null && planData.taxProfile.state !== undefined && ![
     'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
     'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
     'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'

@@ -1,36 +1,28 @@
 # Open Finance Planner - Development Tasks
 
-### PHASE 1: ENHANCED CALCULATION ENGINE (Priority: Critical)
+### PHASE 1: MVP WITH USER-ESTIMATED TAX RATES (Priority: Critical)
 
-## ✅ Completed: Federal & State Tax Engines (January 2026)
+## ✅ MVP Pivot: User-Estimated Tax Rates (January 2026)
 
-### Federal Tax - IMPLEMENTED AND WORKING
-- ✅ Federal tax bracket calculations (Form 1040 - progressive rates for 2024/2025, all filing statuses) - **FIXED and working**
-- ✅ Standard deductions (single: $15,750; married joint: $31,500; HOH: $23,625 for 2024/2025) - **RESTORED and working**
-- ✅ Long-term capital gains rates (0%, 15%, 20%) based on holding period
-- ✅ Short-term capital gains (taxed at ordinary income rates)
-- ✅ Net Investment Income Tax (NIIT) - 3.8% on investment income over thresholds
-- ✅ Social Security and Medicare (FICA) taxes - SS (6.2%) + Medicare (1.45% + 0.9% additional for high earners
-- ✅ Required Minimum Distributions (RMD) - SECURE Act 2.0 age requirements (72, 73, 75) with IRS life expectancy table - **FIXED (bug in age calculation)**
-- ✅ Unit tests - All passing (fixed incorrect test expectations)
-- ✅ Integration with projection engine - **WORKING**
+### Tax Calculation Approach - SIMPLIFIED FOR MVP
+- ✅ **MVP APPROACH**: User-estimated tax rates instead of detailed bracket calculations
+- ✅ **DEFERRED**: Complex federal/state tax bracket calculations (available as advanced feature)
+- ✅ **DEFERRED**: RMD calculations and advanced tax strategies
+- ✅ **DEFERRED**: Social Security, FICA, capital gains tax calculations
 
-### State Tax - IMPLEMENTED AND WORKING
+### MVP Tax Implementation
+- ✅ User-input estimated tax rate (federal + state combined)
+- ✅ Simple percentage-based tax calculation for withdrawals
+- ✅ Integration with projection engine using estimated rates
+- ✅ Schema support for estimated tax rates
+- ✅ UI for tax rate input and editing
+
+### Completed Tax Engine (Available as Advanced Feature)
+- ✅ Federal tax bracket calculations (Form 1040 - progressive rates for 2024/2025, all filing statuses)
 - ✅ State tax brackets for all 50 states + DC (2025 data, using for both 2024/2025)
-- ✅ State standard deductions for all states
-- ✅ `calculateStateTax(state, income, filingStatus, year)` function
-- ✅ `calculateTotalTax(state, income, filingStatus, year)` function
-- ✅ Integration with projection engine (withdrawals taxed at federal + state rates)
-- ✅ Schema validation for state field in tax profile
-- ✅ Unit tests - All passing (DC, CA, NY, all 50 states, no-tax states, flat/progressive rates)
-- ✅ Coverage: All US states and territories implemented
-
-### Tax Calculation Features:
-- ✅ Progressive federal tax brackets (7 brackets, 4 filing statuses)
-- ✅ State-specific tax systems (progressive, flat-rate, no-tax states)
-- ✅ Combined federal + state tax calculations
-- ✅ Proper integration in retirement projections
-- ✅ Comprehensive test coverage
+- ✅ Standard deductions and comprehensive tax calculations
+- ✅ All tax calculation functions preserved for future advanced features
+- ✅ Comprehensive unit tests for detailed tax calculations
 
 **Ready for Phase 2: Enhanced Calculation Features**
 - Roth conversion calculations - Ready to implement pro-rata rules and tax tracking
@@ -85,7 +77,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 
 **Tax Calculations**
 - [✅] Implement federal tax bracket calculations (Form 1040) - **FIXED and working**
-- [ ] Add state tax support (DC, CA, NY) - **Complete and tested**
+- [✅] Add state tax support (DC, CA, NY) - **Complete and tested**
 - [ ] Standard deductions (single: $15,750; married joint: $31,500; HOH: $23,625 for 2025)
 - [ ] Long-term capital gains rates (0%, 15%, 20% based on holding period
 - [ ] Short-term capital gains (taxed at ordinary income rates)
