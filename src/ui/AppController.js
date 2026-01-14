@@ -6,12 +6,14 @@ import { Plan } from '../core/models/Plan.js';
 import { Account } from '../core/models/Account.js';
 import { Expense } from '../core/models/Expense.js';
 import { project } from '../calculations/projection.js';
+import { runMonteCarloSimulation, getSuccessProbabilityWithConfidence } from '../calculations/monte-carlo.js';
 import { StorageManager } from '../storage/StorageManager.js';
 
 export class AppController {
   constructor() {
     this.currentPlan = null;
     this.projectionResults = null;
+    this.monteCarloResults = null;
     this.init();
   }
 
@@ -99,6 +101,18 @@ export class AppController {
               <input type="number" id="bondGrowthRate" class="form-control" step="0.001" min="0" max="0.2">
             </div>
           </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Equity Volatility <span class="form-label-hint">%</span></label>
+              <input type="number" id="equityVolatility" class="form-control" step="0.1" min="0" max="50" placeholder="12.0">
+              <small class="form-help">Annual volatility for stocks (e.g., 12% for typical market)</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bond Volatility <span class="form-label-hint">%</span></label>
+              <input type="number" id="bondVolatility" class="form-control" step="0.1" min="0" max="20" placeholder="4.0">
+              <small class="form-help">Annual volatility for bonds (e.g., 4% for government bonds)</small>
+            </div>
+          </div>
           <button class="btn btn-primary" onclick="app.saveAssumptions()" style="margin-top: 1rem;">Save</button>
         </div>
       </div>
@@ -128,6 +142,8 @@ export class AppController {
     document.getElementById('inflationRate').value = (this.currentPlan.assumptions.inflationRate * 100).toFixed(2);
     document.getElementById('equityGrowthRate').value = (this.currentPlan.assumptions.equityGrowthRate * 100).toFixed(2);
     document.getElementById('bondGrowthRate').value = (this.currentPlan.assumptions.bondGrowthRate * 100).toFixed(2);
+    document.getElementById('equityVolatility').value = (this.currentPlan.assumptions.equityVolatility * 100).toFixed(1);
+    document.getElementById('bondVolatility').value = (this.currentPlan.assumptions.bondVolatility * 100).toFixed(1);
   }
 
   renderAccountsList() {
@@ -260,6 +276,8 @@ export class AppController {
     this.currentPlan.assumptions.inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
     this.currentPlan.assumptions.equityGrowthRate = parseFloat(document.getElementById('equityGrowthRate').value) / 100;
     this.currentPlan.assumptions.bondGrowthRate = parseFloat(document.getElementById('bondGrowthRate').value) / 100;
+    this.currentPlan.assumptions.equityVolatility = parseFloat(document.getElementById('equityVolatility').value) / 100;
+    this.currentPlan.assumptions.bondVolatility = parseFloat(document.getElementById('bondVolatility').value) / 100;
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);
     alert('Assumptions saved!');
@@ -273,7 +291,24 @@ export class AppController {
       return;
     }
 
+    // Run deterministic projection
     this.projectionResults = project(this.currentPlan, 40, 2025);
+
+    // Run Monte Carlo simulation (1,000 scenarios for good statistical significance)
+    this.monteCarloResults = runMonteCarloSimulation(this.currentPlan, 1000, 40, 2025);
+
+    this.renderProjectionResults();
+    this.switchTab('projection');
+  }
+
+  runMonteCarlo() {
+    if (!this.currentPlan) {
+      alert('Please create or load a plan first');
+      return;
+    }
+
+    // Run Monte Carlo simulation only
+    this.monteCarloResults = runMonteCarloSimulation(this.currentPlan, 1000, 40, 2025);
     this.renderProjectionResults();
     this.switchTab('projection');
   }
@@ -289,6 +324,48 @@ export class AppController {
     const retirementBalance = this.projectionResults.find(r => r.isRetired)?.totalBalance || 0;
     const retirementYear = this.projectionResults.find(r => r.isRetired)?.year || '-';
 
+    let monteCarloSection = '';
+    if (this.monteCarloResults) {
+      const successProb = getSuccessProbabilityWithConfidence(this.monteCarloResults);
+      const successClass = successProb.probability >= 0.8 ? 'badge-success' :
+                          successProb.probability >= 0.6 ? 'badge-warning' : 'badge-danger';
+
+      monteCarloSection = `
+        <div class="card">
+          <div class="card-header">
+            <h3>Monte Carlo Analysis (1,000 Scenarios)</h3>
+          </div>
+          <div class="results-grid">
+            <div class="result-card">
+              <div class="result-label">Success Probability</div>
+              <div class="result-value"><span class="badge ${successClass}">${(successProb.probability * 100).toFixed(1)}%</span></div>
+              <div class="result-sublabel">${successProb.lowerBound.toFixed(3)} - ${successProb.upperBound.toFixed(3)} (95% CI)</div>
+            </div>
+            <div class="result-card">
+              <div class="result-label">Average Final Balance</div>
+              <div class="result-value">$${this.monteCarloResults.averageFinalBalance.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+              <div class="result-sublabel">Across all scenarios</div>
+            </div>
+            <div class="result-card">
+              <div class="result-label">90th Percentile</div>
+              <div class="result-value">$${this.monteCarloResults.percentiles.p90.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+              <div class="result-sublabel">Best case outcome</div>
+            </div>
+            <div class="result-card">
+              <div class="result-label">10th Percentile</div>
+              <div class="result-value">$${this.monteCarloResults.percentiles.p10.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+              <div class="result-sublabel">Worst case outcome</div>
+            </div>
+          </div>
+          <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+            <strong>Analysis:</strong> ${successProb.probability >= 0.8 ? 'Excellent success probability!' :
+                                      successProb.probability >= 0.6 ? 'Good success probability, but consider increasing savings.' :
+                                      'Success probability is low. Consider adjusting assumptions or increasing contributions.'}
+          </div>
+        </div>
+      `;
+    }
+
     container.innerHTML = `
       <div class="results-grid">
         <div class="result-card">
@@ -303,9 +380,11 @@ export class AppController {
         </div>
       </div>
 
+      ${monteCarloSection}
+
       <div class="card">
         <div class="card-header">
-          <h3>Year-by-Year Projection</h3>
+          <h3>Deterministic Projection</h3>
         </div>
         <div class="table-responsive">
           <table>

@@ -5,7 +5,6 @@
 
 import {
    calculateFederalTax,
-   calculateFicaTax,
    calculateTotalTax
 } from './tax.js';
 

@@ -166,7 +166,9 @@ Plans stored in localStorage as `ofp_plan_{uuid}`:
   assumptions: {
     inflationRate: number (decimal),
     equityGrowthRate: number (decimal),
-    bondGrowthRate: number (decimal)
+    bondGrowthRate: number (decimal),
+    equityVolatility: number (decimal), // Annual volatility for Monte Carlo simulations (default: 0.12)
+    bondVolatility: number (decimal)    // Annual volatility for bonds (default: 0.04)
   },
   accounts: [
     {
@@ -320,7 +322,7 @@ See `/docs/architecture.md` for comprehensive architecture documentation includi
 - Monte Carlo simulation architecture
 - Tax calculation engine design
 
-See `/docs/tasks.md` for prioritized roadmap.
+See `/docs/tasks.md` for prioritized roadmap. When you complete a task, be sure to check off the task box to mark our progress.
 
 ## Important Constraints
 

@@ -21,7 +21,9 @@ export class Plan {
     this.assumptions = {
       inflationRate: 0.03,
       equityGrowthRate: 0.07,
-      bondGrowthRate: 0.04
+      bondGrowthRate: 0.04,
+      equityVolatility: 0.12, // 12% annual volatility for stocks
+      bondVolatility: 0.04    // 4% annual volatility for bonds
     };
     this.accounts = [];
     this.expenses = [];
@@ -83,7 +85,16 @@ export class Plan {
       plan.taxProfile.federalTaxRate = 0.24;
     }
 
-    plan.assumptions = data.assumptions;
+    // Merge assumptions with defaults for backward compatibility
+    plan.assumptions = {
+      inflationRate: 0.03,
+      equityGrowthRate: 0.07,
+      bondGrowthRate: 0.04,
+      equityVolatility: 0.12,
+      bondVolatility: 0.04,
+      ...data.assumptions // Override with saved data
+    };
+
     plan.accounts = data.accounts || [];
     plan.expenses = data.expenses || [];
     return plan;

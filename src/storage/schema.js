@@ -54,6 +54,28 @@ export function validatePlanSchema(planData) {
     errors.push('Plan must have an assumptions object');
   }
 
+  // Validate growth rates
+  if (typeof planData.assumptions.equityGrowthRate !== 'number' || planData.assumptions.equityGrowthRate < -0.5 || planData.assumptions.equityGrowthRate > 0.5) {
+    errors.push('assumptions.equityGrowthRate must be a number between -50% and 50%');
+  }
+
+  if (typeof planData.assumptions.inflationRate !== 'number' || planData.assumptions.inflationRate < -0.1 || planData.assumptions.inflationRate > 0.2) {
+    errors.push('assumptions.inflationRate must be a number between -10% and 20%');
+  }
+
+  // Validate volatility (optional, defaults provided)
+  if (planData.assumptions.equityVolatility !== undefined && (typeof planData.assumptions.equityVolatility !== 'number' || planData.assumptions.equityVolatility < 0 || planData.assumptions.equityVolatility > 1)) {
+    errors.push('assumptions.equityVolatility must be a number between 0 and 100% (1.0)');
+  }
+
+  if (planData.assumptions.bondVolatility !== undefined && (typeof planData.assumptions.bondVolatility !== 'number' || planData.assumptions.bondVolatility < 0 || planData.assumptions.bondVolatility > 1)) {
+    errors.push('assumptions.bondVolatility must be a number between 0 and 100% (1.0)');
+  }
+
+  if (planData.assumptions.bondGrowthRate !== undefined && (typeof planData.assumptions.bondGrowthRate !== 'number' || planData.assumptions.bondGrowthRate < -0.5 || planData.assumptions.bondGrowthRate > 0.5)) {
+    errors.push('assumptions.bondGrowthRate must be a number between -50% and 50%');
+  }
+
   if (!Array.isArray(planData.accounts)) {
     errors.push('Plan must have an accounts array');
   }
