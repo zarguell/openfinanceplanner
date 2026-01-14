@@ -1020,6 +1020,15 @@ export class AppController {
         <input type="number" id="settingsEstimatedTaxRate" class="form-control" value="${(this.currentPlan.taxProfile.estimatedTaxRate * 100).toFixed(1)}" step="0.1" min="0" max="50">
         <small class="form-help">Combined federal + state tax rate for retirement withdrawals (e.g., 25% = 0.25)</small>
       </div>
+      <div class="form-group">
+        <label class="form-label">Withdrawal Strategy</label>
+        <select id="settingsWithdrawalStrategy" class="form-control">
+          <option value="proportional" ${this.currentPlan.withdrawalStrategy === 'proportional' ? 'selected' : ''}>Proportional (default)</option>
+          <option value="tax-efficient" ${this.currentPlan.withdrawalStrategy === 'tax-efficient' ? 'selected' : ''}>Tax-Efficient (recommended)</option>
+          <option value="tax-aware" ${this.currentPlan.withdrawalStrategy === 'tax-aware' ? 'selected' : ''}>Tax-Aware (advanced)</option>
+        </select>
+        <small class="form-help">Strategy for ordering withdrawals from accounts in retirement</small>
+      </div>
     `;
 
     this.openModal('planSettingsModal');
@@ -1030,6 +1039,7 @@ export class AppController {
     this.currentPlan.taxProfile.currentAge = parseInt(document.getElementById('settingsCurrentAge').value);
     this.currentPlan.taxProfile.retirementAge = parseInt(document.getElementById('settingsRetirementAge').value);
     this.currentPlan.taxProfile.estimatedTaxRate = parseFloat(document.getElementById('settingsEstimatedTaxRate').value) / 100;
+    this.currentPlan.withdrawalStrategy = document.getElementById('settingsWithdrawalStrategy').value;
 
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);

@@ -53,6 +53,33 @@
 
 **Phase 1 Status:** ✅ COMPLETE - All tax calculation features verified and tested
 
+**Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
+
+- ✅ Implemented withdrawal strategy module with three strategies (proportional, tax-efficient, tax-aware)
+- ✅ Integrated withdrawal strategies into projection engine
+- ✅ Added withdrawal strategy dropdown to UI (Plan Settings)
+- ✅ Created comprehensive unit tests for all strategies
+- ✅ Created integration tests comparing strategy outcomes
+- ✅ Updated Plan model to support withdrawal strategy selection
+- ✅ Documentation updates (architecture.md)
+
+**Files Created:**
+- `src/calculations/withdrawal-strategies.js` - Withdrawal strategy module
+- `tests/unit/calculations/withdrawal-strategies.test.js` - Unit tests
+- `tests/integration/withdrawal-strategies-integration.test.js` - Integration tests
+
+**Files Modified:**
+- `src/calculations/projection.js` - Integrated withdrawal strategy system
+- `src/core/models/Plan.js` - Added withdrawalStrategy property
+- `src/ui/AppController.js` - Added withdrawal strategy dropdown to settings
+- `docs/architecture.md` - Added withdrawal strategy documentation
+
+**Test Results:**
+- All unit tests passing ✅
+- All integration tests passing ✅
+- Full-flow test passing ✅
+- Tax-efficient strategy preserves more wealth over long projections ✅
+
 **Sprint 2: Required Minimum Distribution (RMD) Implementation (COMPLETED ✅)**
 
 - ✅ Implemented IRS Uniform Lifetime Table (ages 72-120)
@@ -133,7 +160,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 **Withdrawal Strategies**
 - [ ] Implement Roth conversion ladder logic
 - [ ] Tax-loss harvesting suggestions
-- [ ] Tax-efficient withdrawal order (Traditional → Taxable → Roth)
+- [✅] Tax-efficient withdrawal order (Taxable → Traditional → Roth → HSA) - **COMPLETED Sprint 5**
 - [ ] Qualified charitable distribution (QCD) support for age 70½+
 - [ ] Backdoor Roth automation
 

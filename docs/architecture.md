@@ -126,6 +126,56 @@ TaxEngine.estimatePIA(averageIndexedEarnings) → number
 - `estimatePIA(averageIndexedEarnings)` - Estimates monthly PIA from AIME
 - `getClaimingStrategyOptions()` - Returns common claiming age strategies
 
+#### Withdrawal Strategies Module Details
+**Implementation**: `src/calculations/withdrawal-strategies.js`
+- Provides multiple withdrawal ordering strategies for retirement distributions
+- Integrates with RMD calculations to ensure regulatory compliance
+- Supports tax-efficient withdrawal sequencing to minimize lifetime tax burden
+- Pure function design enables easy testing and composition
+
+**Available Strategies**:
+
+1. **Proportional** (default)
+   - Distributes withdrawals proportionally to account balances
+   - Simple approach that maintains asset allocation
+   - Not tax-optimized
+
+2. **Tax-Efficient** (recommended)
+   - Prioritizes withdrawals by tax treatment to minimize lifetime taxes
+   - Order: Required RMDs → Taxable → Traditional → Roth → HSA
+   - Depletes taxable accounts first (capital gains rates)
+   - Preserves tax-free Roth and HSA accounts for last
+   - RMDs always satisfied first (regulatory requirement)
+
+3. **Tax-Aware** (advanced, placeholder)
+   - Future enhancement for bracket management
+   - Will implement dynamic withdrawal sizing based on tax brackets
+   - Goal: Stay in lower tax brackets while managing RMDs
+
+**Exported Functions**:
+- `proportionalWithdrawalStrategy(accounts, totalAmount, rmdRequirements)` - Proportional distribution
+- `taxEfficientWithdrawalStrategy(accounts, totalAmount, rmdRequirements, context)` - Tax-optimized ordering
+- `taxAwareWithdrawalStrategy(accounts, totalAmount, rmdRequirements, context)` - Future bracket-aware strategy
+- `calculateWithdrawals(strategy, accounts, totalAmount, rmdRequirements, context)` - Main entry point
+
+**Account Priority Order (Tax-Efficient)**:
+```javascript
+const ACCOUNT_PRIORITY = {
+  'Taxable': 1,      // Capital gains rates (typically lower)
+  'IRA': 2,          // Ordinary income (deferred)
+  '401k': 2,         // Ordinary income (deferred)
+  'Roth': 3,         // Tax-free (save for last)
+  'HSA': 4           // Tax-free medical (save for last)
+};
+```
+
+**Integration with Projection Engine**:
+- RMD requirements calculated first for all Traditional accounts
+- Total withdrawal needed = max(deficit, total RMDs)
+- Strategy allocates withdrawals across accounts
+- All monetary values in cents (integers)
+- Pure functions (no side effects, easy to test)
+
 ### ProjectionRunner API
 ```javascript
 // Full projection execution

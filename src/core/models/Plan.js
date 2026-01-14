@@ -36,6 +36,7 @@ export class Plan {
     this.accounts = [];
     this.expenses = [];
     this.incomes = [];
+    this.withdrawalStrategy = 'proportional'; // Default to proportional withdrawals
   }
 
   generateId() {
@@ -85,6 +86,7 @@ export class Plan {
       taxProfile: { ...this.taxProfile, state: this.taxProfile.state, taxYear: this.taxProfile.taxYear },
       assumptions: { ...this.assumptions },
       socialSecurity: { ...this.socialSecurity },
+      withdrawalStrategy: this.withdrawalStrategy,
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
       expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp),
       incomes: this.incomes.map(inc => inc.toJSON ? inc.toJSON() : inc)

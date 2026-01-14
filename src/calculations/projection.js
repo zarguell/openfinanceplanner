@@ -12,6 +12,7 @@ import {
 import { calculateRMDForAccount, mustTakeRMD } from './rmd.js';
  import { calculateSocialSecurityForYear } from './social-security.js';
  import { calculateTotalIncome } from './income.js';
+ import { calculateWithdrawals } from './withdrawal-strategies.js';
 
 /**
  * Get growth rate for account type based on assumptions
@@ -118,19 +119,18 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       plan.assumptions.inflationRate
     );
 
-    let totalBalance = 0;
+  let totalBalance = 0;
     let totalFederalTax = 0;
     let totalStateTax = 0;
-    let totalFicaTax = 0;
-    let totalRmdAmount = 0;
+    let totalFicaTax =  0;
 
     // Calculate total contributions across all accounts (considering timing and one-time flags)
     const totalContributions = plan.accounts.reduce((sum, acc) => {
-      // Check if we're in the contribution window
+      // Check if we're in contribution window
       if (year < (acc.contributionStartYear || 0)) return sum;
       if (acc.contributionEndYear && year > acc.contributionEndYear) return sum;
 
-      // For one-time contributions, only contribute in the start year
+      // For one-time contributions, only contribute in start year
       if (acc.isOneTimeContribution && year !== (acc.contributionStartYear || 0)) return sum;
 
       return sum + (acc.annualContribution || 0);
@@ -147,43 +147,45 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     // Post-retirement: SS + withdrawals from accounts - Expenses
     const netCashFlow = totalIncome + socialSecurityIncome - totalExpense;
 
+    // Calculate RMD requirements for all Traditional accounts
+    const rmdRequirements = accountSnapshots.map((acc, idx) => {
+      const account = plan.accounts[idx];
+      if ((account.type === '401k' || account.type === 'IRA') && mustTakeRMD(age)) {
+        const rmdAmountInCents = calculateRMDForAccount({ ...account, balance: acc.balance }, age);
+        return rmdAmountInCents;
+      }
+      return 0;
+    });
+    const totalRmdAmount = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0) / 100;
+    const totalRmdWithdrawalCents = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0);
+
+    // Calculate total withdrawal needed (deficit + RMDs)
+    let totalWithdrawalNeeded = 0;
+    if (netCashFlow < 0) {
+      totalWithdrawalNeeded = Math.abs(netCashFlow);
+    }
+    totalWithdrawalNeeded = Math.max(totalWithdrawalNeeded, totalRmdWithdrawalCents);
+
+    // Use withdrawal strategy to allocate across accounts
+    const withdrawalStrategy = plan.withdrawalStrategy || 'proportional';
+    const withdrawalsInCents = calculateWithdrawals(
+      withdrawalStrategy,
+      plan.accounts,
+      totalWithdrawalNeeded,
+      rmdRequirements,
+      { filingStatus: plan.taxProfile.filingStatus, taxYear }
+    );
+
     for (let i = 0; i < accountSnapshots.length; i++) {
       let balance = accountSnapshots[i].balance / 100;
       const account = plan.accounts[i];
       const contribution = account.annualContribution || 0;
 
-      // Calculate withdrawal needs based on total cash flow
-      // Positive netCashFlow means surplus (goes to contributions)
-      // Negative netCashFlow means deficit (requires withdrawals)
-      let withdrawalForExpenses = 0;
-
-      if (netCashFlow < 0) {
-        // We have a deficit - need to withdraw from accounts
-        const totalDeficit = Math.abs(netCashFlow);
-
-        // Determine this account's share of withdrawals (proportional to balance or equal split)
-        const totalCurrentBalance = accountSnapshots.reduce((sum, acc) => sum + acc.balance, 0);
-        const accountShare = totalCurrentBalance > 0
-          ? accountSnapshots[i].balance / totalCurrentBalance
-          : 1 / plan.accounts.length;
-
-        withdrawalForExpenses = totalDeficit * accountShare;
-      }
-
       // Add contribution to balance
       balance += contribution;
 
-      // RMD calculations for qualified accounts (401k, IRA)
-      // Per SECURE Act 2.0: RMDs start at age 73 (or 72 if turned 72 in 2023)
-      let rmdAmount = 0;
-      if ((account.type === '401k' || account.type === 'IRA') && mustTakeRMD(age)) {
-        const rmdAmountInCents = calculateRMDForAccount({ ...account, balance: balance * 100 }, age);
-        rmdAmount = rmdAmountInCents / 100;
-        totalRmdAmount += rmdAmount;
-      }
-
-      // Total withdrawal is the greater of expense need or RMD requirement
-      const withdrawalAmount = Math.max(withdrawalForExpenses, rmdAmount);
+      // Get withdrawal for this account from strategy
+      const withdrawalAmount = withdrawalsInCents[i] / 100;
 
       // Calculate taxes on withdrawals
       let federalTax = 0;
@@ -193,7 +195,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
         if (account.type === '401k' || account.type === 'IRA') {
           const taxResult = calculateTotalTax(
             plan.taxProfile.state,
-            Math.round(withdrawalAmount * 100),
+            withdrawalAmount * 100,
             plan.taxProfile.filingStatus,
             taxYear
           );
@@ -201,13 +203,13 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
           stateTax = taxResult.stateTax / 100;
         } else if (account.type === 'Taxable') {
           federalTax = calculateLongTermCapitalGainsTax(
-            Math.round(withdrawalAmount * 100),
+            withdrawalAmount * 100,
             plan.taxProfile.filingStatus,
             taxYear
           ) / 100;
           const stateTaxResult = calculateTotalTax(
             plan.taxProfile.state,
-            Math.round(withdrawalAmount * 100),
+            withdrawalAmount * 100,
             plan.taxProfile.filingStatus,
             taxYear
           );
