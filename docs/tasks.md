@@ -197,6 +197,7 @@
 - `src/ui/AppController.js` - Added Smart Rules UI section with rule dropdowns and age inputs
 - `src/storage/schema.js` - Added validation for startRule, endRule, startRuleAge, endRuleAge
 - `tests/unit/calculations/income.test.js` - Added 9 unit tests for smart rule evaluation
+- `docs/tasks.md` - Marked Sprint 10 complete
 
 **Smart Rule Features:**
 - Manual: Uses explicit startYear/endYear values (default)
@@ -210,6 +211,55 @@
 - All unit tests passing ✅ (15/15 including 9 new smart rule tests)
 - Smart rule integration working ✅
 - Retirement transition logic working ✅ (salary ends at retirement, pension starts at retirement)
+
+**PHASE 1 STATUS: DEPRIORITIZED (January 2026)**
+
+All critical Phase 1 calculation features are complete. Remaining items deprioritized in favor of Phase 2 (Rules Engine):
+
+**Deprioritized Items (will revisit later):**
+- Backdoor Roth automation - Good for advanced users, but Phase 2 RuleRegistry will enable this more cleanly
+- Multiple portfolio allocation models (stocks/bonds/cash) - Lower priority without visualization layer
+- Rebalancing strategy implementation - Lower priority without dynamic allocation models
+- Scenario analysis (market downturns, inflation spikes) - Useful but not blocking for core planning
+
+**Phase 1 Completion Summary:**
+✅ Tax engine complete (federal + state, all brackets, NIIT, FICA)
+✅ RMD calculations complete (SECURE Act 2.0, IRS tables)
+✅ All withdrawal strategies complete (tax-efficient, Roth conversions, QCD, TLH)
+✅ All income types complete (salary, pension, rental, dividends, interest, Social Security)
+✅ Monte Carlo simulation complete (success probability, sequence of returns risk)
+✅ Smart income rules complete (auto-calculate based on retirement age)
+
+**Reasoning for Deprioritization:**
+Core calculation engine is now production-ready. Advanced features like Backdoor Roth and portfolio rebalancing are better implemented through the extensible RuleRegistry system in Phase 2. Visualization layer (Phase 4) is needed before portfolio allocation models become useful.
+
+---
+
+**PHASE 2: RULES ENGINE & TAX STRATEGIES (IN PROGRESS - January 2026)**
+
+**Objective:** Build extensible strategy system that enables complex, composable financial planning rules.
+
+**Current State:**
+- ✅ Individual strategies implemented (Roth conversions, QCD, TLH, withdrawal strategies)
+- ❌ No extensible rule system (strategies hardcoded in projection engine)
+- ❌ No strategy factory or dependency management
+- ❌ No rule composition (combining multiple strategies)
+
+**Phase 2 Goals:**
+1. Create RuleRegistry - Central repository for all strategy types
+2. Implement StrategyFactory - Dynamic strategy instantiation
+3. Enable rule composition - Combine multiple strategies (e.g., "Roth conversion + QCD")
+4. Refactor existing strategies - Move hardcoded logic into rule system
+
+**Sprint 11: RuleRegistry Foundation (STARTING NOW)**
+
+- [ ] Create RuleRegistry class (src/core/rules/RuleRegistry.js)
+- [ ] Define rule interface (apply(), validate(), dependencies())
+- [ ] Create rule base class (BaseRule)
+- [ ] Implement rule registration system
+- [ ] Add rule validation (check dependencies, required fields)
+- [ ] Create unit tests for RuleRegistry
+- [ ] Update projection.js to use RuleRegistry instead of hardcoded strategy calls
 
 **Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
 
@@ -321,17 +371,19 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [✅] Tax-loss harvesting suggestions - **COMPLETED Sprint 9**
 - [✅] Tax-efficient withdrawal order (Taxable → Traditional → Roth → HSA) - **COMPLETED Sprint 5**
 - [✅] Qualified charitable distribution (QCD) support for age 70½+ - **COMPLETED Sprint 8**
-- [ ] Backdoor Roth automation
+- [⏸️] Backdoor Roth automation - **DEPRIORITIZED** (will implement via RuleRegistry in Phase 2)
 
 **Advanced Projections**
 - [x] Monte Carlo simulation (1,000 scenarios) - **COMPLETED**
 - [x] Success probability calculation - **COMPLETED**
 - [x] Sequence of returns risk analysis - **COMPLETED**
-- [ ] Multiple portfolio allocation models (stocks/bonds/cash)
-- [ ] Rebalancing strategy implementation
-- [ ] Scenario analysis (market downturns, inflation spikes)
+- [⏸️] Multiple portfolio allocation models (stocks/bonds/cash) - **DEPRIORITIZED** (needs visualization layer first)
+- [⏸️] Rebalancing strategy implementation - **DEPRIORITIZED** (needs dynamic allocation models first)
+- [⏸️] Scenario analysis (market downturns, inflation spikes) - **DEPRIORITIZED** (nice-to-have, not blocking)
 
-### PHASE 2: RULES ENGINE & TAX STRATEGIES (Priority: High)
+**Phase 1 Status:** ✅ COMPLETE - Core calculation engine production-ready. Remaining items deprioritized in favor of Phase 2 (Rules Engine).
+
+### PHASE 2: RULES ENGINE & TAX STRATEGIES (Priority: High - IN PROGRESS)
 
 **Extensible Rule System**
 - [ ] Create RuleRegistry for financial strategies
