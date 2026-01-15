@@ -10,9 +10,17 @@ import {
    calculateFicaTax
   } from './tax.js';
 import { calculateRMDForAccount, mustTakeRMD } from './rmd.js';
-import { calculateTotalQCD, calculateQCDForAccount } from './qcd.js';
- import { calculateSocialSecurityForYear } from './social-security.js';
- import { calculateTotalIncome } from './income.js';
+ import { calculateTotalQCD, calculateQCDForAccount } from './qcd.js';
+ import {
+   calculateUnrealizedLoss,
+   calculateTotalUnrealizedLoss,
+   suggestHarvestingAmount,
+   validateHarvestingAmount,
+   applyHarvesting,
+   isHarvestingEnabled
+ } from './tax-loss-harvesting.js';
+  import { calculateSocialSecurityForYear } from './social-security.js';
+  import { calculateTotalIncome } from './income.js';
  import { calculateWithdrawals } from './withdrawal-strategies.js';
  import {
    calculateFixedConversion,
@@ -276,6 +284,62 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       });
     }
 
+    // Tax-Loss Harvesting
+    let totalTaxBenefitFromHarvesting = 0;
+    let totalHarvestedLoss = 0;
+
+    if (isHarvestingEnabled(plan.taxLossHarvesting)) {
+      // Calculate total unrealized loss across all taxable accounts
+      let totalUnrealizedLoss = 0;
+      accountSnapshots.forEach((acc, idx) => {
+        const account = plan.accounts[idx];
+        if (account.type === 'Taxable') {
+          totalUnrealizedLoss += calculateUnrealizedLoss({ ...account, balance: acc.balance });
+        }
+      });
+
+      // Estimate capital gains for this year (simplified: assume 0 for now)
+      // In reality, this would track actual realized gains from sales/withdrawals
+      const estimatedCapitalGains = 0;
+
+      // Get marginal tax rate from plan (or use default 24%)
+      const marginalRate = plan.taxProfile.federalTaxRate || 0.24;
+
+      // Suggest harvesting amount based on strategy
+      const suggestion = suggestHarvestingAmount(
+        totalUnrealizedLoss,
+        estimatedCapitalGains,
+        marginalRate,
+        plan.taxLossHarvesting
+      );
+
+      if (suggestion.harvestAmountCents > 0) {
+        // Apply harvesting to each taxable account proportionally
+        let appliedHarvest = 0;
+        accountSnapshots.forEach((acc, idx) => {
+          const account = plan.accounts[idx];
+          if (account.type === 'Taxable') {
+            const lossInAccount = calculateUnrealizedLoss({ ...account, balance: acc.balance });
+            if (lossInAccount > 0 && appliedHarvest < suggestion.harvestAmountCents) {
+              const harvestFromAccount = Math.min(
+                lossInAccount,
+                suggestion.harvestAmountCents - appliedHarvest
+              );
+              const result = applyHarvesting({ ...account, balance: acc.balance }, harvestFromAccount);
+              if (result.success) {
+                accountSnapshots[idx].balance = result.newCostBasis;
+                accountSnapshots[idx].costBasis = result.newCostBasis;
+                appliedHarvest += harvestFromAccount;
+              }
+            }
+          }
+        });
+
+        totalHarvestedLoss = appliedHarvest;
+        totalTaxBenefitFromHarvesting = suggestion.taxBenefitCents;
+      }
+    }
+
     // Use withdrawal strategy to allocate across accounts
     const withdrawalStrategy = plan.withdrawalStrategy || 'proportional';
     const withdrawalsInCents = calculateWithdrawals(
@@ -351,13 +415,20 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalExpense: totalExpense,
       socialSecurityIncome: socialSecurityIncome,
       accountBalances: accountSnapshots.map(acc => acc.balance / 100),
+      accounts: accountSnapshots.map(acc => ({
+        balance: acc.balance,
+        costBasis: acc.costBasis
+      })),
       totalFederalTax: totalFederalTax,
       totalStateTax: totalStateTax,
       totalFicaTax: totalFicaTax,
       totalRmdAmount: totalRmdAmount,
       totalQCD: totalQCDAmount,
       rothConversions: rothConversionAmount,
-      totalTax: totalFederalTax + totalStateTax + totalFicaTax
+      totalTax: Math.max(0, totalFederalTax + totalStateTax + totalFicaTax - totalTaxBenefitFromHarvesting),
+      harvestedLoss: totalHarvestedLoss / 100,
+      taxBenefitFromHarvesting: totalTaxBenefitFromHarvesting / 100,
+      taxLossHarvestingBenefit: totalTaxBenefitFromHarvesting
     });
   }
 

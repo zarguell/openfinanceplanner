@@ -282,6 +282,62 @@ const ACCOUNT_PRIORITY = {
 - `plan.rothConversions.percentage` - Percentage (decimal)
 - `plan.rothConversions.bracketTop` - Bracket top (cents) for bracket-fill
 
+#### Tax-Loss Harvesting Module Details
+**Implementation**: `src/calculations/tax-loss-harvesting.js`
+- Implements tax-loss harvesting calculations for Taxable accounts to reduce taxes
+- Supports two harvesting strategies: all losses, offset gains + $3,000 ordinary income
+- Calculates tax benefit from harvested losses (offsets capital gains + ordinary income)
+- Tracks cost basis for Taxable accounts to measure unrealized gains/losses
+- Enforces IRS $3,000 annual ordinary income offset limit
+- Threshold-based harvesting (only harvest losses above configurable minimum)
+
+**Available Strategies**:
+
+1. **All Available Losses**
+   - Harvest all unrealized losses above threshold
+   - Maximizes tax benefits but may reduce portfolio diversification
+   - Simple approach, conservative tax optimization
+
+2. **Offset Gains + $3,000**
+   - Harvest only enough to offset realized capital gains + $3,000 ordinary income
+   - More targeted approach, preserves tax lots for future use
+   - Reduces portfolio turnover
+
+**Tax Benefit Calculation**:
+- Losses first offset realized capital gains (15% long-term capital gains rate assumed)
+- Remaining losses offset up to $3,000 of ordinary income (at marginal tax rate)
+- Example: $10,000 harvested loss with $5,000 gains and 24% marginal rate
+  - Gains offset: $5,000 × 15% = $750
+  - Ordinary income offset: $3,000 × 24% = $720
+  - Total benefit: $1,470
+
+**Exported Functions**:
+- `calculateUnrealizedLoss(account)` - Calculate unrealized loss for single account (Taxable only)
+- `calculateTotalUnrealizedLoss(accounts)` - Sum unrealized losses across all accounts
+- `calculateTaxBenefitFromLoss(harvestedLossCents, capitalGainsCents, marginalRate)` - Calculate tax savings
+- `suggestHarvestingAmount(unrealizedLossCents, capitalGainsCents, marginalRate, settings)` - Suggest amount to harvest
+- `validateHarvestingAmount(harvestAmountCents, account)` - Validate harvest amount is valid
+- `applyHarvesting(account, harvestAmountCents)` - Apply harvest, reset cost basis
+- `isHarvestingEnabled(settings)` - Check if TLH enabled
+- `getStrategyDescription(strategy)` - Human-readable strategy description
+
+**Integration with Projection**:
+- Taxable account snapshots track both balance and costBasis
+- Unrealized losses calculated each year before growth application
+- Harvesting applied when losses exceed threshold and strategy triggers
+- Harvesting resets costBasis to new value (simulates sell + rebuy)
+- Tax benefit deducted from totalTax calculation
+- Results include `taxBenefitFromHarvesting` and `harvestedLoss` fields
+- Only applies to Taxable accounts (401k, IRA, Roth, HSA excluded)
+- Assumes long-term holdings (>1 year) → uses 15% capital gains rate (simplified)
+- No wash-sale rule tracking (future enhancement)
+
+**Schema Support**:
+- `plan.taxLossHarvesting.enabled` - Whether TLH enabled
+- `plan.taxLossHarvesting.strategy` - Strategy: 'all' | 'offset-gains'
+- `plan.taxLossHarvesting.threshold` - Minimum loss to harvest (cents, default $1,000)
+- `account.costBasis` - Track cost basis for Taxable accounts (cents, equals balance initially)
+
 ### ProjectionRunner API
 ```javascript
 // Full projection execution

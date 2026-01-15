@@ -136,6 +136,46 @@
 - Projection integration working ✅
 - UI implementation complete ✅
 
+**Sprint 9: Tax-Loss Harvesting Implementation (COMPLETED ✅)**
+
+- ✅ Implemented TLH calculation module (tax-loss-harvesting.js) with 9 exported functions
+- ✅ Integrated TLH into projection engine (tracks costBasis, applies harvesting, calculates tax benefit)
+- ✅ Added costBasis tracking to Account model for Taxable accounts
+- ✅ Created comprehensive unit tests (all passing): 18 test functions, all scenarios covered
+- ✅ Created integration tests (all passing): 8 test functions covering persistence, projection, strategies
+- ✅ Added TLH UI to Plan Settings with enable/disable toggle
+- ✅ Updated Plan model to support taxLossHarvesting field (constructor, toJSON, fromJSON)
+- ✅ Documentation updates (architecture.md, tasks.md)
+
+**Files Created:**
+- `src/calculations/tax-loss-harvesting.js` - TLH calculation module (9 exported functions)
+- `tests/unit/calculations/tax-loss-harvesting.test.js` - Unit tests (18 tests, all passing)
+- `tests/integration/tax-loss-harvesting-integration.test.js` - Integration tests (8 tests, all passing)
+
+**Files Modified:**
+- `src/calculations/projection.js` - Integrated TLH calculations, added costBasis to output
+- `src/core/models/Plan.js` - Added taxLossHarvesting field with defaults
+- `src/core/models/Account.js` - Added costBasis property for Taxable accounts
+- `src/ui/AppController.js` - Added TLH UI with toggle, strategy selector, threshold input
+- `docs/architecture.md` - Added TLH module documentation
+- `docs/tasks.md` - Marked Sprint 9 complete
+
+**TLH Features:**
+- Two strategies: All available losses, Offset gains + $3,000 ordinary income
+- Tax benefit calculation (offsets capital gains at 15%, ordinary income at marginal rate)
+- $3,000 annual ordinary income offset limit (per IRS rules)
+- Threshold-based harvesting (only harvest losses above configurable minimum)
+- Cost basis tracking for Taxable accounts (initially equals balance)
+- Harvesting resets costBasis to new value (simulates sell + rebuy)
+- Only applies to Taxable accounts (401k, IRA, Roth, HSA excluded)
+- Results include `taxBenefitFromHarvesting` and `harvestedLoss` fields
+
+**Test Results:**
+- All TLH unit tests passing ✅ (18/18)
+- All TLH integration tests passing ✅ (8/8)
+- Projection integration working ✅
+- UI implementation complete ✅
+
 **Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
 
 - ✅ Implemented withdrawal strategy module with three strategies (proportional, tax-efficient, tax-aware)

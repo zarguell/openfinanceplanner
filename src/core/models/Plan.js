@@ -51,6 +51,11 @@ export class Plan {
       percentage: 0.1,
       marginalTaxRate: 0.24
     };
+    this.taxLossHarvesting = {
+      enabled: false,
+      strategy: 'all',
+      threshold: 100000 // $1,000 minimum threshold (in cents)
+    };
   }
 
   generateId() {
@@ -103,6 +108,7 @@ export class Plan {
       withdrawalStrategy: this.withdrawalStrategy,
       rothConversions: { ...this.rothConversions },
       qcdSettings: { ...this.qcdSettings },
+      taxLossHarvesting: { ...this.taxLossHarvesting },
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
       expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp),
       incomes: this.incomes.map(inc => inc.toJSON ? inc.toJSON() : inc)
@@ -159,6 +165,13 @@ export class Plan {
       percentage: 0.1,
       marginalTaxRate: 0.24,
       ...data.qcdSettings
+    };
+
+    plan.taxLossHarvesting = {
+      enabled: false,
+      strategy: 'all',
+      threshold: 100000,
+      ...data.taxLossHarvesting
     };
 
     plan.accounts = data.accounts || [];

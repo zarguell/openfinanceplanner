@@ -1004,6 +1004,7 @@ export class AppController {
     const content = document.getElementById('planSettingsContent');
     const rc = this.currentPlan.rothConversions || { enabled: false, strategy: 'fixed', annualAmount: 0, percentage: 0.05, bracketTop: 0 };
     const qcd = this.currentPlan.qcdSettings || { enabled: false, strategy: 'fixed', annualAmount: 0, percentage: 0.1, marginalTaxRate: 0.24 };
+    const tlh = this.currentPlan.taxLossHarvesting || { enabled: false, strategy: 'all', threshold: 100000 };
 
     content.innerHTML = `
       <div class="form-group">
@@ -1162,6 +1163,16 @@ export class AppController {
       marginalTaxRate: qcdMarginalTaxRate / 100
     };
 
+    const tlhEnabled = document.getElementById('settingsTLHEnabled').checked;
+    const tlhStrategy = document.getElementById('settingsTLHStrategy').value;
+    const tlhThreshold = parseFloat(document.getElementById('settingsTLHThreshold').value) || 1000;
+
+    this.currentPlan.taxLossHarvesting = {
+      enabled: tlhEnabled,
+      strategy: tlhStrategy,
+      threshold: Math.round(tlhThreshold * 100)
+    };
+
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);
     this.closeModal('planSettingsModal');
@@ -1187,6 +1198,12 @@ export class AppController {
     if (activeField) {
       activeField.style.display = 'block';
     }
+  }
+
+  toggleTLHFields() {
+    const enabled = document.getElementById('settingsTLHEnabled').checked;
+    const fields = document.getElementById('tlhFields');
+    fields.style.display = enabled ? 'block' : 'none';
   }
 
   toggleSocialSecurity() {

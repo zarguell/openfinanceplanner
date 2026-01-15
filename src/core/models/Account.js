@@ -8,6 +8,7 @@ export class Account {
     this.name = name;
     this.type = type; // '401k', 'IRA', 'Roth', 'HSA', 'Taxable'
     this.balance = balanceInDollars * 100; // Store in cents
+    this.costBasis = type === 'Taxable' ? balanceInDollars * 100 : undefined; // Track cost basis for Taxable accounts
     this.annualContribution = 0;
     this.contributionStartYear = 0; // Years from now when contributions start
     this.contributionEndYear = null; // Years from now when contributions end (null for ongoing)
@@ -25,6 +26,7 @@ export class Account {
       name: this.name,
       type: this.type,
       balance: this.balance,
+      costBasis: this.costBasis,
       annualContribution: this.annualContribution,
       contributionStartYear: this.contributionStartYear,
       contributionEndYear: this.contributionEndYear,
@@ -36,6 +38,7 @@ export class Account {
   static fromJSON(data) {
     const account = new Account(data.name, data.type, data.balance / 100);
     account.id = data.id;
+    account.costBasis = data.costBasis !== undefined ? data.costBasis : data.balance;
     account.annualContribution = data.annualContribution || 0;
     account.contributionStartYear = data.contributionStartYear !== undefined ? data.contributionStartYear : 0;
     account.contributionEndYear = data.contributionEndYear || null;
