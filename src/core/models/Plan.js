@@ -56,6 +56,21 @@ export class Plan {
       strategy: 'all',
       threshold: 100000 // $1,000 minimum threshold (in cents)
     };
+    this.backdoorRoth = {
+      enabled: false,
+      annualContribution: 6000,
+      incomeThreshold: 129000,
+      phaseOutEnd: 144000
+    };
+    this.megaBackdoorRoth = {
+      enabled: false,
+      annualContribution: 15000,
+      planSupportsAfterTax: true,
+      planSupportsInServiceWithdrawal: true,
+      employerMatchRate: 0.04,
+      employeeDeferralLimit: 23500,
+      total401kLimit: 69000
+    };
   }
 
   generateId() {
@@ -109,6 +124,8 @@ export class Plan {
       rothConversions: { ...this.rothConversions },
       qcdSettings: { ...this.qcdSettings },
       taxLossHarvesting: { ...this.taxLossHarvesting },
+      backdoorRoth: { ...this.backdoorRoth },
+      megaBackdoorRoth: { ...this.megaBackdoorRoth },
       accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
       expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp),
       incomes: this.incomes.map(inc => inc.toJSON ? inc.toJSON() : inc)
@@ -172,6 +189,25 @@ export class Plan {
       strategy: 'all',
       threshold: 100000,
       ...data.taxLossHarvesting
+    };
+
+    plan.backdoorRoth = {
+      enabled: false,
+      annualContribution: 6000,
+      incomeThreshold: 129000,
+      phaseOutEnd: 144000,
+      ...data.backdoorRoth
+    };
+
+    plan.megaBackdoorRoth = {
+      enabled: false,
+      annualContribution: 15000,
+      planSupportsAfterTax: true,
+      planSupportsInServiceWithdrawal: true,
+      employerMatchRate: 0.04,
+      employeeDeferralLimit: 23500,
+      total401kLimit: 69000,
+      ...data.megaBackdoorRoth
     };
 
     plan.accounts = data.accounts || [];

@@ -18,6 +18,7 @@ import { RothConversionRule } from '../core/rules/RothConversionRule.js';
 import { QCDRule } from '../core/rules/QCDRule.js';
 import { TLHRule } from '../core/rules/TLHRule.js';
 import { BackdoorRothRule } from '../core/rules/BackdoorRothRule.js';
+import { MegaBackdoorRothRule } from '../core/rules/MegaBackdoorRothRule.js';
 
 function initializeRuleRegistry(plan) {
   const registry = new RuleRegistry();
@@ -68,6 +69,21 @@ function initializeRuleRegistry(plan) {
       phaseOutEnd: plan.backdoorRoth.phaseOutEnd
     });
     registry.register(backdoorRule);
+  }
+
+  if (plan.megaBackdoorRoth && plan.megaBackdoorRoth.enabled) {
+    const megaBackdoorRule = new MegaBackdoorRothRule({
+      name: 'mega-backdoor-roth',
+      description: 'Mega Backdoor Roth strategy',
+      dependencies: [],
+      annualContribution: plan.megaBackdoorRoth.annualContribution,
+      planSupportsAfterTax: plan.megaBackdoorRoth.planSupportsAfterTax,
+      planSupportsInServiceWithdrawal: plan.megaBackdoorRoth.planSupportsInServiceWithdrawal,
+      employerMatchRate: plan.megaBackdoorRoth.employerMatchRate,
+      employeeDeferralLimit: plan.megaBackdoorRoth.employeeDeferralLimit,
+      total401kLimit: plan.megaBackdoorRoth.total401kLimit
+    });
+    registry.register(megaBackdoorRule);
   }
 
   return registry;
@@ -248,6 +264,9 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     let totalHarvestedLoss = 0;
     let backdoorRothContribution = 0;
     let backdoorRothConversion = 0;
+    let megaBackdoorRothContribution = 0;
+    let megaBackdoorRothConversion = 0;
+    let megaBackdoorRothEmployerMatch = 0;
 
     ruleResults.forEach(ruleResult => {
       if (ruleResult.balanceModifications) {
@@ -280,6 +299,17 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
         }
         if (ruleResult.conversionAmount !== undefined) {
           backdoorRothConversion = ruleResult.conversionAmount / 100;
+        }
+      }
+      if (ruleResult.name === 'mega-backdoor-roth') {
+        if (ruleResult.contributionAmount !== undefined) {
+          megaBackdoorRothContribution = ruleResult.contributionAmount / 100;
+        }
+        if (ruleResult.conversionAmount !== undefined) {
+          megaBackdoorRothConversion = ruleResult.conversionAmount / 100;
+        }
+        if (ruleResult.employerMatch !== undefined) {
+          megaBackdoorRothEmployerMatch = ruleResult.employerMatch / 100;
         }
       }
     });
@@ -378,6 +408,9 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       rothConversions: rothConversionAmount,
       backdoorRothContribution,
       backdoorRothConversion,
+      megaBackdoorRothContribution,
+      megaBackdoorRothConversion,
+      megaBackdoorRothEmployerMatch: megaBackdoorRothEmployerMatch,
       totalTax: Math.max(0, totalFederalTax + totalStateTax + totalFicaTax - totalTaxBenefitFromHarvesting),
       harvestedLoss: totalHarvestedLoss / 100,
       taxBenefitFromHarvesting: totalTaxBenefitFromHarvesting / 100,

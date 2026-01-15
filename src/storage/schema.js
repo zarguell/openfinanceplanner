@@ -170,6 +170,62 @@ export function validatePlanSchema(planData) {
     });
   }
 
+  if (planData.backdoorRoth !== undefined && typeof planData.backdoorRoth !== 'object') {
+    errors.push('backdoorRoth must be an object if provided');
+  }
+
+  if (planData.backdoorRoth) {
+    if (typeof planData.backdoorRoth.enabled !== 'boolean') {
+      errors.push('backdoorRoth.enabled must be a boolean');
+    }
+
+    if (typeof planData.backdoorRoth.annualContribution !== 'number' || planData.backdoorRoth.annualContribution < 0 || planData.backdoorRoth.annualContribution > 7000) {
+      errors.push('backdoorRoth.annualContribution must be a number between 0 and 7000');
+    }
+
+    if (typeof planData.backdoorRoth.incomeThreshold !== 'number' || planData.backdoorRoth.incomeThreshold < 0 || planData.backdoorRoth.incomeThreshold > 200000) {
+      errors.push('backdoorRoth.incomeThreshold must be a number between 0 and 200000');
+    }
+
+    if (typeof planData.backdoorRoth.phaseOutEnd !== 'number' || planData.backdoorRoth.phaseOutEnd < 0 || planData.backdoorRoth.phaseOutEnd > 200000) {
+      errors.push('backdoorRoth.phaseOutEnd must be a number between 0 and 200000');
+    }
+  }
+
+  if (planData.megaBackdoorRoth !== undefined && typeof planData.megaBackdoorRoth !== 'object') {
+    errors.push('megaBackdoorRoth must be an object if provided');
+  }
+
+  if (planData.megaBackdoorRoth) {
+    if (typeof planData.megaBackdoorRoth.enabled !== 'boolean') {
+      errors.push('megaBackdoorRoth.enabled must be a boolean');
+    }
+
+    if (typeof planData.megaBackdoorRoth.annualContribution !== 'number' || planData.megaBackdoorRoth.annualContribution < 0 || planData.megaBackdoorRoth.annualContribution > 40000) {
+      errors.push('megaBackdoorRoth.annualContribution must be a number between 0 and 40000');
+    }
+
+    if (typeof planData.megaBackdoorRoth.planSupportsAfterTax !== 'boolean') {
+      errors.push('megaBackdoorRoth.planSupportsAfterTax must be a boolean');
+    }
+
+    if (typeof planData.megaBackdoorRoth.planSupportsInServiceWithdrawal !== 'boolean') {
+      errors.push('megaBackdoorRoth.planSupportsInServiceWithdrawal must be a boolean');
+    }
+
+    if (typeof planData.megaBackdoorRoth.employerMatchRate !== 'number' || planData.megaBackdoorRoth.employerMatchRate < 0 || planData.megaBackdoorRoth.employerMatchRate > 0.2) {
+      errors.push('megaBackdoorRoth.employerMatchRate must be a number between 0 and 20%');
+    }
+
+    if (typeof planData.megaBackdoorRoth.employeeDeferralLimit !== 'number' || planData.megaBackdoorRoth.employeeDeferralLimit < 0 || planData.megaBackdoorRoth.employeeDeferralLimit > 50000) {
+      errors.push('megaBackdoorRoth.employeeDeferralLimit must be a number between 0 and 50000');
+    }
+
+    if (typeof planData.megaBackdoorRoth.total401kLimit !== 'number' || planData.megaBackdoorRoth.total401kLimit < 0 || planData.megaBackdoorRoth.total401kLimit > 100000) {
+      errors.push('megaBackdoorRoth.total401kLimit must be a number between 0 and 100000');
+    }
+  }
+
   return {
     valid: errors.length === 0,
     errors
