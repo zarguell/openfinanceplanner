@@ -28,7 +28,7 @@ Progress: ██░░░░░░░░░ 17% (1 of 6 phases complete)
 
 | Phase | Plans | Total | Avg/Plan |
 | ----- | ----- | ----- | -------- |
-| 1     | 3     | 3     | 5 min      |
+| 1     | 3     | 3     | 5 min    |
 
 **Recent Trend:**
 

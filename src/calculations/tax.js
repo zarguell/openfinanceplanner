@@ -5,7 +5,7 @@
  * Based on state tax brackets for 2024 and 2025 (DC, CA, NY)
  */
 
-import { calculateFederalTax } from './tax/federal.js';
+import { calculateFederalTax, STANDARD_DEDUCTIONS } from './tax/federal.js';
 
 /**
  * District of Columbia (DC) Tax Brackets - 2024 & 2025
