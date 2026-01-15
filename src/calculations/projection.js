@@ -17,6 +17,7 @@ import { RuleRegistry } from '../core/rules/RuleRegistry.js';
 import { RothConversionRule } from '../core/rules/RothConversionRule.js';
 import { QCDRule } from '../core/rules/QCDRule.js';
 import { TLHRule } from '../core/rules/TLHRule.js';
+import { BackdoorRothRule } from '../core/rules/BackdoorRothRule.js';
 
 function initializeRuleRegistry(plan) {
   const registry = new RuleRegistry();
@@ -55,6 +56,18 @@ function initializeRuleRegistry(plan) {
       threshold: plan.taxLossHarvesting.threshold
     });
     registry.register(tlhRule);
+  }
+
+  if (plan.backdoorRoth && plan.backdoorRoth.enabled) {
+    const backdoorRule = new BackdoorRothRule({
+      name: 'backdoor-roth',
+      description: 'Backdoor Roth strategy',
+      dependencies: [],
+      annualContribution: plan.backdoorRoth.annualContribution,
+      incomeThreshold: plan.backdoorRoth.incomeThreshold,
+      phaseOutEnd: plan.backdoorRoth.phaseOutEnd
+    });
+    registry.register(backdoorRule);
   }
 
   return registry;
@@ -233,6 +246,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     let rothConversionTax = { federalTax: 0, stateTax: 0 };
     let totalTaxBenefitFromHarvesting = 0;
     let totalHarvestedLoss = 0;
+    let backdoorRothContribution = 0;
+    let backdoorRothConversion = 0;
 
     ruleResults.forEach(ruleResult => {
       if (ruleResult.balanceModifications) {
@@ -247,10 +262,10 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       if (ruleResult.totalQCD !== undefined) {
         totalQCDAmount = ruleResult.totalQCD / 100;
       }
-      if (ruleResult.conversionAmount !== undefined) {
+      if (ruleResult.name === 'roth-conversions' && ruleResult.conversionAmount !== undefined) {
         rothConversionAmount = ruleResult.conversionAmount / 100;
       }
-      if (ruleResult.taxOnConversion !== undefined) {
+      if (ruleResult.name === 'roth-conversions' && ruleResult.taxOnConversion !== undefined) {
         rothConversionTax = ruleResult.taxOnConversion;
       }
       if (ruleResult.taxBenefitFromHarvesting !== undefined) {
@@ -258,6 +273,14 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       }
       if (ruleResult.harvestedLoss !== undefined) {
         totalHarvestedLoss = ruleResult.harvestedLoss;
+      }
+      if (ruleResult.name === 'backdoor-roth') {
+        if (ruleResult.contributionAmount !== undefined) {
+          backdoorRothContribution = ruleResult.contributionAmount / 100;
+        }
+        if (ruleResult.conversionAmount !== undefined) {
+          backdoorRothConversion = ruleResult.conversionAmount / 100;
+        }
       }
     });
 
@@ -353,6 +376,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalRmdAmount: totalRmdAmount,
       totalQCD: totalQCDAmount,
       rothConversions: rothConversionAmount,
+      backdoorRothContribution,
+      backdoorRothConversion,
       totalTax: Math.max(0, totalFederalTax + totalStateTax + totalFicaTax - totalTaxBenefitFromHarvesting),
       harvestedLoss: totalHarvestedLoss / 100,
       taxBenefitFromHarvesting: totalTaxBenefitFromHarvesting / 100,

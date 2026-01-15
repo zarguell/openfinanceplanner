@@ -87,21 +87,11 @@ export class RothConversionRule extends BaseRule {
       totalTaxRate
     );
 
-    return {
+return {
+      name: 'roth-conversions',
       conversionAmount,
       taxOnConversion: taxImpact.taxOnConversion,
-      balanceModifications: [
-        {
-          accountIndex: traditionalAccountIndex,
-          change: -conversionAmount,
-          reason: 'Roth conversion - reduce Traditional balance'
-        },
-        {
-          accountIndex: rothAccountIndex,
-          change: conversionAmount,
-          reason: 'Roth conversion - increase Roth balance'
-        }
-      ]
+      balanceModifications
     };
   }
 
