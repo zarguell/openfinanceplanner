@@ -10,11 +10,17 @@ import { StorageManager } from '../storage/StorageManager.js';
 import { ChartRenderer } from './ChartRenderer.js';
 
 export class PlanController {
-  constructor(currentPlan, storageManager, accountController = null) {
+  constructor(
+    currentPlan,
+    storageManager,
+    accountController = null,
+    expenseIncomeController = null
+  ) {
     this.currentPlan = currentPlan;
     this.storageManager = storageManager;
     this.chartRenderer = new ChartRenderer();
     this.accountController = accountController;
+    this.expenseIncomeController = expenseIncomeController;
   }
 
   // Plan CRUD Methods
