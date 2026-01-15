@@ -869,9 +869,12 @@ export class AppController {
             <option value="business">Business Income</option>
             <option value="pension">Pension</option>
             <option value="rental">Rental Income</option>
-            <option value="dividends">Qualified Dividends</option>
+            <option value="dividends">Qualified Dividends (tax-advantaged)</option>
+            <option value="non-qualified-dividends">Non-Qualified Dividends (ordinary tax)</option>
+            <option value="interest">Interest Income (ordinary tax)</option>
             <option value="other">Other Income</option>
           </select>
+          <small class="form-help">Type affects how income is taxed</small>
         </div>
         <div class="form-group">
           <label class="form-label">Annual Amount <span class="form-label-hint">$</span></label>
@@ -897,6 +900,47 @@ export class AppController {
           <input type="number" id="incomeGrowthRate" class="form-control" placeholder="3.0" min="-10" max="20" step="0.1" value="3.0">
           <small class="form-help">Expected annual raise or income growth (e.g., 3% for salary increases)</small>
         </div>
+
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--color-border);">
+
+        <h3 style="margin-bottom: 1rem; font-size: 1rem;">Smart Rules <small style="font-size: 0.8rem; font-weight: normal; color: var(--color-text-secondary);">(optional)</small></h3>
+
+        <div class="form-group">
+          <label class="form-label">Start Rule</label>
+          <select id="incomeStartRule" class="form-control" onchange="app.toggleIncomeStartRuleFields()">
+            <option value="manual">Manual (use start year above)</option>
+            <option value="retirement">Start at retirement age</option>
+            <option value="age">Start at specific age</option>
+            <option value="retirement-if-age">Start at retirement IF minimum age met</option>
+          </select>
+          <small class="form-help">Automatically calculate start year based on rule</small>
+        </div>
+
+        <div id="incomeStartRuleAgeFields" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Start Age <span class="form-label-hint">years</span></label>
+            <input type="number" id="incomeStartRuleAge" class="form-control" placeholder="55" min="0" max="120" step="1">
+            <small class="form-help">Income will start at this age</small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">End Rule</label>
+          <select id="incomeEndRule" class="form-control" onchange="app.toggleIncomeEndRuleFields()">
+            <option value="manual">Manual (use end year above)</option>
+            <option value="retirement">Stop at retirement age</option>
+            <option value="age">Stop at specific age</option>
+          </select>
+          <small class="form-help">Automatically calculate end year based on rule</small>
+        </div>
+
+        <div id="incomeEndRuleAgeFields" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">End Age <span class="form-label-hint">years</span></label>
+            <input type="number" id="incomeEndRuleAge" class="form-control" placeholder="65" min="0" max="120" step="1">
+            <small class="form-help">Income will stop at this age</small>
+          </div>
+        </div>
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="document.getElementById('addIncomeModal').remove()">Cancel</button>
           <button class="btn btn-primary" onclick="app.addIncome()">Add</button>
@@ -914,6 +958,11 @@ export class AppController {
     const endYear = document.getElementById('incomeEndYear').value ? parseInt(document.getElementById('incomeEndYear').value) : null;
     const isOneTime = document.getElementById('incomeIsOneTime').checked;
     const growthRate = parseFloat(document.getElementById('incomeGrowthRate').value) / 100 || 0.03;
+    
+    const startRule = document.getElementById('incomeStartRule').value;
+    const startRuleAge = document.getElementById('incomeStartRuleAge').value ? parseInt(document.getElementById('incomeStartRuleAge').value) : null;
+    const endRule = document.getElementById('incomeEndRule').value;
+    const endRuleAge = document.getElementById('incomeEndRuleAge').value ? parseInt(document.getElementById('incomeEndRuleAge').value) : null;
 
     if (!name || !amount) {
       alert('Please fill required fields');
@@ -929,10 +978,27 @@ export class AppController {
     income.endYear = endYear;
     income.isOneTime = isOneTime;
     income.growthRate = growthRate;
+    income.startRule = startRule;
+    income.startRuleAge = startRuleAge;
+    income.endRule = endRule;
+    income.endRuleAge = endRuleAge;
+    income.growthRate = growthRate;
     this.currentPlan.addIncome(income);
     StorageManager.savePlan(this.currentPlan);
     this.renderIncomesList();
     document.getElementById('addIncomeModal').remove();
+  }
+
+  toggleIncomeStartRuleFields() {
+    const rule = document.getElementById('incomeStartRule').value;
+    const ageFields = document.getElementById('incomeStartRuleAgeFields');
+    ageFields.style.display = (rule === 'age' || rule === 'retirement-if-age') ? 'block' : 'none';
+  }
+
+  toggleIncomeEndRuleFields() {
+    const rule = document.getElementById('incomeEndRule').value;
+    const ageFields = document.getElementById('incomeEndRuleAgeFields');
+    ageFields.style.display = (rule === 'age') ? 'block' : 'none';
   }
 
   deleteIncome(incomeId) {

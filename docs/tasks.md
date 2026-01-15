@@ -176,6 +176,41 @@
 - Projection integration working ✅
 - UI implementation complete ✅
 
+**Sprint 10: Smart Income Rules (COMPLETED ✅)**
+
+- ✅ Implemented smart rule evaluation for income start/end (auto-calculate based on retirement age)
+- ✅ Added income types: 'interest', 'non-qualified-dividends' (tax-accurate treatment)
+- ✅ Created 4 start rule types: manual, retirement, age, retirement-if-age
+- ✅ Created 3 end rule types: manual, retirement, age
+- ✅ Updated Income model with smart rule fields (startRule, startRuleAge, endRule, endRuleAge)
+- ✅ Updated calculation logic (income.js) with evaluateStartYear(), evaluateEndYear()
+- ✅ Updated projection.js to pass planContext (currentAge, retirementAge) to income calculations
+- ✅ Updated UI to add Smart Rules section to income modal with rule dropdowns and conditional age inputs
+- ✅ Created comprehensive unit tests (all passing): 9 test functions covering all smart rule scenarios
+- ✅ Fixed endYear logic to be exclusive (income stops AT endYear, not through it)
+- ✅ Schema validation updates for new income fields
+
+**Files Modified:**
+- `src/core/models/Income.js` - Added smart rule fields, new income types, updated getTaxTreatment()
+- `src/calculations/income.js` - Added evaluateStartYear(), evaluateEndYear(), updated calculateIncomeForYear(), calculateTotalIncome(), calculateTaxableIncome()
+- `src/calculations/projection.js` - Added planContext object to calculateTotalIncome() call
+- `src/ui/AppController.js` - Added Smart Rules UI section with rule dropdowns and age inputs
+- `src/storage/schema.js` - Added validation for startRule, endRule, startRuleAge, endRuleAge
+- `tests/unit/calculations/income.test.js` - Added 9 unit tests for smart rule evaluation
+
+**Smart Rule Features:**
+- Manual: Uses explicit startYear/endYear values (default)
+- Retirement: Auto-calculates based on plan's retirement age (retirementAge - currentAge)
+- Age: Uses specified age (startRuleAge/endRuleAge - currentAge)
+- Retirement-if-age: Starts at retirement IF retirement >= startRuleAge, else at startRuleAge (for conditional pension eligibility)
+- EndYear is exclusive (income stops AT endYear, enabling clean retirement transitions)
+- New tax-accurate income types: interest (passive), non-qualified-dividends (passive)
+
+**Test Results:**
+- All unit tests passing ✅ (15/15 including 9 new smart rule tests)
+- Smart rule integration working ✅
+- Retirement transition logic working ✅ (salary ends at retirement, pension starts at retirement)
+
 **Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
 
 - ✅ Implemented withdrawal strategy module with three strategies (proportional, tax-efficient, tax-aware)
@@ -275,17 +310,17 @@ Created a complete working prototype of Retirement Planner Pro with:
 
 **Income Streams**
 - [✅] Social Security benefit estimation (by FRA and filing age) (COMPLETED Sprint 3)
-- [ ] Pension income modeling
-- [ ] Rental property income support
+- [✅] Pension income modeling (COMPLETED Sprint 10)
+- [✅] Rental property income support (COMPLETED Sprint 10)
 - [✅] Qualified Charitable Distribution (QCD) - Tax-free charitable giving from IRAs (COMPLETED Sprint 8)
-- [ ] Dividend and interest income tracking
-- [ ] Earned income/wages (pre-retirement)
+- [✅] Dividend and interest income tracking (COMPLETED Sprint 10)
+- [✅] Earned income/wages (pre-retirement) (COMPLETED Sprint 10)
 
 **Withdrawal Strategies**
 - [✅] Implement Roth conversion ladder logic - **COMPLETED Sprint 6**
-- [ ] Tax-loss harvesting suggestions
+- [✅] Tax-loss harvesting suggestions - **COMPLETED Sprint 9**
 - [✅] Tax-efficient withdrawal order (Taxable → Traditional → Roth → HSA) - **COMPLETED Sprint 5**
-- [ ] Qualified charitable distribution (QCD) support for age 70½+
+- [✅] Qualified charitable distribution (QCD) support for age 70½+ - **COMPLETED Sprint 8**
 - [ ] Backdoor Roth automation
 
 **Advanced Projections**

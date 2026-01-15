@@ -135,8 +135,33 @@ export function validatePlanSchema(planData) {
         errors.push(`Income ${index} endYear must be null or a number >= startYear`);
       }
 
-      if (!['salary', 'business', 'pension', 'rental', 'dividends', 'other'].includes(income.type)) {
-        errors.push(`Income ${index} type must be one of: salary, business, pension, rental, dividends, other`);
+      if (!['salary', 'business', 'pension', 'rental', 'dividends', 'non-qualified-dividends', 'interest', 'other'].includes(income.type)) {
+        errors.push(`Income ${index} type must be one of: salary, business, pension, rental, dividends, interest, other`);
+      }
+
+      if (income.startRule && !['manual', 'retirement', 'age', 'retirement-if-age'].includes(income.startRule)) {
+        errors.push(`Income ${index} startRule must be one of: manual, retirement, age, retirement-if-age`);
+      }
+
+      if (income.endRule && !['manual', 'retirement', 'age'].includes(income.endRule)) {
+        errors.push(`Income ${index} endRule must be one of: manual, retirement, age`);
+      }
+
+      // Validate age-based rule fields
+      if (income.startRuleAge !== null && income.startRuleAge !== undefined && typeof income.startRuleAge !== 'number') {
+        errors.push(`Income ${index} startRuleAge must be a number or null`);
+      }
+
+      if (typeof income.startRuleAge === 'number' && (income.startRuleAge < 0 || income.startRuleAge > 120)) {
+        errors.push(`Income ${index} startRuleAge must be between 0 and 120`);
+      }
+
+      if (income.endRuleAge !== null && income.endRuleAge !== undefined && typeof income.endRuleAge !== 'number') {
+        errors.push(`Income ${index} endRuleAge must be a number or null`);
+      }
+
+      if (typeof income.endRuleAge === 'number' && (income.endRuleAge < 0 || income.endRuleAge > 120)) {
+        errors.push(`Income ${index} endRuleAge must be between 0 and 120`);
       }
 
       if (typeof income.growthRate !== 'number' || income.growthRate < -0.1 || income.growthRate > 0.2) {

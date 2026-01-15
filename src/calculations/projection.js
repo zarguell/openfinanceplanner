@@ -121,7 +121,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     const totalIncome = calculateTotalIncome(
       plan.incomes || [],
       year,
-      plan.assumptions.inflationRate
+      plan.assumptions.inflationRate,
+      { currentAge: startAge, retirementAge: plan.taxProfile.retirementAge }
     );
 
     // Calculate Social Security income for this year
