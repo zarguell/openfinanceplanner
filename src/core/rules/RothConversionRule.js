@@ -16,7 +16,7 @@ export class RothConversionRule extends BaseRule {
   }
 
   apply(context) {
-    const { plan, yearOffset, projectionState } = context;
+    const { plan, yearOffset, projectionState, accountSnapshots } = context;
 
     if (!plan.rothConversions || !plan.rothConversions.enabled) {
       return { conversionAmount: 0 };
@@ -27,9 +27,22 @@ export class RothConversionRule extends BaseRule {
     }
 
     const totalTaxableIncome = projectionState.totalTaxableIncome || 0;
-    const traditionalBalance = projectionState.traditionalBalance || 0;
     const currentAge = plan.taxProfile.currentAge + yearOffset;
     const mustTakeRMD = projectionState.mustTakeRMD || false;
+
+    // Find Traditional and Roth account indices
+    const traditionalAccounts = accountSnapshots
+      .map((acc, idx) => ({ acc, original: plan.accounts[idx], idx }))
+      .filter(({ acc }) => acc.type === '401k' || acc.type === 'IRA');
+
+    const rothAccountIndex = accountSnapshots.findIndex(acc => acc.type === 'Roth');
+
+    if (traditionalAccounts.length === 0 || rothAccountIndex < 0) {
+      return { conversionAmount: 0 };
+    }
+
+    const totalTraditionalBalance = traditionalAccounts.reduce((sum, { acc }) => sum + acc.balance, 0);
+    const traditionalAccountIndex = traditionalAccounts[0].idx;
 
     let conversionAmount = 0;
 
@@ -37,7 +50,7 @@ export class RothConversionRule extends BaseRule {
       case 'fixed':
         conversionAmount = calculateFixedConversion(
           this.annualAmount,
-          traditionalBalance,
+          totalTraditionalBalance,
           currentAge,
           mustTakeRMD
         );
@@ -47,14 +60,14 @@ export class RothConversionRule extends BaseRule {
         conversionAmount = calculateBracketFillConversion(
           totalTaxableIncome,
           this.bracketTop,
-          traditionalBalance
+          totalTraditionalBalance
         );
         break;
 
       case 'percentage':
         conversionAmount = calculatePercentageConversion(
           this.percentage,
-          traditionalBalance
+          totalTraditionalBalance
         );
         break;
 
@@ -76,7 +89,19 @@ export class RothConversionRule extends BaseRule {
 
     return {
       conversionAmount,
-      taxOnConversion: taxImpact.taxOnConversion
+      taxOnConversion: taxImpact.taxOnConversion,
+      balanceModifications: [
+        {
+          accountIndex: traditionalAccountIndex,
+          change: -conversionAmount,
+          reason: 'Roth conversion - reduce Traditional balance'
+        },
+        {
+          accountIndex: rothAccountIndex,
+          change: conversionAmount,
+          reason: 'Roth conversion - increase Roth balance'
+        }
+      ]
     };
   }
 

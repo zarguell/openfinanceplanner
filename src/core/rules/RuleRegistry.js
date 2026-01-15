@@ -199,14 +199,24 @@ export class RuleRegistry {
     this.rules.clear();
   }
 
-  /**
-   * Get registry statistics
-   * @returns {object} Registry stats
-   */
-  getStats() {
+getStats() {
     return {
       totalRules: this.rules.size,
       ruleNames: this.list()
     };
+  }
+
+  applyRules(context) {
+    const results = [];
+    const executionOrder = this.getExecutionOrder();
+
+    for (const rule of executionOrder) {
+      if (rule.canApply(context)) {
+        const result = rule.apply(context);
+        results.push(result);
+      }
+    }
+
+    return results;
   }
 }

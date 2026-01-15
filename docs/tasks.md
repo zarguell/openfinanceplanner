@@ -251,15 +251,49 @@ Core calculation engine is now production-ready. Advanced features like Backdoor
 3. Enable rule composition - Combine multiple strategies (e.g., "Roth conversion + QCD")
 4. Refactor existing strategies - Move hardcoded logic into rule system
 
-**Sprint 11: RuleRegistry Foundation (STARTING NOW)**
+**Sprint 11: RuleRegistry Foundation (COMPLETED ✅)**
 
-- [ ] Create RuleRegistry class (src/core/rules/RuleRegistry.js)
-- [ ] Define rule interface (apply(), validate(), dependencies())
-- [ ] Create rule base class (BaseRule)
-- [ ] Implement rule registration system
-- [ ] Add rule validation (check dependencies, required fields)
-- [ ] Create unit tests for RuleRegistry
-- [ ] Update projection.js to use RuleRegistry instead of hardcoded strategy calls
+- ✅ Created RuleRegistry class (src/core/rules/RuleRegistry.js)
+- ✅ Defined rule interface (apply(), validate(), canApply(), getDependencies(), getMetadata())
+- ✅ Created rule base class (BaseRule)
+- ✅ Implemented rule registration system
+- ✅ Added rule validation (check dependencies, required fields)
+- ✅ Added circular dependency detection and topological sort for execution order
+- ✅ Created StrategyFactory for dynamic rule instantiation
+- ✅ Created unit tests for RuleRegistry (16 tests, all passing)
+- ✅ Created strategy rule classes (RothConversionRule, QCDRule, TLHRule)
+- ✅ Updated projection.js to use RuleRegistry instead of hardcoded strategy calls
+- ✅ All integration tests passing (QCD, TLH, full-flow)
+
+**Files Created:**
+- `src/core/rules/BaseRule.js` - Abstract base class defining rule interface
+- `src/core/rules/RuleRegistry.js` - Central registry with dependency management
+- `src/core/rules/StrategyFactory.js` - Factory for dynamic instantiation
+- `src/core/rules/RothConversionRule.js` - Wraps roth-conversions.js with apply() interface
+- `src/core/rules/QCDRule.js` - Wraps qcd.js with apply() interface
+- `src/core/rules/TLHRule.js` - Wraps tax-loss-harvesting.js with apply() interface
+- `src/core/rules/index.js` - Barrel exports for rules module
+- `tests/unit/core/rules/RuleRegistry.test.js` - Unit tests (16 tests, all passing)
+
+**Files Modified:**
+- `src/calculations/projection.js` - Refactored to use RuleRegistry.applyRules()
+- `docs/architecture.md` - Added comprehensive RuleRegistry documentation
+- `docs/tasks.md` - Marked Sprint 11 complete
+
+**RuleRegistry Features:**
+- Rule registration and management
+- Dependency validation and circular dependency detection
+- Topological sort for correct execution order
+- Balance modification tracking (rules return structured changes)
+- Context-aware rule application (yearOffset, plan state, account snapshots)
+- Extensible architecture for future strategies (Backdoor Roth, etc.)
+
+**Test Results:**
+- All RuleRegistry unit tests passing ✅ (16/16)
+- All QCD integration tests passing ✅ (5/5)
+- All TLH integration tests passing ✅ (8/8)
+- Full-flow integration test passing ✅
+- No regressions from refactoring ✅
 
 **Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
 

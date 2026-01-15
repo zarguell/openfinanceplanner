@@ -18,10 +18,10 @@ export class QCDRule extends BaseRule {
   }
 
   apply(context) {
-    const { plan, yearOffset, projectionState } = context;
+    const { plan, yearOffset, projectionState, accountSnapshots, rmdRequirements } = context;
 
     if (!plan.qcdSettings || !plan.qcdSettings.enabled) {
-      return { totalQCD: 0, taxBenefit: 0 };
+      return { totalQCD: 0, taxBenefit: 0, balanceModifications: [] };
     }
 
     const currentAge = plan.taxProfile.currentAge + yearOffset;
@@ -42,19 +42,39 @@ export class QCDRule extends BaseRule {
     const totalQCD = calculateTotalQCD(accounts, qcdSettings, rmdAmount);
     const taxBenefit = calculateQCDTaxBenefit(totalQCD, plan.taxProfile.estimatedTaxRate || 0.25);
 
+    const balanceModifications = [];
+
+    accountSnapshots.forEach((acc, idx) => {
+      const account = plan.accounts[idx];
+      const qcdForAccount = calculateQCDForAccount(
+        { ...account, balance: acc.balance },
+        qcdSettings,
+        rmdRequirements[idx] || 0
+      );
+
+      if (qcdForAccount > 0) {
+        balanceModifications.push({
+          accountIndex: idx,
+          change: -qcdForAccount,
+          reason: 'QCD distribution'
+        });
+      }
+    });
+
     return {
       totalQCD,
-      taxBenefit
+      taxBenefit,
+      balanceModifications
     };
   }
 
   canApply(context) {
-    const { plan } = context;
+    const { plan, yearOffset } = context;
     if (!plan.qcdSettings || !plan.qcdSettings.enabled) {
       return false;
     }
 
-    const currentAge = plan.taxProfile.currentAge;
+    const currentAge = plan.taxProfile.currentAge + yearOffset;
     return mustTakeQCD(currentAge);
   }
 }

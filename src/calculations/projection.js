@@ -4,11 +4,15 @@
  */
 
 import {
-   calculateFederalTax,
-   calculateTotalTax,
-   calculateLongTermCapitalGainsTax,
-   calculateFicaTax
-  } from './tax.js';
+    calculateFederalTax,
+    calculateTotalTax,
+    calculateLongTermCapitalGainsTax,
+    calculateFicaTax
+   } from './tax.js';
+import { calculateTotalIncome } from './income.js';
+import { calculateSocialSecurityForYear } from './social-security.js';
+import { mustTakeRMD, calculateRMDForAccount } from './rmd.js';
+import { calculateWithdrawals } from './withdrawal-strategies.js';
 import { RuleRegistry } from '../core/rules/RuleRegistry.js';
 import { RothConversionRule } from '../core/rules/RothConversionRule.js';
 import { QCDRule } from '../core/rules/QCDRule.js';
@@ -140,6 +144,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     const age = startAge + year;
     const isRetired = age >= plan.taxProfile.retirementAge;
 
+    let totalWithdrawalNeeded = 0;
+
     // Calculate total expenses for this year
     const totalExpense = calculateTotalExpenses(
       plan.expenses,
@@ -204,172 +210,63 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     const totalRmdAmount = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0) / 100;
     const totalRmdWithdrawalCents = rmdRequirements.reduce((sum, rmd) => sum + rmd, 0);
 
+    const projectionState = {
+      totalTaxableIncome: (totalIncome + socialSecurityIncome) * 100,
+      traditionalBalance: accountSnapshots
+        .filter((acc, idx) => plan.accounts[idx].type === '401k' || plan.accounts[idx].type === 'IRA')
+        .reduce((sum, acc) => sum + acc.balance, 0),
+      mustTakeRMD: mustTakeRMD(age),
+      rmdAmount: totalRmdWithdrawalCents,
+      capitalGains: 0
+    };
+
+    const ruleResults = ruleRegistry.applyRules({
+      plan,
+      yearOffset: year,
+      projectionState,
+      accountSnapshots,
+      rmdRequirements
+    });
+
     let totalQCDAmount = 0;
-    const qcdSettingsWithAge = { ...(plan.qcdSettings || { enabled: false }), currentAge: age };
-    const totalQCDCents = calculateTotalQCD(
-      accountSnapshots.map((acc, idx) => ({ ...plan.accounts[idx], balance: acc.balance })),
-      qcdSettingsWithAge,
-      totalRmdWithdrawalCents
-    );
-
-    if (plan.qcdSettings && plan.qcdSettings.enabled) {
-      totalQCDAmount = totalQCDCents / 100;
-    }
-
-    // Calculate Roth conversions (if enabled)
     let rothConversionAmount = 0;
-    let rothConversionTax = 0;
-    let rothConversionIncome = 0;
+    let rothConversionTax = { federalTax: 0, stateTax: 0 };
+    let totalTaxBenefitFromHarvesting = 0;
+    let totalHarvestedLoss = 0;
 
-    if (plan.rothConversions && plan.rothConversions.enabled && year > 0) {
-      const traditionalAccounts = accountSnapshots
-        .map((acc, idx) => ({ acc, original: plan.accounts[idx], idx }))
-        .filter(({ acc }) => acc.type === '401k' || acc.type === 'IRA');
-
-      const totalTraditionalBalance = traditionalAccounts.reduce((sum, { acc }) => sum + acc.balance, 0);
-
-      if (totalTraditionalBalance > 0) {
-        const strategy = plan.rothConversions.strategy || 'fixed';
-        const maxConversion = totalTraditionalBalance - totalRmdWithdrawalCents;
-
-        switch (strategy) {
-          case 'fixed':
-            const annualAmount = (plan.rothConversions.annualAmount || 0) * 100;
-            rothConversionAmount = Math.min(annualAmount, maxConversion);
-            break;
-
-          case 'bracket-fill':
-            const bracketTop = (plan.rothConversions.bracketTop || 89450) * 100;
-            const taxableIncome = totalIncome * 100 + socialSecurityIncome * 100;
-            rothConversionAmount = Math.min(
-              calculateBracketFillConversion(taxableIncome, bracketTop, totalTraditionalBalance),
-              maxConversion
-            );
-            break;
-
-          case 'percentage':
-            const percentage = plan.rothConversions.percentage || 0.10;
-            rothConversionAmount = Math.min(
-              calculatePercentageConversion(percentage, totalTraditionalBalance),
-              maxConversion
-            );
-            break;
-        }
-
-        rothConversionAmount = Math.max(0, rothConversionAmount);
-
-        if (rothConversionAmount > 0) {
-          rothConversionIncome = rothConversionAmount;
-          const taxResult = calculateTotalTax(
-            plan.taxProfile.state,
-            rothConversionAmount + totalIncome * 100 + socialSecurityIncome * 100,
-            plan.taxProfile.filingStatus,
-            taxYear
-          );
-
-          const taxResultWithoutConversion = calculateTotalTax(
-            plan.taxProfile.state,
-            totalIncome * 100 + socialSecurityIncome * 100,
-            plan.taxProfile.filingStatus,
-            taxYear
-          );
-
-          rothConversionTax = {
-            federalTax: (taxResult.federalTax - taxResultWithoutConversion.federalTax) / 100,
-            stateTax: (taxResult.stateTax - taxResultWithoutConversion.stateTax) / 100
-          };
-
-          const rothAccountIndex = plan.accounts.findIndex(acc => acc.type === 'Roth');
-          if (rothAccountIndex >= 0) {
-            const traditionalAccountIndex = traditionalAccounts[0].idx;
-            accountSnapshots[traditionalAccountIndex].balance -= rothConversionAmount;
-            accountSnapshots[rothAccountIndex].balance += rothConversionAmount;
+    ruleResults.forEach(ruleResult => {
+      if (ruleResult.balanceModifications) {
+        ruleResult.balanceModifications.forEach(mod => {
+          accountSnapshots[mod.accountIndex].balance += mod.change;
+          if (mod.costBasisUpdate) {
+            accountSnapshots[mod.accountIndex].costBasis = mod.costBasisUpdate;
           }
-        }
+        });
       }
-    }
 
-    let totalWithdrawalNeeded = 0;
+      if (ruleResult.totalQCD !== undefined) {
+        totalQCDAmount = ruleResult.totalQCD / 100;
+      }
+      if (ruleResult.conversionAmount !== undefined) {
+        rothConversionAmount = ruleResult.conversionAmount / 100;
+      }
+      if (ruleResult.taxOnConversion !== undefined) {
+        rothConversionTax = ruleResult.taxOnConversion;
+      }
+      if (ruleResult.taxBenefitFromHarvesting !== undefined) {
+        totalTaxBenefitFromHarvesting = ruleResult.taxBenefitFromHarvesting;
+      }
+      if (ruleResult.harvestedLoss !== undefined) {
+        totalHarvestedLoss = ruleResult.harvestedLoss;
+      }
+    });
+
     if (netCashFlow < 0) {
       totalWithdrawalNeeded = Math.abs(netCashFlow);
     }
 
-    const rmdAfterQCD = Math.max(0, totalRmdWithdrawalCents - totalQCDCents);
-    totalWithdrawalNeeded = Math.max(totalWithdrawalNeeded, rmdAfterQCD);
-
-    if (plan.qcdSettings && plan.qcdSettings.enabled && totalQCDCents > 0) {
-      const qcdSettingsWithAge = { ...(plan.qcdSettings || {}), currentAge: age };
-
-      accountSnapshots.forEach((acc, idx) => {
-        const account = plan.accounts[idx];
-        const qcdForAccount = calculateQCDForAccount(
-          { ...account, balance: acc.balance },
-          qcdSettingsWithAge,
-          rmdRequirements[idx] || 0
-        );
-
-        if (qcdForAccount > 0) {
-          accountSnapshots[idx].balance -= qcdForAccount;
-          totalBalance -= qcdForAccount / 100;
-        }
-      });
-    }
-
-    // Tax-Loss Harvesting
-    let totalTaxBenefitFromHarvesting = 0;
-    let totalHarvestedLoss = 0;
-
-    if (isHarvestingEnabled(plan.taxLossHarvesting)) {
-      // Calculate total unrealized loss across all taxable accounts
-      let totalUnrealizedLoss = 0;
-      accountSnapshots.forEach((acc, idx) => {
-        const account = plan.accounts[idx];
-        if (account.type === 'Taxable') {
-          totalUnrealizedLoss += calculateUnrealizedLoss({ ...account, balance: acc.balance });
-        }
-      });
-
-      // Estimate capital gains for this year (simplified: assume 0 for now)
-      // In reality, this would track actual realized gains from sales/withdrawals
-      const estimatedCapitalGains = 0;
-
-      // Get marginal tax rate from plan (or use default 24%)
-      const marginalRate = plan.taxProfile.federalTaxRate || 0.24;
-
-      // Suggest harvesting amount based on strategy
-      const suggestion = suggestHarvestingAmount(
-        totalUnrealizedLoss,
-        estimatedCapitalGains,
-        marginalRate,
-        plan.taxLossHarvesting
-      );
-
-      if (suggestion.harvestAmountCents > 0) {
-        // Apply harvesting to each taxable account proportionally
-        let appliedHarvest = 0;
-        accountSnapshots.forEach((acc, idx) => {
-          const account = plan.accounts[idx];
-          if (account.type === 'Taxable') {
-            const lossInAccount = calculateUnrealizedLoss({ ...account, balance: acc.balance });
-            if (lossInAccount > 0 && appliedHarvest < suggestion.harvestAmountCents) {
-              const harvestFromAccount = Math.min(
-                lossInAccount,
-                suggestion.harvestAmountCents - appliedHarvest
-              );
-              const result = applyHarvesting({ ...account, balance: acc.balance }, harvestFromAccount);
-              if (result.success) {
-                accountSnapshots[idx].balance = result.newCostBasis;
-                accountSnapshots[idx].costBasis = result.newCostBasis;
-                appliedHarvest += harvestFromAccount;
-              }
-            }
-          }
-        });
-
-        totalHarvestedLoss = appliedHarvest;
-        totalTaxBenefitFromHarvesting = suggestion.taxBenefitCents;
-      }
-    }
+    const rmdAfterQCD = Math.max(0, totalRmdWithdrawalCents - (totalQCDAmount * 100));
+    totalWithdrawalNeeded = Math.max(totalWithdrawalNeeded, rmdAfterQCD / 100);
 
     // Use withdrawal strategy to allocate across accounts
     const withdrawalStrategy = plan.withdrawalStrategy || 'proportional';
