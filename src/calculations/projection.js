@@ -9,24 +9,52 @@ import {
    calculateLongTermCapitalGainsTax,
    calculateFicaTax
   } from './tax.js';
-import { calculateRMDForAccount, mustTakeRMD } from './rmd.js';
- import { calculateTotalQCD, calculateQCDForAccount } from './qcd.js';
- import {
-   calculateUnrealizedLoss,
-   calculateTotalUnrealizedLoss,
-   suggestHarvestingAmount,
-   validateHarvestingAmount,
-   applyHarvesting,
-   isHarvestingEnabled
- } from './tax-loss-harvesting.js';
-  import { calculateSocialSecurityForYear } from './social-security.js';
-  import { calculateTotalIncome } from './income.js';
- import { calculateWithdrawals } from './withdrawal-strategies.js';
- import {
-   calculateFixedConversion,
-   calculateBracketFillConversion,
-   calculatePercentageConversion
- } from './roth-conversions.js';
+import { RuleRegistry } from '../core/rules/RuleRegistry.js';
+import { RothConversionRule } from '../core/rules/RothConversionRule.js';
+import { QCDRule } from '../core/rules/QCDRule.js';
+import { TLHRule } from '../core/rules/TLHRule.js';
+
+function initializeRuleRegistry(plan) {
+  const registry = new RuleRegistry();
+
+  if (plan.rothConversions && plan.rothConversions.enabled) {
+    const rothRule = new RothConversionRule({
+      name: 'roth-conversions',
+      description: 'Roth conversion strategy',
+      dependencies: [],
+      strategy: plan.rothConversions.strategy,
+      annualAmount: plan.rothConversions.annualAmount,
+      bracketTop: plan.rothConversions.bracketTop,
+      percentage: plan.rothConversions.percentage
+    });
+    registry.register(rothRule);
+  }
+
+  if (plan.qcdSettings && plan.qcdSettings.enabled) {
+    const qcdRule = new QCDRule({
+      name: 'qcd',
+      description: 'Qualified charitable distribution strategy',
+      dependencies: [],
+      strategy: plan.qcdSettings.strategy,
+      annualAmount: plan.qcdSettings.annualAmount,
+      percentage: plan.qcdSettings.percentage
+    });
+    registry.register(qcdRule);
+  }
+
+  if (plan.taxLossHarvesting && plan.taxLossHarvesting.enabled) {
+    const tlhRule = new TLHRule({
+      name: 'tax-loss-harvesting',
+      description: 'Tax-loss harvesting strategy',
+      dependencies: [],
+      strategy: plan.taxLossHarvesting.strategy,
+      threshold: plan.taxLossHarvesting.threshold
+    });
+    registry.register(tlhRule);
+  }
+
+  return registry;
+}
 
 /**
  * Get growth rate for account type based on assumptions
@@ -101,6 +129,8 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     ...acc,
     balance: acc.balance
   }));
+
+  const ruleRegistry = initializeRuleRegistry(plan);
 
   const startYear = new Date().getFullYear();
   const startAge = plan.taxProfile.currentAge;
