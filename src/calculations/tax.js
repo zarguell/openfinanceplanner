@@ -8,9 +8,9 @@
 import { calculateFederalTax, STANDARD_DEDUCTIONS } from './tax/federal.js';
 import { calculateStateTax, getStateTaxBrackets, getStateStandardDeduction } from './tax/states.js';
 
-// Re-export state tax functions for backward compatibility
+// Re-export federal and state tax functions for backward compatibility
+export { calculateFederalTax } from './tax/federal.js';
 export { calculateStateTax, getStateTaxBrackets, getStateStandardDeduction };
-
 
 /**
  * Calculate total income tax (federal + state)
