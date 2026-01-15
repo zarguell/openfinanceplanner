@@ -269,12 +269,12 @@ export class AppController {
           </div>
           <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
             <strong>Analysis:</strong> ${
-              successProb.probability >= 0.8
-                ? 'Excellent success probability!'
-                : successProb.probability >= 0.6
-                  ? 'Good success probability, but consider increasing savings.'
-                  : 'Success probability is low. Consider adjusting assumptions or increasing contributions.'
-            }
+  successProb.probability >= 0.8
+    ? 'Excellent success probability!'
+    : successProb.probability >= 0.6
+      ? 'Good success probability, but consider increasing savings.'
+      : 'Success probability is low. Consider adjusting assumptions or increasing contributions.'
+}
           </div>
         </div>
       `;
@@ -306,8 +306,8 @@ export class AppController {
       </div>
 
       ${
-        this.monteCarloResults
-          ? `
+  this.monteCarloResults
+    ? `
       <div class="card">
         <div class="card-header">
           <h3>Monte Carlo Fan Chart</h3>
@@ -317,8 +317,8 @@ export class AppController {
         </div>
       </div>
       `
-          : ''
-      }
+    : ''
+}
 
       <div class="card">
         <div class="card-header">
@@ -387,8 +387,8 @@ export class AppController {
             </thead>
             <tbody>
               ${this.projectionResults
-                .map(
-                  (row) => `
+    .map(
+      (row) => `
                 <tr>
                   <td>${row.year}</td>
                   <td>${row.age}</td>
@@ -401,8 +401,8 @@ export class AppController {
                   <td>${row.isRetired ? '<span class="badge badge-success">Retired</span>' : '<span class="badge badge-warning">Saving</span>'}</td>
                 </tr>
               `
-                )
-                .join('')}
+    )
+    .join('')}
             </tbody>
           </table>
         </div>
