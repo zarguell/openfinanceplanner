@@ -65,7 +65,7 @@ Plans:
 Plans:
 
 - [x] 03-01: Extract plan management logic to PlanController ✅
-- [ ] 03-02: Extract account management to AccountController
+- [x] 03-02: Extract account management to AccountController ✅
 - [ ] 03-03: Extract chart rendering to ChartViewController
 - [ ] 03-04: Refactor main AppController as coordinator
 
@@ -126,7 +126,7 @@ Plans:
 | ------------------------------- | -------------- | ----------- | --------- |
 | 1. Quality Tooling Foundation   | 3/3            | Complete    | ✅        |
 | 2. Tax Module Refactor          | 4/4            | Complete    | ✅        |
-| 3. UI Controller Refactor       | 1/4            | In progress | 🟡        |
+| 3. UI Controller Refactor       | 2/4            | In progress | 🟡        |
 | 4. Configuration Centralization | 0/4            | Not started | -         |
 | 5. Test Migration               | 0/3            | Not started | -         |
 | 6. Validation & Polish          | 0/3            | Not started | -         |
