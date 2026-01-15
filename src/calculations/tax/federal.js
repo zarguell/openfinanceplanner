@@ -106,3 +106,38 @@ const STANDARD_DEDUCTIONS = {
     head_of_household: 2362500,
   },
 };
+
+/**
+ * Calculate federal income tax
+ * @param {number} income - Taxable income in cents
+ * @param {string} filingStatus - Filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @returns {number} Federal tax liability in cents
+ */
+export function calculateFederalTax(income, filingStatus, year = 2025) {
+  const brackets = year === 2024 ? TAX_BRACKETS_2024 : TAX_BRACKETS_2025;
+  const deduction = year === 2024 ? STANDARD_DEDUCTIONS[2024] : STANDARD_DEDUCTIONS[2025];
+
+  const taxableIncome = Math.max(0, income - deduction[filingStatus]);
+
+  let totalTax = 0;
+  let remainingIncome = taxableIncome;
+
+  for (const bracket of brackets[filingStatus]) {
+    if (remainingIncome <= 0) break;
+
+    const taxableInBracket = Math.min(
+      remainingIncome,
+      bracket.max === Infinity ? remainingIncome : bracket.max - bracket.min + 1
+    );
+
+    const taxInBracket = Math.round(taxableInBracket * bracket.rate);
+    totalTax += taxInBracket;
+
+    remainingIncome -= taxableInBracket;
+  }
+
+  return totalTax;
+}
+
+export { TAX_BRACKETS_2024, TAX_BRACKETS_2025, STANDARD_DEDUCTIONS };
