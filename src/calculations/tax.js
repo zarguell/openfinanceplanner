@@ -2,15 +2,31 @@
  * Tax Calculations - Pure functions for federal and state tax calculations
  * All values in cents unless noted otherwise
  * Based on IRS tax brackets for 2024 and 2025
- * Based on state tax brackets for 2024 and 2025 (DC, CA, NY)
+ * Based on state tax brackets for 2024 and 2025
  */
 
-import { calculateFederalTax, STANDARD_DEDUCTIONS } from './tax/federal.js';
-import { calculateStateTax, getStateTaxBrackets, getStateStandardDeduction } from './tax/states.js';
+import {
+  calculateFederalTax,
+  loadFederalBrackets,
+  loadFederalStandardDeduction,
+} from './tax/federal.js';
+import {
+  calculateStateTax,
+  getStateTaxBrackets,
+  getStateStandardDeduction,
+  loadStateBrackets,
+  loadStateStandardDeduction,
+} from './tax/states.js';
 
 // Re-export federal and state tax functions for backward compatibility
-export { calculateFederalTax } from './tax/federal.js';
-export { calculateStateTax, getStateTaxBrackets, getStateStandardDeduction };
+export { calculateFederalTax, loadFederalBrackets, loadFederalStandardDeduction } from './tax/federal.js';
+export {
+  calculateStateTax,
+  getStateTaxBrackets,
+  getStateStandardDeduction,
+  loadStateBrackets,
+  loadStateStandardDeduction,
+};
 
 /**
  * Calculate total income tax (federal + state)
@@ -99,7 +115,7 @@ export function calculateLongTermCapitalGainsTax(gain, filingStatus, year = 2025
 
     const taxableInBracket = Math.min(
       remainingGain,
-      bracket.max === Infinity ? remainingGain : bracket.max - bracket.min + 1
+      bracket.max === null ? remainingGain : bracket.max - bracket.min +1
     );
 
     const taxInBracket = Math.round(taxableInBracket * bracket.rate);
@@ -241,15 +257,4 @@ export function calculateFicaTax(wages, filingStatus, year = 2025) {
     medicareTax,
     totalFicaTax: ssTax + medicareTax,
   };
-}
-
-/**
- * Get federal standard deduction
- * @param {number} year - Tax year (2024 or 2025)
- * @param {string} filingStatus - Filing status
- * @returns {number} Standard deduction in cents
- */
-export function getStandardDeduction(year, filingStatus) {
-  const deductions = year === 2024 ? STANDARD_DEDUCTIONS[2024] : STANDARD_DEDUCTIONS[2025];
-  return deductions[filingStatus];
 }
