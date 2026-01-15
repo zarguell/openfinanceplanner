@@ -147,7 +147,63 @@ if (!validation.valid) {
 - Dependency injection for projection state
 - Rule metadata UI (display available strategies)
 - Custom rule creation via UI
-- Backdoor Roth strategy implementation
+
+**Implemented Rules (Sprint 12):**
+
+- **RothConversionRule** (`src/core/rules/RothConversionRule.js`)
+  - Wraps roth-conversions.js calculations
+  - Strategies: fixed, bracket-fill, percentage
+  - Applies to: Traditional 401k/IRA accounts
+  - Added `name` property to result for projection tracking
+  - Fixed bug: missing `name` property in rule results
+
+- **BackdoorRothRule** (`src/core/rules/BackdoorRothRule.js`)
+  - Pro-rata calculations for IRS Form 8606 compliance
+  - Income eligibility checking with phase-out thresholds
+  - Annual contribution limits by year (2025: $7,000, 2026+: $8,000 for ages 50+)
+  - Age requirement: 18+
+  - Applies to: Traditional IRA accounts
+  - Features:
+    - Pro-rata calculation for pre-tax vs non-deductible contributions
+    - Tax calculation on taxable portion of conversion
+    - Income phase-out support (129k-144k for 2025)
+
+- **MegaBackdoorRothRule** (`src/core/rules/MegaBackdoorRothRule.js`)
+  - After-tax 401(k) contributions with in-service withdrawal
+  - Enforces total 401(k) limit ($69,000 for 2025)
+  - Employer match calculation and room availability
+  - Plan eligibility flags (after-tax support, in-service withdrawal)
+  - Applies to: 401(k) accounts with Roth conversion
+  - Features:
+    - Calculates available room for after-tax contributions
+    - Immediate in-service withdrawal to Roth (tax-free)
+    - Employer match tracking (cannot be converted)
+    - Configurable employer match rate and deferral limits
+
+**Implemented Rules (Sprint 12):**
+
+- **BackdoorRothRule** (`src/core/rules/BackdoorRothRule.js`)
+  - Pro-rata calculations for IRS Form 8606 compliance
+  - Income eligibility checking with phase-out thresholds
+  - Annual contribution limits by year (2025: $7,000, 2026+: $8,000 for ages 50+)
+  - Age requirement: 18+
+  - Applies to: Traditional IRA accounts
+  - Features:
+    - Pro-rata calculation for pre-tax vs non-deductible contributions
+    - Tax calculation on taxable portion of conversion
+    - Income phase-out support (129k-144k for 2025)
+
+- **MegaBackdoorRothRule** (`src/core/rules/MegaBackdoorRothRule.js`)
+  - After-tax 401(k) contributions with in-service withdrawal
+  - Enforces total 401(k) limit ($69,000 for 2025)
+  - Employer match calculation and room availability
+  - Plan eligibility flags (after-tax support, in-service withdrawal)
+  - Applies to: 401(k) accounts with Roth conversion
+  - Features:
+    - Calculates available room for after-tax contributions
+    - Immediate in-service withdrawal to Roth (tax-free)
+    - Employer match tracking (cannot be converted)
+    - Configurable employer match rate and deferral limits
 
 ### 4. UI Controllers
 - **PlanController**: Manages plan lifecycle (create, load, save, delete)
@@ -492,6 +548,21 @@ ProjectionRunner.terminate() → void
     "currentAge": "number",
     "retirementAge": "number",
     "rothBasis": "number (cents)"
+  },
+  "backdoorRoth": {
+    "enabled": "boolean",
+    "annualContribution": "number (dollars, default: 6000)",
+    "incomeThreshold": "number (dollars, default: 129000)",
+    "phaseOutEnd": "number (dollars, default: 144000)"
+  },
+  "megaBackdoorRoth": {
+    "enabled": "boolean",
+    "annualContribution": "number (dollars, default: 15000)",
+    "planSupportsAfterTax": "boolean (default: true)",
+    "planSupportsInServiceWithdrawal": "boolean (default: true)",
+    "employerMatchRate": "number (0.04 default)",
+    "employeeDeferralLimit": "number (dollars, 23500 for 2025)",
+    "total401kLimit": "number (dollars, 69000 for 2025)"
   },
   "expenses": [
     {
