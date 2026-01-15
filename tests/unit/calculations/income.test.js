@@ -1,4 +1,10 @@
-import { calculateIncomeForYear, calculateTotalIncome, calculateTaxableIncome, evaluateStartYear, evaluateEndYear } from '../../../src/calculations/income.js';
+import {
+  calculateIncomeForYear,
+  calculateTotalIncome,
+  calculateTaxableIncome,
+  evaluateStartYear,
+  evaluateEndYear,
+} from '../../../src/calculations/income.js';
 
 export function testCalculateIncomeForYear() {
   const income = {
@@ -7,12 +13,12 @@ export function testCalculateIncomeForYear() {
     startYear: 0,
     endYear: null,
     type: 'salary',
-    growthRate: 0.03
+    growthRate: 0.03,
   };
 
   const planContext = {
     currentAge: 30,
-    retirementAge: 65
+    retirementAge: 65,
   };
 
   // Year 0 - no growth
@@ -44,12 +50,12 @@ export function testIncomeWithEndYear() {
     startYear: 2,
     endYear: 5,
     type: 'business',
-    growthRate: 0.02
+    growthRate: 0.02,
   };
 
   const planContext = {
     currentAge: 30,
-    retirementAge: 65
+    retirementAge: 65,
   };
 
   // Before start - 0
@@ -84,7 +90,7 @@ export function testCalculateTotalIncome() {
       startYear: 0,
       endYear: null,
       type: 'salary',
-      growthRate: 0.03
+      growthRate: 0.03,
     },
     {
       name: 'Side Business',
@@ -92,13 +98,13 @@ export function testCalculateTotalIncome() {
       startYear: 1,
       endYear: null,
       type: 'business',
-      growthRate: 0.05
-    }
+      growthRate: 0.05,
+    },
   ];
 
   const planContext = {
     currentAge: 30,
-    retirementAge: 65
+    retirementAge: 65,
   };
 
   // Year 0: only salary
@@ -126,7 +132,7 @@ export function testCalculateTaxableIncome() {
       endYear: null,
       type: 'salary',
       growthRate: 0.03,
-      getTaxTreatment: () => 'earned'
+      getTaxTreatment: () => 'earned',
     },
     {
       name: 'Qualified Dividends',
@@ -135,7 +141,7 @@ export function testCalculateTaxableIncome() {
       endYear: null,
       type: 'dividends',
       growthRate: 0.02,
-      getTaxTreatment: () => 'qualified'
+      getTaxTreatment: () => 'qualified',
     },
     {
       name: 'Rental Income',
@@ -144,30 +150,34 @@ export function testCalculateTaxableIncome() {
       endYear: null,
       type: 'rental',
       growthRate: 0.01,
-      getTaxTreatment: () => 'earned'
-    }
+      getTaxTreatment: () => 'earned',
+    },
   ];
 
   const planContext = {
     currentAge: 30,
-    retirementAge: 65
+    retirementAge: 65,
   };
 
   const result = calculateTaxableIncome(incomes, 0, 0.03, planContext);
 
-  if (result.totalIncome !== 130000) { // 100k + 10k + 20k
+  if (result.totalIncome !== 130000) {
+    // 100k + 10k + 20k
     throw new Error(`Expected total income $130,000, got $${result.totalIncome}`);
   }
 
-  if (result.earnedIncome !== 120000) { // 100k salary + 20k rental
+  if (result.earnedIncome !== 120000) {
+    // 100k salary + 20k rental
     throw new Error(`Expected earned income $120,000, got $${result.earnedIncome}`);
   }
 
-  if (result.qualifiedDividends !== 10000) { // 10k dividends
+  if (result.qualifiedDividends !== 10000) {
+    // 10k dividends
     throw new Error(`Expected qualified dividends $10,000, got $${result.qualifiedDividends}`);
   }
 
-  if (result.passiveIncome !== 0) { // No passive income in this test
+  if (result.passiveIncome !== 0) {
+    // No passive income in this test
     throw new Error(`Expected passive income $0, got $${result.passiveIncome}`);
   }
 
@@ -179,7 +189,7 @@ export function testIncomeGrowthScenarios() {
   const scenarios = [
     { name: 'No growth', growthRate: 0, expectedMultiplier: 1 },
     { name: '3% growth', growthRate: 0.03, expectedMultiplier: 1.03 },
-    { name: '5% growth', growthRate: 0.05, expectedMultiplier: 1.05 }
+    { name: '5% growth', growthRate: 0.05, expectedMultiplier: 1.05 },
   ];
 
   const baseIncome = {
@@ -187,15 +197,15 @@ export function testIncomeGrowthScenarios() {
     baseAmount: 5000000, // $50,000
     startYear: 0,
     endYear: null,
-    type: 'salary'
+    type: 'salary',
   };
 
   const planContext = {
     currentAge: 30,
-    retirementAge: 65
+    retirementAge: 65,
   };
 
-  scenarios.forEach(scenario => {
+  scenarios.forEach((scenario) => {
     const income = { ...baseIncome, growthRate: scenario.growthRate };
     const result = calculateIncomeForYear(income, 1, 0.03, planContext);
     const expected = 50000 * scenario.expectedMultiplier;
@@ -211,7 +221,7 @@ export function testIncomeGrowthScenarios() {
 export function testEvaluateStartYearManual() {
   const income = {
     startRule: 'manual',
-    startYear: 5
+    startYear: 5,
   };
 
   const currentAge = 30;
@@ -227,7 +237,7 @@ export function testEvaluateStartYearManual() {
 
 export function testEvaluateStartYearRetirement() {
   const income = {
-    startRule: 'retirement'
+    startRule: 'retirement',
   };
 
   const currentAge = 30;
@@ -244,7 +254,7 @@ export function testEvaluateStartYearRetirement() {
 export function testEvaluateStartYearAge() {
   const income = {
     startRule: 'age',
-    startRuleAge: 62
+    startRuleAge: 62,
   };
 
   const currentAge = 30;
@@ -261,7 +271,7 @@ export function testEvaluateStartYearAge() {
 export function testEvaluateStartYearRetirementIfAge() {
   const income = {
     startRule: 'retirement-if-age',
-    startRuleAge: 62
+    startRuleAge: 62,
   };
 
   const currentAge = 30;
@@ -278,7 +288,7 @@ export function testEvaluateStartYearRetirementIfAge() {
 export function testEvaluateStartYearRetirementIfAgeBelowMinimum() {
   const income = {
     startRule: 'retirement-if-age',
-    startRuleAge: 70
+    startRuleAge: 70,
   };
 
   const currentAge = 30;
@@ -295,7 +305,7 @@ export function testEvaluateStartYearRetirementIfAgeBelowMinimum() {
 export function testEvaluateEndYearManual() {
   const income = {
     endRule: 'manual',
-    endYear: 20
+    endYear: 20,
   };
 
   const currentAge = 30;
@@ -311,7 +321,7 @@ export function testEvaluateEndYearManual() {
 
 export function testEvaluateEndYearRetirement() {
   const income = {
-    endRule: 'retirement'
+    endRule: 'retirement',
   };
 
   const currentAge = 30;
@@ -328,7 +338,7 @@ export function testEvaluateEndYearRetirement() {
 export function testEvaluateEndYearAge() {
   const income = {
     endRule: 'age',
-    endRuleAge: 70
+    endRuleAge: 70,
   };
 
   const currentAge = 30;
@@ -345,7 +355,7 @@ export function testEvaluateEndYearAge() {
 export function testEvaluateEndYearNull() {
   const income = {
     endRule: null,
-    endYear: null
+    endYear: null,
   };
 
   const currentAge = 30;
@@ -369,7 +379,7 @@ export function testSmartRuleIntegration() {
       type: 'salary',
       growthRate: 0.03,
       startRule: 'manual',
-      endRule: 'retirement'
+      endRule: 'retirement',
     },
     {
       name: 'Pension',
@@ -379,13 +389,13 @@ export function testSmartRuleIntegration() {
       type: 'pension',
       growthRate: 0.02,
       startRule: 'retirement',
-      endRule: null
-    }
+      endRule: null,
+    },
   ];
 
   const planContext = {
     currentAge: 30,
-    retirementAge: 65
+    retirementAge: 65,
   };
 
   const retirementYear = planContext.retirementAge - planContext.currentAge;
@@ -393,13 +403,17 @@ export function testSmartRuleIntegration() {
   const yearBeforeRetirement = calculateTotalIncome(incomes, retirementYear - 1, 0.02, planContext);
   const expectedBeforeRetirement = 100000 * Math.pow(1.03, retirementYear - 1);
   if (Math.abs(yearBeforeRetirement - expectedBeforeRetirement) > 0.01) {
-    throw new Error(`Year ${retirementYear - 1}: expected $${expectedBeforeRetirement.toFixed(2)}, got $${yearBeforeRetirement}`);
+    throw new Error(
+      `Year ${retirementYear - 1}: expected $${expectedBeforeRetirement.toFixed(2)}, got $${yearBeforeRetirement}`
+    );
   }
 
   const yearAtRetirement = calculateTotalIncome(incomes, retirementYear, 0.02, planContext);
   const expectedAtRetirement = 30000;
   if (Math.abs(yearAtRetirement - expectedAtRetirement) > 0.01) {
-    throw new Error(`Year ${retirementYear}: expected $${expectedAtRetirement}, got $${yearAtRetirement}`);
+    throw new Error(
+      `Year ${retirementYear}: expected $${expectedAtRetirement}, got $${yearAtRetirement}`
+    );
   }
 
   console.log('✓ testSmartRuleIntegration passed');

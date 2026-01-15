@@ -25,7 +25,7 @@ export class Expense {
       startYear: this.startYear,
       endYear: this.endYear,
       isOneTime: this.isOneTime,
-      inflationAdjusted: this.inflationAdjusted
+      inflationAdjusted: this.inflationAdjusted,
     };
   }
 

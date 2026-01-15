@@ -55,10 +55,12 @@ export class StorageManager {
 
     try {
       const list = JSON.parse(listData);
-      return list.map(meta => ({
-        ...meta,
-        lastModified: new Date(meta.lastModified)
-      })).sort((a, b) => b.lastModified - a.lastModified);
+      return list
+        .map((meta) => ({
+          ...meta,
+          lastModified: new Date(meta.lastModified),
+        }))
+        .sort((a, b) => b.lastModified - a.lastModified);
     } catch (error) {
       console.error('Failed to parse plans list:', error);
       return [];
@@ -81,7 +83,7 @@ export class StorageManager {
             id: plan.id,
             name: plan.name,
             created: plan.created,
-            lastModified: plan.lastModified
+            lastModified: plan.lastModified,
           });
         } catch (error) {
           console.error(`Failed to parse plan at key ${key}:`, error);
@@ -113,8 +115,8 @@ export class StorageManager {
       _exportMeta: {
         version: CURRENT_SCHEMA_VERSION,
         exportedAt: new Date().toISOString(),
-        application: 'Open Finance Planner'
-      }
+        application: 'Open Finance Planner',
+      },
     };
 
     return JSON.stringify(exportData, null, 2);
@@ -169,6 +171,6 @@ export class StorageManager {
       }
     }
 
-    keysToRemove.forEach(key => localStorage.removeItem(key));
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
   }
 }

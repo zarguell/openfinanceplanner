@@ -21,9 +21,11 @@ export class RothConversionLadderStrategy extends RuleInterface {
   }
 
   getDescription() {
-    return 'Systematically convert Traditional retirement account funds to Roth IRA over time. ' +
-           'This creates a "ladder" of Roth accounts that become available for penalty-free withdrawals ' +
-           'at different ages, providing tax-free income while managing current-year tax brackets.';
+    return (
+      'Systematically convert Traditional retirement account funds to Roth IRA over time. ' +
+      'This creates a "ladder" of Roth accounts that become available for penalty-free withdrawals ' +
+      'at different ages, providing tax-free income while managing current-year tax brackets.'
+    );
   }
 
   getParameters() {
@@ -67,7 +69,7 @@ export class RothConversionLadderStrategy extends RuleInterface {
         'single',
         null,
         'Tax filing status for bracket calculations'
-      )
+      ),
     ];
   }
 
@@ -77,7 +79,7 @@ export class RothConversionLadderStrategy extends RuleInterface {
       conversionStartAge: 45,
       conversionEndAge: 65,
       targetTaxBracket: '22%',
-      filingStatus: 'single'
+      filingStatus: 'single',
     };
   }
 
@@ -112,7 +114,7 @@ export class RothConversionLadderStrategy extends RuleInterface {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -127,13 +129,14 @@ export class RothConversionLadderStrategy extends RuleInterface {
     }
 
     // Check if person has Traditional IRA/401k funds available
-    const hasTraditionalFunds = plan.accounts.some(acc =>
-      (acc.type === 'IRA' || acc.type === '401k') && acc.balance > 0
+    const hasTraditionalFunds = plan.accounts.some(
+      (acc) => (acc.type === 'IRA' || acc.type === '401k') && acc.balance > 0
     );
 
     // Check if person has Roth IRA (or will create one)
-    const hasRothIRA = plan.accounts.some(acc => acc.type === 'Roth') ||
-                      projectionState.accounts.some(acc => acc.type === 'Roth');
+    const hasRothIRA =
+      plan.accounts.some((acc) => acc.type === 'Roth') ||
+      projectionState.accounts.some((acc) => acc.type === 'Roth');
 
     return hasTraditionalFunds && (hasRothIRA || true); // Can create Roth if needed
   }
@@ -144,8 +147,8 @@ export class RothConversionLadderStrategy extends RuleInterface {
 
     try {
       // Find Traditional retirement accounts
-      const traditionalAccounts = plan.accounts.filter(acc =>
-        (acc.type === 'IRA' || acc.type === '401k') && acc.balance > 0
+      const traditionalAccounts = plan.accounts.filter(
+        (acc) => (acc.type === 'IRA' || acc.type === '401k') && acc.balance > 0
       );
 
       if (traditionalAccounts.length === 0) {
@@ -154,7 +157,7 @@ export class RothConversionLadderStrategy extends RuleInterface {
       }
 
       // Find or create Roth IRA account
-      let rothAccount = plan.accounts.find(acc => acc.type === 'Roth');
+      let rothAccount = plan.accounts.find((acc) => acc.type === 'Roth');
       if (!rothAccount) {
         rothAccount = {
           id: `roth_ira_ladder_${Date.now()}`,
@@ -162,13 +165,13 @@ export class RothConversionLadderStrategy extends RuleInterface {
           type: 'Roth',
           balance: 0,
           annualContribution: 0,
-          withdrawalRate: 0
+          withdrawalRate: 0,
         };
         projectionState.accounts.push({
           ...rothAccount,
           contributions: 0,
           withdrawals: 0,
-          taxesPaid: 0
+          taxesPaid: 0,
         });
         result.changes.createdAccounts = [rothAccount.id];
       }
@@ -183,7 +186,12 @@ export class RothConversionLadderStrategy extends RuleInterface {
       }
 
       // Adjust conversion amount to stay within target tax bracket
-      const adjustedAmount = this._calculateTaxBracketAdjustedAmount(plan, yearOffset, targetAmount, params);
+      const adjustedAmount = this._calculateTaxBracketAdjustedAmount(
+        plan,
+        yearOffset,
+        targetAmount,
+        params
+      );
 
       if (adjustedAmount <= 0) {
         result.metadata.reason = 'Conversion would exceed target tax bracket';
@@ -200,7 +208,7 @@ export class RothConversionLadderStrategy extends RuleInterface {
       for (const tradAccount of traditionalAccounts) {
         if (remainingToConvert <= 0) break;
 
-        const tradProjection = projectionState.accounts.find(acc => acc.id === tradAccount.id);
+        const tradProjection = projectionState.accounts.find((acc) => acc.id === tradAccount.id);
         if (!tradProjection) continue;
 
         const convertFromThis = Math.min(remainingToConvert, tradProjection.balance);
@@ -210,13 +218,13 @@ export class RothConversionLadderStrategy extends RuleInterface {
           remainingToConvert -= convertFromThis;
           convertedFrom.push({
             accountId: tradAccount.id,
-            amount: convertFromThis
+            amount: convertFromThis,
           });
         }
       }
 
       // Add to Roth IRA
-      const rothProjection = projectionState.accounts.find(acc => acc.id === rothAccount.id);
+      const rothProjection = projectionState.accounts.find((acc) => acc.id === rothAccount.id);
       if (rothProjection) {
         const actualConverted = conversionAmountCents - remainingToConvert;
         rothProjection.balance += actualConverted;
@@ -240,12 +248,11 @@ export class RothConversionLadderStrategy extends RuleInterface {
           conversionAmount: adjustedAmount,
           taxRate,
           taxesPaid: taxesDue / 100,
-          effectiveRate: adjustedAmount > 0 ? (taxesDue / 100) / adjustedAmount : 0,
+          effectiveRate: adjustedAmount > 0 ? taxesDue / 100 / adjustedAmount : 0,
           targetTaxBracket: params.targetTaxBracket,
-          age: plan.taxProfile.currentAge + yearOffset
+          age: plan.taxProfile.currentAge + yearOffset,
         };
       }
-
     } catch (error) {
       result.metadata.error = error.message;
       console.error('Error applying Roth Conversion Ladder strategy:', error);
@@ -293,7 +300,7 @@ export class RothConversionLadderStrategy extends RuleInterface {
       '24%': 95375,
       '32%': 182100,
       '35%': 231250,
-      '37%': 578125
+      '37%': 578125,
     };
 
     const targetLimit = bracketLimits[params.targetTaxBracket] || bracketLimits['22%'];
@@ -327,7 +334,7 @@ export class RothConversionLadderStrategy extends RuleInterface {
       '24%': 0.24,
       '32%': 0.32,
       '35%': 0.35,
-      '37%': 0.37
+      '37%': 0.37,
     };
 
     return bracketRates[params.targetTaxBracket] || 0.22;

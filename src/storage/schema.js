@@ -9,7 +9,7 @@ export const STORAGE_KEYS = {
   PLANS_LIST: 'ofp_plans_list',
   PLAN_PREFIX: 'ofp_plan_',
   APP_CONFIG: 'ofp_app_config',
-  SCHEMA_VERSION: 'ofp_schema_version'
+  SCHEMA_VERSION: 'ofp_schema_version',
 };
 
 /**
@@ -33,20 +33,82 @@ export function validatePlanSchema(planData) {
   }
 
   // MVP: Use estimatedTaxRate instead of detailed tax calculations
-  if (typeof planData.taxProfile.estimatedTaxRate !== 'number' || planData.taxProfile.estimatedTaxRate < 0 || planData.taxProfile.estimatedTaxRate > 1) {
-    errors.push('taxProfile.estimatedTaxRate must be a number between 0 and 1 (e.g., 0.25 for 25%)');
+  if (
+    typeof planData.taxProfile.estimatedTaxRate !== 'number' ||
+    planData.taxProfile.estimatedTaxRate < 0 ||
+    planData.taxProfile.estimatedTaxRate > 1
+  ) {
+    errors.push(
+      'taxProfile.estimatedTaxRate must be a number between 0 and 1 (e.g., 0.25 for 25%)'
+    );
   }
 
   // Optional: Keep state field for future advanced features
-  if (planData.taxProfile.state !== null && planData.taxProfile.state !== undefined && (typeof planData.taxProfile.state !== 'string' || planData.taxProfile.state === '')) {
+  if (
+    planData.taxProfile.state !== null &&
+    planData.taxProfile.state !== undefined &&
+    (typeof planData.taxProfile.state !== 'string' || planData.taxProfile.state === '')
+  ) {
     errors.push('taxProfile.state must be a string (e.g., "DC", "CA", "NY") or null');
   }
 
-  if (planData.taxProfile.state !== null && planData.taxProfile.state !== undefined && ![
-    'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
-  ].includes(planData.taxProfile.state)) {
+  if (
+    planData.taxProfile.state !== null &&
+    planData.taxProfile.state !== undefined &&
+    ![
+      'AL',
+      'AK',
+      'AZ',
+      'AR',
+      'CA',
+      'CO',
+      'CT',
+      'DE',
+      'DC',
+      'FL',
+      'GA',
+      'HI',
+      'ID',
+      'IL',
+      'IN',
+      'IA',
+      'KS',
+      'KY',
+      'LA',
+      'ME',
+      'MD',
+      'MA',
+      'MI',
+      'MN',
+      'MS',
+      'MO',
+      'MT',
+      'NE',
+      'NV',
+      'NH',
+      'NJ',
+      'NM',
+      'NY',
+      'NC',
+      'ND',
+      'OH',
+      'OK',
+      'OR',
+      'PA',
+      'RI',
+      'SC',
+      'SD',
+      'TN',
+      'TX',
+      'UT',
+      'VT',
+      'VA',
+      'WA',
+      'WV',
+      'WI',
+      'WY',
+    ].includes(planData.taxProfile.state)
+  ) {
     errors.push('taxProfile.state must be a valid 2-letter US state or territory code, or null');
   }
 
@@ -55,24 +117,47 @@ export function validatePlanSchema(planData) {
   }
 
   // Validate growth rates
-  if (typeof planData.assumptions.equityGrowthRate !== 'number' || planData.assumptions.equityGrowthRate < -0.5 || planData.assumptions.equityGrowthRate > 0.5) {
+  if (
+    typeof planData.assumptions.equityGrowthRate !== 'number' ||
+    planData.assumptions.equityGrowthRate < -0.5 ||
+    planData.assumptions.equityGrowthRate > 0.5
+  ) {
     errors.push('assumptions.equityGrowthRate must be a number between -50% and 50%');
   }
 
-  if (typeof planData.assumptions.inflationRate !== 'number' || planData.assumptions.inflationRate < -0.1 || planData.assumptions.inflationRate > 0.2) {
+  if (
+    typeof planData.assumptions.inflationRate !== 'number' ||
+    planData.assumptions.inflationRate < -0.1 ||
+    planData.assumptions.inflationRate > 0.2
+  ) {
     errors.push('assumptions.inflationRate must be a number between -10% and 20%');
   }
 
   // Validate volatility (optional, defaults provided)
-  if (planData.assumptions.equityVolatility !== undefined && (typeof planData.assumptions.equityVolatility !== 'number' || planData.assumptions.equityVolatility < 0 || planData.assumptions.equityVolatility > 1)) {
+  if (
+    planData.assumptions.equityVolatility !== undefined &&
+    (typeof planData.assumptions.equityVolatility !== 'number' ||
+      planData.assumptions.equityVolatility < 0 ||
+      planData.assumptions.equityVolatility > 1)
+  ) {
     errors.push('assumptions.equityVolatility must be a number between 0 and 100% (1.0)');
   }
 
-  if (planData.assumptions.bondVolatility !== undefined && (typeof planData.assumptions.bondVolatility !== 'number' || planData.assumptions.bondVolatility < 0 || planData.assumptions.bondVolatility > 1)) {
+  if (
+    planData.assumptions.bondVolatility !== undefined &&
+    (typeof planData.assumptions.bondVolatility !== 'number' ||
+      planData.assumptions.bondVolatility < 0 ||
+      planData.assumptions.bondVolatility > 1)
+  ) {
     errors.push('assumptions.bondVolatility must be a number between 0 and 100% (1.0)');
   }
 
-  if (planData.assumptions.bondGrowthRate !== undefined && (typeof planData.assumptions.bondGrowthRate !== 'number' || planData.assumptions.bondGrowthRate < -0.5 || planData.assumptions.bondGrowthRate > 0.5)) {
+  if (
+    planData.assumptions.bondGrowthRate !== undefined &&
+    (typeof planData.assumptions.bondGrowthRate !== 'number' ||
+      planData.assumptions.bondGrowthRate < -0.5 ||
+      planData.assumptions.bondGrowthRate > 0.5)
+  ) {
     errors.push('assumptions.bondGrowthRate must be a number between -50% and 50%');
   }
 
@@ -86,15 +171,30 @@ export function validatePlanSchema(planData) {
       errors.push('socialSecurity.enabled must be a boolean');
     }
 
-    if (planData.socialSecurity.birthYear !== undefined && (typeof planData.socialSecurity.birthYear !== 'number' || planData.socialSecurity.birthYear < 1900 || planData.socialSecurity.birthYear > 2100)) {
+    if (
+      planData.socialSecurity.birthYear !== undefined &&
+      (typeof planData.socialSecurity.birthYear !== 'number' ||
+        planData.socialSecurity.birthYear < 1900 ||
+        planData.socialSecurity.birthYear > 2100)
+    ) {
       errors.push('socialSecurity.birthYear must be a number between 1900 and 2100');
     }
 
-    if (planData.socialSecurity.monthlyBenefit !== undefined && (typeof planData.socialSecurity.monthlyBenefit !== 'number' || planData.socialSecurity.monthlyBenefit < 0 || planData.socialSecurity.monthlyBenefit > 5000)) {
+    if (
+      planData.socialSecurity.monthlyBenefit !== undefined &&
+      (typeof planData.socialSecurity.monthlyBenefit !== 'number' ||
+        planData.socialSecurity.monthlyBenefit < 0 ||
+        planData.socialSecurity.monthlyBenefit > 5000)
+    ) {
       errors.push('socialSecurity.monthlyBenefit must be a number between 0 and 5000');
     }
 
-    if (planData.socialSecurity.filingAge !== undefined && (typeof planData.socialSecurity.filingAge !== 'number' || planData.socialSecurity.filingAge < 62 || planData.socialSecurity.filingAge > 70)) {
+    if (
+      planData.socialSecurity.filingAge !== undefined &&
+      (typeof planData.socialSecurity.filingAge !== 'number' ||
+        planData.socialSecurity.filingAge < 62 ||
+        planData.socialSecurity.filingAge > 70)
+    ) {
       errors.push('socialSecurity.filingAge must be a number between 62 and 70');
     }
   }
@@ -131,16 +231,38 @@ export function validatePlanSchema(planData) {
         errors.push(`Income ${index} startYear must be a non-negative number`);
       }
 
-      if (income.endYear !== null && income.endYear !== undefined && (typeof income.endYear !== 'number' || income.endYear < income.startYear)) {
+      if (
+        income.endYear !== null &&
+        income.endYear !== undefined &&
+        (typeof income.endYear !== 'number' || income.endYear < income.startYear)
+      ) {
         errors.push(`Income ${index} endYear must be null or a number >= startYear`);
       }
 
-      if (!['salary', 'business', 'pension', 'rental', 'dividends', 'non-qualified-dividends', 'interest', 'other'].includes(income.type)) {
-        errors.push(`Income ${index} type must be one of: salary, business, pension, rental, dividends, interest, other`);
+      if (
+        ![
+          'salary',
+          'business',
+          'pension',
+          'rental',
+          'dividends',
+          'non-qualified-dividends',
+          'interest',
+          'other',
+        ].includes(income.type)
+      ) {
+        errors.push(
+          `Income ${index} type must be one of: salary, business, pension, rental, dividends, interest, other`
+        );
       }
 
-      if (income.startRule && !['manual', 'retirement', 'age', 'retirement-if-age'].includes(income.startRule)) {
-        errors.push(`Income ${index} startRule must be one of: manual, retirement, age, retirement-if-age`);
+      if (
+        income.startRule &&
+        !['manual', 'retirement', 'age', 'retirement-if-age'].includes(income.startRule)
+      ) {
+        errors.push(
+          `Income ${index} startRule must be one of: manual, retirement, age, retirement-if-age`
+        );
       }
 
       if (income.endRule && !['manual', 'retirement', 'age'].includes(income.endRule)) {
@@ -148,23 +270,41 @@ export function validatePlanSchema(planData) {
       }
 
       // Validate age-based rule fields
-      if (income.startRuleAge !== null && income.startRuleAge !== undefined && typeof income.startRuleAge !== 'number') {
+      if (
+        income.startRuleAge !== null &&
+        income.startRuleAge !== undefined &&
+        typeof income.startRuleAge !== 'number'
+      ) {
         errors.push(`Income ${index} startRuleAge must be a number or null`);
       }
 
-      if (typeof income.startRuleAge === 'number' && (income.startRuleAge < 0 || income.startRuleAge > 120)) {
+      if (
+        typeof income.startRuleAge === 'number' &&
+        (income.startRuleAge < 0 || income.startRuleAge > 120)
+      ) {
         errors.push(`Income ${index} startRuleAge must be between 0 and 120`);
       }
 
-      if (income.endRuleAge !== null && income.endRuleAge !== undefined && typeof income.endRuleAge !== 'number') {
+      if (
+        income.endRuleAge !== null &&
+        income.endRuleAge !== undefined &&
+        typeof income.endRuleAge !== 'number'
+      ) {
         errors.push(`Income ${index} endRuleAge must be a number or null`);
       }
 
-      if (typeof income.endRuleAge === 'number' && (income.endRuleAge < 0 || income.endRuleAge > 120)) {
+      if (
+        typeof income.endRuleAge === 'number' &&
+        (income.endRuleAge < 0 || income.endRuleAge > 120)
+      ) {
         errors.push(`Income ${index} endRuleAge must be between 0 and 120`);
       }
 
-      if (typeof income.growthRate !== 'number' || income.growthRate < -0.1 || income.growthRate > 0.2) {
+      if (
+        typeof income.growthRate !== 'number' ||
+        income.growthRate < -0.1 ||
+        income.growthRate > 0.2
+      ) {
         errors.push(`Income ${index} growthRate must be a number between -10% and 20%`);
       }
     });
@@ -179,15 +319,27 @@ export function validatePlanSchema(planData) {
       errors.push('backdoorRoth.enabled must be a boolean');
     }
 
-    if (typeof planData.backdoorRoth.annualContribution !== 'number' || planData.backdoorRoth.annualContribution < 0 || planData.backdoorRoth.annualContribution > 7000) {
+    if (
+      typeof planData.backdoorRoth.annualContribution !== 'number' ||
+      planData.backdoorRoth.annualContribution < 0 ||
+      planData.backdoorRoth.annualContribution > 7000
+    ) {
       errors.push('backdoorRoth.annualContribution must be a number between 0 and 7000');
     }
 
-    if (typeof planData.backdoorRoth.incomeThreshold !== 'number' || planData.backdoorRoth.incomeThreshold < 0 || planData.backdoorRoth.incomeThreshold > 200000) {
+    if (
+      typeof planData.backdoorRoth.incomeThreshold !== 'number' ||
+      planData.backdoorRoth.incomeThreshold < 0 ||
+      planData.backdoorRoth.incomeThreshold > 200000
+    ) {
       errors.push('backdoorRoth.incomeThreshold must be a number between 0 and 200000');
     }
 
-    if (typeof planData.backdoorRoth.phaseOutEnd !== 'number' || planData.backdoorRoth.phaseOutEnd < 0 || planData.backdoorRoth.phaseOutEnd > 200000) {
+    if (
+      typeof planData.backdoorRoth.phaseOutEnd !== 'number' ||
+      planData.backdoorRoth.phaseOutEnd < 0 ||
+      planData.backdoorRoth.phaseOutEnd > 200000
+    ) {
       errors.push('backdoorRoth.phaseOutEnd must be a number between 0 and 200000');
     }
   }
@@ -201,7 +353,11 @@ export function validatePlanSchema(planData) {
       errors.push('megaBackdoorRoth.enabled must be a boolean');
     }
 
-    if (typeof planData.megaBackdoorRoth.annualContribution !== 'number' || planData.megaBackdoorRoth.annualContribution < 0 || planData.megaBackdoorRoth.annualContribution > 40000) {
+    if (
+      typeof planData.megaBackdoorRoth.annualContribution !== 'number' ||
+      planData.megaBackdoorRoth.annualContribution < 0 ||
+      planData.megaBackdoorRoth.annualContribution > 40000
+    ) {
       errors.push('megaBackdoorRoth.annualContribution must be a number between 0 and 40000');
     }
 
@@ -213,22 +369,34 @@ export function validatePlanSchema(planData) {
       errors.push('megaBackdoorRoth.planSupportsInServiceWithdrawal must be a boolean');
     }
 
-    if (typeof planData.megaBackdoorRoth.employerMatchRate !== 'number' || planData.megaBackdoorRoth.employerMatchRate < 0 || planData.megaBackdoorRoth.employerMatchRate > 0.2) {
+    if (
+      typeof planData.megaBackdoorRoth.employerMatchRate !== 'number' ||
+      planData.megaBackdoorRoth.employerMatchRate < 0 ||
+      planData.megaBackdoorRoth.employerMatchRate > 0.2
+    ) {
       errors.push('megaBackdoorRoth.employerMatchRate must be a number between 0 and 20%');
     }
 
-    if (typeof planData.megaBackdoorRoth.employeeDeferralLimit !== 'number' || planData.megaBackdoorRoth.employeeDeferralLimit < 0 || planData.megaBackdoorRoth.employeeDeferralLimit > 50000) {
+    if (
+      typeof planData.megaBackdoorRoth.employeeDeferralLimit !== 'number' ||
+      planData.megaBackdoorRoth.employeeDeferralLimit < 0 ||
+      planData.megaBackdoorRoth.employeeDeferralLimit > 50000
+    ) {
       errors.push('megaBackdoorRoth.employeeDeferralLimit must be a number between 0 and 50000');
     }
 
-    if (typeof planData.megaBackdoorRoth.total401kLimit !== 'number' || planData.megaBackdoorRoth.total401kLimit < 0 || planData.megaBackdoorRoth.total401kLimit > 100000) {
+    if (
+      typeof planData.megaBackdoorRoth.total401kLimit !== 'number' ||
+      planData.megaBackdoorRoth.total401kLimit < 0 ||
+      planData.megaBackdoorRoth.total401kLimit > 100000
+    ) {
       errors.push('megaBackdoorRoth.total401kLimit must be a number between 0 and 100000');
     }
   }
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 

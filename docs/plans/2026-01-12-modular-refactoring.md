@@ -15,6 +15,7 @@
 ### Task 0: Rename Project and File
 
 **Files:**
+
 - Rename: `Retirement Planner Pro.html` → `index.html`
 - Modify: `docs/architecture.md`
 - Modify: `docs/tasks.md`
@@ -23,6 +24,7 @@
 **Step 1: Rename the HTML file**
 
 Run:
+
 ```bash
 mv "Retirement Planner Pro.html" index.html
 ```
@@ -32,12 +34,14 @@ Expected: File renamed successfully
 **Step 2: Update title and references in index.html**
 
 Find and replace in `index.html`:
+
 - Replace: `<title>Retirement Planner Pro</title>` → `<title>Open Finance Planner</title>`
 - Replace: `.sidebar-header` text from "Retirement Planner Pro" → "Open Finance Planner"
 
 **Step 3: Update architecture.md references**
 
 Run:
+
 ```bash
 sed -i 's/Retirement Planner Pro/Open Finance Planner/g' docs/architecture.md
 sed -i 's/retirement planning web application/financial planning web application/g' docs/architecture.md
@@ -46,6 +50,7 @@ sed -i 's/retirement planning web application/financial planning web application
 **Step 4: Update CLAUDE.md references**
 
 Run:
+
 ```bash
 sed -i 's/Retirement Planner Pro/Open Finance Planner/g' CLAUDE.md
 sed -i 's/retirement planning/financial planning/g' CLAUDE.md
@@ -65,6 +70,7 @@ git commit -m "refactor: rename project to Open Finance Planner"
 ### Task 1: Create Modular Directory Structure
 
 **Files:**
+
 - Create: `src/core/`
 - Create: `src/calculations/`
 - Create: `src/storage/`
@@ -77,6 +83,7 @@ git commit -m "refactor: rename project to Open Finance Planner"
 **Step 1: Create directory structure**
 
 Run:
+
 ```bash
 mkdir -p src/core src/calculations src/storage src/ui src/styles tests/unit tests/integration
 ```
@@ -86,6 +93,7 @@ Expected: Directories created successfully
 **Step 2: Create package.json for ES6 modules**
 
 Create: `package.json`
+
 ```json
 {
   "name": "open-finance-planner",
@@ -105,6 +113,7 @@ Create: `package.json`
 **Step 3: Create .gitignore**
 
 Create: `.gitignore`
+
 ```
 .DS_Store
 *.log
@@ -127,6 +136,7 @@ git commit -m "chore: establish modular directory structure"
 ### Task 2: Extract Plan Model
 
 **Files:**
+
 - Create: `src/core/models/Plan.js`
 - Create: `tests/unit/models/Plan.test.js`
 - Modify: `index.html` (remove Plan class, add import)
@@ -134,6 +144,7 @@ git commit -m "chore: establish modular directory structure"
 **Step 1: Write the failing test for Plan model**
 
 Create: `tests/unit/models/Plan.test.js`
+
 ```javascript
 import { Plan } from '../../../src/core/models/Plan.js';
 
@@ -162,7 +173,7 @@ export function testPlanAddAccount() {
     name: 'Test Account',
     type: '401k',
     balance: 100000,
-    annualContribution: 10000
+    annualContribution: 10000,
   };
 
   plan.addAccount(account);
@@ -190,6 +201,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 node tests/unit/models/Plan.test.js
 ```
@@ -199,6 +211,7 @@ Expected: ERROR: Cannot find module `'../../../src/core/models/Plan.js'`
 **Step 3: Create Plan model module**
 
 Create: `src/core/models/Plan.js`
+
 ```javascript
 /**
  * Plan - Core domain model for financial plans
@@ -214,12 +227,12 @@ export class Plan {
       currentAge,
       retirementAge,
       filingStatus: 'single',
-      federalTaxRate: 0.22
+      federalTaxRate: 0.22,
     };
     this.assumptions = {
       inflationRate: 0.03,
       equityGrowthRate: 0.07,
-      bondGrowthRate: 0.04
+      bondGrowthRate: 0.04,
     };
     this.accounts = [];
     this.expenses = [];
@@ -235,7 +248,7 @@ export class Plan {
   }
 
   removeAccount(accountId) {
-    this.accounts = this.accounts.filter(acc => acc.id !== accountId);
+    this.accounts = this.accounts.filter((acc) => acc.id !== accountId);
     this.touch();
   }
 
@@ -245,7 +258,7 @@ export class Plan {
   }
 
   removeExpense(expenseId) {
-    this.expenses = this.expenses.filter(exp => exp.id !== expenseId);
+    this.expenses = this.expenses.filter((exp) => exp.id !== expenseId);
     this.touch();
   }
 
@@ -261,8 +274,8 @@ export class Plan {
       lastModified: this.lastModified,
       taxProfile: { ...this.taxProfile },
       assumptions: { ...this.assumptions },
-      accounts: this.accounts.map(acc => acc.toJSON ? acc.toJSON() : acc),
-      expenses: this.expenses.map(exp => exp.toJSON ? exp.toJSON() : exp)
+      accounts: this.accounts.map((acc) => (acc.toJSON ? acc.toJSON() : acc)),
+      expenses: this.expenses.map((exp) => (exp.toJSON ? exp.toJSON() : exp)),
     };
   }
 
@@ -283,6 +296,7 @@ export class Plan {
 **Step 4: Run test to verify it passes**
 
 Run:
+
 ```bash
 node tests/unit/models/Plan.test.js
 ```
@@ -301,12 +315,14 @@ git commit -m "feat: extract Plan model into module with tests"
 ### Task 3: Extract Account Model
 
 **Files:**
+
 - Create: `src/core/models/Account.js`
 - Create: `tests/unit/models/Account.test.js`
 
 **Step 1: Write the failing test**
 
 Create: `tests/unit/models/Account.test.js`
+
 ```javascript
 import { Account } from '../../../src/core/models/Account.js';
 
@@ -361,6 +377,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 node tests/unit/models/Account.test.js
 ```
@@ -370,6 +387,7 @@ Expected: ERROR: Cannot find module
 **Step 3: Create Account model module**
 
 Create: `src/core/models/Account.js`
+
 ```javascript
 /**
  * Account - Domain model for financial accounts
@@ -396,7 +414,7 @@ export class Account {
       type: this.type,
       balance: this.balance,
       annualContribution: this.annualContribution,
-      withdrawalRate: this.withdrawalRate
+      withdrawalRate: this.withdrawalRate,
     };
   }
 
@@ -413,6 +431,7 @@ export class Account {
 **Step 4: Run test to verify it passes**
 
 Run:
+
 ```bash
 node tests/unit/models/Account.test.js
 ```
@@ -431,12 +450,14 @@ git commit -m "feat: extract Account model into module with tests"
 ### Task 4: Extract Expense Model
 
 **Files:**
+
 - Create: `src/core/models/Expense.js`
 - Create: `tests/unit/models/Expense.test.js`
 
 **Step 1: Write the failing test**
 
 Create: `tests/unit/models/Expense.test.js`
+
 ```javascript
 import { Expense } from '../../../src/core/models/Expense.js';
 
@@ -447,7 +468,8 @@ export function testExpenseCreation() {
     throw new Error('Expected expense name to be "Living Expenses"');
   }
 
-  if (expense.baseAmount !== 6000000) { // Stored in cents
+  if (expense.baseAmount !== 6000000) {
+    // Stored in cents
     throw new Error('Expected baseAmount to be in cents');
   }
 
@@ -491,6 +513,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 node tests/unit/models/Expense.test.js
 ```
@@ -500,6 +523,7 @@ Expected: ERROR: Cannot find module
 **Step 3: Create Expense model module**
 
 Create: `src/core/models/Expense.js`
+
 ```javascript
 /**
  * Expense - Domain model for expense projections
@@ -526,7 +550,7 @@ export class Expense {
       baseAmount: this.baseAmount,
       startYear: this.startYear,
       endYear: this.endYear,
-      inflationAdjusted: this.inflationAdjusted
+      inflationAdjusted: this.inflationAdjusted,
     };
   }
 
@@ -547,6 +571,7 @@ export class Expense {
 **Step 4: Run test to verify it passes**
 
 Run:
+
 ```bash
 node tests/unit/models/Expense.test.js
 ```
@@ -567,37 +592,36 @@ git commit -m "feat: extract Expense model into module with tests"
 ### Task 5: Extract ProjectionEngine as Pure Functions
 
 **Files:**
+
 - Create: `src/calculations/projection.js`
 - Create: `tests/unit/calculations/projection.test.js`
 
 **Step 1: Write the failing test**
 
 Create: `tests/unit/calculations/projection.test.js`
+
 ```javascript
 import { project } from '../../../src/calculations/projection.js';
 
 export function testSimpleProjection() {
   const plan = {
-    accounts: [
-      { type: '401k', balance: 100000, annualContribution: 10000 }
-    ],
-    expenses: [
-      { name: 'Living', baseAmount: 6000000, startYear: 0, inflationAdjusted: true }
-    ],
+    accounts: [{ type: '401k', balance: 100000, annualContribution: 10000 }],
+    expenses: [{ name: 'Living', baseAmount: 6000000, startYear: 0, inflationAdjusted: true }],
     taxProfile: {
       currentAge: 35,
-      retirementAge: 65
+      retirementAge: 65,
     },
     assumptions: {
       inflationRate: 0.03,
       equityGrowthRate: 0.07,
-      bondGrowthRate: 0.04
-    }
+      bondGrowthRate: 0.04,
+    },
   };
 
   const results = project(plan, 1); // Project 1 year
 
-  if (results.length !== 2) { // Year 0 and Year 1
+  if (results.length !== 2) {
+    // Year 0 and Year 1
     throw new Error(`Expected 2 years, got ${results.length}`);
   }
 
@@ -622,6 +646,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 **Step 2: Run test to verify it fails**
 
 Run:
+
 ```bash
 node tests/unit/calculations/projection.test.js
 ```
@@ -631,6 +656,7 @@ Expected: ERROR: Cannot find module
 **Step 3: Create projection calculation module**
 
 Create: `src/calculations/projection.js`
+
 ```javascript
 /**
  * Projection calculations - Pure functions for financial projections
@@ -646,10 +672,10 @@ Create: `src/calculations/projection.js`
 export function getAccountGrowthRate(accountType, assumptions) {
   const rates = {
     '401k': assumptions.equityGrowthRate,
-    'IRA': assumptions.equityGrowthRate,
-    'Roth': assumptions.equityGrowthRate,
-    'Taxable': assumptions.equityGrowthRate * 0.8, // Lower due to annual taxes
-    'HSA': assumptions.equityGrowthRate
+    IRA: assumptions.equityGrowthRate,
+    Roth: assumptions.equityGrowthRate,
+    Taxable: assumptions.equityGrowthRate * 0.8, // Lower due to annual taxes
+    HSA: assumptions.equityGrowthRate,
   };
   return rates[accountType] || assumptions.equityGrowthRate;
 }
@@ -699,9 +725,9 @@ export function calculateTotalExpenses(expenses, yearOffset, inflationRate) {
  */
 export function project(plan, yearsToProject = 40) {
   const results = [];
-  const accountSnapshots = plan.accounts.map(acc => ({
+  const accountSnapshots = plan.accounts.map((acc) => ({
     ...acc,
-    balance: acc.balance
+    balance: acc.balance,
   }));
 
   const startYear = new Date().getFullYear();
@@ -733,11 +759,8 @@ export function project(plan, yearsToProject = 40) {
       }
 
       // Apply investment growth
-      const growthRate = getAccountGrowthRate(
-        plan.accounts[i].type,
-        plan.assumptions
-      );
-      balance *= (1 + growthRate);
+      const growthRate = getAccountGrowthRate(plan.accounts[i].type, plan.assumptions);
+      balance *= 1 + growthRate;
 
       accountSnapshots[i].balance = balance * 100;
       totalBalance += balance;
@@ -749,7 +772,7 @@ export function project(plan, yearsToProject = 40) {
       isRetired: isRetired,
       totalBalance: totalBalance,
       totalExpense: totalExpense,
-      accountBalances: accountSnapshots.map(acc => acc.balance / 100)
+      accountBalances: accountSnapshots.map((acc) => acc.balance / 100),
     });
   }
 
@@ -760,6 +783,7 @@ export function project(plan, yearsToProject = 40) {
 **Step 4: Run test to verify it passes**
 
 Run:
+
 ```bash
 node tests/unit/calculations/projection.test.js
 ```
@@ -780,6 +804,7 @@ git commit -m "feat: extract projection calculations as pure functions with test
 ### Task 6: Create Versioned Storage Manager
 
 **Files:**
+
 - Create: `src/storage/StorageManager.js`
 - Create: `src/storage/schema.js`
 - Create: `tests/unit/storage/StorageManager.test.js`
@@ -787,6 +812,7 @@ git commit -m "feat: extract projection calculations as pure functions with test
 **Step 1: Define schema versioning**
 
 Create: `src/storage/schema.js`
+
 ```javascript
 /**
  * Storage schema definitions and version management
@@ -799,7 +825,7 @@ export const STORAGE_KEYS = {
   PLANS_LIST: 'ofp_plans_list',
   PLAN_PREFIX: 'ofp_plan_',
   APP_CONFIG: 'ofp_app_config',
-  SCHEMA_VERSION: 'ofp_schema_version'
+  SCHEMA_VERSION: 'ofp_schema_version',
 };
 
 /**
@@ -836,7 +862,7 @@ export function validatePlanSchema(planData) {
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -857,6 +883,7 @@ export function migratePlan(planData, fromVersion) {
 **Step 2: Write the failing test for StorageManager**
 
 Create: `tests/unit/storage/StorageManager.test.js`
+
 ```javascript
 import { StorageManager } from '../../../src/storage/StorageManager.js';
 
@@ -874,7 +901,7 @@ global.localStorage = {
   },
   clear() {
     this.store = {};
-  }
+  },
 };
 
 export function testSaveAndLoadPlan() {
@@ -887,15 +914,15 @@ export function testSaveAndLoadPlan() {
       currentAge: 35,
       retirementAge: 65,
       filingStatus: 'single',
-      federalTaxRate: 0.22
+      federalTaxRate: 0.22,
     },
     assumptions: {
       inflationRate: 0.03,
       equityGrowthRate: 0.07,
-      bondGrowthRate: 0.04
+      bondGrowthRate: 0.04,
     },
     accounts: [],
-    expenses: []
+    expenses: [],
   };
 
   StorageManager.savePlan(plan);
@@ -916,8 +943,26 @@ export function testSaveAndLoadPlan() {
 export function testListPlans() {
   global.localStorage.clear();
 
-  const plan1 = { id: 'plan_1', name: 'Plan 1', created: new Date().toISOString(), lastModified: new Date().toISOString(), taxProfile: {}, assumptions: {}, accounts: [], expenses: [] };
-  const plan2 = { id: 'plan_2', name: 'Plan 2', created: new Date().toISOString(), lastModified: new Date().toISOString(), taxProfile: {}, assumptions: {}, accounts: [], expenses: [] };
+  const plan1 = {
+    id: 'plan_1',
+    name: 'Plan 1',
+    created: new Date().toISOString(),
+    lastModified: new Date().toISOString(),
+    taxProfile: {},
+    assumptions: {},
+    accounts: [],
+    expenses: [],
+  };
+  const plan2 = {
+    id: 'plan_2',
+    name: 'Plan 2',
+    created: new Date().toISOString(),
+    lastModified: new Date().toISOString(),
+    taxProfile: {},
+    assumptions: {},
+    accounts: [],
+    expenses: [],
+  };
 
   StorageManager.savePlan(plan1);
   StorageManager.savePlan(plan2);
@@ -946,6 +991,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 **Step 3: Run test to verify it fails**
 
 Run:
+
 ```bash
 node tests/unit/storage/StorageManager.test.js
 ```
@@ -955,6 +1001,7 @@ Expected: ERROR: Cannot find module
 **Step 4: Create StorageManager module**
 
 Create: `src/storage/StorageManager.js`
+
 ```javascript
 /**
  * StorageManager - Encapsulates all localStorage operations
@@ -1013,10 +1060,12 @@ export class StorageManager {
 
     try {
       const list = JSON.parse(listData);
-      return list.map(meta => ({
-        ...meta,
-        lastModified: new Date(meta.lastModified)
-      })).sort((a, b) => b.lastModified - a.lastModified);
+      return list
+        .map((meta) => ({
+          ...meta,
+          lastModified: new Date(meta.lastModified),
+        }))
+        .sort((a, b) => b.lastModified - a.lastModified);
     } catch (error) {
       console.error('Failed to parse plans list:', error);
       return [];
@@ -1039,7 +1088,7 @@ export class StorageManager {
             id: plan.id,
             name: plan.name,
             created: plan.created,
-            lastModified: plan.lastModified
+            lastModified: plan.lastModified,
           });
         } catch (error) {
           console.error(`Failed to parse plan at key ${key}:`, error);
@@ -1071,8 +1120,8 @@ export class StorageManager {
       _exportMeta: {
         version: CURRENT_SCHEMA_VERSION,
         exportedAt: new Date().toISOString(),
-        application: 'Open Finance Planner'
-      }
+        application: 'Open Finance Planner',
+      },
     };
 
     return JSON.stringify(exportData, null, 2);
@@ -1127,7 +1176,7 @@ export class StorageManager {
       }
     }
 
-    keysToRemove.forEach(key => localStorage.removeItem(key));
+    keysToRemove.forEach((key) => localStorage.removeItem(key));
   }
 }
 ```
@@ -1135,6 +1184,7 @@ export class StorageManager {
 **Step 5: Run test to verify it passes**
 
 Run:
+
 ```bash
 node tests/unit/storage/StorageManager.test.js
 ```
@@ -1155,12 +1205,14 @@ git commit -m "feat: create versioned storage layer with schema validation"
 ### Task 7: Create UI Controller Base
 
 **Files:**
+
 - Create: `src/ui/AppController.js`
 - Modify: `index.html` (replace inline AppController with import)
 
 **Step 1: Create UI Controller module**
 
 Create: `src/ui/AppController.js`
+
 ```javascript
 /**
  * AppController - Main UI controller for the application
@@ -1191,11 +1243,12 @@ export class AppController {
     planListEl.innerHTML = '';
 
     if (list.length === 0) {
-      planListEl.innerHTML = '<li style="color: var(--color-text-secondary); font-size: 12px;">No plans yet</li>';
+      planListEl.innerHTML =
+        '<li style="color: var(--color-text-secondary); font-size: 12px;">No plans yet</li>';
       return;
     }
 
-    list.forEach(meta => {
+    list.forEach((meta) => {
       const li = document.createElement('li');
       li.className = `plan-item ${this.currentPlan?.id === meta.id ? 'active' : ''}`;
       li.onclick = () => this.loadPlan(meta.id);
@@ -1212,10 +1265,10 @@ export class AppController {
     if (planData) {
       // Reconstruct domain objects from plain JSON
       this.currentPlan = Plan.fromJSON(planData);
-      this.currentPlan.accounts = planData.accounts.map(acc =>
+      this.currentPlan.accounts = planData.accounts.map((acc) =>
         acc instanceof Account ? acc : Account.fromJSON(acc)
       );
-      this.currentPlan.expenses = planData.expenses.map(exp =>
+      this.currentPlan.expenses = planData.expenses.map((exp) =>
         exp instanceof Expense ? exp : Expense.fromJSON(exp)
       );
 
@@ -1249,7 +1302,7 @@ export class AppController {
       <h3>Projection Results</h3>
       <div class="result-card">
         <div class="result-label">Final Balance</div>
-        <div class="result-value">$${finalYear.totalBalance.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+        <div class="result-value">$${finalYear.totalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
       </div>
       <div class="result-card">
         <div class="result-label">Final Age</div>
@@ -1299,9 +1352,9 @@ export class AppController {
       '<': '&lt;',
       '>': '&gt;',
       '"': '&quot;',
-      "'": '&#039;'
+      "'": '&#039;',
     };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    return text.replace(/[&<>"']/g, (m) => map[m]);
   }
 }
 ```
@@ -1311,6 +1364,7 @@ export class AppController {
 Modify: `index.html` (at the end of the file, replace script tag)
 
 Find the `<script>` tag at the end (around line 1746) and replace with:
+
 ```html
 <script type="module">
   import { AppController } from './src/ui/AppController.js';
@@ -1336,6 +1390,7 @@ git commit -m "feat: extract AppController into module"
 ### Task 8: Extract CSS into Separate Files
 
 **Files:**
+
 - Create: `src/styles/variables.css`
 - Create: `src/styles/base.css`
 - Create: `src/styles/components.css`
@@ -1345,6 +1400,7 @@ git commit -m "feat: extract AppController into module"
 **Step 1: Extract CSS variables**
 
 Create: `src/styles/variables.css`
+
 ```css
 :root {
   /* Colors */
@@ -1440,6 +1496,7 @@ Create: `src/styles/variables.css`
 **Step 2: Extract base styles**
 
 Create: `src/styles/base.css`
+
 ```css
 /* Base reset and typography */
 * {
@@ -1461,19 +1518,37 @@ body {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
   font-weight: var(--font-weight-semibold);
   line-height: 1.2;
   color: var(--color-text);
 }
 
-h1 { font-size: var(--font-size-3xl); }
-h2 { font-size: var(--font-size-2xl); margin-bottom: 1rem; }
-h3 { font-size: var(--font-size-xl); margin-bottom: 0.75rem; }
-h4 { font-size: var(--font-size-lg); margin-bottom: 0.5rem; }
+h1 {
+  font-size: var(--font-size-3xl);
+}
+h2 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: 1rem;
+}
+h3 {
+  font-size: var(--font-size-xl);
+  margin-bottom: 0.75rem;
+}
+h4 {
+  font-size: var(--font-size-lg);
+  margin-bottom: 0.5rem;
+}
 
-p { margin: 0 0 1rem 0; }
+p {
+  margin: 0 0 1rem 0;
+}
 
 /* Links */
 a {
@@ -1493,7 +1568,9 @@ button {
 }
 
 /* Form Elements */
-input, select, textarea {
+input,
+select,
+textarea {
   font-family: inherit;
   font-size: inherit;
 }
@@ -1502,6 +1579,7 @@ input, select, textarea {
 **Step 3: Extract component styles**
 
 Create: `src/styles/components.css`
+
 ```css
 /* Buttons */
 .btn {
@@ -1762,6 +1840,7 @@ Create: `src/styles/components.css`
 **Step 4: Extract layout styles**
 
 Create: `src/styles/layout.css`
+
 ```css
 /* Main App Layout */
 .app-container {
@@ -1828,11 +1907,12 @@ Create: `src/styles/layout.css`
 Modify: `index.html` (replace `<style>` block in `<head>`)
 
 Find and replace the entire `<style>` block (lines 8-899) with:
+
 ```html
-<link rel="stylesheet" href="./src/styles/variables.css">
-<link rel="stylesheet" href="./src/styles/base.css">
-<link rel="stylesheet" href="./src/styles/layout.css">
-<link rel="stylesheet" href="./src/styles/components.css">
+<link rel="stylesheet" href="./src/styles/variables.css" />
+<link rel="stylesheet" href="./src/styles/base.css" />
+<link rel="stylesheet" href="./src/styles/layout.css" />
+<link rel="stylesheet" href="./src/styles/components.css" />
 ```
 
 **Step 6: Commit**
@@ -1849,13 +1929,14 @@ git commit -m "refactor: extract CSS into modular files"
 ### Task 9: Update CLAUDE.md
 
 **Files:**
+
 - Modify: `CLAUDE.md`
 
 **Step 1: Replace CLAUDE.md with updated version**
 
 Replace entire contents of `CLAUDE.md` with:
 
-```markdown
+````markdown
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -1876,11 +1957,14 @@ Open Finance Planner is a client-side financial planning application that runs e
 Open `index.html` in a modern browser (Chrome 90+, Firefox 88+, Safari 14+).
 
 For development with auto-reload:
+
 ```bash
 npm run serve  # Runs python3 HTTP server on port 3030
 ```
+````
 
 Running tests:
+
 ```bash
 # Run specific test file
 node tests/unit/models/Plan.test.js
@@ -1943,17 +2027,20 @@ openfinanceplanner/
 All domain models are in `src/core/models/`:
 
 #### `Plan` (src/core/models/Plan.js)
+
 - Aggregate root for financial plans
 - Contains: accounts, expenses, assumptions, tax profile
 - Methods: `addAccount()`, `removeAccount()`, `addExpense()`, `removeExpense()`, `toJSON()`, `fromJSON()`
 - Stores monetary values in cents (integers)
 
 #### `Account` (src/core/models/Account.js)
+
 - Represents individual accounts (401k, IRA, Roth, HSA, Taxable)
 - Properties: `id`, `name`, `type`, `balance` (cents), `annualContribution`, `withdrawalRate`
 - Immutable ID generation
 
 #### `Expense` (src/core/models/Expense.js)
+
 - Models expense streams with inflation adjustment
 - Properties: `id`, `name`, `baseAmount` (cents), `startYear`, `endYear`, `inflationAdjusted`
 - Supports inflation-adjusted growth
@@ -2034,18 +2121,23 @@ Plans stored in localStorage as `ofp_plan_{uuid}`:
 ## Design Principles
 
 ### 1. Domain Independence
+
 Core domain models (`src/core/models/`) have zero dependencies on UI or storage. They can be tested in isolation.
 
 ### 2. Pure Calculations
+
 All calculation logic in `src/calculations/` are pure functions. No side effects, easy to test, predictable.
 
 ### 3. Storage Encapsulation
+
 All storage operations go through `StorageManager`. Never access localStorage directly from UI or domain layer.
 
 ### 4. Thin UI Layer
+
 UI controllers are thin. Business logic belongs in domain models or calculation functions.
 
 ### 5. Integer Arithmetic
+
 Monetary values stored as cents (integers). Display by dividing by 100. Avoids floating-point precision issues.
 
 ## Common Tasks
@@ -2058,6 +2150,7 @@ Monetary values stored as cents (integers). Display by dividing by 100. Avoids f
 4. Update schema validation in `src/storage/schema.js` if needed
 
 Example:
+
 ```javascript
 // src/core/models/YourModel.js
 export class YourModel {
@@ -2090,6 +2183,7 @@ export class YourModel {
 3. Import and use from UI controller or other calculation functions
 
 Example:
+
 ```javascript
 // src/calculations/tax.js
 export function calculateFederalTax(income, filingStatus) {
@@ -2126,6 +2220,7 @@ node tests/unit/calculations/projection.test.js
 ```
 
 Test pattern:
+
 ```javascript
 export function testSpecificBehavior() {
   // Arrange
@@ -2155,6 +2250,7 @@ Integration tests go in `tests/integration/`. These test the full flow from UI t
 ## Future Enhancements
 
 See `/docs/architecture.md` for comprehensive architecture documentation including:
+
 - Planned RuleRegistry system for tax strategies
 - IndexedDB migration path for larger datasets
 - Monte Carlo simulation architecture
@@ -2169,20 +2265,22 @@ See `/docs/tasks.md` for prioritized roadmap.
 3. **ES6 modules** - Use native ES6 import/export (no bundler required)
 4. **Modern browsers only** - Target Chrome 90+, Firefox 88+, Safari 14+
 5. **localStorage limits** - Design for 5-10MB storage limit per domain
-```
+
+````
 
 **Step 2: Commit**
 
 ```bash
 git add CLAUDE.md
 git commit -m "docs: update CLAUDE.md for modular architecture"
-```
+````
 
 ---
 
 ### Task 10: Update architecture.md
 
 **Files:**
+
 - Modify: `docs/architecture.md`
 
 **Step 1: Update architecture.md header and overview**
@@ -2211,6 +2309,7 @@ Find and update the tech stack section to mention ES6 modules:
 ## Tech Stack Selection
 
 **Vanilla JavaScript (ES2020+) with ES6 Modules**
+
 - Zero build process or framework dependencies
 - Native ES6 import/export for code organization
 - Modular architecture with clear layer separation
@@ -2229,6 +2328,7 @@ git commit -m "docs: update architecture.md for modular refactoring"
 ### Task 11: Update tasks.md
 
 **Files:**
+
 - Modify: `docs/tasks.md`
 
 **Step 1: Add refactoring completion notice at top**
@@ -2273,11 +2373,13 @@ git commit -m "docs: record modular refactoring completion in tasks.md"
 ### Task 12: Remove All Inline JavaScript from index.html
 
 **Files:**
+
 - Modify: `index.html`
 
 **Step 1: Remove all inline class definitions**
 
 From `index.html`, remove the following class definitions from the `<script>` tag:
+
 - Remove `class Plan` (now imported from `src/core/models/Plan.js`)
 - Remove `class Account` (now imported from `src/core/models/Account.js`)
 - Remove `class Expense` (now imported from `src/core/models/Expense.js`)
@@ -2301,6 +2403,7 @@ Replace the entire `<script>` block at the end with:
 **Step 3: Verify application still works**
 
 Open `index.html` in browser and verify:
+
 - Plans can be created
 - Accounts can be added
 - Expenses can be added
@@ -2319,11 +2422,13 @@ git commit -m "refactor: remove all inline JavaScript from index.html"
 ### Task 13: Create Integration Test
 
 **Files:**
+
 - Create: `tests/integration/full-flow.test.js`
 
 **Step 1: Create end-to-end integration test**
 
 Create: `tests/integration/full-flow.test.js`
+
 ```javascript
 /**
  * Integration test for full application flow
@@ -2339,10 +2444,18 @@ import { StorageManager } from '../../src/storage/StorageManager.js';
 // Mock localStorage
 global.localStorage = {
   store: {},
-  getItem(key) { return this.store[key] || null; },
-  setItem(key, value) { this.store[key] = value; },
-  removeItem(key) { delete this.store[key]; },
-  clear() { this.store = {}; }
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
+  clear() {
+    this.store = {};
+  },
 };
 
 export function testFullPlanWorkflow() {
@@ -2378,13 +2491,14 @@ export function testFullPlanWorkflow() {
   }
 
   const loadedPlan = Plan.fromJSON(loadedPlanData);
-  loadedPlan.accounts = loadedPlanData.accounts.map(acc => Account.fromJSON(acc));
-  loadedPlan.expenses = loadedPlanData.expenses.map(exp => Expense.fromJSON(exp));
+  loadedPlan.accounts = loadedPlanData.accounts.map((acc) => Account.fromJSON(acc));
+  loadedPlan.expenses = loadedPlanData.expenses.map((exp) => Expense.fromJSON(exp));
   console.log('✓ Plan loaded');
 
   // Step 6: Run projection
   const projections = project(loadedPlan, 40);
-  if (projections.length !== 41) { // 0-40 years
+  if (projections.length !== 41) {
+    // 0-40 years
     throw new Error(`Expected 41 projection years, got ${projections.length}`);
   }
   console.log('✓ Projection calculated');
@@ -2397,7 +2511,9 @@ export function testFullPlanWorkflow() {
     throw new Error('Expected end balance to exceed start balance with contributions');
   }
 
-  console.log(`✓ Start balance: $${startBalance.toFixed(0)}, End balance: $${endBalance.toFixed(0)}`);
+  console.log(
+    `✓ Start balance: $${startBalance.toFixed(0)}, End balance: $${endBalance.toFixed(0)}`
+  );
   console.log('✓ Full workflow test passed!');
 }
 
@@ -2431,12 +2547,14 @@ git commit -m "test: add integration test for full workflow"
 ### Task 14: Create README
 
 **Files:**
+
 - Create: `README.md`
 
 **Step 1: Create project README**
 
 Create: `README.md`
-```markdown
+
+````markdown
 # Open Finance Planner
 
 A client-side financial planning application that runs entirely in your browser with zero dependencies. Open source, privacy-focused, and designed for comprehensive retirement and financial projections.
@@ -2458,6 +2576,7 @@ A client-side financial planning application that runs entirely in your browser 
    cd openfinanceplanner
    # Open index.html in your browser
    ```
+````
 
 2. **Or use the dev server:**
    ```bash
@@ -2519,6 +2638,7 @@ MIT License - see LICENSE file for details
 ## Roadmap
 
 See [docs/tasks.md](docs/tasks.md) for detailed development plans including:
+
 - Advanced tax calculations with progressive brackets
 - Required Minimum Distribution (RMD) calculations
 - Roth conversion strategies (backdoor Roth, conversion ladders)
@@ -2535,14 +2655,15 @@ See [docs/tasks.md](docs/tasks.md) for detailed development plans including:
 ---
 
 **Note:** This tool is for educational and planning purposes. Consult a qualified financial advisor for personalized advice.
-```
+
+````
 
 **Step 2: Commit**
 
 ```bash
 git add README.md
 git commit -m "docs: add comprehensive README"
-```
+````
 
 ---
 
@@ -2567,6 +2688,7 @@ This refactoring plan establishes a **modular, maintainable foundation** for Ope
 ### Foundation for Future
 
 This architecture enables:
+
 - ✅ **Complex tax rules** - Pluggable calculation system
 - ✅ **Schema migrations** - Versioned storage with migration path
 - ✅ **Testing at scale** - Unit tests for each layer

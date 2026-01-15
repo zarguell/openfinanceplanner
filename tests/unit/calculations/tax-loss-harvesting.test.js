@@ -6,18 +6,19 @@ import {
   validateHarvestingAmount,
   applyHarvesting,
   isHarvestingEnabled,
-  getStrategyDescription
+  getStrategyDescription,
 } from '../../../src/calculations/tax-loss-harvesting.js';
 
 export function testCalculateUnrealizedLoss() {
   const taxableAccount = {
     type: 'Taxable',
     balance: 4500000, // $45,000
-    costBasis: 5000000 // $50,000 basis
+    costBasis: 5000000, // $50,000 basis
   };
 
   const loss = calculateUnrealizedLoss(taxableAccount);
-  if (loss !== 500000) { // 50,000 - 45,000 = 5,000 loss
+  if (loss !== 500000) {
+    // 50,000 - 45,000 = 5,000 loss
     throw new Error(`Expected $5,000 loss, got $${loss / 100}`);
   }
   console.log('✓ testCalculateUnrealizedLoss passed');
@@ -27,7 +28,7 @@ export function testCalculateUnrealizedLossNonTaxable() {
   const nonTaxableAccount = {
     type: '401k',
     balance: 4500000,
-    costBasis: 5000000
+    costBasis: 5000000,
   };
 
   const loss = calculateUnrealizedLoss(nonTaxableAccount);
@@ -41,7 +42,7 @@ export function testCalculateUnrealizedLossNoLoss() {
   const gainAccount = {
     type: 'Taxable',
     balance: 5500000, // $55,000
-    costBasis: 5000000 // $50,000 basis
+    costBasis: 5000000, // $50,000 basis
   };
 
   const loss = calculateUnrealizedLoss(gainAccount);
@@ -54,7 +55,7 @@ export function testCalculateUnrealizedLossNoLoss() {
 export function testCalculateUnrealizedLossNoCostBasis() {
   const noBasisAccount = {
     type: 'Taxable',
-    balance: 4500000
+    balance: 4500000,
   };
 
   const loss = calculateUnrealizedLoss(noBasisAccount);
@@ -68,7 +69,7 @@ export function testCalculateTotalUnrealizedLoss() {
   const accounts = [
     { type: 'Taxable', balance: 4500000, costBasis: 5000000 },
     { type: '401k', balance: 10000000, costBasis: 10000000 },
-    { type: 'Taxable', balance: 3500000, costBasis: 4000000 }
+    { type: 'Taxable', balance: 3500000, costBasis: 4000000 },
   ];
 
   const totalLoss = calculateTotalUnrealizedLoss(accounts);
@@ -132,13 +133,15 @@ export function testSuggestHarvestingAmountAllStrategy() {
   const settings = {
     enabled: true,
     strategy: 'all',
-    threshold: 100000
+    threshold: 100000,
   };
 
   const suggestion = suggestHarvestingAmount(unrealizedLoss, capitalGains, marginalRate, settings);
 
   if (suggestion.harvestAmountCents !== 5000000) {
-    throw new Error(`Expected $50,000 harvest with 'all' strategy, got $${suggestion.harvestAmountCents / 100}`);
+    throw new Error(
+      `Expected $50,000 harvest with 'all' strategy, got $${suggestion.harvestAmountCents / 100}`
+    );
   }
   if (!suggestion.reason.includes('all')) {
     throw new Error(`Expected 'all' reason, got: ${suggestion.reason}`);
@@ -153,14 +156,16 @@ export function testSuggestHarvestingAmountOffsetGainsStrategy() {
   const settings = {
     enabled: true,
     strategy: 'offset-gains',
-    threshold: 100000
+    threshold: 100000,
   };
 
   const suggestion = suggestHarvestingAmount(unrealizedLoss, capitalGains, marginalRate, settings);
 
   // Should harvest: gains (200,000) + $3,000 ordinary income cap = 500,000
   if (suggestion.harvestAmountCents !== 500000) {
-    throw new Error(`Expected $5,000 harvest with 'offset-gains' strategy, got $${suggestion.harvestAmountCents / 100}`);
+    throw new Error(
+      `Expected $5,000 harvest with 'offset-gains' strategy, got $${suggestion.harvestAmountCents / 100}`
+    );
   }
   if (!suggestion.reason.includes('offset gains')) {
     throw new Error(`Expected 'offset gains' reason, got: ${suggestion.reason}`);
@@ -175,13 +180,15 @@ export function testSuggestHarvestingAmountBelowThreshold() {
   const settings = {
     enabled: true,
     strategy: 'all',
-    threshold: 100000
+    threshold: 100000,
   };
 
   const suggestion = suggestHarvestingAmount(unrealizedLoss, capitalGains, marginalRate, settings);
 
   if (suggestion.harvestAmountCents !== 0) {
-    throw new Error(`Should not harvest below threshold, got $${suggestion.harvestAmountCents / 100}`);
+    throw new Error(
+      `Should not harvest below threshold, got $${suggestion.harvestAmountCents / 100}`
+    );
   }
   if (!suggestion.reason.includes('below')) {
     throw new Error(`Expected 'below threshold' reason, got: ${suggestion.reason}`);
@@ -196,7 +203,7 @@ export function testSuggestHarvestingAmountNoLoss() {
   const settings = {
     enabled: true,
     strategy: 'all',
-    threshold: 100000
+    threshold: 100000,
   };
 
   const suggestion = suggestHarvestingAmount(unrealizedLoss, capitalGains, marginalRate, settings);
@@ -214,7 +221,7 @@ export function testValidateHarvestingAmount() {
   const account = {
     type: 'Taxable',
     balance: 4500000,
-    costBasis: 5000000
+    costBasis: 5000000,
   };
 
   const valid = validateHarvestingAmount(500000, account);
@@ -228,7 +235,7 @@ export function testValidateHarvestingAmountExceedsLoss() {
   const account = {
     type: 'Taxable',
     balance: 4500000,
-    costBasis: 5000000
+    costBasis: 5000000,
   };
 
   const valid = validateHarvestingAmount(600000, account);
@@ -242,7 +249,7 @@ export function testValidateHarvestingAmountNonTaxable() {
   const account = {
     type: '401k',
     balance: 4500000,
-    costBasis: 5000000
+    costBasis: 5000000,
   };
 
   const valid = validateHarvestingAmount(500000, account);
@@ -256,7 +263,7 @@ export function testValidateHarvestingAmountNegative() {
   const account = {
     type: 'Taxable',
     balance: 4500000,
-    costBasis: 5000000
+    costBasis: 5000000,
   };
 
   const valid = validateHarvestingAmount(-1000, account);
@@ -270,7 +277,7 @@ export function testApplyHarvesting() {
   const account = {
     type: 'Taxable',
     balance: 4500000, // $45,000 current
-    costBasis: 5000000  // $50,000 basis
+    costBasis: 5000000, // $50,000 basis
   };
 
   const harvestAmount = 500000; // $5,000
@@ -279,7 +286,8 @@ export function testApplyHarvesting() {
   if (!result.success) {
     throw new Error(`Expected successful harvest`);
   }
-  if (result.newCostBasis !== 4000000) { // $45,000 - $5,000 = $40,000
+  if (result.newCostBasis !== 4000000) {
+    // $45,000 - $5,000 = $40,000
     throw new Error(`Expected $40,000 new cost basis, got $${result.newCostBasis / 100}`);
   }
   if (result.harvestedLoss !== 500000) {
@@ -292,7 +300,7 @@ export function testApplyHarvestingInvalid() {
   const account = {
     type: 'Taxable',
     balance: 4500000,
-    costBasis: 5000000
+    costBasis: 5000000,
   };
 
   const harvestAmount = 600000; // Exceeds loss

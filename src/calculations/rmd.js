@@ -52,7 +52,7 @@ const UNIFORM_LIFETIME_TABLE = {
   117: 2.5,
   118: 2.3,
   119: 2.1,
-  120: 1.9
+  120: 1.9,
 };
 
 export function getLifeExpectancyFactor(age) {

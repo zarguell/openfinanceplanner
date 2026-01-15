@@ -12,16 +12,36 @@ class MockRule extends RuleInterface {
     this.ruleName = name;
   }
 
-  getId() { return this.ruleId; }
-  getName() { return this.ruleName; }
-  getDescription() { return 'Test rule description'; }
-  getParameters() { return []; }
-  validateParameters(params) { return { isValid: true, errors: [] }; }
-  isApplicable(plan, yearOffset, projectionState) { return true; }
-  apply(plan, yearOffset, projectionState, params) { return { applied: true, changes: {}, metadata: {} }; }
-  getDependencies() { return []; }
-  getVersion() { return '1.0.0'; }
-  getCategory() { return 'tax_optimization'; }
+  getId() {
+    return this.ruleId;
+  }
+  getName() {
+    return this.ruleName;
+  }
+  getDescription() {
+    return 'Test rule description';
+  }
+  getParameters() {
+    return [];
+  }
+  validateParameters(params) {
+    return { isValid: true, errors: [] };
+  }
+  isApplicable(plan, yearOffset, projectionState) {
+    return true;
+  }
+  apply(plan, yearOffset, projectionState, params) {
+    return { applied: true, changes: {}, metadata: {} };
+  }
+  getDependencies() {
+    return [];
+  }
+  getVersion() {
+    return '1.0.0';
+  }
+  getCategory() {
+    return 'tax_optimization';
+  }
 }
 
 export function testRuleRegistryCreation() {
@@ -168,16 +188,36 @@ export function testRuleValidation() {
 
   // Test invalid rule ID
   class InvalidRule extends RuleInterface {
-    getId() { return 'INVALID_ID'; } // Should be lowercase with underscores
-    getName() { return 'Invalid Rule'; }
-    getDescription() { return 'Test'; }
-    getParameters() { return []; }
-    validateParameters() { return { isValid: true, errors: [] }; }
-    isApplicable() { return true; }
-    apply() { return { applied: true, changes: {}, metadata: {} }; }
-    getDependencies() { return []; }
-    getVersion() { return '1.0.0'; }
-    getCategory() { return 'invalid_category'; } // Invalid category
+    getId() {
+      return 'INVALID_ID';
+    } // Should be lowercase with underscores
+    getName() {
+      return 'Invalid Rule';
+    }
+    getDescription() {
+      return 'Test';
+    }
+    getParameters() {
+      return [];
+    }
+    validateParameters() {
+      return { isValid: true, errors: [] };
+    }
+    isApplicable() {
+      return true;
+    }
+    apply() {
+      return { applied: true, changes: {}, metadata: {} };
+    }
+    getDependencies() {
+      return [];
+    }
+    getVersion() {
+      return '1.0.0';
+    }
+    getCategory() {
+      return 'invalid_category';
+    } // Invalid category
   }
 
   try {

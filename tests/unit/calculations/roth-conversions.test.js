@@ -11,7 +11,7 @@ import {
   calculateProRataBasis,
   isPenaltyFree,
   optimizeConversionsAcrossYears,
-  analyzeConversion
+  analyzeConversion,
 } from '../../../src/calculations/roth-conversions.js';
 import { Plan } from '../../../src/core/models/Plan.js';
 import { Account } from '../../../src/core/models/Account.js';
@@ -23,7 +23,7 @@ export function testCalculateConversionTax() {
     1000000, // $10,000 conversion
     5000000, // $50,000 taxable income
     0.22, // 22% marginal rate
-    0.30  // 30% total tax rate
+    0.3 // 30% total tax rate
   );
 
   if (result.conversionAmount !== 1000000) {
@@ -49,7 +49,7 @@ export function testCalculateBracketFillConversion() {
   const result1 = calculateBracketFillConversion(
     5000000, // $50,000 income
     8945000, // $89,450 bracket top (12% bracket)
-    5000000  // $50,000 traditional balance
+    5000000 // $50,000 traditional balance
   );
 
   if (result1 !== 3945000) {
@@ -60,7 +60,7 @@ export function testCalculateBracketFillConversion() {
   const result2 = calculateBracketFillConversion(
     5000000, // $50,000 income
     8945000, // $89,450 bracket top
-    2000000  // Only $20,000 available
+    2000000 // Only $20,000 available
   );
 
   if (result2 !== 2000000) {
@@ -77,8 +77,8 @@ export function testCalculateFixedConversion() {
   const result1 = calculateFixedConversion(
     1000000, // $10,000 target
     5000000, // $50,000 available
-    50,      // Age 50
-    false    // No RMD
+    50, // Age 50
+    false // No RMD
   );
 
   if (result1 !== 1000000) {
@@ -88,7 +88,7 @@ export function testCalculateFixedConversion() {
   // Test limited by balance
   const result2 = calculateFixedConversion(
     1000000, // $10,000 target
-    500000,  // Only $5,000 available
+    500000, // Only $5,000 available
     50,
     false
   );
@@ -98,12 +98,7 @@ export function testCalculateFixedConversion() {
   }
 
   // Test with RMD
-  const result3 = calculateFixedConversion(
-    1000000,
-    5000000,
-    73,
-    true
-  );
+  const result3 = calculateFixedConversion(1000000, 5000000, 73, true);
 
   if (result3 !== 1000000) {
     throw new Error(`Expected $10,000 conversion with RMD, got ${result3 / 100}`);
@@ -116,9 +111,9 @@ export function testCalculatePercentageConversion() {
   console.log('Testing calculatePercentageConversion...');
 
   const result = calculatePercentageConversion(
-    0.10,    // 10%
+    0.1, // 10%
     5000000, // $50,000 balance
-    6000000  // $60,000 max
+    6000000 // $60,000 max
   );
 
   if (result !== 500000) {
@@ -127,9 +122,9 @@ export function testCalculatePercentageConversion() {
 
   // Test with max limit
   const result2 = calculatePercentageConversion(
-    0.20,    // 20%
+    0.2, // 20%
     5000000, // $50,000 balance
-    800000   // $8,000 max
+    800000 // $8,000 max
   );
 
   if (result2 !== 800000) {
@@ -155,7 +150,7 @@ export function testCalculateBackdoorRothConversion() {
   // Test limited by balance
   const result2 = calculateBackdoorRothConversion(
     7000000, // $7,000 basis
-    5000000  // Only $5,000 total balance
+    5000000 // Only $5,000 total balance
   );
 
   if (result2 !== 5000000) {
@@ -172,10 +167,10 @@ export function testCalculateProRataBasis() {
   const result = calculateProRataBasis(
     1000000, // $10,000 after-tax basis
     5000000, // $50,000 total balance
-    1000000  // Convert $10,000
+    1000000 // Convert $10,000
   );
 
-  if (result.basisRatio !== 0.20) {
+  if (result.basisRatio !== 0.2) {
     throw new Error(`Expected basis ratio of 0.20, got ${result.basisRatio}`);
   }
   if (result.nonTaxableAmount !== 200000) {
@@ -186,11 +181,7 @@ export function testCalculateProRataBasis() {
   }
 
   // Test zero balance
-  const result2 = calculateProRataBasis(
-    1000000,
-    0,
-    1000000
-  );
+  const result2 = calculateProRataBasis(1000000, 0, 1000000);
 
   if (result2.taxableAmount !== 0) {
     throw new Error('Expected zero taxable amount for zero balance');
@@ -258,15 +249,15 @@ export function testAnalyzeConversion() {
 
   const conversionPlan = {
     conversionAmount: 1000000, // $10,000
-    yearsInRoth: 30
+    yearsInRoth: 30,
   };
 
   const taxContext = {
     currentTaxableIncome: 5000000, // $50,000
     marginalTaxRate: 0.22,
-    totalTaxRate: 0.30,
+    totalTaxRate: 0.3,
     assumedGrowthRate: 0.07,
-    futureTaxRate: 0.30
+    futureTaxRate: 0.3,
   };
 
   const analysis = analyzeConversion(conversionPlan, taxContext);
@@ -322,7 +313,7 @@ export function testProRataBasisEdgeCases() {
   const result1 = calculateProRataBasis(
     5000000, // $50,000 basis
     5000000, // $50,000 balance (100% basis)
-    1000000  // Convert $10,000
+    1000000 // Convert $10,000
   );
 
   if (result1.nonTaxableAmount !== 1000000) {
@@ -334,9 +325,9 @@ export function testProRataBasisEdgeCases() {
 
   // Test 0% after-tax (fully taxable)
   const result2 = calculateProRataBasis(
-    0,       // $0 basis
+    0, // $0 basis
     5000000, // $50,000 balance (0% basis)
-    1000000  // Convert $10,000
+    1000000 // Convert $10,000
   );
 
   if (result2.nonTaxableAmount !== 0) {

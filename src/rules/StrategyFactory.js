@@ -64,7 +64,7 @@ export class StrategyFactory {
    * @returns {Array} Array of created rule instances
    */
   createRules(ruleConfigs) {
-    return ruleConfigs.map(config => {
+    return ruleConfigs.map((config) => {
       const { ruleId, parameters = {} } = config;
       return this.createRule(ruleId, parameters);
     });
@@ -80,9 +80,9 @@ export class StrategyFactory {
       return [];
     }
 
-    const ruleConfigs = planRulesConfig.enabledRules.map(ruleId => ({
+    const ruleConfigs = planRulesConfig.enabledRules.map((ruleId) => ({
       ruleId,
-      parameters: planRulesConfig.parameters?.[ruleId] || {}
+      parameters: planRulesConfig.parameters?.[ruleId] || {},
     }));
 
     return this.createRules(ruleConfigs);
@@ -153,7 +153,7 @@ export class StrategyFactory {
       version: rule.getVersion(),
       parameters: rule.getParameters(),
       dependencies: rule.getDependencies(),
-      canCreate: this.canCreateRule(ruleId)
+      canCreate: this.canCreateRule(ruleId),
     };
   }
 
@@ -163,7 +163,9 @@ export class StrategyFactory {
    */
   getAllRuleMetadata() {
     const availableIds = this.getAvailableRuleIds();
-    return availableIds.map(ruleId => this.getRuleMetadata(ruleId)).filter(meta => meta !== null);
+    return availableIds
+      .map((ruleId) => this.getRuleMetadata(ruleId))
+      .filter((meta) => meta !== null);
   }
 
   /**

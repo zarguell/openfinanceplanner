@@ -26,7 +26,12 @@ export class BackdoorRothRule extends BaseRule {
 
     const eligibility = this.checkEligibility(totalIncome, currentAge);
     if (!eligibility.eligible) {
-      return { contributionAmount: 0, conversionAmount: 0, reason: eligibility.reason, balanceModifications: [] };
+      return {
+        contributionAmount: 0,
+        conversionAmount: 0,
+        reason: eligibility.reason,
+        balanceModifications: [],
+      };
     }
 
     const traditionalAccounts = accountSnapshots
@@ -34,7 +39,12 @@ export class BackdoorRothRule extends BaseRule {
       .filter(({ acc }) => acc.type === 'IRA');
 
     if (traditionalAccounts.length === 0) {
-      return { contributionAmount: 0, conversionAmount: 0, reason: 'No IRA account found', balanceModifications: [] };
+      return {
+        contributionAmount: 0,
+        conversionAmount: 0,
+        reason: 'No IRA account found',
+        balanceModifications: [],
+      };
     }
 
     const traditionalAccountIndex = traditionalAccounts[0].idx;
@@ -44,7 +54,12 @@ export class BackdoorRothRule extends BaseRule {
     const conversionAmount = proRataCalculation.convertibleAmount;
 
     if (conversionAmount <= 0) {
-      return { contributionAmount: annualContribution, conversionAmount: 0, reason: 'No conversion possible', balanceModifications: [] };
+      return {
+        contributionAmount: annualContribution,
+        conversionAmount: 0,
+        reason: 'No conversion possible',
+        balanceModifications: [],
+      };
     }
 
     const rothAccounts = accountSnapshots
@@ -52,29 +67,35 @@ export class BackdoorRothRule extends BaseRule {
       .filter(({ acc }) => acc.type === 'Roth');
 
     if (rothAccounts.length === 0) {
-      return { contributionAmount: annualContribution, conversionAmount: 0, reason: 'No Roth account found', balanceModifications: [] };
+      return {
+        contributionAmount: annualContribution,
+        conversionAmount: 0,
+        reason: 'No Roth account found',
+        balanceModifications: [],
+      };
     }
 
     const rothAccountIndex = rothAccounts[0].idx;
 
-    const taxOnConversion = proRataCalculation.taxableAmount * (plan.taxProfile.estimatedTaxRate || 0.25);
+    const taxOnConversion =
+      proRataCalculation.taxableAmount * (plan.taxProfile.estimatedTaxRate || 0.25);
 
     const balanceModifications = [
       {
         accountIndex: traditionalAccountIndex,
         change: annualContribution,
-        reason: 'Backdoor Roth - non-deductible contribution'
+        reason: 'Backdoor Roth - non-deductible contribution',
       },
       {
         accountIndex: traditionalAccountIndex,
         change: -conversionAmount,
-        reason: 'Backdoor Roth - conversion to Roth'
+        reason: 'Backdoor Roth - conversion to Roth',
       },
       {
         accountIndex: rothAccountIndex,
         change: conversionAmount,
-        reason: 'Backdoor Roth - converted amount'
-      }
+        reason: 'Backdoor Roth - converted amount',
+      },
     ];
 
     return {
@@ -85,7 +106,7 @@ export class BackdoorRothRule extends BaseRule {
       nonTaxableAmount: proRataCalculation.nonTaxableAmount,
       taxOnConversion,
       proRataRatio: proRataCalculation.preTaxRatio,
-      balanceModifications
+      balanceModifications,
     };
   }
 
@@ -124,7 +145,7 @@ export class BackdoorRothRule extends BaseRule {
       27: 8000,
       28: 8000,
       29: 8000,
-      30: 8000
+      30: 8000,
     };
 
     return (contributionLimits[yearToIndex] || 7000) * 100;
@@ -150,7 +171,7 @@ export class BackdoorRothRule extends BaseRule {
         preTaxRatio: 0,
         taxableAmount: 0,
         nonTaxableAmount: contributionAmount,
-        convertibleAmount: 0
+        convertibleAmount: 0,
       };
     }
 
@@ -162,7 +183,7 @@ export class BackdoorRothRule extends BaseRule {
       preTaxRatio,
       taxableAmount,
       nonTaxableAmount,
-      convertibleAmount: contributionAmount
+      convertibleAmount: contributionAmount,
     };
   }
 

@@ -6,10 +6,18 @@ import { StorageManager } from '../../src/storage/StorageManager.js';
 
 global.localStorage = {
   store: {},
-  getItem(key) { return this.store[key] || null; },
-  setItem(key, value) { this.store[key] = value; },
-  removeItem(key) { delete this.store[key]; },
-  clear() { this.store = {}; }
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
+  clear() {
+    this.store = {};
+  },
 };
 
 export function testTLHSettingsPersistence() {
@@ -22,7 +30,7 @@ export function testTLHSettingsPersistence() {
   plan.taxLossHarvesting = {
     enabled: true,
     strategy: 'all',
-    threshold: 100000
+    threshold: 100000,
   };
 
   console.log('✓ Plan created with TLH settings:', plan.taxLossHarvesting);
@@ -67,7 +75,7 @@ export function testTLHWithProjection() {
   plan.taxLossHarvesting = {
     enabled: true,
     strategy: 'all',
-    threshold: 100000
+    threshold: 100000,
   };
 
   plan.assumptions.equityGrowthRate = 0.06;
@@ -80,11 +88,14 @@ export function testTLHWithProjection() {
 
   console.log('✓ Projection completed');
 
-  const yearsWithTLH = results.filter(year => year.taxLossHarvestingBenefit > 0);
+  const yearsWithTLH = results.filter((year) => year.taxLossHarvestingBenefit > 0);
 
   console.log('✓ Years with TLH benefits:', yearsWithTLH.length);
 
-  const totalTLHBenefit = results.reduce((sum, year) => sum + (year.taxLossHarvestingBenefit || 0), 0);
+  const totalTLHBenefit = results.reduce(
+    (sum, year) => sum + (year.taxLossHarvestingBenefit || 0),
+    0
+  );
 
   if (totalTLHBenefit < 0) {
     throw new Error('Expected non-negative TLH benefit');
@@ -108,7 +119,7 @@ export function testTLHDisabled() {
   plan.taxLossHarvesting = {
     enabled: false,
     strategy: 'all',
-    threshold: 100000
+    threshold: 100000,
   };
 
   plan.assumptions.equityGrowthRate = 0.06;
@@ -117,7 +128,10 @@ export function testTLHDisabled() {
 
   const results = project(plan, 10, 2025);
 
-  const totalTLHBenefit = results.reduce((sum, year) => sum + (year.taxLossHarvestingBenefit || 0), 0);
+  const totalTLHBenefit = results.reduce(
+    (sum, year) => sum + (year.taxLossHarvestingBenefit || 0),
+    0
+  );
 
   if (totalTLHBenefit !== 0) {
     throw new Error('Expected no TLH benefit when disabled');
@@ -141,7 +155,7 @@ export function testTLHAllStrategy() {
   plan.taxLossHarvesting = {
     enabled: true,
     strategy: 'all',
-    threshold: 50000
+    threshold: 50000,
   };
 
   plan.assumptions.equityGrowthRate = 0.03;
@@ -150,7 +164,10 @@ export function testTLHAllStrategy() {
 
   const results = project(plan, 10, 2025);
 
-  const totalTLHBenefit = results.reduce((sum, year) => sum + (year.taxLossHarvestingBenefit || 0), 0);
+  const totalTLHBenefit = results.reduce(
+    (sum, year) => sum + (year.taxLossHarvestingBenefit || 0),
+    0
+  );
 
   console.log('✓ Total TLH benefit with "all" strategy:', totalTLHBenefit);
 
@@ -171,7 +188,7 @@ export function testTLHOffsetGainsStrategy() {
   plan.taxLossHarvesting = {
     enabled: true,
     strategy: 'offset-gains',
-    threshold: 50000
+    threshold: 50000,
   };
 
   plan.assumptions.equityGrowthRate = 0.03;
@@ -180,7 +197,10 @@ export function testTLHOffsetGainsStrategy() {
 
   const results = project(plan, 10, 2025);
 
-  const totalTLHBenefit = results.reduce((sum, year) => sum + (year.taxLossHarvestingBenefit || 0), 0);
+  const totalTLHBenefit = results.reduce(
+    (sum, year) => sum + (year.taxLossHarvestingBenefit || 0),
+    0
+  );
 
   console.log('✓ Total TLH benefit with "offset-gains" strategy:', totalTLHBenefit);
 
@@ -201,7 +221,7 @@ export function testTLHThreshold() {
   plan.taxLossHarvesting = {
     enabled: true,
     strategy: 'all',
-    threshold: 500000 // $5,000 threshold - high to prevent harvesting
+    threshold: 500000, // $5,000 threshold - high to prevent harvesting
   };
 
   plan.assumptions.equityGrowthRate = 0.04;
@@ -210,7 +230,10 @@ export function testTLHThreshold() {
 
   const results = project(plan, 10, 2025);
 
-  const totalTLHBenefit = results.reduce((sum, year) => sum + (year.taxLossHarvestingBenefit || 0), 0);
+  const totalTLHBenefit = results.reduce(
+    (sum, year) => sum + (year.taxLossHarvestingBenefit || 0),
+    0
+  );
 
   console.log('✓ Total TLH benefit with high threshold:', totalTLHBenefit);
 
@@ -231,7 +254,7 @@ export function testTLHCostBasisTracking() {
   plan.taxLossHarvesting = {
     enabled: true,
     strategy: 'all',
-    threshold: 50000
+    threshold: 50000,
   };
 
   plan.assumptions.equityGrowthRate = 0.04;
@@ -273,7 +296,7 @@ export function testTLHWithMultipleAccounts() {
   plan.taxLossHarvesting = {
     enabled: true,
     strategy: 'all',
-    threshold: 50000
+    threshold: 50000,
   };
 
   plan.assumptions.equityGrowthRate = 0.04;
@@ -282,7 +305,10 @@ export function testTLHWithMultipleAccounts() {
 
   const results = project(plan, 10, 2025);
 
-  const totalTLHBenefit = results.reduce((sum, year) => sum + (year.taxLossHarvestingBenefit || 0), 0);
+  const totalTLHBenefit = results.reduce(
+    (sum, year) => sum + (year.taxLossHarvestingBenefit || 0),
+    0
+  );
 
   console.log('✓ Total TLH benefit with multiple accounts:', totalTLHBenefit);
 

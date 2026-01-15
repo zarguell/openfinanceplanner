@@ -22,7 +22,12 @@
  * @param {number} totalTaxRate - Estimated total tax rate (federal + state, decimal)
  * @returns {object} Tax impact details
  */
-export function calculateConversionTax(conversionAmount, currentTaxableIncome, marginalTaxRate, totalTaxRate) {
+export function calculateConversionTax(
+  conversionAmount,
+  currentTaxableIncome,
+  marginalTaxRate,
+  totalTaxRate
+) {
   const effectiveTaxRate = marginalTaxRate || totalTaxRate;
   const taxOnConversion = Math.round(conversionAmount * effectiveTaxRate);
 
@@ -30,7 +35,7 @@ export function calculateConversionTax(conversionAmount, currentTaxableIncome, m
     conversionAmount,
     taxOnConversion,
     effectiveTaxRate,
-    afterTaxCost: conversionAmount + taxOnConversion
+    afterTaxCost: conversionAmount + taxOnConversion,
   };
 }
 
@@ -44,7 +49,11 @@ export function calculateConversionTax(conversionAmount, currentTaxableIncome, m
  * @param {number} traditionalBalance - Available traditional balance (cents)
  * @returns {number} Conversion amount in cents
  */
-export function calculateBracketFillConversion(currentTaxableIncome, bracketTop, traditionalBalance) {
+export function calculateBracketFillConversion(
+  currentTaxableIncome,
+  bracketTop,
+  traditionalBalance
+) {
   const spaceInBracket = bracketTop - currentTaxableIncome;
   const maxConversion = Math.min(spaceInBracket, traditionalBalance);
 
@@ -62,7 +71,12 @@ export function calculateBracketFillConversion(currentTaxableIncome, bracketTop,
  * @param {boolean} mustTakeRMD - Whether RMD required this year
  * @returns {number} Conversion amount in cents
  */
-export function calculateFixedConversion(annualConversionAmount, traditionalBalance, age, mustTakeRMD) {
+export function calculateFixedConversion(
+  annualConversionAmount,
+  traditionalBalance,
+  age,
+  mustTakeRMD
+) {
   if (mustTakeRMD) {
     return Math.min(annualConversionAmount, traditionalBalance);
   }
@@ -80,7 +94,11 @@ export function calculateFixedConversion(annualConversionAmount, traditionalBala
  * @param {number} maxConversionAmount - Maximum annual conversion limit (cents)
  * @returns {number} Conversion amount in cents
  */
-export function calculatePercentageConversion(conversionPercentage, traditionalBalance, maxConversionAmount = Infinity) {
+export function calculatePercentageConversion(
+  conversionPercentage,
+  traditionalBalance,
+  maxConversionAmount = Infinity
+) {
   const percentageAmount = Math.round(traditionalBalance * conversionPercentage);
   return Math.min(percentageAmount, maxConversionAmount);
 }
@@ -117,7 +135,7 @@ export function calculateProRataBasis(afterTaxBasis, totalTraditionalBalance, co
     return {
       conversionAmount,
       taxableAmount: 0,
-      nonTaxableAmount: 0
+      nonTaxableAmount: 0,
     };
   }
 
@@ -129,7 +147,7 @@ export function calculateProRataBasis(afterTaxBasis, totalTraditionalBalance, co
     conversionAmount,
     taxableAmount,
     nonTaxableAmount,
-    basisRatio
+    basisRatio,
   };
 }
 
@@ -178,8 +196,8 @@ export function optimizeConversionsAcrossYears(plan, yearsToProject, strategy = 
     const year = startYear + i;
     const age = plan.taxProfile.currentAge + i;
 
-    const traditionalAccounts = plan.accounts.filter(acc =>
-      acc.type === '401k' || acc.type === 'IRA'
+    const traditionalAccounts = plan.accounts.filter(
+      (acc) => acc.type === '401k' || acc.type === 'IRA'
     );
 
     const totalTraditionalBalance = traditionalAccounts.reduce((sum, acc) => sum + acc.balance, 0);
@@ -189,7 +207,7 @@ export function optimizeConversionsAcrossYears(plan, yearsToProject, strategy = 
         year,
         age,
         conversionAmount: 0,
-        reason: 'No traditional balance remaining'
+        reason: 'No traditional balance remaining',
       });
       continue;
     }
@@ -201,19 +219,28 @@ export function optimizeConversionsAcrossYears(plan, yearsToProject, strategy = 
       case 'bracket-fill':
         const bracketTop = 89450 * 100;
         const taxableIncome = 100000 * 100;
-        conversionAmount = calculateBracketFillConversion(taxableIncome, bracketTop, totalTraditionalBalance);
+        conversionAmount = calculateBracketFillConversion(
+          taxableIncome,
+          bracketTop,
+          totalTraditionalBalance
+        );
         reason = 'Fill up to top of tax bracket';
         break;
 
       case 'fixed':
         const annualAmount = 10000 * 100;
         const rmdRequired = age >= 73;
-        conversionAmount = calculateFixedConversion(annualAmount, totalTraditionalBalance, age, rmdRequired);
+        conversionAmount = calculateFixedConversion(
+          annualAmount,
+          totalTraditionalBalance,
+          age,
+          rmdRequired
+        );
         reason = 'Fixed annual conversion';
         break;
 
       case 'percentage':
-        const percentage = 0.10;
+        const percentage = 0.1;
         conversionAmount = calculatePercentageConversion(percentage, totalTraditionalBalance);
         reason = '10% of traditional balance';
         break;
@@ -228,7 +255,7 @@ export function optimizeConversionsAcrossYears(plan, yearsToProject, strategy = 
       age,
       conversionAmount,
       reason,
-      strategy
+      strategy,
     });
   }
 
@@ -264,7 +291,9 @@ export function analyzeConversion(conversionPlan, taxContext) {
 
   const traditionalGrowthFactor = rothGrowthFactor;
   const traditionalFinalValue = Math.round(conversionAmount * traditionalGrowthFactor);
-  const futureTaxOnWithdrawal = Math.round(traditionalFinalValue * (taxContext.futureTaxRate || totalTaxRate));
+  const futureTaxOnWithdrawal = Math.round(
+    traditionalFinalValue * (taxContext.futureTaxRate || totalTaxRate)
+  );
   const traditionalAfterTax = traditionalFinalValue - futureTaxOnWithdrawal;
 
   const netBenefit = rothFinalValue - (taxImpact.afterTaxCost + traditionalAfterTax);
@@ -278,8 +307,9 @@ export function analyzeConversion(conversionPlan, taxContext) {
     netBenefit,
     yearsInRoth,
     recommendation: netBenefit > 0 ? 'Convert' : 'Do Not Convert',
-    reasoning: netBenefit > 0
-      ? `Tax savings: $${(netBenefit / 100).toLocaleString('en-US')} by converting now`
-      : `Not beneficial: $${(Math.abs(netBenefit) / 100).toLocaleString('en-US')} loss by converting now`
+    reasoning:
+      netBenefit > 0
+        ? `Tax savings: $${(netBenefit / 100).toLocaleString('en-US')} by converting now`
+        : `Not beneficial: $${(Math.abs(netBenefit) / 100).toLocaleString('en-US')} loss by converting now`,
   };
 }

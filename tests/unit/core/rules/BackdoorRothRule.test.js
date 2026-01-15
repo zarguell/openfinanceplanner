@@ -12,7 +12,7 @@ export function testBackdoorRothRuleConstruction() {
     dependencies: [],
     annualContribution: 6000,
     incomeThreshold: 129000,
-    phaseOutEnd: 144000
+    phaseOutEnd: 144000,
   });
 
   if (rule.name !== 'backdoor-roth') {
@@ -38,39 +38,39 @@ export function testBackdoorRothRuleApply() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     backdoorRoth: {
       enabled: true,
       annualContribution: 6000,
       incomeThreshold: 129000,
-      phaseOutEnd: 144000
+      phaseOutEnd: 144000,
     },
     accounts: [
       {
         id: 'ira_1',
         name: 'IRA',
         type: 'IRA',
-        balance: 100000 * 100
+        balance: 100000 * 100,
       },
       {
         id: 'roth_1',
         name: 'Roth IRA',
         type: 'Roth',
-        balance: 50000 * 100
-      }
-    ]
+        balance: 50000 * 100,
+      },
+    ],
   };
 
-  const accountSnapshots = plan.accounts.map(acc => ({ ...acc }));
+  const accountSnapshots = plan.accounts.map((acc) => ({ ...acc }));
 
   const context = {
     plan,
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 120000 * 100
-    }
+      totalTaxableIncome: 120000 * 100,
+    },
   };
 
   const rule = new BackdoorRothRule({
@@ -79,7 +79,7 @@ export function testBackdoorRothRuleApply() {
     dependencies: [],
     annualContribution: 6000,
     incomeThreshold: 129000,
-    phaseOutEnd: 144000
+    phaseOutEnd: 144000,
   });
 
   const result = rule.apply(context);
@@ -89,7 +89,9 @@ export function testBackdoorRothRuleApply() {
   }
 
   if (result.contributionAmount !== 7000 * 100) {
-    throw new Error(`Contribution amount incorrect: expected ${7000 * 100}, got ${result.contributionAmount}`);
+    throw new Error(
+      `Contribution amount incorrect: expected ${7000 * 100}, got ${result.contributionAmount}`
+    );
   }
 
   if (!result.name || result.name !== 'backdoor-roth') {
@@ -107,39 +109,39 @@ export function testBackdoorRothRuleProRata() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     backdoorRoth: {
       enabled: true,
       annualContribution: 6000,
       incomeThreshold: 129000,
-      phaseOutEnd: 144000
+      phaseOutEnd: 144000,
     },
     accounts: [
       {
         id: 'ira_1',
         name: 'IRA',
         type: 'IRA',
-        balance: 50000 * 100
+        balance: 50000 * 100,
       },
       {
         id: 'roth_1',
         name: 'Roth IRA',
         type: 'Roth',
-        balance: 0
-      }
-    ]
+        balance: 0,
+      },
+    ],
   };
 
-  const accountSnapshots = plan.accounts.map(acc => ({ ...acc }));
+  const accountSnapshots = plan.accounts.map((acc) => ({ ...acc }));
 
   const context = {
     plan,
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 120000 * 100
-    }
+      totalTaxableIncome: 120000 * 100,
+    },
   };
 
   const rule = new BackdoorRothRule({
@@ -148,13 +150,13 @@ export function testBackdoorRothRuleProRata() {
     dependencies: [],
     annualContribution: 6000,
     incomeThreshold: 129000,
-    phaseOutEnd: 144000
+    phaseOutEnd: 144000,
   });
 
   const result = rule.apply(context);
 
   const expectedContribution = 7000 * 100;
-  const expectedProRataRatio = 50000 * 100 / (50000 * 100 + expectedContribution);
+  const expectedProRataRatio = (50000 * 100) / (50000 * 100 + expectedContribution);
   if (Math.abs(result.proRataRatio - expectedProRataRatio) > 0.0001) {
     throw new Error('Pro-rata calculation incorrect');
   }
@@ -176,31 +178,31 @@ export function testBackdoorRothRuleIncomeEligibility() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     backdoorRoth: {
       enabled: true,
       annualContribution: 6000,
       incomeThreshold: 129000,
-      phaseOutEnd: 144000
+      phaseOutEnd: 144000,
     },
     accounts: [
       {
         id: 'ira_1',
         name: 'IRA',
         type: 'IRA',
-        balance: 100000 * 100
+        balance: 100000 * 100,
       },
       {
         id: 'roth_1',
         name: 'Roth IRA',
         type: 'Roth',
-        balance: 50000 * 100
-      }
-    ]
+        balance: 50000 * 100,
+      },
+    ],
   };
 
-  const accountSnapshots = plan.accounts.map(acc => ({ ...acc }));
+  const accountSnapshots = plan.accounts.map((acc) => ({ ...acc }));
 
   const rule = new BackdoorRothRule({
     name: 'backdoor-roth',
@@ -208,7 +210,7 @@ export function testBackdoorRothRuleIncomeEligibility() {
     dependencies: [],
     annualContribution: 6000,
     incomeThreshold: 129000,
-    phaseOutEnd: 144000
+    phaseOutEnd: 144000,
   });
 
   const highIncomeContext = {
@@ -216,8 +218,8 @@ export function testBackdoorRothRuleIncomeEligibility() {
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 150000 * 100
-    }
+      totalTaxableIncome: 150000 * 100,
+    },
   };
 
   const highIncomeResult = rule.apply(highIncomeContext);
@@ -231,8 +233,8 @@ export function testBackdoorRothRuleIncomeEligibility() {
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 135000 * 100
-    }
+      totalTaxableIncome: 135000 * 100,
+    },
   };
 
   const phaseOutResult = rule.apply(phaseOutStartContext);
@@ -248,15 +250,15 @@ export function testBackdoorRothRuleNoAccounts() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     backdoorRoth: {
       enabled: true,
       annualContribution: 6000,
       incomeThreshold: 129000,
-      phaseOutEnd: 144000
+      phaseOutEnd: 144000,
     },
-    accounts: []
+    accounts: [],
   };
 
   const accountSnapshots = [];
@@ -266,8 +268,8 @@ export function testBackdoorRothRuleNoAccounts() {
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 120000 * 100
-    }
+      totalTaxableIncome: 120000 * 100,
+    },
   };
 
   const rule = new BackdoorRothRule({
@@ -276,7 +278,7 @@ export function testBackdoorRothRuleNoAccounts() {
     dependencies: [],
     annualContribution: 6000,
     incomeThreshold: 129000,
-    phaseOutEnd: 144000
+    phaseOutEnd: 144000,
   });
 
   const result = rule.apply(context);
@@ -302,7 +304,7 @@ export function testMegaBackdoorRothRuleConstruction() {
     planSupportsInServiceWithdrawal: true,
     employerMatchRate: 0.04,
     employeeDeferralLimit: 23500,
-    total401kLimit: 69000
+    total401kLimit: 69000,
   });
 
   if (rule.name !== 'mega-backdoor-roth') {
@@ -332,7 +334,7 @@ export function testMegaBackdoorRothRuleApply() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     megaBackdoorRoth: {
       enabled: true,
@@ -341,7 +343,7 @@ export function testMegaBackdoorRothRuleApply() {
       planSupportsInServiceWithdrawal: true,
       employerMatchRate: 0.04,
       employeeDeferralLimit: 23500,
-      total401kLimit: 69000
+      total401kLimit: 69000,
     },
     accounts: [
       {
@@ -349,26 +351,26 @@ export function testMegaBackdoorRothRuleApply() {
         name: '401k',
         type: '401k',
         balance: 200000 * 100,
-        annualContribution: 20000 * 100
+        annualContribution: 20000 * 100,
       },
       {
         id: 'roth_1',
         name: 'Roth IRA',
         type: 'Roth',
-        balance: 50000 * 100
-      }
-    ]
+        balance: 50000 * 100,
+      },
+    ],
   };
 
-  const accountSnapshots = plan.accounts.map(acc => ({ ...acc }));
+  const accountSnapshots = plan.accounts.map((acc) => ({ ...acc }));
 
   const context = {
     plan,
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 200000 * 100
-    }
+      totalTaxableIncome: 200000 * 100,
+    },
   };
 
   const rule = new MegaBackdoorRothRule({
@@ -380,7 +382,7 @@ export function testMegaBackdoorRothRuleApply() {
     planSupportsInServiceWithdrawal: true,
     employerMatchRate: 0.04,
     employeeDeferralLimit: 23500,
-    total401kLimit: 69000
+    total401kLimit: 69000,
   });
 
   const result = rule.apply(context);
@@ -400,7 +402,7 @@ export function testMegaBackdoorRothRuleEligibility() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     megaBackdoorRoth: {
       enabled: true,
@@ -409,7 +411,7 @@ export function testMegaBackdoorRothRuleEligibility() {
       planSupportsInServiceWithdrawal: true,
       employerMatchRate: 0.04,
       employeeDeferralLimit: 23500,
-      total401kLimit: 69000
+      total401kLimit: 69000,
     },
     accounts: [
       {
@@ -417,18 +419,18 @@ export function testMegaBackdoorRothRuleEligibility() {
         name: '401k',
         type: '401k',
         balance: 200000 * 100,
-        annualContribution: 20000 * 100
+        annualContribution: 20000 * 100,
       },
       {
         id: 'roth_1',
         name: 'Roth IRA',
         type: 'Roth',
-        balance: 50000 * 100
-      }
-    ]
+        balance: 50000 * 100,
+      },
+    ],
   };
 
-  const accountSnapshots = plan.accounts.map(acc => ({ ...acc }));
+  const accountSnapshots = plan.accounts.map((acc) => ({ ...acc }));
 
   const ruleNoAfterTax = new MegaBackdoorRothRule({
     name: 'mega-backdoor-roth',
@@ -439,7 +441,7 @@ export function testMegaBackdoorRothRuleEligibility() {
     planSupportsInServiceWithdrawal: true,
     employerMatchRate: 0.04,
     employeeDeferralLimit: 23500,
-    total401kLimit: 69000
+    total401kLimit: 69000,
   });
 
   const context = {
@@ -447,8 +449,8 @@ export function testMegaBackdoorRothRuleEligibility() {
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 200000 * 100
-    }
+      totalTaxableIncome: 200000 * 100,
+    },
   };
 
   const result = ruleNoAfterTax.apply(context);
@@ -468,7 +470,7 @@ export function testMegaBackdoorRothRuleNo401k() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     megaBackdoorRoth: {
       enabled: true,
@@ -477,9 +479,9 @@ export function testMegaBackdoorRothRuleNo401k() {
       planSupportsInServiceWithdrawal: true,
       employerMatchRate: 0.04,
       employeeDeferralLimit: 23500,
-      total401kLimit: 69000
+      total401kLimit: 69000,
     },
-    accounts: []
+    accounts: [],
   };
 
   const accountSnapshots = [];
@@ -489,8 +491,8 @@ export function testMegaBackdoorRothRuleNo401k() {
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 200000 * 100
-    }
+      totalTaxableIncome: 200000 * 100,
+    },
   };
 
   const rule = new MegaBackdoorRothRule({
@@ -502,7 +504,7 @@ export function testMegaBackdoorRothRuleNo401k() {
     planSupportsInServiceWithdrawal: true,
     employerMatchRate: 0.04,
     employeeDeferralLimit: 23500,
-    total401kLimit: 69000
+    total401kLimit: 69000,
   });
 
   const result = rule.apply(context);
@@ -522,7 +524,7 @@ export function testMegaBackdoorRothRuleNoRoom() {
   const plan = {
     taxProfile: {
       currentAge: 40,
-      estimatedTaxRate: 0.25
+      estimatedTaxRate: 0.25,
     },
     megaBackdoorRoth: {
       enabled: true,
@@ -531,7 +533,7 @@ export function testMegaBackdoorRothRuleNoRoom() {
       planSupportsInServiceWithdrawal: true,
       employerMatchRate: 0.04,
       employeeDeferralLimit: 23500,
-      total401kLimit: 69000
+      total401kLimit: 69000,
     },
     accounts: [
       {
@@ -539,26 +541,26 @@ export function testMegaBackdoorRothRuleNoRoom() {
         name: '401k',
         type: '401k',
         balance: 200000 * 100,
-        annualContribution: 69000 * 100
+        annualContribution: 69000 * 100,
       },
       {
         id: 'roth_1',
         name: 'Roth IRA',
         type: 'Roth',
-        balance: 50000 * 100
-      }
-    ]
+        balance: 50000 * 100,
+      },
+    ],
   };
 
-  const accountSnapshots = plan.accounts.map(acc => ({ ...acc }));
+  const accountSnapshots = plan.accounts.map((acc) => ({ ...acc }));
 
   const context = {
     plan,
     yearOffset: 0,
     accountSnapshots,
     projectionState: {
-      totalTaxableIncome: 200000 * 100
-    }
+      totalTaxableIncome: 200000 * 100,
+    },
   };
 
   const rule = new MegaBackdoorRothRule({
@@ -570,7 +572,7 @@ export function testMegaBackdoorRothRuleNoRoom() {
     planSupportsInServiceWithdrawal: true,
     employerMatchRate: 0.04,
     employeeDeferralLimit: 23500,
-    total401kLimit: 69000
+    total401kLimit: 69000,
   });
 
   const result = rule.apply(context);

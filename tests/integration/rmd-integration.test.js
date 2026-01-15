@@ -36,7 +36,7 @@ export function testRMDIntegration() {
     filingStatus: 'single',
     federalTaxRate: 0.22,
     state: 'CA',
-    taxYear: 2025
+    taxYear: 2025,
   };
 
   const livingExpenses = new Expense('Living Expenses', 60000, 0, true);
@@ -47,7 +47,7 @@ export function testRMDIntegration() {
     equityGrowthRate: 0.08,
     bondGrowthRate: 0.04,
     equityVolatility: 0.12,
-    bondVolatility: 0.04
+    bondVolatility: 0.04,
   };
 
   const results = project(plan, 10);
@@ -61,7 +61,9 @@ export function testRMDIntegration() {
     if (year.totalRmdAmount > 0) {
       yearsWithRMDs++;
       totalRMDs += year.totalRmdAmount;
-      console.log(`  Year ${year.year} (age ${year.age}): RMD = $${(year.totalRmdAmount).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`);
+      console.log(
+        `  Year ${year.year} (age ${year.age}): RMD = $${year.totalRmdAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+      );
     }
   });
 
@@ -70,13 +72,17 @@ export function testRMDIntegration() {
   }
 
   console.log(`✓ RMDs calculated for ${yearsWithRMDs} years`);
-  console.log(`✓ Total RMDs over projection: $${(totalRMDs / 100).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`);
+  console.log(
+    `✓ Total RMDs over projection: $${(totalRMDs / 100).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+  );
 
   const firstYearRMD = results[0].totalRmdAmount;
   const expectedFirstYearRMD = Math.round((1000000 + 500000) / 26.5);
 
   if (Math.abs(firstYearRMD - expectedFirstYearRMD) > 1000) {
-    throw new Error(`Expected first year RMD ≈ $${(expectedFirstYearRMD / 100).toLocaleString()}, got $${(firstYearRMD / 100).toLocaleString()}`);
+    throw new Error(
+      `Expected first year RMD ≈ $${(expectedFirstYearRMD / 100).toLocaleString()}, got $${(firstYearRMD / 100).toLocaleString()}`
+    );
   }
 
   console.log('✓ First year RMD amount is correct');
@@ -99,7 +105,7 @@ export function testRMDNotCalculatedUnder73() {
     estimatedTaxRate: 0.25,
     filingStatus: 'single',
     state: 'CA',
-    taxYear: 2025
+    taxYear: 2025,
   };
 
   const expenses = new Expense('Living Expenses', 60000, 0, true);
@@ -110,14 +116,16 @@ export function testRMDNotCalculatedUnder73() {
     equityGrowthRate: 0.08,
     bondGrowthRate: 0.04,
     equityVolatility: 0.12,
-    bondVolatility: 0.04
+    bondVolatility: 0.04,
   };
 
   const results = project(plan, 5);
 
-  results.forEach(year => {
+  results.forEach((year) => {
     if (year.age < 73 && year.totalRmdAmount > 0) {
-      throw new Error(`Expected no RMDs for age ${year.age}, but found $${(year.totalRmdAmount / 100).toLocaleString()}`);
+      throw new Error(
+        `Expected no RMDs for age ${year.age}, but found $${(year.totalRmdAmount / 100).toLocaleString()}`
+      );
     }
   });
 
@@ -139,7 +147,7 @@ export function testRMDWith1951BirthYear() {
     estimatedTaxRate: 0.25,
     filingStatus: 'single',
     state: 'CA',
-    taxYear: 2025
+    taxYear: 2025,
   };
 
   const expenses = new Expense('Living Expenses', 60000, 0, true);
@@ -150,7 +158,7 @@ export function testRMDWith1951BirthYear() {
     equityGrowthRate: 0.08,
     bondGrowthRate: 0.04,
     equityVolatility: 0.12,
-    bondVolatility: 0.04
+    bondVolatility: 0.04,
   };
 
   const results = project(plan, 1);

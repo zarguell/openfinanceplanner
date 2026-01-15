@@ -21,8 +21,10 @@ export class BackdoorRothStrategy extends RuleInterface {
   }
 
   getDescription() {
-    return 'Convert Traditional IRA contributions to Roth IRA to avoid income limits on direct Roth contributions. ' +
-           'This strategy allows high-income earners to benefit from tax-free Roth growth and withdrawals.';
+    return (
+      'Convert Traditional IRA contributions to Roth IRA to avoid income limits on direct Roth contributions. ' +
+      'This strategy allows high-income earners to benefit from tax-free Roth growth and withdrawals.'
+    );
   }
 
   getParameters() {
@@ -50,7 +52,7 @@ export class BackdoorRothStrategy extends RuleInterface {
         'single',
         null,
         'Tax filing status for determining eligibility'
-      )
+      ),
     ];
   }
 
@@ -58,7 +60,7 @@ export class BackdoorRothStrategy extends RuleInterface {
     return {
       maxAnnualContribution: 7000, // 2024 limit, can be increased for catch-up
       incomeThreshold: 150000, // Approximate MAGI limit for Roth eligibility
-      filingStatus: 'single'
+      filingStatus: 'single',
     };
   }
 
@@ -80,7 +82,7 @@ export class BackdoorRothStrategy extends RuleInterface {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -99,7 +101,7 @@ export class BackdoorRothStrategy extends RuleInterface {
     const hasHighIncome = this._estimateHighIncome(plan, yearOffset);
 
     // Check if person has Traditional IRA available for conversion
-    const hasTradIRA = plan.accounts.some(acc => acc.type === 'IRA');
+    const hasTradIRA = plan.accounts.some((acc) => acc.type === 'IRA');
 
     // Only apply if income is too high for direct Roth contribution
     // and there's a Traditional IRA to convert from
@@ -112,14 +114,14 @@ export class BackdoorRothStrategy extends RuleInterface {
 
     try {
       // Find Traditional IRA account
-      const tradIRAAccount = plan.accounts.find(acc => acc.type === 'IRA');
+      const tradIRAAccount = plan.accounts.find((acc) => acc.type === 'IRA');
       if (!tradIRAAccount) {
         result.metadata.reason = 'No Traditional IRA account found';
         return result;
       }
 
       // Find or create Roth IRA account
-      let rothIRAAccount = plan.accounts.find(acc => acc.type === 'Roth');
+      let rothIRAAccount = plan.accounts.find((acc) => acc.type === 'Roth');
       if (!rothIRAAccount) {
         // Create Roth IRA account if it doesn't exist
         rothIRAAccount = {
@@ -128,13 +130,13 @@ export class BackdoorRothStrategy extends RuleInterface {
           type: 'Roth',
           balance: 0,
           annualContribution: 0,
-          withdrawalRate: 0
+          withdrawalRate: 0,
         };
         projectionState.accounts.push({
           ...rothIRAAccount,
           contributions: 0,
           withdrawals: 0,
-          taxesPaid: 0
+          taxesPaid: 0,
         });
         result.changes.createdAccounts = [rothIRAAccount.id];
       }
@@ -155,8 +157,12 @@ export class BackdoorRothStrategy extends RuleInterface {
       // For now, we'll simulate the conversion
 
       // Find accounts in projection state
-      const tradIRAProjection = projectionState.accounts.find(acc => acc.id === tradIRAAccount.id);
-      const rothIRAProjection = projectionState.accounts.find(acc => acc.id === rothIRAAccount.id);
+      const tradIRAProjection = projectionState.accounts.find(
+        (acc) => acc.id === tradIRAAccount.id
+      );
+      const rothIRAProjection = projectionState.accounts.find(
+        (acc) => acc.id === rothIRAAccount.id
+      );
 
       if (tradIRAProjection && rothIRAProjection) {
         // Move funds from Traditional to Roth IRA
@@ -187,10 +193,9 @@ export class BackdoorRothStrategy extends RuleInterface {
           conversionAmount,
           taxRate,
           taxesPaid: taxesDue / 100,
-          effectiveRate: conversionAmount > 0 ? (taxesDue / 100) / conversionAmount : 0
+          effectiveRate: conversionAmount > 0 ? taxesDue / 100 / conversionAmount : 0,
         };
       }
-
     } catch (error) {
       result.metadata.error = error.message;
       console.error('Error applying Backdoor Roth strategy:', error);
@@ -269,7 +274,7 @@ export class BackdoorRothStrategy extends RuleInterface {
       case 'single':
         return 0.25; // Assume 25% marginal rate
       case 'married_joint':
-        return 0.20; // Assume 20% marginal rate
+        return 0.2; // Assume 20% marginal rate
       default:
         return 0.25;
     }

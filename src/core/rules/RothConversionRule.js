@@ -3,7 +3,7 @@ import {
   calculateFixedConversion,
   calculateBracketFillConversion,
   calculatePercentageConversion,
-  calculateConversionTax
+  calculateConversionTax,
 } from '../../calculations/roth-conversions.js';
 
 export class RothConversionRule extends BaseRule {
@@ -12,7 +12,7 @@ export class RothConversionRule extends BaseRule {
     this.strategy = config.strategy || 'fixed';
     this.annualAmount = (config.annualAmount || 0) * 100;
     this.bracketTop = (config.bracketTop || 89450) * 100;
-    this.percentage = config.percentage || 0.10;
+    this.percentage = config.percentage || 0.1;
   }
 
   apply(context) {
@@ -35,13 +35,16 @@ export class RothConversionRule extends BaseRule {
       .map((acc, idx) => ({ acc, original: plan.accounts[idx], idx }))
       .filter(({ acc }) => acc.type === '401k' || acc.type === 'IRA');
 
-    const rothAccountIndex = accountSnapshots.findIndex(acc => acc.type === 'Roth');
+    const rothAccountIndex = accountSnapshots.findIndex((acc) => acc.type === 'Roth');
 
     if (traditionalAccounts.length === 0 || rothAccountIndex < 0) {
       return { conversionAmount: 0 };
     }
 
-    const totalTraditionalBalance = traditionalAccounts.reduce((sum, { acc }) => sum + acc.balance, 0);
+    const totalTraditionalBalance = traditionalAccounts.reduce(
+      (sum, { acc }) => sum + acc.balance,
+      0
+    );
     const traditionalAccountIndex = traditionalAccounts[0].idx;
 
     let conversionAmount = 0;
@@ -65,10 +68,7 @@ export class RothConversionRule extends BaseRule {
         break;
 
       case 'percentage':
-        conversionAmount = calculatePercentageConversion(
-          this.percentage,
-          totalTraditionalBalance
-        );
+        conversionAmount = calculatePercentageConversion(this.percentage, totalTraditionalBalance);
         break;
 
       default:
@@ -87,11 +87,13 @@ export class RothConversionRule extends BaseRule {
       totalTaxRate
     );
 
-return {
+    const balanceModifications = [];
+
+    return {
       name: 'roth-conversions',
       conversionAmount,
       taxOnConversion: taxImpact.taxOnConversion,
-      balanceModifications
+      balanceModifications,
     };
   }
 

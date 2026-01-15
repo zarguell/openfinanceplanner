@@ -7,7 +7,8 @@ export function testExpenseCreation() {
     throw new Error('Expected expense name to be "Living Expenses"');
   }
 
-  if (expense.baseAmount !== 6000000) { // Stored in cents
+  if (expense.baseAmount !== 6000000) {
+    // Stored in cents
     throw new Error('Expected baseAmount to be in cents');
   }
 

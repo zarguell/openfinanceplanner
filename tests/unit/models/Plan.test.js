@@ -25,7 +25,7 @@ export function testPlanAddAccount() {
     name: 'Test Account',
     type: '401k',
     balance: 100000,
-    annualContribution: 10000
+    annualContribution: 10000,
   };
 
   plan.addAccount(account);

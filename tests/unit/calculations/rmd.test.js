@@ -1,4 +1,10 @@
-import { calculateRMDForAccount, calculateTotalRMD, mustTakeRMD, getRMDStartAge, getLifeExpectancyFactor } from '../../../src/calculations/rmd.js';
+import {
+  calculateRMDForAccount,
+  calculateTotalRMD,
+  mustTakeRMD,
+  getRMDStartAge,
+  getLifeExpectancyFactor,
+} from '../../../src/calculations/rmd.js';
 
 export function testGetLifeExpectancyFactor() {
   const result = getLifeExpectancyFactor(72);
@@ -79,7 +85,7 @@ export function testCalculateTotalRMD() {
   const accounts = [
     { type: '401k', balance: 20000000 },
     { type: 'IRA', balance: 15000000 },
-    { type: 'Roth', balance: 5000000 }
+    { type: 'Roth', balance: 5000000 },
   ];
   const rmd = calculateTotalRMD(accounts, 75);
 

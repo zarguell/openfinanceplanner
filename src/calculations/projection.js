@@ -4,11 +4,11 @@
  */
 
 import {
-    calculateFederalTax,
-    calculateTotalTax,
-    calculateLongTermCapitalGainsTax,
-    calculateFicaTax
-   } from './tax.js';
+  calculateFederalTax,
+  calculateTotalTax,
+  calculateLongTermCapitalGainsTax,
+  calculateFicaTax,
+} from './tax.js';
 import { calculateTotalIncome } from './income.js';
 import { calculateSocialSecurityForYear } from './social-security.js';
 import { mustTakeRMD, calculateRMDForAccount } from './rmd.js';
@@ -31,7 +31,7 @@ function initializeRuleRegistry(plan) {
       strategy: plan.rothConversions.strategy,
       annualAmount: plan.rothConversions.annualAmount,
       bracketTop: plan.rothConversions.bracketTop,
-      percentage: plan.rothConversions.percentage
+      percentage: plan.rothConversions.percentage,
     });
     registry.register(rothRule);
   }
@@ -43,7 +43,7 @@ function initializeRuleRegistry(plan) {
       dependencies: [],
       strategy: plan.qcdSettings.strategy,
       annualAmount: plan.qcdSettings.annualAmount,
-      percentage: plan.qcdSettings.percentage
+      percentage: plan.qcdSettings.percentage,
     });
     registry.register(qcdRule);
   }
@@ -54,7 +54,7 @@ function initializeRuleRegistry(plan) {
       description: 'Tax-loss harvesting strategy',
       dependencies: [],
       strategy: plan.taxLossHarvesting.strategy,
-      threshold: plan.taxLossHarvesting.threshold
+      threshold: plan.taxLossHarvesting.threshold,
     });
     registry.register(tlhRule);
   }
@@ -66,7 +66,7 @@ function initializeRuleRegistry(plan) {
       dependencies: [],
       annualContribution: plan.backdoorRoth.annualContribution,
       incomeThreshold: plan.backdoorRoth.incomeThreshold,
-      phaseOutEnd: plan.backdoorRoth.phaseOutEnd
+      phaseOutEnd: plan.backdoorRoth.phaseOutEnd,
     });
     registry.register(backdoorRule);
   }
@@ -81,7 +81,7 @@ function initializeRuleRegistry(plan) {
       planSupportsInServiceWithdrawal: plan.megaBackdoorRoth.planSupportsInServiceWithdrawal,
       employerMatchRate: plan.megaBackdoorRoth.employerMatchRate,
       employeeDeferralLimit: plan.megaBackdoorRoth.employeeDeferralLimit,
-      total401kLimit: plan.megaBackdoorRoth.total401kLimit
+      total401kLimit: plan.megaBackdoorRoth.total401kLimit,
     });
     registry.register(megaBackdoorRule);
   }
@@ -98,10 +98,10 @@ function initializeRuleRegistry(plan) {
 export function getAccountGrowthRate(accountType, assumptions) {
   const rates = {
     '401k': assumptions.equityGrowthRate,
-    'IRA': assumptions.equityGrowthRate,
-    'Roth': assumptions.equityGrowthRate,
-    'Taxable': assumptions.equityGrowthRate * 0.8, // 20% reduction for annual tax drag on dividends/capital gains
-    'HSA': assumptions.equityGrowthRate
+    IRA: assumptions.equityGrowthRate,
+    Roth: assumptions.equityGrowthRate,
+    Taxable: assumptions.equityGrowthRate * 0.8, // 20% reduction for annual tax drag on dividends/capital gains
+    HSA: assumptions.equityGrowthRate,
   };
   return rates[accountType] || assumptions.equityGrowthRate;
 }
@@ -158,9 +158,9 @@ export function calculateTotalExpenses(expenses, yearOffset, inflationRate) {
  */
 export function project(plan, yearsToProject = 40, taxYear = 2025) {
   const results = [];
-  const accountSnapshots = plan.accounts.map(acc => ({
+  const accountSnapshots = plan.accounts.map((acc) => ({
     ...acc,
-    balance: acc.balance
+    balance: acc.balance,
   }));
 
   const ruleRegistry = initializeRuleRegistry(plan);
@@ -199,10 +199,10 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       plan.assumptions.inflationRate
     );
 
-  let totalBalance = 0;
+    let totalBalance = 0;
     let totalFederalTax = 0;
     let totalStateTax = 0;
-    let totalFicaTax =  0;
+    let totalFicaTax = 0;
 
     // Calculate total contributions across all accounts (considering timing and one-time flags)
     const totalContributions = plan.accounts.reduce((sum, acc) => {
@@ -218,7 +218,11 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
 
     // Calculate FICA taxes on earned income (not just contributions)
     if (!isRetired && totalIncome > 0) {
-      const ficaResult = calculateFicaTax(Math.round(totalIncome * 100), plan.taxProfile.filingStatus, taxYear);
+      const ficaResult = calculateFicaTax(
+        Math.round(totalIncome * 100),
+        plan.taxProfile.filingStatus,
+        taxYear
+      );
       totalFicaTax = ficaResult.totalFicaTax / 100;
     }
 
@@ -242,11 +246,13 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     const projectionState = {
       totalTaxableIncome: (totalIncome + socialSecurityIncome) * 100,
       traditionalBalance: accountSnapshots
-        .filter((acc, idx) => plan.accounts[idx].type === '401k' || plan.accounts[idx].type === 'IRA')
+        .filter(
+          (acc, idx) => plan.accounts[idx].type === '401k' || plan.accounts[idx].type === 'IRA'
+        )
         .reduce((sum, acc) => sum + acc.balance, 0),
       mustTakeRMD: mustTakeRMD(age),
       rmdAmount: totalRmdWithdrawalCents,
-      capitalGains: 0
+      capitalGains: 0,
     };
 
     const ruleResults = ruleRegistry.applyRules({
@@ -254,7 +260,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       yearOffset: year,
       projectionState,
       accountSnapshots,
-      rmdRequirements
+      rmdRequirements,
     });
 
     let totalQCDAmount = 0;
@@ -268,9 +274,9 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
     let megaBackdoorRothConversion = 0;
     let megaBackdoorRothEmployerMatch = 0;
 
-    ruleResults.forEach(ruleResult => {
+    ruleResults.forEach((ruleResult) => {
       if (ruleResult.balanceModifications) {
-        ruleResult.balanceModifications.forEach(mod => {
+        ruleResult.balanceModifications.forEach((mod) => {
           accountSnapshots[mod.accountIndex].balance += mod.change;
           if (mod.costBasisUpdate) {
             accountSnapshots[mod.accountIndex].costBasis = mod.costBasisUpdate;
@@ -318,7 +324,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalWithdrawalNeeded = Math.abs(netCashFlow);
     }
 
-    const rmdAfterQCD = Math.max(0, totalRmdWithdrawalCents - (totalQCDAmount * 100));
+    const rmdAfterQCD = Math.max(0, totalRmdWithdrawalCents - totalQCDAmount * 100);
     totalWithdrawalNeeded = Math.max(totalWithdrawalNeeded, rmdAfterQCD / 100);
 
     // Use withdrawal strategy to allocate across accounts
@@ -357,11 +363,12 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
           federalTax = taxResult.federalTax / 100;
           stateTax = taxResult.stateTax / 100;
         } else if (account.type === 'Taxable') {
-          federalTax = calculateLongTermCapitalGainsTax(
-            withdrawalAmount * 100,
-            plan.taxProfile.filingStatus,
-            taxYear
-          ) / 100;
+          federalTax =
+            calculateLongTermCapitalGainsTax(
+              withdrawalAmount * 100,
+              plan.taxProfile.filingStatus,
+              taxYear
+            ) / 100;
           const stateTaxResult = calculateTotalTax(
             plan.taxProfile.state,
             withdrawalAmount * 100,
@@ -381,7 +388,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
 
       // Apply investment growth
       const growthRate = getAccountGrowthRate(account.type, plan.assumptions);
-      balance *= (1 + growthRate);
+      balance *= 1 + growthRate;
 
       accountSnapshots[i].balance = balance * 100;
       totalBalance += balance;
@@ -395,10 +402,10 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalIncome: totalIncome,
       totalExpense: totalExpense,
       socialSecurityIncome: socialSecurityIncome,
-      accountBalances: accountSnapshots.map(acc => acc.balance / 100),
-      accounts: accountSnapshots.map(acc => ({
+      accountBalances: accountSnapshots.map((acc) => acc.balance / 100),
+      accounts: accountSnapshots.map((acc) => ({
         balance: acc.balance,
-        costBasis: acc.costBasis
+        costBasis: acc.costBasis,
       })),
       totalFederalTax: totalFederalTax,
       totalStateTax: totalStateTax,
@@ -411,10 +418,13 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       megaBackdoorRothContribution,
       megaBackdoorRothConversion,
       megaBackdoorRothEmployerMatch: megaBackdoorRothEmployerMatch,
-      totalTax: Math.max(0, totalFederalTax + totalStateTax + totalFicaTax - totalTaxBenefitFromHarvesting),
+      totalTax: Math.max(
+        0,
+        totalFederalTax + totalStateTax + totalFicaTax - totalTaxBenefitFromHarvesting
+      ),
       harvestedLoss: totalHarvestedLoss / 100,
       taxBenefitFromHarvesting: totalTaxBenefitFromHarvesting / 100,
-      taxLossHarvestingBenefit: totalTaxBenefitFromHarvesting
+      taxLossHarvestingBenefit: totalTaxBenefitFromHarvesting,
     });
   }
 

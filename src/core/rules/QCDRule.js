@@ -6,7 +6,7 @@ import {
   calculateTotalQCD,
   calculateQCDTaxBenefit,
   getQCDMinimumAge,
-  getQCDLimit
+  getQCDLimit,
 } from '../../calculations/qcd.js';
 
 export class QCDRule extends BaseRule {
@@ -29,7 +29,7 @@ export class QCDRule extends BaseRule {
 
     const qcdSettings = {
       ...plan.qcdSettings,
-      currentAge
+      currentAge,
     };
 
     if (this.strategy === 'fixed') {
@@ -56,7 +56,7 @@ export class QCDRule extends BaseRule {
         balanceModifications.push({
           accountIndex: idx,
           change: -qcdForAccount,
-          reason: 'QCD distribution'
+          reason: 'QCD distribution',
         });
       }
     });
@@ -64,7 +64,7 @@ export class QCDRule extends BaseRule {
     return {
       totalQCD,
       taxBenefit,
-      balanceModifications
+      balanceModifications,
     };
   }
 

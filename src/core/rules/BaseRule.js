@@ -51,7 +51,7 @@ export class BaseRule {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -71,7 +71,7 @@ export class BaseRule {
     return {
       name: this.name,
       description: this.description,
-      dependencies: this.dependencies
+      dependencies: this.dependencies,
     };
   }
 

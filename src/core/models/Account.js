@@ -31,7 +31,7 @@ export class Account {
       contributionStartYear: this.contributionStartYear,
       contributionEndYear: this.contributionEndYear,
       isOneTimeContribution: this.isOneTimeContribution,
-      withdrawalRate: this.withdrawalRate
+      withdrawalRate: this.withdrawalRate,
     };
   }
 
@@ -40,7 +40,8 @@ export class Account {
     account.id = data.id;
     account.costBasis = data.costBasis !== undefined ? data.costBasis : data.balance;
     account.annualContribution = data.annualContribution || 0;
-    account.contributionStartYear = data.contributionStartYear !== undefined ? data.contributionStartYear : 0;
+    account.contributionStartYear =
+      data.contributionStartYear !== undefined ? data.contributionStartYear : 0;
     account.contributionEndYear = data.contributionEndYear || null;
     account.isOneTimeContribution = data.isOneTimeContribution || false;
     account.withdrawalRate = data.withdrawalRate || 0.04;

@@ -17,7 +17,7 @@ export class RuleRegistry {
     if (!rule || typeof rule.apply !== 'function') {
       return {
         success: false,
-        error: 'Rule must be an instance of BaseRule with apply() method'
+        error: 'Rule must be an instance of BaseRule with apply() method',
       };
     }
 
@@ -25,14 +25,14 @@ export class RuleRegistry {
     if (!validation.valid) {
       return {
         success: false,
-        error: `Rule validation failed: ${validation.errors.join(', ')}`
+        error: `Rule validation failed: ${validation.errors.join(', ')}`,
       };
     }
 
     if (this.rules.has(rule.name)) {
       return {
         success: false,
-        error: `Rule "${rule.name}" is already registered`
+        error: `Rule "${rule.name}" is already registered`,
       };
     }
 
@@ -100,7 +100,7 @@ export class RuleRegistry {
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -146,7 +146,7 @@ export class RuleRegistry {
 
     return {
       valid: cycles.length === 0,
-      cycles
+      cycles,
     };
   }
 
@@ -199,10 +199,10 @@ export class RuleRegistry {
     this.rules.clear();
   }
 
-getStats() {
+  getStats() {
     return {
       totalRules: this.rules.size,
-      ruleNames: this.list()
+      ruleNames: this.list(),
     };
   }
 

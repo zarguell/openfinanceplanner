@@ -27,7 +27,7 @@ export class RuleEngine {
       success: true,
       errors: [],
       warnings: [],
-      ruleOrder: []
+      ruleOrder: [],
     };
 
     // Validate dependencies
@@ -49,7 +49,9 @@ export class RuleEngine {
       const paramValidation = ruleRegistry.getRule(ruleId).validateParameters(params);
 
       if (!paramValidation.isValid) {
-        initResult.errors.push(`Invalid parameters for ${ruleId}: ${paramValidation.errors.join(', ')}`);
+        initResult.errors.push(
+          `Invalid parameters for ${ruleId}: ${paramValidation.errors.join(', ')}`
+        );
         initResult.success = false;
       }
     }
@@ -75,7 +77,7 @@ export class RuleEngine {
       appliedRules: [],
       skippedRules: [],
       errors: [],
-      warnings: []
+      warnings: [],
     };
 
     // Initialize applied rules for this year if not exists
@@ -98,7 +100,7 @@ export class RuleEngine {
         if (!rule.isApplicable(plan, yearOffset, projectionState)) {
           yearResult.skippedRules.push({
             ruleId,
-            reason: 'not_applicable'
+            reason: 'not_applicable',
           });
           continue;
         }
@@ -111,7 +113,7 @@ export class RuleEngine {
           ruleId,
           applied: ruleResult.applied,
           changes: ruleResult.changes,
-          metadata: ruleResult.metadata
+          metadata: ruleResult.metadata,
         };
 
         this.appliedRules.get(yearOffset).push(appliedResult);
@@ -119,9 +121,8 @@ export class RuleEngine {
 
         // Track any rule-specific warnings
         if (ruleResult.metadata?.warnings) {
-          yearResult.warnings.push(...ruleResult.metadata.warnings.map(w => `${ruleId}: ${w}`));
+          yearResult.warnings.push(...ruleResult.metadata.warnings.map((w) => `${ruleId}: ${w}`));
         }
-
       } catch (error) {
         const errorMsg = `Error applying rule ${ruleId}: ${error.message}`;
         yearResult.errors.push(errorMsg);
@@ -129,7 +130,7 @@ export class RuleEngine {
           yearOffset,
           ruleId,
           error: errorMsg,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
 
         console.error(errorMsg);
@@ -156,7 +157,7 @@ export class RuleEngine {
       totalSkippedRules: 0,
       totalErrors: 0,
       yearResults: [],
-      summary: {}
+      summary: {},
     };
 
     // Create a copy of the initial projection state
@@ -167,7 +168,12 @@ export class RuleEngine {
       const yearProjectionState = JSON.parse(JSON.stringify(baseProjectionState));
 
       // Apply rules for this year
-      const yearResult = this.applyRulesForYear(plan, yearOffset, yearProjectionState, ruleParameters);
+      const yearResult = this.applyRulesForYear(
+        plan,
+        yearOffset,
+        yearProjectionState,
+        ruleParameters
+      );
 
       // Update counters
       projectionResult.yearsProcessed++;
@@ -179,7 +185,7 @@ export class RuleEngine {
       projectionResult.yearResults.push({
         yearOffset,
         ...yearResult,
-        projectionState: yearProjectionState
+        projectionState: yearProjectionState,
       });
 
       // Call callback if provided
@@ -289,33 +295,33 @@ export class RuleEngine {
     // This creates a basic projection state that rules can modify
     // In practice, this would be integrated with the main projection logic
     return {
-      accounts: plan.accounts.map(acc => ({
+      accounts: plan.accounts.map((acc) => ({
         ...acc,
         balance: acc.balance,
         contributions: 0,
         withdrawals: 0,
-        taxesPaid: 0
+        taxesPaid: 0,
       })),
-      expenses: plan.expenses.map(exp => ({
+      expenses: plan.expenses.map((exp) => ({
         ...exp,
-        amount: 0
+        amount: 0,
       })),
       income: {
         earnedIncome: 0,
         socialSecurity: 0,
-        totalIncome: 0
+        totalIncome: 0,
       },
       taxes: {
         federal: 0,
         state: 0,
         fica: 0,
-        total: 0
+        total: 0,
       },
       metadata: {
         year: new Date().getFullYear(),
         age: plan.taxProfile.currentAge,
-        isRetired: false
-      }
+        isRetired: false,
+      },
     };
   }
 
@@ -331,7 +337,7 @@ export class RuleEngine {
       rulesAppliedByType: {},
       mostActiveRules: [],
       errorRate: 0,
-      yearsWithErrors: 0
+      yearsWithErrors: 0,
     };
 
     const ruleCounts = {};
@@ -360,12 +366,12 @@ export class RuleEngine {
 
     // Most active rules
     summary.mostActiveRules = Object.entries(ruleCounts)
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5)
       .map(([ruleId, count]) => ({ ruleId, count }));
 
-    summary.errorRate = projectionResult.yearsProcessed > 0 ?
-      (totalErrors / projectionResult.yearsProcessed) : 0;
+    summary.errorRate =
+      projectionResult.yearsProcessed > 0 ? totalErrors / projectionResult.yearsProcessed : 0;
 
     summary.yearsWithErrors = yearsWithErrors;
 

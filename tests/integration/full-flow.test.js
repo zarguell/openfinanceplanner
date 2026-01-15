@@ -13,10 +13,18 @@ import { StorageManager } from '../../src/storage/StorageManager.js';
 // Mock localStorage
 global.localStorage = {
   store: {},
-  getItem(key) { return this.store[key] || null; },
-  setItem(key, value) { this.store[key] = value; },
-  removeItem(key) { delete this.store[key]; },
-  clear() { this.store = {}; }
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
+  clear() {
+    this.store = {};
+  },
 };
 
 export function testFullPlanWorkflow() {
@@ -57,14 +65,17 @@ export function testFullPlanWorkflow() {
   }
 
   const loadedPlan = Plan.fromJSON(loadedPlanData);
-  loadedPlan.accounts = loadedPlanData.accounts.map(acc => Account.fromJSON(acc));
-  loadedPlan.expenses = loadedPlanData.expenses.map(exp => Expense.fromJSON(exp));
-  loadedPlan.incomes = loadedPlanData.incomes ? loadedPlanData.incomes.map(inc => Income.fromJSON(inc)) : [];
+  loadedPlan.accounts = loadedPlanData.accounts.map((acc) => Account.fromJSON(acc));
+  loadedPlan.expenses = loadedPlanData.expenses.map((exp) => Expense.fromJSON(exp));
+  loadedPlan.incomes = loadedPlanData.incomes
+    ? loadedPlanData.incomes.map((inc) => Income.fromJSON(inc))
+    : [];
   console.log('✓ Plan loaded');
 
   // Step 6: Run projection
   const projections = project(loadedPlan, 40);
-  if (projections.length !== 41) { // 0-40 years
+  if (projections.length !== 41) {
+    // 0-40 years
     throw new Error(`Expected 41 projection years, got ${projections.length}`);
   }
   console.log('✓ Projection calculated');
@@ -77,7 +88,9 @@ export function testFullPlanWorkflow() {
     throw new Error('Expected end balance to exceed start balance with contributions');
   }
 
-  console.log(`✓ Start balance: $${startBalance.toFixed(0)}, End balance: $${endBalance.toFixed(0)}`);
+  console.log(
+    `✓ Start balance: $${startBalance.toFixed(0)}, End balance: $${endBalance.toFixed(0)}`
+  );
   console.log('✓ Full workflow test passed!');
 }
 
@@ -107,7 +120,9 @@ export function testIncomeToSavingsFlow() {
   // Year 0: Income $80k - Expenses $50k = $30k surplus
   // This should result in $20k going to savings + $10k available for other uses
   const year0 = projections[0];
-  console.log(`Year 0: Income $${year0.totalIncome}, Expenses $${year0.totalExpense}, Balance $${year0.totalBalance.toFixed(0)}`);
+  console.log(
+    `Year 0: Income $${year0.totalIncome}, Expenses $${year0.totalExpense}, Balance $${year0.totalBalance.toFixed(0)}`
+  );
 
   // Balance should grow: initial $10k + $20k contribution + investment growth
   // But we should have positive net cash flow contributing to growth
@@ -121,12 +136,16 @@ export function testIncomeToSavingsFlow() {
     throw new Error('Income should grow over time');
   }
 
-  console.log(`Year 1: Income $${year1.totalIncome.toFixed(0)}, Expenses $${year1.totalExpense.toFixed(0)}, Balance $${year1.totalBalance.toFixed(0)}`);
+  console.log(
+    `Year 1: Income $${year1.totalIncome.toFixed(0)}, Expenses $${year1.totalExpense.toFixed(0)}, Balance $${year1.totalBalance.toFixed(0)}`
+  );
 
   // Verify retirement transition
-  const retirementYear = projections.find(p => p.age === 65);
+  const retirementYear = projections.find((p) => p.age === 65);
   if (retirementYear) {
-    console.log(`Retirement year: Income $${retirementYear.totalIncome.toFixed(0)}, Balance $${retirementYear.totalBalance.toFixed(0)}`);
+    console.log(
+      `Retirement year: Income $${retirementYear.totalIncome.toFixed(0)}, Balance $${retirementYear.totalBalance.toFixed(0)}`
+    );
     // In retirement, income drops significantly (no salary), balance should be much higher
     if (retirementYear.totalIncome > year0.totalIncome * 0.5) {
       throw new Error('Income should drop significantly in retirement');

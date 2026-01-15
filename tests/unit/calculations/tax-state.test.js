@@ -7,7 +7,7 @@ import {
   calculateStateTax,
   calculateTotalTax,
   getStateTaxBrackets,
-  getStateStandardDeduction
+  getStateStandardDeduction,
 } from '/Users/zach/localcode/openfinanceplanner/src/calculations/tax.js';
 
 export function testDCStateTax() {
@@ -15,15 +15,24 @@ export function testDCStateTax() {
 
   // Test 2024 single filer
   const tax1 = calculateStateTax('DC', 1160000, 'single', 2024);
-  console.assert(tax1 === 46400, 'Test 1 failed: $11,600 income, 2024 DC single should be $4,640 tax (4% of $11,600)');
+  console.assert(
+    tax1 === 46400,
+    'Test 1 failed: $11,600 income, 2024 DC single should be $4,640 tax (4% of $11,600)'
+  );
 
   // Test 2025 married joint filer
   const tax2 = calculateStateTax('DC', 5000000, 'married_joint', 2025);
-  console.assert(tax2 === 30000, 'Test 2 failed: $50,000 income, 2025 DC married joint should be $300 tax (6% of $50,000)');
+  console.assert(
+    tax2 === 30000,
+    'Test 2 failed: $50,000 income, 2025 DC married joint should be $300 tax (6% of $50,000)'
+  );
 
   // Test 2025 single filer with higher income
   const tax3 = calculateStateTax('DC', 20000000, 'single', 2025);
-  console.assert(tax3 === 1834500, 'Test 3 failed: $200,000 income, 2025 DC single should be $18,345 tax');
+  console.assert(
+    tax3 === 1834500,
+    'Test 3 failed: $200,000 income, 2025 DC single should be $18,345 tax'
+  );
 
   console.log('All DC state tax tests passed! ✓');
 }
@@ -33,11 +42,17 @@ export function testCAStateTax() {
 
   // Test 2024 single filer
   const tax1 = calculateStateTax('CA', 5000000, 'single', 2024);
-  console.assert(tax1 === 23810, 'Test 1 failed: $50,000 income, 2024 CA single should be $23,810 tax (4.76% of $50,000)');
+  console.assert(
+    tax1 === 23810,
+    'Test 1 failed: $50,000 income, 2024 CA single should be $23,810 tax (4.76% of $50,000)'
+  );
 
   // Test 2025 married joint filer
   const tax2 = calculateStateTax('CA', 10000000, 'married_joint', 2025);
-  console.assert(tax2 === 601300, 'Test 2 failed: $100,000 income, 2025 CA married joint should be $6,013 tax (6.01% of $100,000)');
+  console.assert(
+    tax2 === 601300,
+    'Test 2 failed: $100,000 income, 2025 CA married joint should be $6,013 tax (6.01% of $100,000)'
+  );
 
   console.log('All CA state tax tests passed! ✓');
 }
@@ -47,11 +62,17 @@ export function testNYStateTax() {
 
   // Test 2024 single filer
   const tax1 = calculateStateTax('NY', 5000000, 'single', 2024);
-  console.assert(tax1 === 20000, 'Test 1 failed: $50,000 income, 2024 NY single should be $20,000 tax (4% of $8,500)');
+  console.assert(
+    tax1 === 20000,
+    'Test 1 failed: $50,000 income, 2024 NY single should be $20,000 tax (4% of $8,500)'
+  );
 
   // Test 2025 married joint filer
   const tax2 = calculateStateTax('NY', 10000000, 'married_joint', 2025);
-  console.assert(tax2 === 23800, 'Test 2 failed: $100,000 income, 2024 NY married joint should be $23,800 tax (2.38% of $100,000)');
+  console.assert(
+    tax2 === 23800,
+    'Test 2 failed: $100,000 income, 2024 NY married joint should be $23,800 tax (2.38% of $100,000)'
+  );
 
   console.log('All NY state tax tests passed! ✓');
 }
@@ -86,7 +107,10 @@ export function testTotalTax() {
   const result4 = calculateTotalTax(null, 5000000, 'single', 2025);
   console.assert(result4.federalTax === 387150, 'Test 4 failed: Federal tax incorrect');
   console.assert(result4.stateTax === 0, 'Test 4 failed: State tax should be $0');
-  console.assert(result4.totalTax === 387150, 'Test 4 failed: Total tax should equal federal tax when state is null');
+  console.assert(
+    result4.totalTax === 387150,
+    'Test 4 failed: Total tax should equal federal tax when state is null'
+  );
 
   console.log('All calculateTotalTax tests passed! ✓');
 }
@@ -96,27 +120,45 @@ export function testStandardDeduction() {
 
   // Test DC 2024 standard deductions
   const ded1 = getStateStandardDeduction('DC', 2024, 'single');
-  console.assert(ded1 === 1500000, 'Test 1 failed: 2024 DC single standard deduction should be $15,000');
+  console.assert(
+    ded1 === 1500000,
+    'Test 1 failed: 2024 DC single standard deduction should be $15,000'
+  );
 
   // Test DC 2025 standard deductions
   const ded2 = getStateStandardDeduction('DC', 2025, 'single');
-  console.assert(ded2 === 1500000, 'Test 2 failed: 2025 DC single standard deduction should be $15,000');
+  console.assert(
+    ded2 === 1500000,
+    'Test 2 failed: 2025 DC single standard deduction should be $15,000'
+  );
 
   // Test CA 2024 standard deductions
   const ded3 = getStateStandardDeduction('CA', 2024, 'single');
-  console.assert(ded3 === 527200, 'Test 1 failed: 2024 CA single standard deduction should be $5,272');
+  console.assert(
+    ded3 === 527200,
+    'Test 1 failed: 2024 CA single standard deduction should be $5,272'
+  );
 
   // Test CA 2025 standard deductions
   const ded4 = getStateStandardDeduction('CA', 2025, 'single');
-  console.assert(ded4 === 539200, 'Test 2 failed: 2025 CA single standard deduction should be $5,392');
+  console.assert(
+    ded4 === 539200,
+    'Test 2 failed: 2025 CA single standard deduction should be $5,392'
+  );
 
   // Test NY 2024 standard deductions
   const ded5 = getStateStandardDeduction('NY', 2024, 'single');
-  console.assert(ded5 === 800000, 'Test 1 failed: 2024 NY single standard deduction should be $8,000');
+  console.assert(
+    ded5 === 800000,
+    'Test 1 failed: 2024 NY single standard deduction should be $8,000'
+  );
 
   // Test NY 2025 standard deductions
   const ded6 = getStateStandardDeduction('NY', 2025, 'single');
-  console.assert(ded6 === 800000, 'Test 2 failed: 2024 NY single standard deduction should be $8,000');
+  console.assert(
+    ded6 === 800000,
+    'Test 2 failed: 2024 NY single standard deduction should be $8,000'
+  );
 
   console.log('All state standard deduction tests passed! ✓');
 }

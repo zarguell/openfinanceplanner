@@ -9,11 +9,11 @@
  * Higher priority = withdraw first (except RMDs which are mandatory)
  */
 const ACCOUNT_PRIORITY = {
-  'Taxable': 1,           // Capital gains rates (typically lower)
-  'IRA': 2,               // Ordinary income (deferred)
-  '401k': 2,              // Ordinary income (deferred)
-  'Roth': 3,              // Tax-free (save for last)
-  'HSA': 4                // Tax-free medical (save for last)
+  Taxable: 1, // Capital gains rates (typically lower)
+  IRA: 2, // Ordinary income (deferred)
+  '401k': 2, // Ordinary income (deferred)
+  Roth: 3, // Tax-free (save for last)
+  HSA: 4, // Tax-free medical (save for last)
 };
 
 /**
@@ -73,7 +73,11 @@ export function proportionalWithdrawalStrategy(accounts, totalWithdrawalNeeded) 
  * @param {Array} rmdRequirements - Array of RMD amounts in cents per account (0 if no RMD)
  * @returns {Array} Array of withdrawal amounts in cents per account
  */
-export function taxEfficientWithdrawalStrategy(accounts, totalWithdrawalNeeded, rmdRequirements = []) {
+export function taxEfficientWithdrawalStrategy(
+  accounts,
+  totalWithdrawalNeeded,
+  rmdRequirements = []
+) {
   const withdrawals = new Array(accounts.length).fill(0);
 
   // Step 1: Handle mandatory RMDs first
@@ -96,9 +100,9 @@ export function taxEfficientWithdrawalStrategy(accounts, totalWithdrawalNeeded, 
       index: idx,
       balance: acc.balance,
       priority: ACCOUNT_PRIORITY[acc.type] || 999,
-      type: acc.type
+      type: acc.type,
     }))
-    .filter(acc => acc.balance > withdrawals[acc.index]) // Only accounts with remaining balance
+    .filter((acc) => acc.balance > withdrawals[acc.index]) // Only accounts with remaining balance
     .sort((a, b) => {
       // Sort by priority, then by balance (use smaller accounts first to preserve flexibility)
       if (a.priority !== b.priority) {
@@ -131,11 +135,20 @@ export function taxEfficientWithdrawalStrategy(accounts, totalWithdrawalNeeded, 
  * @param {object} taxContext - Tax context (filingStatus, taxYear, etc.)
  * @returns {Array} Array of withdrawal amounts in cents per account
  */
-export function taxAwareWithdrawalStrategy(accounts, totalWithdrawalNeeded, rmdRequirements = [], taxContext = {}) {
+export function taxAwareWithdrawalStrategy(
+  accounts,
+  totalWithdrawalNeeded,
+  rmdRequirements = [],
+  taxContext = {}
+) {
   // For now, use tax-efficient strategy as baseline
   // Future enhancement: Add bracket management logic
 
-  const withdrawals = taxEfficientWithdrawalStrategy(accounts, totalWithdrawalNeeded, rmdRequirements);
+  const withdrawals = taxEfficientWithdrawalStrategy(
+    accounts,
+    totalWithdrawalNeeded,
+    rmdRequirements
+  );
 
   // Bracket management (simplified)
   // Strategy: Fill lower tax brackets with ordinary income (Traditional) before using capital gains
@@ -153,11 +166,17 @@ export function taxAwareWithdrawalStrategy(accounts, totalWithdrawalNeeded, rmdR
  * @param {object} taxContext - Tax context for tax-aware strategy (optional)
  * @returns {Array} Array of withdrawal amounts in cents per account
  */
-export function calculateWithdrawals(strategy, accounts, totalWithdrawalNeeded, rmdRequirements = [], taxContext = {}) {
+export function calculateWithdrawals(
+  strategy,
+  accounts,
+  totalWithdrawalNeeded,
+  rmdRequirements = [],
+  taxContext = {}
+) {
   const strategies = {
-    'proportional': proportionalWithdrawalStrategy,
+    proportional: proportionalWithdrawalStrategy,
     'tax-efficient': taxEfficientWithdrawalStrategy,
-    'tax-aware': taxAwareWithdrawalStrategy
+    'tax-aware': taxAwareWithdrawalStrategy,
   };
 
   const strategyFunction = strategies[strategy] || proportionalWithdrawalStrategy;

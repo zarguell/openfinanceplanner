@@ -18,11 +18,13 @@ Open Finance Planner is a client-side financial planning application that runs e
 Open `index.html` in a modern browser (Chrome 90+, Firefox 88+, Safari 14+).
 
 For development with auto-reload:
+
 ```bash
 npm run serve  # Runs python3 HTTP server on port 3030
 ```
 
 Running tests:
+
 ```bash
 # Run specific test file
 node tests/unit/models/Plan.test.js
@@ -85,17 +87,20 @@ openfinanceplanner/
 All domain models are in `src/core/models/`:
 
 #### `Plan` (src/core/models/Plan.js)
+
 - Aggregate root for financial plans
 - Contains: accounts, expenses, assumptions, tax profile
 - Methods: `addAccount()`, `removeAccount()`, `addExpense()`, `removeExpense()`, `toJSON()`, `fromJSON()`
 - Stores monetary values in cents (integers)
 
 #### `Account` (src/core/models/Account.js)
+
 - Represents individual accounts (401k, IRA, Roth, HSA, Taxable)
 - Properties: `id`, `name`, `type`, `balance` (cents), `annualContribution`, `withdrawalRate`
 - Immutable ID generation
 
 #### `Expense` (src/core/models/Expense.js)
+
 - Models expense streams with inflation adjustment
 - Properties: `id`, `name`, `baseAmount` (cents), `startYear`, `endYear`, `inflationAdjusted`
 - Supports inflation-adjusted growth
@@ -118,6 +123,7 @@ All domain models are in `src/core/models/`:
 - `getStateStandardDeduction(state, year, filingStatus)` - Gets state standard deduction
 
 **Tax Calculation Features:**
+
 - Federal tax brackets for 2024/2025 (7 progressive brackets, 4 filing statuses)
 - State tax systems for all 50 states + DC (progressive, flat-rate, and no-tax states)
 - Combined federal + state tax calculations integrated into retirement projections
@@ -196,18 +202,23 @@ Plans stored in localStorage as `ofp_plan_{uuid}`:
 ## Design Principles
 
 ### 1. Domain Independence
+
 Core domain models (`src/core/models/`) have zero dependencies on UI or storage. They can be tested in isolation.
 
 ### 2. Pure Calculations
+
 All calculation logic in `src/calculations/` are pure functions. No side effects, easy to test, predictable.
 
 ### 3. Storage Encapsulation
+
 All storage operations go through `StorageManager`. Never access localStorage directly from UI or domain layer.
 
 ### 4. Thin UI Layer
+
 UI controllers are thin. Business logic belongs in domain models or calculation functions.
 
 ### 5. Integer Arithmetic
+
 Monetary values stored as cents (integers). Display by dividing by 100. Avoids floating-point precision issues.
 
 ## Common Tasks
@@ -220,6 +231,7 @@ Monetary values stored as cents (integers). Display by dividing by 100. Avoids f
 4. Update schema validation in `src/storage/schema.js` if needed
 
 Example:
+
 ```javascript
 // src/core/models/YourModel.js
 export class YourModel {
@@ -252,6 +264,7 @@ export class YourModel {
 3. Import and use from UI controller or other calculation functions
 
 Example:
+
 ```javascript
 // src/calculations/tax.js
 export function calculateFederalTax(income, filingStatus) {
@@ -288,6 +301,7 @@ node tests/unit/calculations/projection.test.js
 ```
 
 Test pattern:
+
 ```javascript
 export function testSpecificBehavior() {
   // Arrange
@@ -317,6 +331,7 @@ Integration tests go in `tests/integration/`. These test the full flow from UI t
 ## Future Enhancements
 
 See `/docs/architecture.md` for comprehensive architecture documentation including:
+
 - Planned RuleRegistry system for tax strategies
 - IndexedDB migration path for larger datasets
 - Monte Carlo simulation architecture

@@ -6,10 +6,18 @@
 // Mock dependencies before importing
 global.localStorage = {
   store: {},
-  getItem(key) { return this.store[key] || null; },
-  setItem(key, value) { this.store[key] = value; },
-  removeItem(key) { delete this.store[key]; },
-  clear() { this.store = {}; }
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
+  clear() {
+    this.store = {};
+  },
 };
 
 // Mock DOM API
@@ -21,11 +29,11 @@ const mockElement = {
   classList: {
     add: () => {},
     remove: () => {},
-    contains: () => false
+    contains: () => false,
   },
   style: {},
   appendChild: () => {},
-  remove: () => {}
+  remove: () => {},
 };
 
 global.document = {
@@ -39,11 +47,11 @@ global.document = {
   createElement: () => ({ ...mockElement }),
   body: { appendChild: () => {} },
   querySelectorAll: () => [],
-  querySelector: () => null
+  querySelector: () => null,
 };
 
 global.window = {
-  app: null
+  app: null,
 };
 
 // Mock StorageManager
@@ -51,7 +59,7 @@ global.StorageManager = {
   listPlans: () => [],
   loadPlan: () => null,
   savePlan: () => {},
-  deletePlan: () => {}
+  deletePlan: () => {},
 };
 
 import { AppController } from '../../../src/ui/AppController.js';
@@ -71,7 +79,7 @@ export function testRenderProjectionResultsWithValidData() {
       totalStateTax: 2000,
       totalFicaTax: 3000,
       totalRmdAmount: 0,
-      isRetired: false
+      isRetired: false,
     },
     {
       year: 2026,
@@ -83,7 +91,7 @@ export function testRenderProjectionResultsWithValidData() {
       totalStateTax: 2200,
       totalFicaTax: 3300,
       totalRmdAmount: 0,
-      isRetired: false
+      isRetired: false,
     },
     {
       year: 2065,
@@ -95,8 +103,8 @@ export function testRenderProjectionResultsWithValidData() {
       totalStateTax: 20000,
       totalFicaTax: 0,
       totalRmdAmount: 100000,
-      isRetired: true
-    }
+      isRetired: true,
+    },
   ];
 
   // This should not throw ReferenceError
@@ -133,9 +141,42 @@ export function testRenderProjectionResultsCalculatesYearsCorrectly() {
 
   // Create projection results for exactly 3 years (including year 0)
   controller.projectionResults = [
-    { year: 2025, age: 35, totalBalance: 100000, totalFederalTax: 5000, totalStateTax: 2000, totalFicaTax: 3000, totalRmdAmount: 0, totalExpense: 40000, socialSecurityIncome: 0, isRetired: false },
-    { year: 2026, age: 36, totalBalance: 110000, totalFederalTax: 5500, totalStateTax: 2200, totalFicaTax: 3300, totalRmdAmount: 0, totalExpense: 41000, socialSecurityIncome: 0, isRetired: false },
-    { year: 2027, age: 37, totalBalance: 120000, totalFederalTax: 6000, totalStateTax: 2400, totalFicaTax: 3600, totalRmdAmount: 0, totalExpense: 42000, socialSecurityIncome: 0, isRetired: false }
+    {
+      year: 2025,
+      age: 35,
+      totalBalance: 100000,
+      totalFederalTax: 5000,
+      totalStateTax: 2000,
+      totalFicaTax: 3000,
+      totalRmdAmount: 0,
+      totalExpense: 40000,
+      socialSecurityIncome: 0,
+      isRetired: false,
+    },
+    {
+      year: 2026,
+      age: 36,
+      totalBalance: 110000,
+      totalFederalTax: 5500,
+      totalStateTax: 2200,
+      totalFicaTax: 3300,
+      totalRmdAmount: 0,
+      totalExpense: 41000,
+      socialSecurityIncome: 0,
+      isRetired: false,
+    },
+    {
+      year: 2027,
+      age: 37,
+      totalBalance: 120000,
+      totalFederalTax: 6000,
+      totalStateTax: 2400,
+      totalFicaTax: 3600,
+      totalRmdAmount: 0,
+      totalExpense: 42000,
+      socialSecurityIncome: 0,
+      isRetired: false,
+    },
   ];
 
   controller.renderProjectionResults();
@@ -165,13 +206,13 @@ function runAppControllerTests() {
     testRenderProjectionResultsWithValidData,
     testRenderProjectionResultsWithEmptyData,
     testRenderProjectionResultsWithNullData,
-    testRenderProjectionResultsCalculatesYearsCorrectly
+    testRenderProjectionResultsCalculatesYearsCorrectly,
   ];
 
   let passed = 0;
   let failed = 0;
 
-  tests.forEach(test => {
+  tests.forEach((test) => {
     try {
       test();
       passed++;

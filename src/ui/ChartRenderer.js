@@ -12,7 +12,7 @@ export class ChartRenderer {
    * Destroy all charts to free memory
    */
   destroyAll() {
-    Object.values(this.charts).forEach(chart => {
+    Object.values(this.charts).forEach((chart) => {
       if (chart) chart.destroy();
     });
     this.charts = {};
@@ -28,32 +28,33 @@ export class ChartRenderer {
     if (!canvas) return null;
 
     // Destroy existing chart if present
-      if (this.charts[canvasId]) {
+    if (this.charts[canvasId]) {
       this.charts[canvasId].destroy();
     }
 
-    const years = projectionResults.map(r => r.year);
-    const balances = projectionResults.map(r => r.totalBalance);
+    const years = projectionResults.map((r) => r.year);
+    const balances = projectionResults.map((r) => r.totalBalance);
 
-    const retirementData = projectionResults.find(r => r.isRetired);
-    const retirementIndex = retirementData ?
-      projectionResults.indexOf(retirementData) : -1;
+    const retirementData = projectionResults.find((r) => r.isRetired);
+    const retirementIndex = retirementData ? projectionResults.indexOf(retirementData) : -1;
 
     const ctx = canvas.getContext('2d');
     const chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: years,
-        datasets: [{
-          label: 'Portfolio Balance',
-          data: balances,
-          borderColor: 'rgb(75, 192, 192)',
-          backgroundColor: 'rgba(75, 192, 192, 0.1)',
-          fill: true,
-          tension: 0.1,
-          pointRadius: 2,
-          pointHoverRadius: 5
-        }]
+        datasets: [
+          {
+            label: 'Portfolio Balance',
+            data: balances,
+            borderColor: 'rgb(75, 192, 192)',
+            backgroundColor: 'rgba(75, 192, 192, 0.1)',
+            fill: true,
+            tension: 0.1,
+            pointRadius: 2,
+            pointHoverRadius: 5,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -63,55 +64,58 @@ export class ChartRenderer {
           title: {
             display: true,
             text: 'Portfolio Balance Projection',
-            font: { size: 16, weight: 'bold' }
+            font: { size: 16, weight: 'bold' },
           },
           tooltip: {
             callbacks: {
               label: (context) => {
                 return `Balance: $${context.parsed.y.toLocaleString('en-US', {
                   minimumFractionDigits: 0,
-                  maximumFractionDigits: 0
+                  maximumFractionDigits: 0,
                 })}`;
-              }
-            }
+              },
+            },
           },
-          annotation: retirementIndex >= 0 ? {
-            annotations: {
-              retirementLine: {
-                type: 'line',
-                xMin: retirementIndex,
-                xMax: retirementIndex,
-                borderColor: 'rgb(255, 99, 132)',
-                borderWidth: 2,
-                borderDash: [5, 5],
-                label: {
-                  display: true,
-                  content: 'Retirement',
-                  position: 'start'
+          annotation:
+            retirementIndex >= 0
+              ? {
+                  annotations: {
+                    retirementLine: {
+                      type: 'line',
+                      xMin: retirementIndex,
+                      xMax: retirementIndex,
+                      borderColor: 'rgb(255, 99, 132)',
+                      borderWidth: 2,
+                      borderDash: [5, 5],
+                      label: {
+                        display: true,
+                        content: 'Retirement',
+                        position: 'start',
+                      },
+                    },
+                  },
                 }
-              }
-            }
-          } : {}
+              : {},
         },
         scales: {
           y: {
             beginAtZero: true,
             ticks: {
-              callback: (value) => '$' + (value / 1000).toFixed(0) + 'k'
+              callback: (value) => '$' + (value / 1000).toFixed(0) + 'k',
             },
             title: {
               display: true,
-              text: 'Balance (USD)'
-            }
+              text: 'Balance (USD)',
+            },
           },
           x: {
             title: {
               display: true,
-              text: 'Year'
-            }
-          }
-        }
-      }
+              text: 'Year',
+            },
+          },
+        },
+      },
     });
 
     this.charts[canvasId] = chart;
@@ -132,8 +136,8 @@ export class ChartRenderer {
       this.charts[canvasId].destroy();
     }
 
-    const years = projectionResults.map(r => r.year);
-    const medianBalances = projectionResults.map(r => r.totalBalance);
+    const years = projectionResults.map((r) => r.year);
+    const medianBalances = projectionResults.map((r) => r.totalBalance);
 
     const { p10Balances, p90Balances } = this.calculateYearlyPercentiles(
       monteCarloResults.scenarios,
@@ -154,7 +158,7 @@ export class ChartRenderer {
             fill: true,
             tension: 0.1,
             pointRadius: 0,
-            borderWidth: 1
+            borderWidth: 1,
           },
           {
             label: 'Median Projection',
@@ -164,7 +168,7 @@ export class ChartRenderer {
             fill: '+1',
             tension: 0.1,
             pointRadius: 0,
-            borderWidth: 2
+            borderWidth: 2,
           },
           {
             label: '10th Percentile (Worst Case)',
@@ -174,9 +178,9 @@ export class ChartRenderer {
             fill: false,
             tension: 0.1,
             pointRadius: 0,
-            borderWidth: 1
-          }
-        ]
+            borderWidth: 1,
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -186,7 +190,7 @@ export class ChartRenderer {
           title: {
             display: true,
             text: 'Monte Carlo Simulation: 1,000 Scenarios',
-            font: { size: 16, weight: 'bold' }
+            font: { size: 16, weight: 'bold' },
           },
           tooltip: {
             mode: 'index',
@@ -195,35 +199,35 @@ export class ChartRenderer {
               label: (context) => {
                 return `${context.dataset.label}: $${context.parsed.y.toLocaleString('en-US', {
                   minimumFractionDigits: 0,
-                  maximumFractionDigits: 0
+                  maximumFractionDigits: 0,
                 })}`;
-              }
-            }
-          }
+              },
+            },
+          },
         },
         scales: {
           y: {
             beginAtZero: true,
             ticks: {
-              callback: (value) => '$' + (value / 1000).toFixed(0) + 'k'
+              callback: (value) => '$' + (value / 1000).toFixed(0) + 'k',
             },
             title: {
               display: true,
-              text: 'Portfolio Balance (USD)'
-            }
+              text: 'Portfolio Balance (USD)',
+            },
           },
           x: {
             title: {
               display: true,
-              text: 'Year'
-            }
-          }
+              text: 'Year',
+            },
+          },
         },
         interaction: {
           mode: 'index',
-          intersect: false
-        }
-      }
+          intersect: false,
+        },
+      },
     });
 
     this.charts[canvasId] = chart;
@@ -246,8 +250,8 @@ export class ChartRenderer {
 
     for (let yearIndex = 0; yearIndex < numYears; yearIndex++) {
       const yearBalances = scenarios
-        .map(scenario => scenario.projection[yearIndex]?.totalBalance || 0)
-        .filter(balance => balance !== undefined);
+        .map((scenario) => scenario.projection[yearIndex]?.totalBalance || 0)
+        .filter((balance) => balance !== undefined);
 
       if (yearBalances.length === 0) {
         p10Balances.push(0);
@@ -281,9 +285,9 @@ export class ChartRenderer {
     }
 
     const typeGroups = {};
-    accounts.forEach(account => {
+    accounts.forEach((account) => {
       const type = account.type;
-      typeGroups[type] = (typeGroups[type] || 0) + (account.balance / 100);
+      typeGroups[type] = (typeGroups[type] || 0) + account.balance / 100;
     });
 
     const labels = Object.keys(typeGroups);
@@ -291,25 +295,27 @@ export class ChartRenderer {
 
     const colorMap = {
       '401k': 'rgba(54, 162, 235, 0.8)',
-      'IRA': 'rgba(255, 99, 132, 0.8)',
-      'Roth': 'rgba(75, 192, 192, 0.8)',
-      'HSA': 'rgba(255, 206, 86, 0.8)',
-      'Taxable': 'rgba(153, 102, 255, 0.8)'
+      IRA: 'rgba(255, 99, 132, 0.8)',
+      Roth: 'rgba(75, 192, 192, 0.8)',
+      HSA: 'rgba(255, 206, 86, 0.8)',
+      Taxable: 'rgba(153, 102, 255, 0.8)',
     };
 
-    const backgroundColors = labels.map(label => colorMap[label] || 'rgba(201, 203, 207, 0.8)');
+    const backgroundColors = labels.map((label) => colorMap[label] || 'rgba(201, 203, 207, 0.8)');
 
     const ctx = canvas.getContext('2d');
     const chart = new Chart(ctx, {
       type: 'pie',
       data: {
         labels: labels,
-        datasets: [{
-          data: data,
-          backgroundColor: backgroundColors,
-          borderWidth: 2,
-          borderColor: '#fff'
-        }]
+        datasets: [
+          {
+            data: data,
+            backgroundColor: backgroundColors,
+            borderWidth: 2,
+            borderColor: '#fff',
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -319,10 +325,10 @@ export class ChartRenderer {
           title: {
             display: true,
             text: 'Asset Allocation by Account Type',
-            font: { size: 16, weight: 'bold' }
+            font: { size: 16, weight: 'bold' },
           },
           legend: {
-            position: 'right'
+            position: 'right',
           },
           tooltip: {
             callbacks: {
@@ -333,13 +339,13 @@ export class ChartRenderer {
                 const percentage = ((value / total) * 100).toFixed(1);
                 return `${label}: $${value.toLocaleString('en-US', {
                   minimumFractionDigits: 0,
-                  maximumFractionDigits: 0
+                  maximumFractionDigits: 0,
                 })} (${percentage}%)`;
-              }
-            }
-          }
-        }
-      }
+              },
+            },
+          },
+        },
+      },
     });
 
     this.charts[canvasId] = chart;
@@ -359,9 +365,9 @@ export class ChartRenderer {
       this.charts[canvasId].destroy();
     }
 
-    const years = projectionResults.map(r => r.year);
-    const expenses = projectionResults.map(r => r.totalExpense);
-    const income = projectionResults.map(r => r.socialSecurityIncome);
+    const years = projectionResults.map((r) => r.year);
+    const expenses = projectionResults.map((r) => r.totalExpense);
+    const income = projectionResults.map((r) => r.socialSecurityIncome);
     const netCashFlow = projectionResults.map((r, i) => income[i] - expenses[i]);
 
     const ctx = canvas.getContext('2d');
@@ -374,15 +380,15 @@ export class ChartRenderer {
             label: 'Total Expenses',
             data: expenses,
             backgroundColor: 'rgba(255, 99, 132, 0.6)',
-            stack: 'cashflow'
+            stack: 'cashflow',
           },
           {
             label: 'Social Security Income',
             data: income,
             backgroundColor: 'rgba(75, 192, 192, 0.6)',
-            stack: 'cashflow'
-          }
-        ]
+            stack: 'cashflow',
+          },
+        ],
       },
       options: {
         responsive: true,
@@ -392,7 +398,7 @@ export class ChartRenderer {
           title: {
             display: true,
             text: 'Annual Income vs Expenses',
-            font: { size: 16, weight: 'bold' }
+            font: { size: 16, weight: 'bold' },
           },
           tooltip: {
             mode: 'index',
@@ -400,32 +406,32 @@ export class ChartRenderer {
               label: (context) => {
                 return `${context.dataset.label}: $${context.parsed.y.toLocaleString('en-US', {
                   minimumFractionDigits: 0,
-                  maximumFractionDigits: 0
+                  maximumFractionDigits: 0,
                 })}`;
-              }
-            }
-          }
+              },
+            },
+          },
         },
         scales: {
           y: {
             beginAtZero: true,
             ticks: {
-              callback: (value) => '$' + (value / 1000).toFixed(0) + 'k'
+              callback: (value) => '$' + (value / 1000).toFixed(0) + 'k',
             },
             title: {
               display: true,
-              text: 'Amount (USD)'
-            }
+              text: 'Amount (USD)',
+            },
           },
           x: {
             stacked: true,
             title: {
               display: true,
-              text: 'Year'
-            }
-          }
-        }
-      }
+              text: 'Year',
+            },
+          },
+        },
+      },
     });
 
     this.charts[canvasId] = chart;

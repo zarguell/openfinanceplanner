@@ -11,80 +11,80 @@
  */
 const TAX_BRACKETS_2024 = {
   single: [
-    { rate: 0.10,  min: 0,         max: 1160000 },
-    { rate: 0.12,  min: 1160001,  max: 4715000 },
-    { rate: 0.22,  min: 4715001,  max: 10052500 },
-    { rate: 0.24,  min: 10052501, max: 19195000 },
-    { rate: 0.32,  min: 19195001, max: 24372500 },
-    { rate: 0.35,  min: 24372501, max: 60935000 },
-    { rate: 0.37,  min: 60935001,  max: Infinity }
+    { rate: 0.1, min: 0, max: 1160000 },
+    { rate: 0.12, min: 1160001, max: 4715000 },
+    { rate: 0.22, min: 4715001, max: 10052500 },
+    { rate: 0.24, min: 10052501, max: 19195000 },
+    { rate: 0.32, min: 19195001, max: 24372500 },
+    { rate: 0.35, min: 24372501, max: 60935000 },
+    { rate: 0.37, min: 60935001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.10,  min: 0,         max: 2320000 },
-    { rate: 0.12,  min: 2320001,  max: 9430000 },
-    { rate: 0.22,  min: 9430001,  max: 20105000 },
-    { rate: 0.24,  min: 20105001, max: 38390000 },
-    { rate: 0.32,  min: 38390001, max: 48745000 },
-    { rate: 0.35,  min: 48745001, max: 73120000 },
-    { rate: 0.37,  min: 73120001,  max: Infinity }
+    { rate: 0.1, min: 0, max: 2320000 },
+    { rate: 0.12, min: 2320001, max: 9430000 },
+    { rate: 0.22, min: 9430001, max: 20105000 },
+    { rate: 0.24, min: 20105001, max: 38390000 },
+    { rate: 0.32, min: 38390001, max: 48745000 },
+    { rate: 0.35, min: 48745001, max: 73120000 },
+    { rate: 0.37, min: 73120001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.10,  min: 0,         max: 1160000 },
-    { rate: 0.12,  min: 1160001,  max: 4715000 },
-    { rate: 0.22,  min: 4715001,  max: 10052500 },
-    { rate: 0.24,  min: 10052501, max: 19195000 },
-    { rate: 0.32,  min: 19195001, max: 24372500 },
-    { rate: 0.35,  min: 24372501, max: 36560000 },
-    { rate: 0.37,  min: 36560001,  max: Infinity }
+    { rate: 0.1, min: 0, max: 1160000 },
+    { rate: 0.12, min: 1160001, max: 4715000 },
+    { rate: 0.22, min: 4715001, max: 10052500 },
+    { rate: 0.24, min: 10052501, max: 19195000 },
+    { rate: 0.32, min: 19195001, max: 24372500 },
+    { rate: 0.35, min: 24372501, max: 36560000 },
+    { rate: 0.37, min: 36560001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.10,  min: 0,         max: 1655000 },
-    { rate: 0.12,  min: 1655001,  max: 6310000 },
-    { rate: 0.22,  min: 6310001,  max: 10050000 },
-    { rate: 0.24,  min: 10050001, max: 19195000 },
-    { rate: 0.32,  min: 19195001, max: 24370000 },
-    { rate: 0.35,  min: 24370001, max: 60935000 },
-    { rate: 0.37,  min: 60935001,  max: Infinity }
-  ]
+    { rate: 0.1, min: 0, max: 1655000 },
+    { rate: 0.12, min: 1655001, max: 6310000 },
+    { rate: 0.22, min: 6310001, max: 10050000 },
+    { rate: 0.24, min: 10050001, max: 19195000 },
+    { rate: 0.32, min: 19195001, max: 24370000 },
+    { rate: 0.35, min: 24370001, max: 60935000 },
+    { rate: 0.37, min: 60935001, max: Infinity },
+  ],
 };
 
 const TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.10,  min: 0,         max: 1192500 },
-    { rate: 0.12,  min: 1192501,  max: 4847500 },
-    { rate: 0.22,  min: 4847501,  max: 10335000 },
-    { rate: 0.24,  min: 10335001, max: 19730000 },
-    { rate: 0.32,  min: 19730001, max: 25052500 },
-    { rate: 0.35,  min: 25052501, max: 62635000 },
-    { rate: 0.37,  min: 62635001,  max: Infinity }
+    { rate: 0.1, min: 0, max: 1192500 },
+    { rate: 0.12, min: 1192501, max: 4847500 },
+    { rate: 0.22, min: 4847501, max: 10335000 },
+    { rate: 0.24, min: 10335001, max: 19730000 },
+    { rate: 0.32, min: 19730001, max: 25052500 },
+    { rate: 0.35, min: 25052501, max: 62635000 },
+    { rate: 0.37, min: 62635001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.10,  min: 0,         max: 2385000 },
-    { rate: 0.12,  min: 2385001,  max: 9695000 },
-    { rate: 0.22,  min: 9695001,  max: 20670000 },
-    { rate: 0.24,  min: 20670001, max: 39460000 },
-    { rate: 0.32,  min: 39460001, max: 50105000 },
-    { rate: 0.35,  min: 50105001, max: 75160000 },
-    { rate: 0.37,  min: 75160001,  max: Infinity }
+    { rate: 0.1, min: 0, max: 2385000 },
+    { rate: 0.12, min: 2385001, max: 9695000 },
+    { rate: 0.22, min: 9695001, max: 20670000 },
+    { rate: 0.24, min: 20670001, max: 39460000 },
+    { rate: 0.32, min: 39460001, max: 50105000 },
+    { rate: 0.35, min: 50105001, max: 75160000 },
+    { rate: 0.37, min: 75160001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.10,  min: 0,         max: 1192500 },
-    { rate: 0.12,  min: 1192501,  max: 4847500 },
-    { rate: 0.22,  min: 4847501,  max: 10335000 },
-    { rate: 0.24,  min: 10335001, max: 19730000 },
-    { rate: 0.32,  min: 19730001, max: 25052500 },
-    { rate: 0.35,  min: 25052501, max: 62635000 },
-    { rate: 0.37,  min: 62635001,  max: Infinity }
+    { rate: 0.1, min: 0, max: 1192500 },
+    { rate: 0.12, min: 1192501, max: 4847500 },
+    { rate: 0.22, min: 4847501, max: 10335000 },
+    { rate: 0.24, min: 10335001, max: 19730000 },
+    { rate: 0.32, min: 19730001, max: 25052500 },
+    { rate: 0.35, min: 25052501, max: 62635000 },
+    { rate: 0.37, min: 62635001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.10,  min: 0,         max: 1700000 },
-    { rate: 0.12,  min: 1700001,  max: 6485000 },
-    { rate: 0.22,  min: 6485001,  max: 10335000 },
-    { rate: 0.24,  min: 10335001, max: 19730000 },
-    { rate: 0.32,  min: 19730001, max: 25050000 },
-    { rate: 0.35,  min: 25050001, max: 62635000 },
-    { rate: 0.37,  min: 62635001,  max: Infinity }
-  ]
+    { rate: 0.1, min: 0, max: 1700000 },
+    { rate: 0.12, min: 1700001, max: 6485000 },
+    { rate: 0.22, min: 6485001, max: 10335000 },
+    { rate: 0.24, min: 10335001, max: 19730000 },
+    { rate: 0.32, min: 19730001, max: 25050000 },
+    { rate: 0.35, min: 25050001, max: 62635000 },
+    { rate: 0.37, min: 62635001, max: Infinity },
+  ],
 };
 
 /**
@@ -96,14 +96,14 @@ const STANDARD_DEDUCTIONS = {
     single: 1460000,
     married_joint: 2920000,
     married_separate: 1460000,
-    head_of_household: 2190000
+    head_of_household: 2190000,
   },
   2025: {
     single: 1575000,
     married_joint: 3150000,
     married_separate: 1575000,
-    head_of_household: 2362500
-  }
+    head_of_household: 2362500,
+  },
 };
 
 /**
@@ -112,41 +112,41 @@ const STANDARD_DEDUCTIONS = {
  */
 const DC_TAX_BRACKETS_2024 = {
   single: [
-    { rate: 0.04,  min: 0,         max: 1000000 },
-    { rate: 0.06,  min: 1000001,  max: 4000000 },
-    { rate: 0.065, min: 4000001,  max: 6000000 },
-    { rate: 0.085, min: 6000001,  max: 25000000 },
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
     { rate: 0.0925, min: 25000001, max: 50000000 },
     { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
+    { rate: 0.1075, min: 100000001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.04,  min: 0,         max: 1000000 },
-    { rate: 0.06,  min: 1000001,  max: 4000000 },
-    { rate: 0.065, min: 4000001,  max: 6000000 },
-    { rate: 0.085, min: 6000001,  max: 25000000 },
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
     { rate: 0.0925, min: 25000001, max: 50000000 },
     { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
+    { rate: 0.1075, min: 100000001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.04,  min: 0,         max: 1000000 },
-    { rate: 0.06,  min: 1000001,  max: 4000000 },
-    { rate: 0.065, min: 4000001,  max: 6000000 },
-    { rate: 0.085, min: 6000001,  max: 25000000 },
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
     { rate: 0.0925, min: 25000001, max: 50000000 },
     { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
+    { rate: 0.1075, min: 100000001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.04,  min: 0,         max: 1000000 },
-    { rate: 0.06,  min: 1000001,  max: 4000000 },
-    { rate: 0.065, min: 4000001,  max: 6000000 },
-    { rate: 0.085, min: 6000001,  max: 25000000 },
+    { rate: 0.04, min: 0, max: 1000000 },
+    { rate: 0.06, min: 1000001, max: 4000000 },
+    { rate: 0.065, min: 4000001, max: 6000000 },
+    { rate: 0.085, min: 6000001, max: 25000000 },
     { rate: 0.0925, min: 25000001, max: 50000000 },
     { rate: 0.0975, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
-  ]
+    { rate: 0.1075, min: 100000001, max: Infinity },
+  ],
 };
 
 const DC_TAX_BRACKETS_2025 = DC_TAX_BRACKETS_2024; // Same brackets as 2024
@@ -159,14 +159,14 @@ const DC_STANDARD_DEDUCTIONS_2024 = {
   single: 1500000,
   married_joint: 3000000,
   married_separate: 1500000,
-  head_of_household: 2250000
+  head_of_household: 2250000,
 };
 
 const DC_STANDARD_DEDUCTIONS_2025 = {
   single: 1500000,
   married_joint: 3000000,
   married_separate: 1500000,
-  head_of_household: 2250000
+  head_of_household: 2250000,
 };
 
 /**
@@ -176,96 +176,96 @@ const DC_STANDARD_DEDUCTIONS_2025 = {
  */
 const CA_TAX_BRACKETS_2024 = {
   single: [
-    { rate: 0.01,  min: 0,         max: 1107900 },
-    { rate: 0.02,  min: 1107901,  max: 2626400 },
-    { rate: 0.04,  min: 2626401,  max: 4145200 },
-    { rate: 0.06,  min: 4145201,  max: 5754200 },
-    { rate: 0.08,  min: 5754201,  max: 7272400 },
-    { rate: 0.093, min: 7272401,  max: 37147900 },
+    { rate: 0.01, min: 0, max: 1107900 },
+    { rate: 0.02, min: 1107901, max: 2626400 },
+    { rate: 0.04, min: 2626401, max: 4145200 },
+    { rate: 0.06, min: 4145201, max: 5754200 },
+    { rate: 0.08, min: 5754201, max: 7272400 },
+    { rate: 0.093, min: 7272401, max: 37147900 },
     { rate: 0.103, min: 37147901, max: 44577100 },
     { rate: 0.113, min: 44577101, max: 74295300 },
-    { rate: 0.123, min: 74295301, max: Infinity }
+    { rate: 0.123, min: 74295301, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.01,  min: 0,         max: 2215800 },
-    { rate: 0.02,  min: 2215801,  max: 5252800 },
-    { rate: 0.04,  min: 5252801,  max: 8290400 },
-    { rate: 0.06,  min: 8290401,  max: 11508400 },
-    { rate: 0.08,  min: 11508401, max: 14544800 },
-    { rate: 0.093,  min: 14544801, max: 74295800 },
+    { rate: 0.01, min: 0, max: 2215800 },
+    { rate: 0.02, min: 2215801, max: 5252800 },
+    { rate: 0.04, min: 5252801, max: 8290400 },
+    { rate: 0.06, min: 8290401, max: 11508400 },
+    { rate: 0.08, min: 11508401, max: 14544800 },
+    { rate: 0.093, min: 14544801, max: 74295800 },
     { rate: 0.103, min: 74295801, max: 89154200 },
     { rate: 0.113, min: 89154201, max: 148590600 },
-    { rate: 0.123, min: 148590601, max: Infinity }
+    { rate: 0.123, min: 148590601, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.01,  min: 0,         max: 1107900 },
-    { rate: 0.02,  min: 1107901,  max: 2626400 },
-    { rate: 0.04,  min: 2626401,  max: 4145200 },
-    { rate: 0.06,  min: 4145201,  max: 5754200 },
-    { rate: 0.08,  min: 5754201,  max: 7272400 },
-    { rate: 0.093,  min: 7272401,  max: 37147900 },
+    { rate: 0.01, min: 0, max: 1107900 },
+    { rate: 0.02, min: 1107901, max: 2626400 },
+    { rate: 0.04, min: 2626401, max: 4145200 },
+    { rate: 0.06, min: 4145201, max: 5754200 },
+    { rate: 0.08, min: 5754201, max: 7272400 },
+    { rate: 0.093, min: 7272401, max: 37147900 },
     { rate: 0.103, min: 37147901, max: 44577100 },
     { rate: 0.113, min: 44577101, max: 74295300 },
-    { rate: 0.123, min: 74295301, max: Infinity }
+    { rate: 0.123, min: 74295301, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.01,  min: 0,         max: 2215800 },
-    { rate: 0.02,  min: 2215801,  max: 5252800 },
-    { rate: 0.04,  min: 5252801,  max: 8290400 },
-    { rate: 0.06,  min: 8290401,  max: 11508400 },
-    { rate: 0.08,  min: 11508401, max: 14544800 },
-    { rate: 0.093,  min: 14544801, max: 74295800 },
+    { rate: 0.01, min: 0, max: 2215800 },
+    { rate: 0.02, min: 2215801, max: 5252800 },
+    { rate: 0.04, min: 5252801, max: 8290400 },
+    { rate: 0.06, min: 8290401, max: 11508400 },
+    { rate: 0.08, min: 11508401, max: 14544800 },
+    { rate: 0.093, min: 14544801, max: 74295800 },
     { rate: 0.103, min: 74295801, max: 89154200 },
     { rate: 0.113, min: 89154201, max: 148590600 },
-    { rate: 0.123, min: 148590601, max: Infinity }
-  ]
+    { rate: 0.123, min: 148590601, max: Infinity },
+  ],
 };
 
 const CA_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.01,  min: 0,         max: 1192500 },
-    { rate: 0.02,  min: 1192501,  max: 2826400 },
-    { rate: 0.04,  min: 2826401,  max: 4145200 },
-    { rate: 0.06,  min: 4145201,  max: 5786400 },
-    { rate: 0.08,  min: 5786401,  max: 7283200 },
-    { rate: 0.093,  min: 7283201,  max: 37591000 },
+    { rate: 0.01, min: 0, max: 1192500 },
+    { rate: 0.02, min: 1192501, max: 2826400 },
+    { rate: 0.04, min: 2826401, max: 4145200 },
+    { rate: 0.06, min: 4145201, max: 5786400 },
+    { rate: 0.08, min: 5786401, max: 7283200 },
+    { rate: 0.093, min: 7283201, max: 37591000 },
     { rate: 0.103, min: 37591001, max: 49125200 },
     { rate: 0.113, min: 49125201, max: 61175700 },
-    { rate: 0.123, min: 61175701, max: Infinity }
+    { rate: 0.123, min: 61175701, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.01,  min: 0,         max: 2385000 },
-    { rate: 0.02,  min: 2385001,  max: 5652800 },
-    { rate: 0.04,  min: 5652801,  max: 8904000 },
-    { rate: 0.06,  min: 8904001,  max: 12574800 },
-    { rate: 0.08,  min: 12574801, max: 15610800 },
-    { rate: 0.093,  min: 15610801, max: 80491700 },
+    { rate: 0.01, min: 0, max: 2385000 },
+    { rate: 0.02, min: 2385001, max: 5652800 },
+    { rate: 0.04, min: 5652801, max: 8904000 },
+    { rate: 0.06, min: 8904001, max: 12574800 },
+    { rate: 0.08, min: 12574801, max: 15610800 },
+    { rate: 0.093, min: 15610801, max: 80491700 },
     { rate: 0.103, min: 80491701, max: 100843700 },
     { rate: 0.113, min: 100843701, max: 148590600 },
-    { rate: 0.123, min: 148590601, max: Infinity }
+    { rate: 0.123, min: 148590601, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.01,  min: 0,         max: 1192500 },
-    { rate: 0.02,  min: 1192501,  max: 2826400 },
-    { rate: 0.04,  min: 2826401,  max: 4145200 },
-    { rate: 0.06,  min: 4145201,  max: 5786400 },
-    { rate: 0.08,  min: 5786401,  max: 7283200 },
-    { rate: 0.093,  min: 7283201,  max: 37591000 },
+    { rate: 0.01, min: 0, max: 1192500 },
+    { rate: 0.02, min: 1192501, max: 2826400 },
+    { rate: 0.04, min: 2826401, max: 4145200 },
+    { rate: 0.06, min: 4145201, max: 5786400 },
+    { rate: 0.08, min: 5786401, max: 7283200 },
+    { rate: 0.093, min: 7283201, max: 37591000 },
     { rate: 0.103, min: 37591001, max: 49125200 },
     { rate: 0.113, min: 49125201, max: 74295800 },
-    { rate: 0.123, min: 74295301, max: Infinity }
+    { rate: 0.123, min: 74295301, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.01,  min: 0,         max: 2230800 },
-    { rate: 0.02,  min: 2230801,  max: 5287200 },
-    { rate: 0.04,  min: 5287201,  max: 8337200 },
-    { rate: 0.06,  min: 8337201,  max: 11827600 },
-    { rate: 0.08,  min: 11827601, max: 14609600 },
-    { rate: 0.093,  min: 14609601, max: 75347100 },
+    { rate: 0.01, min: 0, max: 2230800 },
+    { rate: 0.02, min: 2230801, max: 5287200 },
+    { rate: 0.04, min: 5287201, max: 8337200 },
+    { rate: 0.06, min: 8337201, max: 11827600 },
+    { rate: 0.08, min: 11827601, max: 14609600 },
+    { rate: 0.093, min: 14609601, max: 75347100 },
     { rate: 0.103, min: 75347101, max: 100601600 },
     { rate: 0.113, min: 100601601, max: 148590600 },
-    { rate: 0.123, min: 148590601, max: Infinity }
-  ]
+    { rate: 0.123, min: 148590601, max: Infinity },
+  ],
 };
 
 /**
@@ -275,17 +275,17 @@ const CA_TAX_BRACKETS_2025 = {
  * All values in cents
  */
 const CA_STANDARD_DEDUCTIONS_2024 = {
-  single: 5272000,      // $5,272
+  single: 5272000, // $5,272
   married_joint: 10544000, // $10,544
   married_separate: 5272000, // $5,272
-  head_of_household: 7944000   // $7,944
+  head_of_household: 7944000, // $7,944
 };
 
 const CA_STANDARD_DEDUCTIONS_2025 = {
-  single: 5392000,      // $5,392
+  single: 5392000, // $5,392
   married_joint: 10784000, // $10,784
   married_separate: 5392000, // $5,392
-  head_of_household: 8130000   // $8,130
+  head_of_household: 8130000, // $8,130
 };
 
 /**
@@ -295,96 +295,96 @@ const CA_STANDARD_DEDUCTIONS_2025 = {
  */
 const NY_TAX_BRACKETS_2024 = {
   single: [
-    { rate: 0.04,  min: 0,         max: 8500000 },
-    { rate: 0.045, min: 8500001,  max: 11700000 },
+    { rate: 0.04, min: 0, max: 8500000 },
+    { rate: 0.045, min: 8500001, max: 11700000 },
     { rate: 0.0525, min: 11700001, max: 13900000 },
-    { rate: 0.055,  min: 13900001, max: 16155000 },
-    { rate: 0.06,  min: 16155001, max: 32320000 },
+    { rate: 0.055, min: 13900001, max: 16155000 },
+    { rate: 0.06, min: 16155001, max: 32320000 },
     { rate: 0.0685, min: 32320001, max: 21540000 },
     { rate: 0.0965, min: 21540001, max: 107650000 },
     { rate: 0.1033, min: 107650001, max: 500000000 },
-    { rate: 0.109,  min: 500000001, max: Infinity }
+    { rate: 0.109, min: 500000001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.04,  min: 0,         max: 17150000 },
+    { rate: 0.04, min: 0, max: 17150000 },
     { rate: 0.045, min: 17150001, max: 23400000 },
     { rate: 0.0525, min: 23400001, max: 27800000 },
-    { rate: 0.055,  min: 27800001, max: 32310000 },
-    { rate: 0.06,  min: 32310001, max: 64640000 },
+    { rate: 0.055, min: 27800001, max: 32310000 },
+    { rate: 0.06, min: 32310001, max: 64640000 },
     { rate: 0.0685, min: 64640001, max: 43080000 },
     { rate: 0.0965, min: 43080001, max: 215300000 },
     { rate: 0.1033, min: 215300001, max: 1000000000 },
-    { rate: 0.109,  min: 1000000001, max: Infinity }
+    { rate: 0.109, min: 1000000001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.04,  min: 0,         max: 8500000 },
-    { rate: 0.045, min: 8500001,  max: 11700000 },
+    { rate: 0.04, min: 0, max: 8500000 },
+    { rate: 0.045, min: 8500001, max: 11700000 },
     { rate: 0.0525, min: 11700001, max: 13900000 },
     { rate: 0.055, min: 13900001, max: 16155000 },
-    { rate: 0.06,  min: 16155001, max: 32320000 },
+    { rate: 0.06, min: 16155001, max: 32320000 },
     { rate: 0.0685, min: 32320001, max: 21540000 },
     { rate: 0.0965, min: 21540001, max: 107650000 },
     { rate: 0.1033, min: 107650001, max: 500000000 },
-    { rate: 0.109,  min: 500000001, max: Infinity }
+    { rate: 0.109, min: 500000001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.04,  min: 0,         max: 12760000 },
+    { rate: 0.04, min: 0, max: 12760000 },
     { rate: 0.045, min: 12760001, max: 17550000 },
     { rate: 0.0525, min: 17550001, max: 20700000 },
     { rate: 0.055, min: 20700001, max: 24232500 },
-    { rate: 0.06,  min: 24232501, max: 48480000 },
+    { rate: 0.06, min: 24232501, max: 48480000 },
     { rate: 0.0685, min: 48480001, max: 32295000 },
     { rate: 0.0965, min: 32295001, max: 161475000 },
     { rate: 0.1033, min: 161475001, max: 750000000 },
-    { rate: 0.109,  min: 750000001, max: Infinity }
-  ]
+    { rate: 0.109, min: 750000001, max: Infinity },
+  ],
 };
 
 const NY_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.04,  min: 0,         max: 8580000 },
-    { rate: 0.045, min: 8580001,  max: 11700000 },
+    { rate: 0.04, min: 0, max: 8580000 },
+    { rate: 0.045, min: 8580001, max: 11700000 },
     { rate: 0.0525, min: 11700001, max: 13900000 },
-    { rate: 0.055,  min: 13900001, max: 16165000 },
-    { rate: 0.06,  min: 16165001, max: 32340000 },
+    { rate: 0.055, min: 13900001, max: 16165000 },
+    { rate: 0.06, min: 16165001, max: 32340000 },
     { rate: 0.0685, min: 32340001, max: 21560000 },
     { rate: 0.0965, min: 21560001, max: 107900000 },
     { rate: 0.1033, min: 107900001, max: 505000000 },
-    { rate: 0.109,  min: 505000001, max: Infinity }
+    { rate: 0.109, min: 505000001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.04,  min: 0,         max: 17160000 },
+    { rate: 0.04, min: 0, max: 17160000 },
     { rate: 0.045, min: 17160001, max: 23400000 },
     { rate: 0.0525, min: 23400001, max: 27900000 },
     { rate: 0.055, min: 27900001, max: 32330000 },
-    { rate: 0.06,  min: 32330001, max: 64680000 },
+    { rate: 0.06, min: 32330001, max: 64680000 },
     { rate: 0.0685, min: 64680001, max: 43080000 },
     { rate: 0.0965, min: 43080001, max: 215800000 },
     { rate: 0.1033, min: 215800001, max: 1010000000 },
-    { rate: 0.109,  min: 1010000001, max: Infinity }
+    { rate: 0.109, min: 1010000001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.04,  min: 0,         max: 8580000 },
-    { rate: 0.045, min: 8580001,  max: 11700000 },
+    { rate: 0.04, min: 0, max: 8580000 },
+    { rate: 0.045, min: 8580001, max: 11700000 },
     { rate: 0.0525, min: 11700001, max: 13900000 },
     { rate: 0.055, min: 13900001, max: 16165000 },
-    { rate: 0.06,  min: 16165001, max: 32340000 },
+    { rate: 0.06, min: 16165001, max: 32340000 },
     { rate: 0.0685, min: 32340001, max: 21560000 },
     { rate: 0.0965, min: 21560001, max: 107900000 },
     { rate: 0.1033, min: 107900001, max: 505000000 },
-    { rate: 0.109,  min: 505000001, max: Infinity }
+    { rate: 0.109, min: 505000001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.04,  min: 0,         max: 12840000 },
+    { rate: 0.04, min: 0, max: 12840000 },
     { rate: 0.045, min: 12840001, max: 17640000 },
     { rate: 0.0525, min: 17640001, max: 20920000 },
     { rate: 0.055, min: 20920001, max: 24350000 },
-    { rate: 0.06,  min: 24350001, max: 48600000 },
+    { rate: 0.06, min: 24350001, max: 48600000 },
     { rate: 0.0685, min: 48600001, max: 32450000 },
     { rate: 0.0965, min: 32450001, max: 162000000 },
     { rate: 0.1033, min: 162000001, max: 755000000 },
-    { rate: 0.109,  min: 755000001, max: Infinity }
-  ]
+    { rate: 0.109, min: 755000001, max: Infinity },
+  ],
 };
 
 /**
@@ -392,17 +392,17 @@ const NY_TAX_BRACKETS_2025 = {
  * All values in cents
  */
 const NY_STANDARD_DEDUCTIONS_2024 = {
-  single: 8000000,       // $8,000
-  married_joint: 16000000,  // $16,000
-  married_separate: 8000000,  // $8,000
-  head_of_household: 12000000  // $12,000
+  single: 8000000, // $8,000
+  married_joint: 16000000, // $16,000
+  married_separate: 8000000, // $8,000
+  head_of_household: 12000000, // $12,000
 };
 
 const NY_STANDARD_DEDUCTIONS_2025 = {
-  single: 8000000,       // $8,000
-  married_joint: 16000000,  // $16,000
-  married_separate: 8000000,  // $8,000
-  head_of_household: 12000000  // $12,000
+  single: 8000000, // $8,000
+  married_joint: 16000000, // $16,000
+  married_separate: 8000000, // $8,000
+  head_of_household: 12000000, // $12,000
 };
 
 /**
@@ -412,32 +412,32 @@ const NY_STANDARD_DEDUCTIONS_2025 = {
  */
 const AL_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.02, min: 0,       max: 50000 },
-    { rate: 0.04, min: 50001,   max: 300000 },
-    { rate: 0.05, min: 300001,  max: Infinity }
+    { rate: 0.02, min: 0, max: 50000 },
+    { rate: 0.04, min: 50001, max: 300000 },
+    { rate: 0.05, min: 300001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.02, min: 0,       max: 100000 },
-    { rate: 0.04, min: 100001,  max: 600000 },
-    { rate: 0.05, min: 600001,  max: Infinity }
+    { rate: 0.02, min: 0, max: 100000 },
+    { rate: 0.04, min: 100001, max: 600000 },
+    { rate: 0.05, min: 600001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.02, min: 0,       max: 50000 },
-    { rate: 0.04, min: 50001,   max: 300000 },
-    { rate: 0.05, min: 300001,  max: Infinity }
+    { rate: 0.02, min: 0, max: 50000 },
+    { rate: 0.04, min: 50001, max: 300000 },
+    { rate: 0.05, min: 300001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.02, min: 0,       max: 50000 },
-    { rate: 0.04, min: 50001,   max: 300000 },
-    { rate: 0.05, min: 300001,  max: Infinity }
-  ]
+    { rate: 0.02, min: 0, max: 50000 },
+    { rate: 0.04, min: 50001, max: 300000 },
+    { rate: 0.05, min: 300001, max: Infinity },
+  ],
 };
 
 const AL_STANDARD_DEDUCTIONS_2025 = {
   single: 300000,
   married_joint: 850000,
   married_separate: 425000,
-  head_of_household: 520000
+  head_of_household: 520000,
 };
 
 /**
@@ -449,30 +449,30 @@ const AZ_TAX_BRACKETS_2025 = {
   single: [
     { rate: 0.0259, min: 0, max: 1460000 },
     { rate: 0.0288, min: 1460001, max: 3650000 },
-    { rate: 0.0298, min: 3650001, max: Infinity }
+    { rate: 0.0298, min: 3650001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0259, min: 0, max: 2920000 },
     { rate: 0.0288, min: 2920001, max: 7300000 },
-    { rate: 0.0298, min: 7300001, max: Infinity }
+    { rate: 0.0298, min: 7300001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0259, min: 0, max: 1460000 },
     { rate: 0.0288, min: 1460001, max: 3650000 },
-    { rate: 0.0298, min: 3650001, max: Infinity }
+    { rate: 0.0298, min: 3650001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0259, min: 0, max: 2190000 },
     { rate: 0.0288, min: 2190001, max: 5475000 },
-    { rate: 0.0298, min: 5475001, max: Infinity }
-  ]
+    { rate: 0.0298, min: 5475001, max: Infinity },
+  ],
 };
 
 const AZ_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -482,40 +482,40 @@ const AZ_STANDARD_DEDUCTIONS_2025 = {
  */
 const AR_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.00, min: 0,       max: 549900 },
-    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.0, min: 0, max: 549900 },
+    { rate: 0.02, min: 549901, max: 1089900 },
     { rate: 0.03, min: 1089901, max: 1559900 },
     { rate: 0.034, min: 1559901, max: 2569900 },
-    { rate: 0.039, min: 2569901, max: 92300000 }
+    { rate: 0.039, min: 2569901, max: 92300000 },
   ],
   married_joint: [
-    { rate: 0.00, min: 0,       max: 549900 },
-    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.0, min: 0, max: 549900 },
+    { rate: 0.02, min: 549901, max: 1089900 },
     { rate: 0.03, min: 1089901, max: 1559900 },
     { rate: 0.034, min: 1559901, max: 2569900 },
-    { rate: 0.039, min: 2569901, max: 92300000 }
+    { rate: 0.039, min: 2569901, max: 92300000 },
   ],
   married_separate: [
-    { rate: 0.00, min: 0,       max: 549900 },
-    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.0, min: 0, max: 549900 },
+    { rate: 0.02, min: 549901, max: 1089900 },
     { rate: 0.03, min: 1089901, max: 1559900 },
     { rate: 0.034, min: 1559901, max: 2569900 },
-    { rate: 0.039, min: 2569901, max: 92300000 }
+    { rate: 0.039, min: 2569901, max: 92300000 },
   ],
   head_of_household: [
-    { rate: 0.00, min: 0,       max: 549900 },
-    { rate: 0.02, min: 549901,  max: 1089900 },
+    { rate: 0.0, min: 0, max: 549900 },
+    { rate: 0.02, min: 549901, max: 1089900 },
     { rate: 0.03, min: 1089901, max: 1559900 },
     { rate: 0.034, min: 1559901, max: 2569900 },
-    { rate: 0.039, min: 2569901, max: 92300000 }
-  ]
+    { rate: 0.039, min: 2569901, max: 92300000 },
+  ],
 };
 
 const AR_STANDARD_DEDUCTIONS_2025 = {
   single: 241000,
   married_joint: 482000,
   married_separate: 241000,
-  head_of_household: 241000
+  head_of_household: 241000,
 };
 
 /**
@@ -527,14 +527,14 @@ const CO_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.044, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.044, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.044, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.044, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.044, min: 0, max: Infinity }],
 };
 
 const CO_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -555,7 +555,7 @@ const CT_TAX_BRACKETS_2025 = {
     { rate: 0.052, min: 150000001, max: 200000000 },
     { rate: 0.054, min: 200000001, max: 250000000 },
     { rate: 0.055, min: 250000001, max: 500000000 },
-    { rate: 0.0699, min: 500000001, max: Infinity }
+    { rate: 0.0699, min: 500000001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.02, min: 0, max: 4000000 },
@@ -569,7 +569,7 @@ const CT_TAX_BRACKETS_2025 = {
     { rate: 0.052, min: 300000001, max: 400000000 },
     { rate: 0.054, min: 400000001, max: 500000000 },
     { rate: 0.055, min: 500000001, max: 1000000000 },
-    { rate: 0.0699, min: 1000000001, max: Infinity }
+    { rate: 0.0699, min: 1000000001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.02, min: 0, max: 2000000 },
@@ -583,7 +583,7 @@ const CT_TAX_BRACKETS_2025 = {
     { rate: 0.052, min: 150000001, max: 200000000 },
     { rate: 0.054, min: 200000001, max: 250000000 },
     { rate: 0.055, min: 250000001, max: 500000000 },
-    { rate: 0.0699, min: 500000001, max: Infinity }
+    { rate: 0.0699, min: 500000001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.02, min: 0, max: 3200000 },
@@ -597,15 +597,15 @@ const CT_TAX_BRACKETS_2025 = {
     { rate: 0.052, min: 240000001, max: 320000000 },
     { rate: 0.054, min: 320000001, max: 400000000 },
     { rate: 0.055, min: 400000001, max: 800000000 },
-    { rate: 0.0699, min: 800000001, max: Infinity }
-  ]
+    { rate: 0.0699, min: 800000001, max: Infinity },
+  ],
 };
 
 const CT_STANDARD_DEDUCTIONS_2025 = {
   single: 1275000,
   married_joint: 2550000,
   married_separate: 1275000,
-  head_of_household: 1912500
+  head_of_household: 1912500,
 };
 
 /**
@@ -620,7 +620,7 @@ const DE_TAX_BRACKETS_2025 = {
     { rate: 0.048, min: 5000001, max: 10000000 },
     { rate: 0.052, min: 10000001, max: 20000000 },
     { rate: 0.055, min: 20000001, max: 60000000 },
-    { rate: 0.066, min: 60000001, max: Infinity }
+    { rate: 0.066, min: 60000001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.022, min: 0, max: 2000000 },
@@ -628,7 +628,7 @@ const DE_TAX_BRACKETS_2025 = {
     { rate: 0.048, min: 5000001, max: 10000000 },
     { rate: 0.052, min: 10000001, max: 20000000 },
     { rate: 0.055, min: 20000001, max: 60000000 },
-    { rate: 0.066, min: 60000001, max: Infinity }
+    { rate: 0.066, min: 60000001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.022, min: 0, max: 2000000 },
@@ -636,7 +636,7 @@ const DE_TAX_BRACKETS_2025 = {
     { rate: 0.048, min: 5000001, max: 10000000 },
     { rate: 0.052, min: 10000001, max: 20000000 },
     { rate: 0.055, min: 20000001, max: 60000000 },
-    { rate: 0.066, min: 60000001, max: Infinity }
+    { rate: 0.066, min: 60000001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.022, min: 0, max: 2000000 },
@@ -644,15 +644,15 @@ const DE_TAX_BRACKETS_2025 = {
     { rate: 0.048, min: 5000001, max: 10000000 },
     { rate: 0.052, min: 10000001, max: 20000000 },
     { rate: 0.055, min: 20000001, max: 60000000 },
-    { rate: 0.066, min: 60000001, max: Infinity }
-  ]
+    { rate: 0.066, min: 60000001, max: Infinity },
+  ],
 };
 
 const DE_STANDARD_DEDUCTIONS_2025 = {
   single: 325000,
   married_joint: 325000,
   married_separate: 325000,
-  head_of_household: 325000
+  head_of_household: 325000,
 };
 
 /**
@@ -664,14 +664,14 @@ const GA_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.0539, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.0539, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.0539, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.0539, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.0539, min: 0, max: Infinity }],
 };
 
 const GA_STANDARD_DEDUCTIONS_2025 = {
   single: 1200000,
   married_joint: 2400000,
   married_separate: 1200000,
-  head_of_household: 1200000
+  head_of_household: 1200000,
 };
 
 /**
@@ -686,8 +686,8 @@ const HI_TAX_BRACKETS_2025 = {
     { rate: 0.055, min: 560001, max: 880000 },
     { rate: 0.072, min: 880001, max: 1280000 },
     { rate: 0.093, min: 1280001, max: 2520000 },
-    { rate: 0.10, min: 2520001, max: 20000000 },
-    { rate: 0.11, min: 20000001, max: Infinity }
+    { rate: 0.1, min: 2520001, max: 20000000 },
+    { rate: 0.11, min: 20000001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.014, min: 0, max: 480000 },
@@ -695,8 +695,8 @@ const HI_TAX_BRACKETS_2025 = {
     { rate: 0.055, min: 1120001, max: 1760000 },
     { rate: 0.072, min: 1760001, max: 2560000 },
     { rate: 0.093, min: 2560001, max: 5040000 },
-    { rate: 0.10, min: 5040001, max: 40000000 },
-    { rate: 0.11, min: 40000001, max: Infinity }
+    { rate: 0.1, min: 5040001, max: 40000000 },
+    { rate: 0.11, min: 40000001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.014, min: 0, max: 240000 },
@@ -704,8 +704,8 @@ const HI_TAX_BRACKETS_2025 = {
     { rate: 0.055, min: 560001, max: 880000 },
     { rate: 0.072, min: 880001, max: 1280000 },
     { rate: 0.093, min: 1280001, max: 2520000 },
-    { rate: 0.10, min: 2520001, max: 20000000 },
-    { rate: 0.11, min: 20000001, max: Infinity }
+    { rate: 0.1, min: 2520001, max: 20000000 },
+    { rate: 0.11, min: 20000001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.014, min: 0, max: 360000 },
@@ -713,16 +713,16 @@ const HI_TAX_BRACKETS_2025 = {
     { rate: 0.055, min: 840001, max: 1320000 },
     { rate: 0.072, min: 1320001, max: 1920000 },
     { rate: 0.093, min: 1920001, max: 3780000 },
-    { rate: 0.10, min: 3780001, max: 30000000 },
-    { rate: 0.11, min: 30000001, max: Infinity }
-  ]
+    { rate: 0.1, min: 3780001, max: 30000000 },
+    { rate: 0.11, min: 30000001, max: Infinity },
+  ],
 };
 
 const HI_STANDARD_DEDUCTIONS_2025 = {
   single: 440000,
   married_joint: 880000,
   married_separate: 440000,
-  head_of_household: 660000
+  head_of_household: 660000,
 };
 
 /**
@@ -734,14 +734,14 @@ const ID_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.053, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.053, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.053, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.053, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.053, min: 0, max: Infinity }],
 };
 
 const ID_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -753,14 +753,14 @@ const IL_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.0495, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.0495, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.0495, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.0495, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.0495, min: 0, max: Infinity }],
 };
 
 const IL_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -772,14 +772,14 @@ const IN_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.03, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.03, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.03, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.03, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.03, min: 0, max: Infinity }],
 };
 
 const IN_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -791,14 +791,14 @@ const IA_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.038, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.038, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.038, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.038, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.038, min: 0, max: Infinity }],
 };
 
 const IA_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -809,27 +809,27 @@ const IA_STANDARD_DEDUCTIONS_2025 = {
 const KS_TAX_BRACKETS_2025 = {
   single: [
     { rate: 0.052, min: 0, max: 2300000 },
-    { rate: 0.0558, min: 2300001, max: Infinity }
+    { rate: 0.0558, min: 2300001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.052, min: 0, max: 4600000 },
-    { rate: 0.0558, min: 4600001, max: Infinity }
+    { rate: 0.0558, min: 4600001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.052, min: 0, max: 2300000 },
-    { rate: 0.0558, min: 2300001, max: Infinity }
+    { rate: 0.0558, min: 2300001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.052, min: 0, max: 2300000 },
-    { rate: 0.0558, min: 2300001, max: Infinity }
-  ]
+    { rate: 0.0558, min: 2300001, max: Infinity },
+  ],
 };
 
 const KS_STANDARD_DEDUCTIONS_2025 = {
   single: 360500,
   married_joint: 824000,
   married_separate: 412000,
-  head_of_household: 618000
+  head_of_household: 618000,
 };
 
 /**
@@ -841,14 +841,14 @@ const KY_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.04, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.04, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.04, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.04, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.04, min: 0, max: Infinity }],
 };
 
 const KY_STANDARD_DEDUCTIONS_2025 = {
   single: 327000,
   married_joint: 654000,
   married_separate: 327000,
-  head_of_household: 327000
+  head_of_household: 327000,
 };
 
 /**
@@ -860,14 +860,14 @@ const LA_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.03, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.03, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.03, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.03, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.03, min: 0, max: Infinity }],
 };
 
 const LA_STANDARD_DEDUCTIONS_2025 = {
   single: 1250000,
   married_joint: 2500000,
   married_separate: 1250000,
-  head_of_household: 1250000
+  head_of_household: 1250000,
 };
 
 /**
@@ -879,30 +879,30 @@ const ME_TAX_BRACKETS_2025 = {
   single: [
     { rate: 0.058, min: 0, max: 2605000 },
     { rate: 0.0675, min: 2605001, max: 6160000 },
-    { rate: 0.0715, min: 6160001, max: Infinity }
+    { rate: 0.0715, min: 6160001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.058, min: 0, max: 5210000 },
     { rate: 0.0675, min: 5210001, max: 12320000 },
-    { rate: 0.0715, min: 12320001, max: Infinity }
+    { rate: 0.0715, min: 12320001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.058, min: 0, max: 2605000 },
     { rate: 0.0675, min: 2605001, max: 6160000 },
-    { rate: 0.0715, min: 6160001, max: Infinity }
+    { rate: 0.0715, min: 6160001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.058, min: 0, max: 3907500 },
     { rate: 0.0675, min: 3907501, max: 9240000 },
-    { rate: 0.0715, min: 9240001, max: Infinity }
-  ]
+    { rate: 0.0715, min: 9240001, max: Infinity },
+  ],
 };
 
 const ME_STANDARD_DEDUCTIONS_2025 = {
   single: 1530000,
   married_joint: 3060000,
   married_separate: 1530000,
-  head_of_household: 2295000
+  head_of_household: 2295000,
 };
 
 /**
@@ -917,7 +917,7 @@ const MD_TAX_BRACKETS_2025 = {
     { rate: 0.04, min: 200001, max: 300000 },
     { rate: 0.0475, min: 300001, max: 15000000 },
     { rate: 0.0525, min: 15000001, max: 25000000 },
-    { rate: 0.0575, min: 25000001, max: Infinity }
+    { rate: 0.0575, min: 25000001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.02, min: 0, max: 100000 },
@@ -925,7 +925,7 @@ const MD_TAX_BRACKETS_2025 = {
     { rate: 0.04, min: 200001, max: 300000 },
     { rate: 0.0475, min: 300001, max: 15000000 },
     { rate: 0.0525, min: 15000001, max: 25000000 },
-    { rate: 0.0575, min: 25000001, max: Infinity }
+    { rate: 0.0575, min: 25000001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.02, min: 0, max: 100000 },
@@ -933,7 +933,7 @@ const MD_TAX_BRACKETS_2025 = {
     { rate: 0.04, min: 200001, max: 300000 },
     { rate: 0.0475, min: 300001, max: 15000000 },
     { rate: 0.0525, min: 15000001, max: 25000000 },
-    { rate: 0.0575, min: 25000001, max: Infinity }
+    { rate: 0.0575, min: 25000001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.02, min: 0, max: 100000 },
@@ -941,15 +941,15 @@ const MD_TAX_BRACKETS_2025 = {
     { rate: 0.04, min: 200001, max: 300000 },
     { rate: 0.0475, min: 300001, max: 15000000 },
     { rate: 0.0525, min: 15000001, max: 25000000 },
-    { rate: 0.0575, min: 25000001, max: Infinity }
-  ]
+    { rate: 0.0575, min: 25000001, max: Infinity },
+  ],
 };
 
 const MD_STANDARD_DEDUCTIONS_2025 = {
   single: 335000,
   married_joint: 670000,
   married_separate: 335000,
-  head_of_household: 335000
+  head_of_household: 335000,
 };
 
 /**
@@ -961,14 +961,14 @@ const MA_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.05, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.05, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.05, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.05, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.05, min: 0, max: Infinity }],
 };
 
 const MA_STANDARD_DEDUCTIONS_2025 = {
   single: 440000,
   married_joint: 880000,
   married_separate: 440000,
-  head_of_household: 880000
+  head_of_household: 880000,
 };
 
 /**
@@ -980,14 +980,14 @@ const MI_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.0425, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.0425, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.0425, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.0425, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.0425, min: 0, max: Infinity }],
 };
 
 const MI_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1000,33 +1000,33 @@ const MN_TAX_BRACKETS_2025 = {
     { rate: 0.0535, min: 0, max: 3007000 },
     { rate: 0.068, min: 3007001, max: 7931000 },
     { rate: 0.0785, min: 7931001, max: 13320000 },
-    { rate: 0.0985, min: 13320001, max: Infinity }
+    { rate: 0.0985, min: 13320001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0535, min: 0, max: 4484000 },
     { rate: 0.068, min: 4484001, max: 11846000 },
     { rate: 0.0785, min: 11846001, max: 19970000 },
-    { rate: 0.0985, min: 19970001, max: Infinity }
+    { rate: 0.0985, min: 19970001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0535, min: 0, max: 2242000 },
     { rate: 0.068, min: 2242001, max: 5923000 },
     { rate: 0.0785, min: 5923001, max: 9985000 },
-    { rate: 0.0985, min: 9985001, max: Infinity }
+    { rate: 0.0985, min: 9985001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0535, min: 0, max: 3007000 },
     { rate: 0.068, min: 3007001, max: 7931000 },
     { rate: 0.0785, min: 7931001, max: 13320000 },
-    { rate: 0.0985, min: 13320001, max: Infinity }
-  ]
+    { rate: 0.0985, min: 13320001, max: Infinity },
+  ],
 };
 
 const MN_STANDARD_DEDUCTIONS_2025 = {
   single: 1495000,
   married_joint: 2990000,
   married_separate: 1495000,
-  head_of_household: 2245000
+  head_of_household: 2245000,
 };
 
 /**
@@ -1036,32 +1036,32 @@ const MN_STANDARD_DEDUCTIONS_2025 = {
  */
 const MS_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.0, min: 0, max: 1000000 },
     { rate: 0.044, min: 1000001, max: 1100000 },
-    { rate: 0.047, min: 1100001, max: Infinity }
+    { rate: 0.047, min: 1100001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.0, min: 0, max: 1000000 },
     { rate: 0.044, min: 1000001, max: 1100000 },
-    { rate: 0.047, min: 1100001, max: Infinity }
+    { rate: 0.047, min: 1100001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.0, min: 0, max: 1000000 },
     { rate: 0.044, min: 1000001, max: 1100000 },
-    { rate: 0.047, min: 1100001, max: Infinity }
+    { rate: 0.047, min: 1100001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.00, min: 0, max: 1000000 },
+    { rate: 0.0, min: 0, max: 1000000 },
     { rate: 0.044, min: 1000001, max: 1100000 },
-    { rate: 0.047, min: 1100001, max: Infinity }
-  ]
+    { rate: 0.047, min: 1100001, max: Infinity },
+  ],
 };
 
 const MS_STANDARD_DEDUCTIONS_2025 = {
   single: 230000,
   married_joint: 460000,
   married_separate: 230000,
-  head_of_household: 340000
+  head_of_household: 340000,
 };
 
 /**
@@ -1077,7 +1077,7 @@ const MO_TAX_BRACKETS_2025 = {
     { rate: 0.035, min: 393901, max: 525200 },
     { rate: 0.04, min: 525201, max: 656500 },
     { rate: 0.045, min: 656501, max: 787800 },
-    { rate: 0.047, min: 787801, max: Infinity }
+    { rate: 0.047, min: 787801, max: Infinity },
   ],
   married_joint: [
     { rate: 0.02, min: 0, max: 131300 },
@@ -1086,7 +1086,7 @@ const MO_TAX_BRACKETS_2025 = {
     { rate: 0.035, min: 393901, max: 525200 },
     { rate: 0.04, min: 525201, max: 656500 },
     { rate: 0.045, min: 656501, max: 787800 },
-    { rate: 0.047, min: 787801, max: Infinity }
+    { rate: 0.047, min: 787801, max: Infinity },
   ],
   married_separate: [
     { rate: 0.02, min: 0, max: 131300 },
@@ -1095,7 +1095,7 @@ const MO_TAX_BRACKETS_2025 = {
     { rate: 0.035, min: 393901, max: 525200 },
     { rate: 0.04, min: 525201, max: 656500 },
     { rate: 0.045, min: 656501, max: 787800 },
-    { rate: 0.047, min: 787801, max: Infinity }
+    { rate: 0.047, min: 787801, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.02, min: 0, max: 131300 },
@@ -1104,15 +1104,15 @@ const MO_TAX_BRACKETS_2025 = {
     { rate: 0.035, min: 393901, max: 525200 },
     { rate: 0.04, min: 525201, max: 656500 },
     { rate: 0.045, min: 656501, max: 787800 },
-    { rate: 0.047, min: 787801, max: Infinity }
-  ]
+    { rate: 0.047, min: 787801, max: Infinity },
+  ],
 };
 
 const MO_STANDARD_DEDUCTIONS_2025 = {
   single: 1575000,
   married_joint: 3150000,
   married_separate: 1575000,
-  head_of_household: 2362500
+  head_of_household: 2362500,
 };
 
 /**
@@ -1123,27 +1123,27 @@ const MO_STANDARD_DEDUCTIONS_2025 = {
 const MT_TAX_BRACKETS_2025 = {
   single: [
     { rate: 0.047, min: 0, max: 360000 },
-    { rate: 0.059, min: 360001, max: Infinity }
+    { rate: 0.059, min: 360001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.047, min: 0, max: 360000 },
-    { rate: 0.059, min: 360001, max: Infinity }
+    { rate: 0.059, min: 360001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.047, min: 0, max: 360000 },
-    { rate: 0.059, min: 360001, max: Infinity }
+    { rate: 0.059, min: 360001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.047, min: 0, max: 360000 },
-    { rate: 0.059, min: 360001, max: Infinity }
-  ]
+    { rate: 0.059, min: 360001, max: Infinity },
+  ],
 };
 
 const MT_STANDARD_DEDUCTIONS_2025 = {
   single: 450000,
   married_joint: 1150000,
   married_separate: 450000,
-  head_of_household: 675000
+  head_of_household: 675000,
 };
 
 /**
@@ -1155,30 +1155,30 @@ const NE_TAX_BRACKETS_2025 = {
   single: [
     { rate: 0.0246, min: 0, max: 370000 },
     { rate: 0.0351, min: 370001, max: 920000 },
-    { rate: 0.052, min: 920001, max: Infinity }
+    { rate: 0.052, min: 920001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0246, min: 0, max: 370000 },
     { rate: 0.0351, min: 370001, max: 920000 },
-    { rate: 0.052, min: 920001, max: Infinity }
+    { rate: 0.052, min: 920001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0246, min: 0, max: 370000 },
     { rate: 0.0351, min: 370001, max: 920000 },
-    { rate: 0.052, min: 920001, max: Infinity }
+    { rate: 0.052, min: 920001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0246, min: 0, max: 370000 },
     { rate: 0.0351, min: 370001, max: 920000 },
-    { rate: 0.052, min: 920001, max: Infinity }
-  ]
+    { rate: 0.052, min: 920001, max: Infinity },
+  ],
 };
 
 const NE_STANDARD_DEDUCTIONS_2025 = {
   single: 790000,
   married_joint: 1720000,
   married_separate: 790000,
-  head_of_household: 1185000
+  head_of_household: 1185000,
 };
 
 /**
@@ -1194,7 +1194,7 @@ const NJ_TAX_BRACKETS_2025 = {
     { rate: 0.05525, min: 4000001, max: 7500000 },
     { rate: 0.0637, min: 7500001, max: 50000000 },
     { rate: 0.0897, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
+    { rate: 0.1075, min: 100000001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.014, min: 0, max: 2000000 },
@@ -1203,7 +1203,7 @@ const NJ_TAX_BRACKETS_2025 = {
     { rate: 0.05525, min: 4000001, max: 7500000 },
     { rate: 0.0637, min: 7500001, max: 50000000 },
     { rate: 0.0897, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
+    { rate: 0.1075, min: 100000001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.014, min: 0, max: 2000000 },
@@ -1212,7 +1212,7 @@ const NJ_TAX_BRACKETS_2025 = {
     { rate: 0.05525, min: 4000001, max: 7500000 },
     { rate: 0.0637, min: 7500001, max: 50000000 },
     { rate: 0.0897, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
+    { rate: 0.1075, min: 100000001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.014, min: 0, max: 2000000 },
@@ -1221,15 +1221,15 @@ const NJ_TAX_BRACKETS_2025 = {
     { rate: 0.05525, min: 4000001, max: 7500000 },
     { rate: 0.0637, min: 7500001, max: 50000000 },
     { rate: 0.0897, min: 50000001, max: 100000000 },
-    { rate: 0.1075, min: 100000001, max: Infinity }
-  ]
+    { rate: 0.1075, min: 100000001, max: Infinity },
+  ],
 };
 
 const NJ_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1243,36 +1243,36 @@ const NM_TAX_BRACKETS_2025 = {
     { rate: 0.032, min: 550001, max: 1100000 },
     { rate: 0.047, min: 1100001, max: 1600000 },
     { rate: 0.049, min: 1600001, max: 2100000 },
-    { rate: 0.059, min: 2100001, max: Infinity }
+    { rate: 0.059, min: 2100001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.015, min: 0, max: 550000 },
     { rate: 0.032, min: 550001, max: 1100000 },
     { rate: 0.047, min: 1100001, max: 1600000 },
     { rate: 0.049, min: 1600001, max: 2100000 },
-    { rate: 0.059, min: 2100001, max: Infinity }
+    { rate: 0.059, min: 2100001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.015, min: 0, max: 550000 },
     { rate: 0.032, min: 550001, max: 1100000 },
     { rate: 0.047, min: 1100001, max: 1600000 },
     { rate: 0.049, min: 1600001, max: 2100000 },
-    { rate: 0.059, min: 2100001, max: Infinity }
+    { rate: 0.059, min: 2100001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.015, min: 0, max: 550000 },
     { rate: 0.032, min: 550001, max: 1100000 },
     { rate: 0.047, min: 1100001, max: 1600000 },
     { rate: 0.049, min: 1600001, max: 2100000 },
-    { rate: 0.059, min: 2100001, max: Infinity }
-  ]
+    { rate: 0.059, min: 2100001, max: Infinity },
+  ],
 };
 
 const NM_STANDARD_DEDUCTIONS_2025 = {
   single: 1500000,
   married_joint: 3000000,
   married_separate: 1500000,
-  head_of_household: 2250000
+  head_of_household: 2250000,
 };
 
 /**
@@ -1284,14 +1284,14 @@ const NC_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.0425, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.0425, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.0425, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.0425, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.0425, min: 0, max: Infinity }],
 };
 
 const NC_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1305,36 +1305,36 @@ const ND_TAX_BRACKETS_2025 = {
     { rate: 0.0204, min: 4669501, max: 14008500 },
     { rate: 0.0227, min: 14008501, max: 23347500 },
     { rate: 0.0264, min: 23347501, max: 28017000 },
-    { rate: 0.029, min: 28017001, max: Infinity }
+    { rate: 0.029, min: 28017001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.011, min: 0, max: 4669500 },
     { rate: 0.0204, min: 4669501, max: 14008500 },
     { rate: 0.0227, min: 14008501, max: 23347500 },
     { rate: 0.0264, min: 23347501, max: 28017000 },
-    { rate: 0.029, min: 28017001, max: Infinity }
+    { rate: 0.029, min: 28017001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.011, min: 0, max: 4669500 },
     { rate: 0.0204, min: 4669501, max: 14008500 },
     { rate: 0.0227, min: 14008501, max: 23347500 },
     { rate: 0.0264, min: 23347501, max: 28017000 },
-    { rate: 0.029, min: 28017001, max: Infinity }
+    { rate: 0.029, min: 28017001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.011, min: 0, max: 4669500 },
     { rate: 0.0204, min: 4669501, max: 14008500 },
     { rate: 0.0227, min: 14008501, max: 23347500 },
     { rate: 0.0264, min: 23347501, max: 28017000 },
-    { rate: 0.029, min: 28017001, max: Infinity }
-  ]
+    { rate: 0.029, min: 28017001, max: Infinity },
+  ],
 };
 
 const ND_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1346,14 +1346,14 @@ const OH_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.0275, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.0275, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.0275, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.0275, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.0275, min: 0, max: Infinity }],
 };
 
 const OH_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1369,7 +1369,7 @@ const OK_TAX_BRACKETS_2025 = {
     { rate: 0.015, min: 3750001, max: 4900000 },
     { rate: 0.027, min: 4900001, max: 7200000 },
     { rate: 0.036, min: 7200001, max: 12200000 },
-    { rate: 0.0475, min: 12200001, max: Infinity }
+    { rate: 0.0475, min: 12200001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0025, min: 0, max: 1000000 },
@@ -1378,7 +1378,7 @@ const OK_TAX_BRACKETS_2025 = {
     { rate: 0.015, min: 3750001, max: 4900000 },
     { rate: 0.027, min: 4900001, max: 7200000 },
     { rate: 0.036, min: 7200001, max: 12200000 },
-    { rate: 0.0475, min: 12200001, max: Infinity }
+    { rate: 0.0475, min: 12200001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0025, min: 0, max: 1000000 },
@@ -1387,7 +1387,7 @@ const OK_TAX_BRACKETS_2025 = {
     { rate: 0.015, min: 3750001, max: 4900000 },
     { rate: 0.027, min: 4900001, max: 7200000 },
     { rate: 0.036, min: 7200001, max: 12200000 },
-    { rate: 0.0475, min: 12200001, max: Infinity }
+    { rate: 0.0475, min: 12200001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0025, min: 0, max: 1000000 },
@@ -1396,15 +1396,15 @@ const OK_TAX_BRACKETS_2025 = {
     { rate: 0.015, min: 3750001, max: 4900000 },
     { rate: 0.027, min: 4900001, max: 7200000 },
     { rate: 0.036, min: 7200001, max: 12200000 },
-    { rate: 0.0475, min: 12200001, max: Infinity }
-  ]
+    { rate: 0.0475, min: 12200001, max: Infinity },
+  ],
 };
 
 const OK_STANDARD_DEDUCTIONS_2025 = {
   single: 635000,
   married_joint: 1270000,
   married_separate: 635000,
-  head_of_household: 952500
+  head_of_household: 952500,
 };
 
 /**
@@ -1417,33 +1417,33 @@ const OR_TAX_BRACKETS_2025 = {
     { rate: 0.0475, min: 0, max: 405000 },
     { rate: 0.0675, min: 405001, max: 1030000 },
     { rate: 0.0875, min: 1030001, max: 12500000 },
-    { rate: 0.099, min: 12500001, max: Infinity }
+    { rate: 0.099, min: 12500001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0475, min: 0, max: 810000 },
     { rate: 0.0675, min: 810001, max: 2060000 },
     { rate: 0.0875, min: 2060001, max: 25000000 },
-    { rate: 0.099, min: 25000001, max: Infinity }
+    { rate: 0.099, min: 25000001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0475, min: 0, max: 405000 },
     { rate: 0.0675, min: 405001, max: 1030000 },
     { rate: 0.0875, min: 1030001, max: 12500000 },
-    { rate: 0.099, min: 12500001, max: Infinity }
+    { rate: 0.099, min: 12500001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0475, min: 0, max: 607500 },
     { rate: 0.0675, min: 607501, max: 1545000 },
     { rate: 0.0875, min: 1545001, max: 18750000 },
-    { rate: 0.099, min: 18750001, max: Infinity }
-  ]
+    { rate: 0.099, min: 18750001, max: Infinity },
+  ],
 };
 
 const OR_STANDARD_DEDUCTIONS_2025 = {
   single: 283500,
   married_joint: 567000,
   married_separate: 283500,
-  head_of_household: 425250
+  head_of_household: 425250,
 };
 
 /**
@@ -1455,14 +1455,14 @@ const PA_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.0307, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.0307, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.0307, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.0307, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.0307, min: 0, max: Infinity }],
 };
 
 const PA_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1474,30 +1474,30 @@ const RI_TAX_BRACKETS_2025 = {
   single: [
     { rate: 0.0375, min: 0, max: 7345000 },
     { rate: 0.0475, min: 7345001, max: 16695000 },
-    { rate: 0.0599, min: 16695001, max: Infinity }
+    { rate: 0.0599, min: 16695001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0375, min: 0, max: 7345000 },
     { rate: 0.0475, min: 7345001, max: 16695000 },
-    { rate: 0.0599, min: 16695001, max: Infinity }
+    { rate: 0.0599, min: 16695001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0375, min: 0, max: 7345000 },
     { rate: 0.0475, min: 7345001, max: 16695000 },
-    { rate: 0.0599, min: 16695001, max: Infinity }
+    { rate: 0.0599, min: 16695001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0375, min: 0, max: 7345000 },
     { rate: 0.0475, min: 7345001, max: 16695000 },
-    { rate: 0.0599, min: 16695001, max: Infinity }
-  ]
+    { rate: 0.0599, min: 16695001, max: Infinity },
+  ],
 };
 
 const RI_STANDARD_DEDUCTIONS_2025 = {
   single: 1090000,
   married_joint: 2180000,
   married_separate: 1090000,
-  head_of_household: 1635000
+  head_of_household: 1635000,
 };
 
 /**
@@ -1507,7 +1507,7 @@ const RI_STANDARD_DEDUCTIONS_2025 = {
  */
 const SC_TAX_BRACKETS_2025 = {
   single: [
-    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.0, min: 0, max: 360000 },
     { rate: 0.03, min: 360001, max: 360100 },
     { rate: 0.031, min: 360101, max: 360200 },
     { rate: 0.032, min: 360201, max: 360300 },
@@ -1540,10 +1540,10 @@ const SC_TAX_BRACKETS_2025 = {
     { rate: 0.059, min: 362901, max: 363000 },
     { rate: 0.06, min: 363001, max: 363100 },
     { rate: 0.061, min: 363101, max: 363200 },
-    { rate: 0.062, min: 363201, max: Infinity }
+    { rate: 0.062, min: 363201, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.0, min: 0, max: 360000 },
     { rate: 0.03, min: 360001, max: 360100 },
     { rate: 0.031, min: 360101, max: 360200 },
     { rate: 0.032, min: 360201, max: 360300 },
@@ -1576,10 +1576,10 @@ const SC_TAX_BRACKETS_2025 = {
     { rate: 0.059, min: 362901, max: 363000 },
     { rate: 0.06, min: 363001, max: 363100 },
     { rate: 0.061, min: 363101, max: 363200 },
-    { rate: 0.062, min: 363201, max: Infinity }
+    { rate: 0.062, min: 363201, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.0, min: 0, max: 360000 },
     { rate: 0.03, min: 360001, max: 360100 },
     { rate: 0.031, min: 360101, max: 360200 },
     { rate: 0.032, min: 360201, max: 360300 },
@@ -1612,10 +1612,10 @@ const SC_TAX_BRACKETS_2025 = {
     { rate: 0.059, min: 362901, max: 363000 },
     { rate: 0.06, min: 363001, max: 363100 },
     { rate: 0.061, min: 363101, max: 363200 },
-    { rate: 0.062, min: 363201, max: Infinity }
+    { rate: 0.062, min: 363201, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.00, min: 0, max: 360000 },
+    { rate: 0.0, min: 0, max: 360000 },
     { rate: 0.03, min: 360001, max: 360100 },
     { rate: 0.031, min: 360101, max: 360200 },
     { rate: 0.032, min: 360201, max: 360300 },
@@ -1648,15 +1648,15 @@ const SC_TAX_BRACKETS_2025 = {
     { rate: 0.059, min: 362901, max: 363000 },
     { rate: 0.06, min: 363001, max: 363100 },
     { rate: 0.061, min: 363101, max: 363200 },
-    { rate: 0.062, min: 363201, max: Infinity }
-  ]
+    { rate: 0.062, min: 363201, max: Infinity },
+  ],
 };
 
 const SC_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1668,14 +1668,14 @@ const UT_TAX_BRACKETS_2025 = {
   single: [{ rate: 0.045, min: 0, max: Infinity }],
   married_joint: [{ rate: 0.045, min: 0, max: Infinity }],
   married_separate: [{ rate: 0.045, min: 0, max: Infinity }],
-  head_of_household: [{ rate: 0.045, min: 0, max: Infinity }]
+  head_of_household: [{ rate: 0.045, min: 0, max: Infinity }],
 };
 
 const UT_STANDARD_DEDUCTIONS_2025 = {
   single: 1460000,
   married_joint: 2920000,
   married_separate: 1460000,
-  head_of_household: 2190000
+  head_of_household: 2190000,
 };
 
 /**
@@ -1688,33 +1688,33 @@ const VT_TAX_BRACKETS_2025 = {
     { rate: 0.0335, min: 0, max: 4540000 },
     { rate: 0.066, min: 4540001, max: 10940000 },
     { rate: 0.076, min: 10940001, max: 22950000 },
-    { rate: 0.0875, min: 22950001, max: Infinity }
+    { rate: 0.0875, min: 22950001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0335, min: 0, max: 9080000 },
     { rate: 0.066, min: 9080001, max: 21880000 },
     { rate: 0.076, min: 21880001, max: 45900000 },
-    { rate: 0.0875, min: 45900001, max: Infinity }
+    { rate: 0.0875, min: 45900001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0335, min: 0, max: 4540000 },
     { rate: 0.066, min: 4540001, max: 10940000 },
     { rate: 0.076, min: 10940001, max: 22950000 },
-    { rate: 0.0875, min: 22950001, max: Infinity }
+    { rate: 0.0875, min: 22950001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0335, min: 0, max: 6810000 },
     { rate: 0.066, min: 6810001, max: 16410000 },
     { rate: 0.076, min: 16410001, max: 34425000 },
-    { rate: 0.0875, min: 34425001, max: Infinity }
-  ]
+    { rate: 0.0875, min: 34425001, max: Infinity },
+  ],
 };
 
 const VT_STANDARD_DEDUCTIONS_2025 = {
   single: 740000,
   married_joint: 1485000,
   married_separate: 740000,
-  head_of_household: 1110000
+  head_of_household: 1110000,
 };
 
 /**
@@ -1726,33 +1726,31 @@ const VA_TAX_BRACKETS_2025 = {
   single: [
     { rate: 0.02, min: 0, max: 300000 },
     { rate: 0.03, min: 300001, max: 500000 },
-    { rate: 0.0575, min: 500001, max: Infinity }
+    { rate: 0.0575, min: 500001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.02, min: 0, max: 300000 },
     { rate: 0.03, min: 300001, max: 500000 },
-    { rate: 0.0575, min: 500001, max: Infinity }
+    { rate: 0.0575, min: 500001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.02, min: 0, max: 300000 },
     { rate: 0.03, min: 300001, max: 500000 },
-    { rate: 0.0575, min: 500001, max: Infinity }
+    { rate: 0.0575, min: 500001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.02, min: 0, max: 300000 },
     { rate: 0.03, min: 300001, max: 500000 },
-    { rate: 0.0575, min: 500001, max: Infinity }
-  ]
+    { rate: 0.0575, min: 500001, max: Infinity },
+  ],
 };
 
 const VA_STANDARD_DEDUCTIONS_2025 = {
   single: 875000,
   married_joint: 1750000,
   married_separate: 875000,
-  head_of_household: 875000
+  head_of_household: 875000,
 };
-
-
 
 /**
  * WEST VIRGINIA - 2025 Tax Brackets
@@ -1767,7 +1765,7 @@ const WV_TAX_BRACKETS_2025 = {
     { rate: 0.0352, min: 4000001, max: 6000000 },
     { rate: 0.0395, min: 6000001, max: 8000000 },
     { rate: 0.0438, min: 8000001, max: 10000000 },
-    { rate: 0.0482, min: 10000001, max: Infinity }
+    { rate: 0.0482, min: 10000001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.0222, min: 0, max: 1000000 },
@@ -1776,7 +1774,7 @@ const WV_TAX_BRACKETS_2025 = {
     { rate: 0.0352, min: 4000001, max: 6000000 },
     { rate: 0.0395, min: 6000001, max: 8000000 },
     { rate: 0.0438, min: 8000001, max: 10000000 },
-    { rate: 0.0482, min: 10000001, max: Infinity }
+    { rate: 0.0482, min: 10000001, max: Infinity },
   ],
   married_separate: [
     { rate: 0.0222, min: 0, max: 1000000 },
@@ -1785,7 +1783,7 @@ const WV_TAX_BRACKETS_2025 = {
     { rate: 0.0352, min: 4000001, max: 6000000 },
     { rate: 0.0395, min: 6000001, max: 8000000 },
     { rate: 0.0438, min: 8000001, max: 10000000 },
-    { rate: 0.0482, min: 10000001, max: Infinity }
+    { rate: 0.0482, min: 10000001, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.0222, min: 0, max: 1000000 },
@@ -1794,15 +1792,15 @@ const WV_TAX_BRACKETS_2025 = {
     { rate: 0.0352, min: 4000001, max: 6000000 },
     { rate: 0.0395, min: 6000001, max: 8000000 },
     { rate: 0.0438, min: 8000001, max: 10000000 },
-    { rate: 0.0482, min: 10000001, max: Infinity }
-  ]
+    { rate: 0.0482, min: 10000001, max: Infinity },
+  ],
 };
 
 const WV_STANDARD_DEDUCTIONS_2025 = {
   single: 200000,
   married_joint: 400000,
   married_separate: 200000,
-  head_of_household: 200000
+  head_of_household: 200000,
 };
 
 /**
@@ -1815,33 +1813,33 @@ const WI_TAX_BRACKETS_2025 = {
     { rate: 0.035, min: 0, max: 1468000 },
     { rate: 0.044, min: 1468001, max: 5048000 },
     { rate: 0.053, min: 5048001, max: 32329000 },
-    { rate: 0.0765, min: 32329001, max: Infinity }
+    { rate: 0.0765, min: 32329001, max: Infinity },
   ],
   married_joint: [
     { rate: 0.035, min: 0, max: 2192000 },
     { rate: 0.044, min: 2192001, max: 7572000 },
     { rate: 0.053, min: 7572001, max: 48493500 },
-    { rate: 0.0765, min: 48493501, max: Infinity }
+    { rate: 0.0765, min: 48493501, max: Infinity },
   ],
   married_separate: [
     { rate: 0.035, min: 0, max: 1096000 },
     { rate: 0.044, min: 1096001, max: 3786000 },
     { rate: 0.053, min: 3786001, max: 24246750 },
-    { rate: 0.0765, min: 24246751, max: Infinity }
+    { rate: 0.0765, min: 24246751, max: Infinity },
   ],
   head_of_household: [
     { rate: 0.035, min: 0, max: 1832000 },
     { rate: 0.044, min: 1832001, max: 6310000 },
     { rate: 0.053, min: 6310001, max: 40361100 },
-    { rate: 0.0765, min: 40361101, max: Infinity }
-  ]
+    { rate: 0.0765, min: 40361101, max: Infinity },
+  ],
 };
 
 const WI_STANDARD_DEDUCTIONS_2025 = {
   single: 1500000,
   married_joint: 3000000,
   married_separate: 1500000,
-  head_of_household: 2250000
+  head_of_household: 2250000,
 };
 
 /**
@@ -1865,48 +1863,48 @@ export function getStateTaxBrackets(state, year, filingStatus) {
   // All other states - return their respective brackets
   // Note: Using 2025 data for both years for now (2024 data not fully implemented)
   const stateMappings = {
-    'AL': AL_TAX_BRACKETS_2025,
-    'AR': AR_TAX_BRACKETS_2025,
-    'AZ': AZ_TAX_BRACKETS_2025,
-    'CA': CA_TAX_BRACKETS_2025,
-    'CO': CO_TAX_BRACKETS_2025,
-    'CT': CT_TAX_BRACKETS_2025,
-    'DC': DC_TAX_BRACKETS_2025,
-    'DE': DE_TAX_BRACKETS_2025,
-    'GA': GA_TAX_BRACKETS_2025,
-    'HI': HI_TAX_BRACKETS_2025,
-    'IA': IA_TAX_BRACKETS_2025,
-    'ID': ID_TAX_BRACKETS_2025,
-    'IL': IL_TAX_BRACKETS_2025,
-    'IN': IN_TAX_BRACKETS_2025,
-    'KS': KS_TAX_BRACKETS_2025,
-    'KY': KY_TAX_BRACKETS_2025,
-    'LA': LA_TAX_BRACKETS_2025,
-    'MA': MA_TAX_BRACKETS_2025,
-    'MD': MD_TAX_BRACKETS_2025,
-    'ME': ME_TAX_BRACKETS_2025,
-    'MI': MI_TAX_BRACKETS_2025,
-    'MN': MN_TAX_BRACKETS_2025,
-    'MO': MO_TAX_BRACKETS_2025,
-    'MS': MS_TAX_BRACKETS_2025,
-    'MT': MT_TAX_BRACKETS_2025,
-    'NC': NC_TAX_BRACKETS_2025,
-    'ND': ND_TAX_BRACKETS_2025,
-    'NE': NE_TAX_BRACKETS_2025,
-    'NJ': NJ_TAX_BRACKETS_2025,
-    'NM': NM_TAX_BRACKETS_2025,
-    'NY': NY_TAX_BRACKETS_2025,
-    'OH': OH_TAX_BRACKETS_2025,
-    'OK': OK_TAX_BRACKETS_2025,
-    'OR': OR_TAX_BRACKETS_2025,
-    'PA': PA_TAX_BRACKETS_2025,
-    'RI': RI_TAX_BRACKETS_2025,
-    'SC': SC_TAX_BRACKETS_2025,
-    'UT': UT_TAX_BRACKETS_2025,
-    'VA': VA_TAX_BRACKETS_2025,
-    'VT': VT_TAX_BRACKETS_2025,
-    'WI': WI_TAX_BRACKETS_2025,
-    'WV': WV_TAX_BRACKETS_2025
+    AL: AL_TAX_BRACKETS_2025,
+    AR: AR_TAX_BRACKETS_2025,
+    AZ: AZ_TAX_BRACKETS_2025,
+    CA: CA_TAX_BRACKETS_2025,
+    CO: CO_TAX_BRACKETS_2025,
+    CT: CT_TAX_BRACKETS_2025,
+    DC: DC_TAX_BRACKETS_2025,
+    DE: DE_TAX_BRACKETS_2025,
+    GA: GA_TAX_BRACKETS_2025,
+    HI: HI_TAX_BRACKETS_2025,
+    IA: IA_TAX_BRACKETS_2025,
+    ID: ID_TAX_BRACKETS_2025,
+    IL: IL_TAX_BRACKETS_2025,
+    IN: IN_TAX_BRACKETS_2025,
+    KS: KS_TAX_BRACKETS_2025,
+    KY: KY_TAX_BRACKETS_2025,
+    LA: LA_TAX_BRACKETS_2025,
+    MA: MA_TAX_BRACKETS_2025,
+    MD: MD_TAX_BRACKETS_2025,
+    ME: ME_TAX_BRACKETS_2025,
+    MI: MI_TAX_BRACKETS_2025,
+    MN: MN_TAX_BRACKETS_2025,
+    MO: MO_TAX_BRACKETS_2025,
+    MS: MS_TAX_BRACKETS_2025,
+    MT: MT_TAX_BRACKETS_2025,
+    NC: NC_TAX_BRACKETS_2025,
+    ND: ND_TAX_BRACKETS_2025,
+    NE: NE_TAX_BRACKETS_2025,
+    NJ: NJ_TAX_BRACKETS_2025,
+    NM: NM_TAX_BRACKETS_2025,
+    NY: NY_TAX_BRACKETS_2025,
+    OH: OH_TAX_BRACKETS_2025,
+    OK: OK_TAX_BRACKETS_2025,
+    OR: OR_TAX_BRACKETS_2025,
+    PA: PA_TAX_BRACKETS_2025,
+    RI: RI_TAX_BRACKETS_2025,
+    SC: SC_TAX_BRACKETS_2025,
+    UT: UT_TAX_BRACKETS_2025,
+    VA: VA_TAX_BRACKETS_2025,
+    VT: VT_TAX_BRACKETS_2025,
+    WI: WI_TAX_BRACKETS_2025,
+    WV: WV_TAX_BRACKETS_2025,
   };
 
   const brackets = stateMappings[upperState];
@@ -1938,48 +1936,48 @@ export function getStateStandardDeduction(state, year, filingStatus) {
   // All other states - return their respective deductions
   // Note: Using 2025 data for both years for now (2024 data not fully implemented)
   const deductionMappings = {
-    'AL': AL_STANDARD_DEDUCTIONS_2025,
-    'AR': AR_STANDARD_DEDUCTIONS_2025,
-    'AZ': AZ_STANDARD_DEDUCTIONS_2025,
-    'CA': CA_STANDARD_DEDUCTIONS_2025,
-    'CO': CO_STANDARD_DEDUCTIONS_2025,
-    'CT': CT_STANDARD_DEDUCTIONS_2025,
-    'DC': DC_STANDARD_DEDUCTIONS_2025,
-    'DE': DE_STANDARD_DEDUCTIONS_2025,
-    'GA': GA_STANDARD_DEDUCTIONS_2025,
-    'HI': HI_STANDARD_DEDUCTIONS_2025,
-    'IA': IA_STANDARD_DEDUCTIONS_2025,
-    'ID': ID_STANDARD_DEDUCTIONS_2025,
-    'IL': IL_STANDARD_DEDUCTIONS_2025,
-    'IN': IN_STANDARD_DEDUCTIONS_2025,
-    'KS': KS_STANDARD_DEDUCTIONS_2025,
-    'KY': KY_STANDARD_DEDUCTIONS_2025,
-    'LA': LA_STANDARD_DEDUCTIONS_2025,
-    'MA': MA_STANDARD_DEDUCTIONS_2025,
-    'MD': MD_STANDARD_DEDUCTIONS_2025,
-    'ME': ME_STANDARD_DEDUCTIONS_2025,
-    'MI': MI_STANDARD_DEDUCTIONS_2025,
-    'MN': MN_STANDARD_DEDUCTIONS_2025,
-    'MO': MO_STANDARD_DEDUCTIONS_2025,
-    'MS': MS_STANDARD_DEDUCTIONS_2025,
-    'MT': MT_STANDARD_DEDUCTIONS_2025,
-    'NC': NC_STANDARD_DEDUCTIONS_2025,
-    'ND': ND_STANDARD_DEDUCTIONS_2025,
-    'NE': NE_STANDARD_DEDUCTIONS_2025,
-    'NJ': NJ_STANDARD_DEDUCTIONS_2025,
-    'NM': NM_STANDARD_DEDUCTIONS_2025,
-    'NY': NY_STANDARD_DEDUCTIONS_2025,
-    'OH': OH_STANDARD_DEDUCTIONS_2025,
-    'OK': OK_STANDARD_DEDUCTIONS_2025,
-    'OR': OR_STANDARD_DEDUCTIONS_2025,
-    'PA': PA_STANDARD_DEDUCTIONS_2025,
-    'RI': RI_STANDARD_DEDUCTIONS_2025,
-    'SC': SC_STANDARD_DEDUCTIONS_2025,
-    'UT': UT_STANDARD_DEDUCTIONS_2025,
-    'VA': VA_STANDARD_DEDUCTIONS_2025,
-    'VT': VT_STANDARD_DEDUCTIONS_2025,
-    'WI': WI_STANDARD_DEDUCTIONS_2025,
-    'WV': WV_STANDARD_DEDUCTIONS_2025
+    AL: AL_STANDARD_DEDUCTIONS_2025,
+    AR: AR_STANDARD_DEDUCTIONS_2025,
+    AZ: AZ_STANDARD_DEDUCTIONS_2025,
+    CA: CA_STANDARD_DEDUCTIONS_2025,
+    CO: CO_STANDARD_DEDUCTIONS_2025,
+    CT: CT_STANDARD_DEDUCTIONS_2025,
+    DC: DC_STANDARD_DEDUCTIONS_2025,
+    DE: DE_STANDARD_DEDUCTIONS_2025,
+    GA: GA_STANDARD_DEDUCTIONS_2025,
+    HI: HI_STANDARD_DEDUCTIONS_2025,
+    IA: IA_STANDARD_DEDUCTIONS_2025,
+    ID: ID_STANDARD_DEDUCTIONS_2025,
+    IL: IL_STANDARD_DEDUCTIONS_2025,
+    IN: IN_STANDARD_DEDUCTIONS_2025,
+    KS: KS_STANDARD_DEDUCTIONS_2025,
+    KY: KY_STANDARD_DEDUCTIONS_2025,
+    LA: LA_STANDARD_DEDUCTIONS_2025,
+    MA: MA_STANDARD_DEDUCTIONS_2025,
+    MD: MD_STANDARD_DEDUCTIONS_2025,
+    ME: ME_STANDARD_DEDUCTIONS_2025,
+    MI: MI_STANDARD_DEDUCTIONS_2025,
+    MN: MN_STANDARD_DEDUCTIONS_2025,
+    MO: MO_STANDARD_DEDUCTIONS_2025,
+    MS: MS_STANDARD_DEDUCTIONS_2025,
+    MT: MT_STANDARD_DEDUCTIONS_2025,
+    NC: NC_STANDARD_DEDUCTIONS_2025,
+    ND: ND_STANDARD_DEDUCTIONS_2025,
+    NE: NE_STANDARD_DEDUCTIONS_2025,
+    NJ: NJ_STANDARD_DEDUCTIONS_2025,
+    NM: NM_STANDARD_DEDUCTIONS_2025,
+    NY: NY_STANDARD_DEDUCTIONS_2025,
+    OH: OH_STANDARD_DEDUCTIONS_2025,
+    OK: OK_STANDARD_DEDUCTIONS_2025,
+    OR: OR_STANDARD_DEDUCTIONS_2025,
+    PA: PA_STANDARD_DEDUCTIONS_2025,
+    RI: RI_STANDARD_DEDUCTIONS_2025,
+    SC: SC_STANDARD_DEDUCTIONS_2025,
+    UT: UT_STANDARD_DEDUCTIONS_2025,
+    VA: VA_STANDARD_DEDUCTIONS_2025,
+    VT: VT_STANDARD_DEDUCTIONS_2025,
+    WI: WI_STANDARD_DEDUCTIONS_2025,
+    WV: WV_STANDARD_DEDUCTIONS_2025,
   };
 
   const deductions = deductionMappings[upperState];
@@ -2011,7 +2009,7 @@ export function calculateFederalTax(income, filingStatus, year = 2025) {
 
     const taxableInBracket = Math.min(
       remainingIncome,
-      bracket.max === Infinity ? remainingIncome : (bracket.max - bracket.min + 1)
+      bracket.max === Infinity ? remainingIncome : bracket.max - bracket.min + 1
     );
 
     const taxInBracket = Math.round(taxableInBracket * bracket.rate);
@@ -2047,7 +2045,7 @@ export function calculateStateTax(state, income, filingStatus, year = 2025) {
 
     const taxableInBracket = Math.min(
       remainingIncome,
-      bracket.max === Infinity ? remainingIncome : (bracket.max - bracket.min + 1)
+      bracket.max === Infinity ? remainingIncome : bracket.max - bracket.min + 1
     );
 
     const taxInBracket = Math.round(taxableInBracket * bracket.rate);
@@ -2074,7 +2072,7 @@ export function calculateTotalTax(state, income, filingStatus, year = 2025) {
   return {
     federalTax,
     stateTax,
-    totalTax: federalTax + stateTax
+    totalTax: federalTax + stateTax,
   };
 }
 
@@ -2084,48 +2082,48 @@ export function calculateTotalTax(state, income, filingStatus, year = 2025) {
  */
 const LTCG_BRACKETS_2024 = {
   single: [
-    { rate: 0.00, min: 0, max: 4892500 },
+    { rate: 0.0, min: 0, max: 4892500 },
     { rate: 0.15, min: 4892501, max: 51890000 },
-    { rate: 0.20, min: 51890001, max: Infinity }
+    { rate: 0.2, min: 51890001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.00, min: 0, max: 9785000 },
+    { rate: 0.0, min: 0, max: 9785000 },
     { rate: 0.15, min: 9785001, max: 103780000 },
-    { rate: 0.20, min: 103780001, max: Infinity }
+    { rate: 0.2, min: 103780001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.00, min: 0, max: 4892500 },
+    { rate: 0.0, min: 0, max: 4892500 },
     { rate: 0.15, min: 4892501, max: 51890000 },
-    { rate: 0.20, min: 51890001, max: Infinity }
+    { rate: 0.2, min: 51890001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.00, min: 0, max: 7357500 },
+    { rate: 0.0, min: 0, max: 7357500 },
     { rate: 0.15, min: 7357501, max: 77940000 },
-    { rate: 0.20, min: 77940001, max: Infinity }
-  ]
+    { rate: 0.2, min: 77940001, max: Infinity },
+  ],
 };
 
 const LTCG_BRACKETS_2025 = {
   single: [
-    { rate: 0.00, min: 0, max: 4920500 },
+    { rate: 0.0, min: 0, max: 4920500 },
     { rate: 0.15, min: 4920501, max: 52305000 },
-    { rate: 0.20, min: 52305001, max: Infinity }
+    { rate: 0.2, min: 52305001, max: Infinity },
   ],
   married_joint: [
-    { rate: 0.00, min: 0, max: 9841000 },
+    { rate: 0.0, min: 0, max: 9841000 },
     { rate: 0.15, min: 9841001, max: 104610000 },
-    { rate: 0.20, min: 104610001, max: Infinity }
+    { rate: 0.2, min: 104610001, max: Infinity },
   ],
   married_separate: [
-    { rate: 0.00, min: 0, max: 4920500 },
+    { rate: 0.0, min: 0, max: 4920500 },
     { rate: 0.15, min: 4920501, max: 52305000 },
-    { rate: 0.20, min: 52305001, max: Infinity }
+    { rate: 0.2, min: 52305001, max: Infinity },
   ],
   head_of_household: [
-    { rate: 0.00, min: 0, max: 7381000 },
+    { rate: 0.0, min: 0, max: 7381000 },
     { rate: 0.15, min: 7381001, max: 78340000 },
-    { rate: 0.20, min: 78340001, max: Infinity }
-  ]
+    { rate: 0.2, min: 78340001, max: Infinity },
+  ],
 };
 
 /**
@@ -2146,7 +2144,7 @@ export function calculateLongTermCapitalGainsTax(gain, filingStatus, year = 2025
 
     const taxableInBracket = Math.min(
       remainingGain,
-      bracket.max === Infinity ? remainingGain : (bracket.max - bracket.min + 1)
+      bracket.max === Infinity ? remainingGain : bracket.max - bracket.min + 1
     );
 
     const taxInBracket = Math.round(taxableInBracket * bracket.rate);
@@ -2184,7 +2182,7 @@ export function calculateNetInvestmentIncomeTax(investmentIncome, magi, filingSt
     single: 20000000, // $200,000
     married_joint: 25000000, // $250,000
     married_separate: 12500000, // $125,000
-    head_of_household: 20000000 // $200,000
+    head_of_household: 20000000, // $200,000
   };
 
   const threshold = thresholds[filingStatus];
@@ -2217,7 +2215,13 @@ export function calculateNetInvestmentIncomeTax(investmentIncome, magi, filingSt
  * @param {number} year - Tax year (2024 or 2025)
  * @returns {object} Capital gains tax breakdown with ordinary tax, niit, and total
  */
-export function calculateCapitalGainsTax(longTermGain, shortTermGain, magi, filingStatus, year = 2025) {
+export function calculateCapitalGainsTax(
+  longTermGain,
+  shortTermGain,
+  magi,
+  filingStatus,
+  year = 2025
+) {
   const longTermTax = calculateLongTermCapitalGainsTax(longTermGain, filingStatus, year);
   const shortTermTax = calculateShortTermCapitalGainsTax(shortTermGain, filingStatus, year);
 
@@ -2230,7 +2234,7 @@ export function calculateCapitalGainsTax(longTermGain, shortTermGain, magi, fili
   return {
     ordinaryTax,
     niit,
-    totalTax: ordinaryTax + niit
+    totalTax: ordinaryTax + niit,
   };
 }
 
@@ -2280,7 +2284,7 @@ export function calculateFicaTax(wages, filingStatus, year = 2025) {
   return {
     ssTax,
     medicareTax,
-    totalFicaTax: ssTax + medicareTax
+    totalFicaTax: ssTax + medicareTax,
   };
 }
 

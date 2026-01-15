@@ -21,9 +21,11 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
   }
 
   getDescription() {
-    return 'Automatically harvest tax losses by selling depreciated assets in taxable accounts. ' +
-           'Use losses to offset capital gains taxes and up to $3,000 of ordinary income annually. ' +
-           'Reinvest in similar assets to maintain market exposure while resetting cost basis.';
+    return (
+      'Automatically harvest tax losses by selling depreciated assets in taxable accounts. ' +
+      'Use losses to offset capital gains taxes and up to $3,000 of ordinary income annually. ' +
+      'Reinvest in similar assets to maintain market exposure while resetting cost basis.'
+    );
   }
 
   getParameters() {
@@ -67,7 +69,7 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
         true,
         null,
         'Use up to $3,000 of losses to offset ordinary income'
-      )
+      ),
     ];
   }
 
@@ -77,7 +79,7 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
       maxAnnualLoss: 50000,
       washSaleWindow: 30,
       capitalGainsOffset: true,
-      ordinaryIncomeOffset: true
+      ordinaryIncomeOffset: true,
     };
   }
 
@@ -99,7 +101,7 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -113,7 +115,9 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
     }
 
     // Check if person has taxable accounts with potential losses
-    const hasTaxableAccounts = plan.accounts.some(acc => acc.type === 'Taxable' && acc.balance > 0);
+    const hasTaxableAccounts = plan.accounts.some(
+      (acc) => acc.type === 'Taxable' && acc.balance > 0
+    );
 
     return hasTaxableAccounts;
   }
@@ -124,7 +128,9 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
 
     try {
       // Find taxable accounts
-      const taxableAccounts = plan.accounts.filter(acc => acc.type === 'Taxable' && acc.balance > 0);
+      const taxableAccounts = plan.accounts.filter(
+        (acc) => acc.type === 'Taxable' && acc.balance > 0
+      );
 
       if (taxableAccounts.length === 0) {
         result.metadata.reason = 'No taxable accounts available for tax loss harvesting';
@@ -138,7 +144,7 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
 
       // Simulate tax loss harvesting for each taxable account
       for (const account of taxableAccounts) {
-        const accountProjection = projectionState.accounts.find(acc => acc.id === account.id);
+        const accountProjection = projectionState.accounts.find((acc) => acc.id === account.id);
         if (!accountProjection) continue;
 
         // Estimate unrealized losses (simplified - in practice would track actual positions)
@@ -146,21 +152,22 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
 
         if (estimatedLoss >= params.minLossThreshold) {
           // Calculate how much loss to harvest (limited by annual maximum)
-          const harvestAmount = Math.min(
-            estimatedLoss,
-            params.maxAnnualLoss - totalLossHarvested
-          );
+          const harvestAmount = Math.min(estimatedLoss, params.maxAnnualLoss - totalLossHarvested);
 
           if (harvestAmount > 0) {
             // Apply wash sale rules (reduce harvestable amount)
-            const washSaleAdjustedAmount = this._applyWashSaleRules(harvestAmount, account, yearOffset);
+            const washSaleAdjustedAmount = this._applyWashSaleRules(
+              harvestAmount,
+              account,
+              yearOffset
+            );
 
             if (washSaleAdjustedAmount > 0) {
               // Record the harvest
               harvestedPositions.push({
                 accountId: account.id,
                 lossHarvested: washSaleAdjustedAmount,
-                originalLoss: estimatedLoss
+                originalLoss: estimatedLoss,
               });
 
               totalLossHarvested += washSaleAdjustedAmount;
@@ -172,7 +179,8 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
               accountProjection.withdrawals += harvestCents;
 
               // Track for reinvestment (wash sale compliant)
-              result.changes.reinvestmentRequired = (result.changes.reinvestmentRequired || 0) + washSaleAdjustedAmount;
+              result.changes.reinvestmentRequired =
+                (result.changes.reinvestmentRequired || 0) + washSaleAdjustedAmount;
             }
           }
         }
@@ -181,7 +189,10 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
       if (totalLossHarvested > 0) {
         // Apply tax benefits
         if (params.capitalGainsOffset) {
-          capitalGainsOffset = this._calculateCapitalGainsOffset(totalLossHarvested, projectionState);
+          capitalGainsOffset = this._calculateCapitalGainsOffset(
+            totalLossHarvested,
+            projectionState
+          );
           projectionState.taxes.federal -= Math.round(capitalGainsOffset * 100);
           projectionState.taxes.total -= Math.round(capitalGainsOffset * 100);
         }
@@ -210,12 +221,11 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
           ordinaryIncomeOffset,
           carryForwardLoss: Math.max(0, carryForwardLoss),
           washSaleWindow: params.washSaleWindow,
-          taxSavings: capitalGainsOffset + ordinaryIncomeOffset
+          taxSavings: capitalGainsOffset + ordinaryIncomeOffset,
         };
       } else {
         result.metadata.reason = 'No qualifying losses found for harvesting';
       }
-
     } catch (error) {
       result.metadata.error = error.message;
       console.error('Error applying Tax Loss Harvesting strategy:', error);
@@ -289,7 +299,7 @@ export class TaxLossHarvestingStrategy extends RuleInterface {
     // Simplified - assume some capital gains exist to offset
     // In practice, would calculate based on actual realized gains in the year
 
-    const estimatedCapitalGains = Math.max(0, projectionState.taxes.federal / 100 * 0.3); // Estimate 30% of taxes are from gains
+    const estimatedCapitalGains = Math.max(0, (projectionState.taxes.federal / 100) * 0.3); // Estimate 30% of taxes are from gains
     const offsettableGains = Math.min(lossAmount, estimatedCapitalGains);
 
     // Apply long-term capital gains rate (simplified)

@@ -18,7 +18,9 @@ export function testRothConversionStrategyComparison() {
   plan.addExpense(new Expense('Living Expenses', 6000000)); // $60,000
 
   const projection1 = project(plan, 10, 2025);
-  console.log(`Traditional only: Final balance: $${(projection1[projection1.length - 1].totalBalance / 100).toLocaleString('en-US')}`);
+  console.log(
+    `Traditional only: Final balance: $${(projection1[projection1.length - 1].totalBalance / 100).toLocaleString('en-US')}`
+  );
 
   const plan2 = new Plan('Roth Conversion Test', 55, 65);
   plan2.addAccount(new Account('Traditional IRA', 'IRA', 50000000));
@@ -27,13 +29,18 @@ export function testRothConversionStrategyComparison() {
   plan2.rothConversions = {
     enabled: true,
     strategy: 'fixed',
-    annualAmount: 10000000 // $10,000 per year
+    annualAmount: 10000000, // $10,000 per year
   };
 
   const projection2 = project(plan2, 10, 2025);
-  console.log(`With conversions: Final balance: $${(projection2[projection2.length - 1].totalBalance / 100).toLocaleString('en-US')}`);
+  console.log(
+    `With conversions: Final balance: $${(projection2[projection2.length - 1].totalBalance / 100).toLocaleString('en-US')}`
+  );
 
-  if (projection2[projection2.length - 1].totalBalance > projection1[projection1.length - 1].totalBalance) {
+  if (
+    projection2[projection2.length - 1].totalBalance >
+    projection1[projection1.length - 1].totalBalance
+  ) {
     console.log('✓ Roth conversions improved final balance');
   } else {
     console.log('⚠ Conversions reduced final balance (expected for high conversion amounts)');
@@ -53,19 +60,21 @@ export function testRothConversionBracketFill() {
   plan.rothConversions = {
     enabled: true,
     strategy: 'bracket-fill',
-    targetBracket: '12%'
+    targetBracket: '12%',
   };
 
   const projections = project(plan, 5, 2025);
 
   let totalConversions = 0;
-  projections.forEach(row => {
+  projections.forEach((row) => {
     if (row.rothConversions) {
       totalConversions += row.rothConversions;
     }
   });
 
-  console.log(`Total bracket-fill conversions: $${(totalConversions / 100).toLocaleString('en-US')} over 5 years`);
+  console.log(
+    `Total bracket-fill conversions: $${(totalConversions / 100).toLocaleString('en-US')} over 5 years`
+  );
 
   if (totalConversions > 0) {
     console.log('✓ Bracket-fill strategy executed conversions');
@@ -87,19 +96,21 @@ export function testRothConversionPercentage() {
   plan.rothConversions = {
     enabled: true,
     strategy: 'percentage',
-    percentage: 0.05 // Convert 5% per year
+    percentage: 0.05, // Convert 5% per year
   };
 
   const projections = project(plan, 10, 2025);
 
   let totalConversions = 0;
-  projections.forEach(row => {
+  projections.forEach((row) => {
     if (row.rothConversions) {
       totalConversions += row.rothConversions;
     }
   });
 
-  console.log(`Total percentage conversions: $${(totalConversions / 100).toLocaleString('en-US')} over 10 years`);
+  console.log(
+    `Total percentage conversions: $${(totalConversions / 100).toLocaleString('en-US')} over 10 years`
+  );
 
   if (totalConversions > 0) {
     console.log('✓ Percentage strategy executed conversions');
@@ -121,14 +132,14 @@ export function testRothConversionsWithRMDs() {
   plan.rothConversions = {
     enabled: true,
     strategy: 'fixed',
-    annualAmount: 20000000 // $20,000 per year
+    annualAmount: 20000000, // $20,000 per year
   };
 
   const projections = project(plan, 10, 2025);
 
   let totalRMDs = 0;
   let totalConversions = 0;
-  projections.forEach(row => {
+  projections.forEach((row) => {
     if (row.totalRmdAmount) {
       totalRMDs += row.totalRmdAmount;
     }
@@ -159,7 +170,10 @@ export function testRothConversionTaxImpact() {
   plan1.addExpense(new Expense('Living Expenses', 5000000));
 
   const projection1 = project(plan1, 10, 2025);
-  const totalTax1 = projection1.reduce((sum, row) => sum + row.totalFederalTax + row.totalStateTax, 0);
+  const totalTax1 = projection1.reduce(
+    (sum, row) => sum + row.totalFederalTax + row.totalStateTax,
+    0
+  );
   console.log(`Tax without conversions: $${(totalTax1 / 100).toLocaleString('en-US')}`);
 
   const plan2 = new Plan('With Conversion Tax Test', 55, 65);
@@ -169,11 +183,14 @@ export function testRothConversionTaxImpact() {
   plan2.rothConversions = {
     enabled: true,
     strategy: 'fixed',
-    annualAmount: 5000000 // $5,000 per year
+    annualAmount: 5000000, // $5,000 per year
   };
 
   const projection2 = project(plan2, 10, 2025);
-  const totalTax2 = projection2.reduce((sum, row) => sum + row.totalFederalTax + row.totalStateTax, 0);
+  const totalTax2 = projection2.reduce(
+    (sum, row) => sum + row.totalFederalTax + row.totalStateTax,
+    0
+  );
   console.log(`Tax with conversions: $${(totalTax2 / 100).toLocaleString('en-US')}`);
 
   if (totalTax2 > totalTax1) {
@@ -205,8 +222,12 @@ export function testOptimizeConversionsAcrossYears() {
     throw new Error('Expected positive conversion amount');
   }
 
-  console.log(`Year 0 conversion: $${(conversions[0].conversionAmount / 100).toLocaleString('en-US')}`);
-  console.log(`Year 4 conversion: $${(conversions[4].conversionAmount / 100).toLocaleString('en-US')}`);
+  console.log(
+    `Year 0 conversion: $${(conversions[0].conversionAmount / 100).toLocaleString('en-US')}`
+  );
+  console.log(
+    `Year 4 conversion: $${(conversions[4].conversionAmount / 100).toLocaleString('en-US')}`
+  );
 
   console.log('✓ testOptimizeConversionsAcrossYears passed');
 }

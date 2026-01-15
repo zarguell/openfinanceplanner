@@ -52,7 +52,14 @@ function fraToMonths(fra) {
  * @param {number} colaRate - Annual Cost of Living Adjustment rate (default 0.025 or 2.5%)
  * @returns {number} Monthly benefit amount in current dollars
  */
-export function calculateSocialSecurityBenefit(pia, birthYear, filingAge, currentYear, retirementYear, colaRate = 0.025) {
+export function calculateSocialSecurityBenefit(
+  pia,
+  birthYear,
+  filingAge,
+  currentYear,
+  retirementYear,
+  colaRate = 0.025
+) {
   const fra = calculateFullRetirementAge(birthYear);
   const fraMonths = fraToMonths(fra);
   const filingMonths = filingAge * 12;
@@ -63,18 +70,18 @@ export function calculateSocialSecurityBenefit(pia, birthYear, filingAge, curren
     // Early filing reduction: 5/9% per month for first 36 months, 5/12% thereafter
     const monthsEarly = fraMonths - filingMonths;
     if (monthsEarly <= 36) {
-      benefitMultiplier = 1 - (monthsEarly * 0.055); // 5.5% per month for first 36 months
+      benefitMultiplier = 1 - monthsEarly * 0.055; // 5.5% per month for first 36 months
     } else {
       const first36Reduction = 36 * 0.055;
       const remainingMonths = monthsEarly - 36;
-      const additionalReduction = remainingMonths * (5/12/100); // 5/12% per month thereafter
+      const additionalReduction = remainingMonths * (5 / 12 / 100); // 5/12% per month thereafter
       benefitMultiplier = 1 - first36Reduction - additionalReduction;
     }
   } else if (filingMonths > fraMonths) {
     // Delayed retirement credits: 8% per year (2/3% per month)
     const monthsLate = filingMonths - fraMonths;
     const yearsLate = monthsLate / 12;
-    benefitMultiplier = 1 + (yearsLate * 0.08);
+    benefitMultiplier = 1 + yearsLate * 0.08;
   }
 
   // Apply COLA from filing year to retirement year
@@ -96,7 +103,13 @@ export function calculateSocialSecurityBenefit(pia, birthYear, filingAge, curren
  * @param {number} inflationRate - Annual inflation rate for COLA approximation
  * @returns {number} Annual Social Security benefit in dollars
  */
-export function calculateSocialSecurityForYear(socialSecurity, yearOffset, currentAge, retirementAge, inflationRate = 0.03) {
+export function calculateSocialSecurityForYear(
+  socialSecurity,
+  yearOffset,
+  currentAge,
+  retirementAge,
+  inflationRate = 0.03
+) {
   if (!socialSecurity || !socialSecurity.enabled) {
     return 0;
   }
@@ -144,9 +157,12 @@ export function estimatePIA(averageIndexedEarnings) {
   if (averageIndexedEarnings <= bendPoint1) {
     pia = averageIndexedEarnings * 0.9;
   } else if (averageIndexedEarnings <= bendPoint2) {
-    pia = (bendPoint1 * 0.9) + ((averageIndexedEarnings - bendPoint1) * 0.32);
+    pia = bendPoint1 * 0.9 + (averageIndexedEarnings - bendPoint1) * 0.32;
   } else {
-    pia = (bendPoint1 * 0.9) + ((bendPoint2 - bendPoint1) * 0.32) + ((averageIndexedEarnings - bendPoint2) * 0.15);
+    pia =
+      bendPoint1 * 0.9 +
+      (bendPoint2 - bendPoint1) * 0.32 +
+      (averageIndexedEarnings - bendPoint2) * 0.15;
   }
 
   return pia;
@@ -162,9 +178,10 @@ export function estimatePIA(averageIndexedEarnings) {
 export function calculateTaxableSocialSecurity(annualSSBenefit, provisionalIncome, filingStatus) {
   let taxableAmount = 0;
 
-  const thresholds = filingStatus === 'married_joint'
-    ? { first: 32000, second: 44000 }
-    : { first: 25000, second: 34000 };
+  const thresholds =
+    filingStatus === 'married_joint'
+      ? { first: 32000, second: 44000 }
+      : { first: 25000, second: 34000 };
 
   if (provisionalIncome > thresholds.second) {
     taxableAmount = Math.min(annualSSBenefit * 0.85, annualSSBenefit);
@@ -177,7 +194,7 @@ export function calculateTaxableSocialSecurity(annualSSBenefit, provisionalIncom
 
   return {
     taxableAmount: Math.round(taxableAmount),
-    effectiveTaxRate: annualSSBenefit > 0 ? taxableAmount / annualSSBenefit : 0
+    effectiveTaxRate: annualSSBenefit > 0 ? taxableAmount / annualSSBenefit : 0,
   };
 }
 
@@ -190,17 +207,17 @@ export function getClaimingStrategyOptions() {
     early: {
       age: 62,
       reduction: 'Up to 30% reduction from FRA benefit',
-      description: 'Maximum months of benefits, but reduced amount'
+      description: 'Maximum months of benefits, but reduced amount',
     },
     fra: {
       age: 'FRA (65-67)',
       reduction: 'No reduction, full benefit amount',
-      description: 'Balanced approach - full benefits when you need them'
+      description: 'Balanced approach - full benefits when you need them',
     },
     delayed: {
       age: 70,
       reduction: 'Up to 32% increase from FRA benefit',
-      description: 'Higher monthly benefit, fewer years of payments'
-    }
+      description: 'Higher monthly benefit, fewer years of payments',
+    },
   };
 }

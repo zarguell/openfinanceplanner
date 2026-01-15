@@ -1,124 +1,167 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Open Finance Planner</title>
-    <link rel="stylesheet" href="./src/styles/variables.css">
-    <link rel="stylesheet" href="./src/styles/base.css">
-    <link rel="stylesheet" href="./src/styles/layout.css">
-    <link rel="stylesheet" href="./src/styles/components.css">
+    <link rel="stylesheet" href="./src/styles/variables.css" />
+    <link rel="stylesheet" href="./src/styles/base.css" />
+    <link rel="stylesheet" href="./src/styles/layout.css" />
+    <link rel="stylesheet" href="./src/styles/components.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div class="app-container">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">Open Finance Planner</div>
-            
-            <div class="sidebar-section">
-                <div class="sidebar-label">Plans</div>
-                <ul class="plan-list" id="planList"></ul>
-                <button class="btn btn-primary" onclick="app.showNewPlanModal()" style="width: 100%; margin-top: 0.75rem;">
-                    + New Plan
-                </button>
-            </div>
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="sidebar-header">Open Finance Planner</div>
 
-            <div class="sidebar-section" style="margin-top: auto;">
-                <div class="sidebar-label">Actions</div>
-                <button class="btn btn-secondary" onclick="app.showImportModal()" style="width: 100%; margin-bottom: 0.5rem;">
-                    📥 Import
-                </button>
-                <button class="btn btn-outline" onclick="app.exportCurrentPlan()" style="width: 100%;">
-                    📤 Export
-                </button>
-            </div>
+        <div class="sidebar-section">
+          <div class="sidebar-label">Plans</div>
+          <ul class="plan-list" id="planList"></ul>
+          <button
+            class="btn btn-primary"
+            onclick="app.showNewPlanModal()"
+            style="width: 100%; margin-top: 0.75rem"
+          >
+            + New Plan
+          </button>
         </div>
 
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h1 id="headerTitle">Welcome</h1>
-                <div class="header-actions">
-                    <button class="btn btn-outline btn-small" onclick="app.showPlanSettingsModal()">Settings</button>
-                    <button class="btn btn-danger btn-small" onclick="app.deletePlan()" id="deleteBtn" style="display: none;">Delete</button>
-                </div>
-            </div>
-
-            <div class="content-area" id="contentArea">
-                <div style="text-align: center; padding: 3rem 1rem;">
-                    <h2>Open Finance Planner</h2>
-                    <p style="color: var(--color-text-secondary); margin-bottom: 2rem;">
-                        Create a new plan or import an existing one to get started.
-                    </p>
-                </div>
-            </div>
+        <div class="sidebar-section" style="margin-top: auto">
+          <div class="sidebar-label">Actions</div>
+          <button
+            class="btn btn-secondary"
+            onclick="app.showImportModal()"
+            style="width: 100%; margin-bottom: 0.5rem"
+          >
+            📥 Import
+          </button>
+          <button class="btn btn-outline" onclick="app.exportCurrentPlan()" style="width: 100%">
+            📤 Export
+          </button>
         </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <div class="header">
+          <h1 id="headerTitle">Welcome</h1>
+          <div class="header-actions">
+            <button class="btn btn-outline btn-small" onclick="app.showPlanSettingsModal()">
+              Settings
+            </button>
+            <button
+              class="btn btn-danger btn-small"
+              onclick="app.deletePlan()"
+              id="deleteBtn"
+              style="display: none"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+
+        <div class="content-area" id="contentArea">
+          <div style="text-align: center; padding: 3rem 1rem">
+            <h2>Open Finance Planner</h2>
+            <p style="color: var(--color-text-secondary); margin-bottom: 2rem">
+              Create a new plan or import an existing one to get started.
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modals -->
     <div class="modal-overlay" id="newPlanModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>Create New Plan</h2>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Plan Name</label>
-                <input type="text" id="newPlanName" class="form-control" placeholder="e.g., Retirement 2050">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Current Age</label>
-                <input type="number" id="newPlanAge" class="form-control" placeholder="40" min="18" max="100">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Retirement Age</label>
-                <input type="number" id="newPlanRetirementAge" class="form-control" placeholder="67" min="18" max="100">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" onclick="app.closeModal('newPlanModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="app.createNewPlan()">Create</button>
-            </div>
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Create New Plan</h2>
         </div>
+        <div class="form-group">
+          <label class="form-label">Plan Name</label>
+          <input
+            type="text"
+            id="newPlanName"
+            class="form-control"
+            placeholder="e.g., Retirement 2050"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Current Age</label>
+          <input
+            type="number"
+            id="newPlanAge"
+            class="form-control"
+            placeholder="40"
+            min="18"
+            max="100"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Retirement Age</label>
+          <input
+            type="number"
+            id="newPlanRetirementAge"
+            class="form-control"
+            placeholder="67"
+            min="18"
+            max="100"
+          />
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="app.closeModal('newPlanModal')">Cancel</button>
+          <button class="btn btn-primary" onclick="app.createNewPlan()">Create</button>
+        </div>
+      </div>
     </div>
 
     <div class="modal-overlay" id="importModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>Import Plan</h2>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Paste JSON or select file:</label>
-                <textarea id="importText" class="form-control" placeholder="Paste exported plan JSON here..." style="height: 200px; font-family: var(--font-family-mono); font-size: 12px;"></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Or upload file:</label>
-                <input type="file" id="importFile" class="form-control" accept=".json">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" onclick="app.closeModal('importModal')">Cancel</button>
-                <button class="btn btn-primary" onclick="app.importPlan()">Import</button>
-            </div>
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Import Plan</h2>
         </div>
+        <div class="form-group">
+          <label class="form-label">Paste JSON or select file:</label>
+          <textarea
+            id="importText"
+            class="form-control"
+            placeholder="Paste exported plan JSON here..."
+            style="height: 200px; font-family: var(--font-family-mono); font-size: 12px"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Or upload file:</label>
+          <input type="file" id="importFile" class="form-control" accept=".json" />
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="app.closeModal('importModal')">Cancel</button>
+          <button class="btn btn-primary" onclick="app.importPlan()">Import</button>
+        </div>
+      </div>
     </div>
 
     <div class="modal-overlay" id="planSettingsModal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2>Plan Settings</h2>
-            </div>
-            <div id="planSettingsContent"></div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" onclick="app.closeModal('planSettingsModal')">Close</button>
-                <button class="btn btn-primary" onclick="app.savePlanSettings()">Save</button>
-            </div>
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Plan Settings</h2>
         </div>
+        <div id="planSettingsContent"></div>
+        <div class="modal-footer">
+          <button class="btn btn-outline" onclick="app.closeModal('planSettingsModal')">
+            Close
+          </button>
+          <button class="btn btn-primary" onclick="app.savePlanSettings()">Save</button>
+        </div>
+      </div>
     </div>
 
     <script type="module">
-        import { AppController } from './src/ui/AppController.js';
+      import { AppController } from './src/ui/AppController.js';
 
-        // Initialize app
-        window.app = new AppController();
+      // Initialize app
+      window.app = new AppController();
     </script>
-</body>
+  </body>
 </html>

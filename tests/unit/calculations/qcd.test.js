@@ -1,9 +1,17 @@
 global.localStorage = {
   store: {},
-  getItem(key) { return this.store[key] || null; },
-  setItem(key, value) { this.store[key] = value; },
-  removeItem(key) { delete this.store[key]; },
-  clear() { this.store = {}; }
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
+  clear() {
+    this.store = {};
+  },
 };
 
 import {
@@ -14,7 +22,7 @@ import {
   getQCDLimit,
   getQCDMinimumAge,
   calculateQCDTaxBenefit,
-  validateQCDSettings
+  validateQCDSettings,
 } from '../../../src/calculations/qcd.js';
 
 export function testMustTakeQCD() {
@@ -86,7 +94,12 @@ export function testCalculateQCDForAccount() {
   }
   console.log('✓ Fixed strategy QCD calculated correctly');
 
-  const percentageSettings = { enabled: true, strategy: 'percentage', percentage: 0.10, currentAge: 71 };
+  const percentageSettings = {
+    enabled: true,
+    strategy: 'percentage',
+    percentage: 0.1,
+    currentAge: 71,
+  };
   const qcdPercentage = calculateQCDForAccount(account, percentageSettings, 0);
   if (qcdPercentage !== 10000 * 100) {
     throw new Error(`Expected QCD of ${10000 * 100}, got ${qcdPercentage}`);
@@ -100,14 +113,24 @@ export function testCalculateQCDForAccount() {
   }
   console.log('✓ RMD strategy QCD calculated correctly');
 
-  const disabledSettings = { enabled: false, strategy: 'fixed', annualAmount: 5000 * 100, currentAge: 71 };
+  const disabledSettings = {
+    enabled: false,
+    strategy: 'fixed',
+    annualAmount: 5000 * 100,
+    currentAge: 71,
+  };
   const qcdDisabled = calculateQCDForAccount(account, disabledSettings, 0);
   if (qcdDisabled !== 0) {
     throw new Error(`Expected QCD of 0 when disabled, got ${qcdDisabled}`);
   }
   console.log('✓ Disabled QCD returns 0');
 
-  const youngSettings = { enabled: true, strategy: 'fixed', annualAmount: 5000 * 100, currentAge: 65 };
+  const youngSettings = {
+    enabled: true,
+    strategy: 'fixed',
+    annualAmount: 5000 * 100,
+    currentAge: 65,
+  };
   const qcdYoung = calculateQCDForAccount(account, youngSettings, 0);
   if (qcdYoung !== 0) {
     throw new Error(`Expected QCD of 0 for age 65, got ${qcdYoung}`);
@@ -123,7 +146,7 @@ export function testCalculateTotalQCD() {
   const accounts = [
     { type: 'IRA', balance: 200000 * 100 },
     { type: '401k', balance: 300000 * 100 },
-    { type: 'Roth', balance: 100000 * 100 }
+    { type: 'Roth', balance: 100000 * 100 },
   ];
 
   const settings = { enabled: true, strategy: 'fixed', annualAmount: 10000 * 100, currentAge: 72 };

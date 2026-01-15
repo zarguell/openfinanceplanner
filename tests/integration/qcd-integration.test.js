@@ -6,10 +6,18 @@ import { StorageManager } from '../../src/storage/StorageManager.js';
 
 global.localStorage = {
   store: {},
-  getItem(key) { return this.store[key] || null; },
-  setItem(key, value) { this.store[key] = value; },
-  removeItem(key) { delete this.store[key]; },
-  clear() { this.store = {}; }
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
+  clear() {
+    this.store = {};
+  },
 };
 
 export function testQCDSettingsPersistence() {
@@ -23,8 +31,8 @@ export function testQCDSettingsPersistence() {
     enabled: true,
     strategy: 'fixed',
     annualAmount: 10000 * 100,
-    percentage: 0.10,
-    marginalTaxRate: 0.24
+    percentage: 0.1,
+    marginalTaxRate: 0.24,
   };
 
   console.log('✓ Plan created with QCD settings:', plan.qcdSettings);
@@ -70,7 +78,7 @@ export function testQCDWithProjection() {
     strategy: 'fixed',
     annualAmount: 10000 * 100,
     percentage: 0,
-    marginalTaxRate: 0.24
+    marginalTaxRate: 0.24,
   };
 
   console.log('✓ Plan created with QCD enabled (age 71)');
@@ -86,7 +94,7 @@ export function testQCDWithProjection() {
   }
   console.log('✓ Total QCD in projection:', totalQCD);
 
-  const yearsWithQCD = results.filter(year => year.totalQCD > 0);
+  const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
 
   if (yearsWithQCD.length !== 21) {
     throw new Error(`Expected 21 years with QCD, got ${yearsWithQCD.length}`);
@@ -110,13 +118,13 @@ export function testQCDPercentageStrategy() {
     enabled: true,
     strategy: 'percentage',
     annualAmount: 0,
-    percentage: 0.10,
-    marginalTaxRate: 0.22
+    percentage: 0.1,
+    marginalTaxRate: 0.22,
   };
 
   const results = project(plan, 15, 2025);
 
-  const yearsWithQCD = results.filter(year => year.totalQCD > 0);
+  const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
 
   if (yearsWithQCD.length === 0) {
     throw new Error('Expected QCDs to be calculated');
@@ -148,15 +156,15 @@ export function testQCDRMDBased() {
     strategy: 'rmd',
     annualAmount: 0,
     percentage: 0,
-    marginalTaxRate: 0.24
+    marginalTaxRate: 0.24,
   };
 
   const results = project(plan, 15, 2025);
 
-  const yearsWithRMD = results.filter(year => year.totalRmdAmount > 0);
+  const yearsWithRMD = results.filter((year) => year.totalRmdAmount > 0);
   console.log('✓ RMDs required for', yearsWithRMD.length, 'years');
 
-  const yearsWithQCD = results.filter(year => year.totalQCD > 0);
+  const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
 
   if (yearsWithQCD.length !== yearsWithRMD.length) {
     throw new Error('QCD should match RMD years');
@@ -181,7 +189,7 @@ export function testQCDDisabled() {
     strategy: 'fixed',
     annualAmount: 0,
     percentage: 0,
-    marginalTaxRate: 0.24
+    marginalTaxRate: 0.24,
   };
 
   const results = project(plan, 10, 2025);

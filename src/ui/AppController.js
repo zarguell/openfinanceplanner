@@ -7,7 +7,10 @@ import { Account } from '../core/models/Account.js';
 import { Expense } from '../core/models/Expense.js';
 import { Income } from '../core/models/Income.js';
 import { project } from '../calculations/projection.js';
-import { runMonteCarloSimulation, getSuccessProbabilityWithConfidence } from '../calculations/monte-carlo.js';
+import {
+  runMonteCarloSimulation,
+  getSuccessProbabilityWithConfidence,
+} from '../calculations/monte-carlo.js';
 import { StorageManager } from '../storage/StorageManager.js';
 import { ChartRenderer } from './ChartRenderer.js';
 
@@ -32,11 +35,12 @@ export class AppController {
     planListEl.innerHTML = '';
 
     if (list.length === 0) {
-      planListEl.innerHTML = '<li style="color: var(--color-text-secondary); font-size: 12px;">No plans yet</li>';
+      planListEl.innerHTML =
+        '<li style="color: var(--color-text-secondary); font-size: 12px;">No plans yet</li>';
       return;
     }
 
-    list.forEach(meta => {
+    list.forEach((meta) => {
       const li = document.createElement('li');
       li.className = `plan-item ${this.currentPlan?.id === meta.id ? 'active' : ''}`;
       li.onclick = () => this.loadPlan(meta.id);
@@ -53,15 +57,15 @@ export class AppController {
     if (planData) {
       // Reconstruct domain objects from plain JSON
       this.currentPlan = Plan.fromJSON(planData);
-      this.currentPlan.accounts = planData.accounts.map(acc =>
+      this.currentPlan.accounts = planData.accounts.map((acc) =>
         acc instanceof Account ? acc : Account.fromJSON(acc)
       );
-      this.currentPlan.expenses = planData.expenses.map(exp =>
+      this.currentPlan.expenses = planData.expenses.map((exp) =>
         exp instanceof Expense ? exp : Expense.fromJSON(exp)
       );
-      this.currentPlan.incomes = planData.incomes ? planData.incomes.map(inc =>
-        inc instanceof Income ? inc : Income.fromJSON(inc)
-      ) : [];
+      this.currentPlan.incomes = planData.incomes
+        ? planData.incomes.map((inc) => (inc instanceof Income ? inc : Income.fromJSON(inc)))
+        : [];
 
       this.renderPlanUI();
       this.loadPlansList();
@@ -204,11 +208,21 @@ export class AppController {
   }
 
   populateAssumptionFields() {
-    document.getElementById('inflationRate').value = (this.currentPlan.assumptions.inflationRate * 100).toFixed(2);
-    document.getElementById('equityGrowthRate').value = (this.currentPlan.assumptions.equityGrowthRate * 100).toFixed(2);
-    document.getElementById('bondGrowthRate').value = (this.currentPlan.assumptions.bondGrowthRate * 100).toFixed(2);
-    document.getElementById('equityVolatility').value = (this.currentPlan.assumptions.equityVolatility * 100).toFixed(1);
-    document.getElementById('bondVolatility').value = (this.currentPlan.assumptions.bondVolatility * 100).toFixed(1);
+    document.getElementById('inflationRate').value = (
+      this.currentPlan.assumptions.inflationRate * 100
+    ).toFixed(2);
+    document.getElementById('equityGrowthRate').value = (
+      this.currentPlan.assumptions.equityGrowthRate * 100
+    ).toFixed(2);
+    document.getElementById('bondGrowthRate').value = (
+      this.currentPlan.assumptions.bondGrowthRate * 100
+    ).toFixed(2);
+    document.getElementById('equityVolatility').value = (
+      this.currentPlan.assumptions.equityVolatility * 100
+    ).toFixed(1);
+    document.getElementById('bondVolatility').value = (
+      this.currentPlan.assumptions.bondVolatility * 100
+    ).toFixed(1);
   }
 
   populateSocialSecurityFields() {
@@ -219,7 +233,8 @@ export class AppController {
       document.getElementById('socialSecurityFields').style.display = 'block';
       document.getElementById('birthYear').value = ss.birthYear || '';
       document.getElementById('monthlyBenefit').value = ss.monthlyBenefit || '';
-      document.getElementById('filingAge').value = ss.filingAge || this.currentPlan.taxProfile.retirementAge;
+      document.getElementById('filingAge').value =
+        ss.filingAge || this.currentPlan.taxProfile.retirementAge;
     } else {
       document.getElementById('socialSecurityFields').style.display = 'none';
     }
@@ -234,7 +249,7 @@ export class AppController {
       return;
     }
 
-    this.currentPlan.accounts.forEach(account => {
+    this.currentPlan.accounts.forEach((account) => {
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
@@ -248,11 +263,11 @@ export class AppController {
         <div class="form-row">
           <div>
             <div class="result-label">Balance</div>
-            <div class="result-value">$${(account.balance / 100).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+            <div class="result-value">$${(account.balance / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
           </div>
           <div>
             <div class="result-label">Annual Contribution</div>
-            <div class="result-value">$${(account.annualContribution).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-value">$${account.annualContribution.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
           </div>
           <div>
             <div class="result-label">Withdrawal Rate</div>
@@ -269,11 +284,12 @@ export class AppController {
     container.innerHTML = '';
 
     if (this.currentPlan.expenses.length === 0) {
-      container.innerHTML = '<p class="text-muted">No expenses configured yet. Add one to forecast spending.</p>';
+      container.innerHTML =
+        '<p class="text-muted">No expenses configured yet. Add one to forecast spending.</p>';
       return;
     }
 
-    this.currentPlan.expenses.forEach(expense => {
+    this.currentPlan.expenses.forEach((expense) => {
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
@@ -286,7 +302,7 @@ export class AppController {
         <div class="form-row">
           <div>
             <div class="result-label">Annual Amount</div>
-            <div class="result-value">$${(expense.baseAmount / 100).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+            <div class="result-value">$${(expense.baseAmount / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
           </div>
           <div>
             <div class="result-label">Starts Year</div>
@@ -307,11 +323,12 @@ export class AppController {
     container.innerHTML = '';
 
     if (this.currentPlan.incomes.length === 0) {
-      container.innerHTML = '<p class="text-muted">No income configured yet. Add one to model your earnings.</p>';
+      container.innerHTML =
+        '<p class="text-muted">No income configured yet. Add one to model your earnings.</p>';
       return;
     }
 
-    this.currentPlan.incomes.forEach(income => {
+    this.currentPlan.incomes.forEach((income) => {
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
@@ -324,7 +341,7 @@ export class AppController {
         <div class="form-row">
           <div>
             <div class="result-label">Annual Amount</div>
-            <div class="result-value">$${(income.baseAmount / 100).toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+            <div class="result-value">$${(income.baseAmount / 100).toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
           </div>
           <div>
             <div class="result-label">Starts Year</div>
@@ -343,17 +360,21 @@ export class AppController {
   renderOverviewSummary() {
     const container = document.getElementById('overviewResults');
     const totalBalance = this.currentPlan.accounts.reduce((sum, acc) => sum + acc.balance / 100, 0);
-    const totalAnnualContributions = this.currentPlan.accounts.reduce((sum, acc) => sum + acc.annualContribution, 0);
-    const yearsToRetirement = this.currentPlan.taxProfile.retirementAge - this.currentPlan.taxProfile.currentAge;
+    const totalAnnualContributions = this.currentPlan.accounts.reduce(
+      (sum, acc) => sum + acc.annualContribution,
+      0
+    );
+    const yearsToRetirement =
+      this.currentPlan.taxProfile.retirementAge - this.currentPlan.taxProfile.currentAge;
 
     container.innerHTML = `
       <div class="result-card">
         <div class="result-label">Total Savings</div>
-        <div class="result-value">$${totalBalance.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+        <div class="result-value">$${totalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
       </div>
       <div class="result-card">
         <div class="result-label">Annual Contributions</div>
-        <div class="result-value">$${totalAnnualContributions.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+        <div class="result-value">$${totalAnnualContributions.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
       </div>
       <div class="result-card">
         <div class="result-label">Years to Retirement</div>
@@ -368,18 +389,18 @@ export class AppController {
 
   switchTab(tabName) {
     // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach((el) => el.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach((el) => el.classList.remove('active'));
 
     // Show selected tab
     const contentMap = {
-      'overview': 'overviewTab',
-      'assumptions': 'assumptionsTab',
-      'socialsecurity': 'socialsecurityTab',
-      'income': 'incomeTab',
-      'accounts': 'accountsTab',
-      'expenses': 'expensesTab',
-      'projection': 'projectionTab'
+      overview: 'overviewTab',
+      assumptions: 'assumptionsTab',
+      socialsecurity: 'socialsecurityTab',
+      income: 'incomeTab',
+      accounts: 'accountsTab',
+      expenses: 'expensesTab',
+      projection: 'projectionTab',
     };
 
     const tab = document.getElementById(contentMap[tabName]);
@@ -392,11 +413,16 @@ export class AppController {
   }
 
   saveAssumptions() {
-    this.currentPlan.assumptions.inflationRate = parseFloat(document.getElementById('inflationRate').value) / 100;
-    this.currentPlan.assumptions.equityGrowthRate = parseFloat(document.getElementById('equityGrowthRate').value) / 100;
-    this.currentPlan.assumptions.bondGrowthRate = parseFloat(document.getElementById('bondGrowthRate').value) / 100;
-    this.currentPlan.assumptions.equityVolatility = parseFloat(document.getElementById('equityVolatility').value) / 100;
-    this.currentPlan.assumptions.bondVolatility = parseFloat(document.getElementById('bondVolatility').value) / 100;
+    this.currentPlan.assumptions.inflationRate =
+      parseFloat(document.getElementById('inflationRate').value) / 100;
+    this.currentPlan.assumptions.equityGrowthRate =
+      parseFloat(document.getElementById('equityGrowthRate').value) / 100;
+    this.currentPlan.assumptions.bondGrowthRate =
+      parseFloat(document.getElementById('bondGrowthRate').value) / 100;
+    this.currentPlan.assumptions.equityVolatility =
+      parseFloat(document.getElementById('equityVolatility').value) / 100;
+    this.currentPlan.assumptions.bondVolatility =
+      parseFloat(document.getElementById('bondVolatility').value) / 100;
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);
     alert('Assumptions saved!');
@@ -440,15 +466,19 @@ export class AppController {
     }
 
     const finalBalance = this.projectionResults[this.projectionResults.length - 1].totalBalance;
-    const retirementBalance = this.projectionResults.find(r => r.isRetired)?.totalBalance || 0;
-    const retirementYear = this.projectionResults.find(r => r.isRetired)?.year || '-';
+    const retirementBalance = this.projectionResults.find((r) => r.isRetired)?.totalBalance || 0;
+    const retirementYear = this.projectionResults.find((r) => r.isRetired)?.year || '-';
     const yearsProjected = this.projectionResults.length - 1;
 
     let monteCarloSection = '';
     if (this.monteCarloResults) {
       const successProb = getSuccessProbabilityWithConfidence(this.monteCarloResults);
-      const successClass = successProb.probability >= 0.8 ? 'badge-success' :
-                          successProb.probability >= 0.6 ? 'badge-warning' : 'badge-danger';
+      const successClass =
+        successProb.probability >= 0.8
+          ? 'badge-success'
+          : successProb.probability >= 0.6
+            ? 'badge-warning'
+            : 'badge-danger';
 
       monteCarloSection = `
         <div class="card">
@@ -463,24 +493,28 @@ export class AppController {
             </div>
             <div class="result-card">
               <div class="result-label">Average Final Balance</div>
-              <div class="result-value">$${this.monteCarloResults.averageFinalBalance.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+              <div class="result-value">$${this.monteCarloResults.averageFinalBalance.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
               <div class="result-sublabel">Across all scenarios</div>
             </div>
             <div class="result-card">
               <div class="result-label">90th Percentile</div>
-              <div class="result-value">$${this.monteCarloResults.percentiles.p90.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+              <div class="result-value">$${this.monteCarloResults.percentiles.p90.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
               <div class="result-sublabel">Best case outcome</div>
             </div>
             <div class="result-card">
               <div class="result-label">10th Percentile</div>
-              <div class="result-value">$${this.monteCarloResults.percentiles.p10.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+              <div class="result-value">$${this.monteCarloResults.percentiles.p10.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
               <div class="result-sublabel">Worst case outcome</div>
             </div>
           </div>
           <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
-            <strong>Analysis:</strong> ${successProb.probability >= 0.8 ? 'Excellent success probability!' :
-                                      successProb.probability >= 0.6 ? 'Good success probability, but consider increasing savings.' :
-                                      'Success probability is low. Consider adjusting assumptions or increasing contributions.'}
+            <strong>Analysis:</strong> ${
+              successProb.probability >= 0.8
+                ? 'Excellent success probability!'
+                : successProb.probability >= 0.6
+                  ? 'Good success probability, but consider increasing savings.'
+                  : 'Success probability is low. Consider adjusting assumptions or increasing contributions.'
+            }
           </div>
         </div>
       `;
@@ -490,12 +524,12 @@ export class AppController {
       <div class="results-grid">
         <div class="result-card">
           <div class="result-label">Final Balance (Age 97)</div>
-          <div class="result-value">$${finalBalance.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}</div>
+          <div class="result-value">$${finalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
           <div class="result-sublabel">${this.projectionResults[this.projectionResults.length - 1].year}</div>
         </div>
         <div class="result-card">
           <div class="result-label">Balance at Retirement</div>
-          <div class="result-value">$${retirementBalance.toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+          <div class="result-value">$${retirementBalance.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
           <div class="result-sublabel">${retirementYear}</div>
         </div>
       </div>
@@ -511,7 +545,9 @@ export class AppController {
         </div>
       </div>
 
-      ${this.monteCarloResults ? `
+      ${
+        this.monteCarloResults
+          ? `
       <div class="card">
         <div class="card-header">
           <h3>Monte Carlo Fan Chart</h3>
@@ -520,7 +556,9 @@ export class AppController {
           <canvas id="monteCarloChart"></canvas>
         </div>
       </div>
-      ` : ''}
+      `
+          : ''
+      }
 
       <div class="card">
         <div class="card-header">
@@ -547,22 +585,22 @@ export class AppController {
         <div class="results-grid">
           <div class="result-card">
             <div class="result-label">Total Federal Tax Paid</div>
-            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalFederalTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalFederalTax, 0).toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
             <div class="result-sublabel">Over ${yearsProjected} years</div>
           </div>
           <div class="result-card">
             <div class="result-label">Total State Tax Paid</div>
-            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalStateTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalStateTax, 0).toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
             <div class="result-sublabel">Over ${yearsProjected} years</div>
           </div>
           <div class="result-card">
             <div class="result-label">Total FICA Tax Paid</div>
-            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalFicaTax, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalFicaTax, 0).toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
             <div class="result-sublabel">Pre-retirement only</div>
           </div>
           <div class="result-card">
             <div class="result-label">Total RMD Withdrawals</div>
-            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalRmdAmount, 0).toLocaleString('en-US', {minimumFractionDigits: 0})}</div>
+            <div class="result-value">$${this.projectionResults.reduce((sum, r) => sum + r.totalRmdAmount, 0).toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
             <div class="result-sublabel">Required minimum distributions</div>
           </div>
         </div>
@@ -588,19 +626,23 @@ export class AppController {
               </tr>
             </thead>
             <tbody>
-              ${this.projectionResults.map(row => `
+              ${this.projectionResults
+                .map(
+                  (row) => `
                 <tr>
                   <td>${row.year}</td>
                   <td>${row.age}</td>
-                  <td class="number-cell">$${row.totalBalance.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
-                  <td class="number-cell">$${row.totalExpense.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
-                  <td class="number-cell">$${row.socialSecurityIncome.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
-                  <td class="number-cell">$${row.totalFederalTax.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
-                  <td class="number-cell">$${row.totalStateTax.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
-                  <td class="number-cell">$${row.totalFicaTax.toLocaleString('en-US', {minimumFractionDigits: 0})}</td>
+                  <td class="number-cell">$${row.totalBalance.toLocaleString('en-US', { minimumFractionDigits: 0 })}</td>
+                  <td class="number-cell">$${row.totalExpense.toLocaleString('en-US', { minimumFractionDigits: 0 })}</td>
+                  <td class="number-cell">$${row.socialSecurityIncome.toLocaleString('en-US', { minimumFractionDigits: 0 })}</td>
+                  <td class="number-cell">$${row.totalFederalTax.toLocaleString('en-US', { minimumFractionDigits: 0 })}</td>
+                  <td class="number-cell">$${row.totalStateTax.toLocaleString('en-US', { minimumFractionDigits: 0 })}</td>
+                  <td class="number-cell">$${row.totalFicaTax.toLocaleString('en-US', { minimumFractionDigits: 0 })}</td>
                   <td>${row.isRetired ? '<span class="badge badge-success">Retired</span>' : '<span class="badge badge-warning">Saving</span>'}</td>
                 </tr>
-              `).join('')}
+              `
+                )
+                .join('')}
             </tbody>
           </table>
         </div>
@@ -610,7 +652,11 @@ export class AppController {
     this.chartRenderer.createBalanceChart('balanceChart', this.projectionResults);
 
     if (this.monteCarloResults) {
-      this.chartRenderer.createMonteCarloFanChart('monteCarloChart', this.monteCarloResults, this.projectionResults);
+      this.chartRenderer.createMonteCarloFanChart(
+        'monteCarloChart',
+        this.monteCarloResults,
+        this.projectionResults
+      );
     }
 
     this.chartRenderer.createAllocationChart('allocationChart', this.currentPlan.accounts);
@@ -739,7 +785,7 @@ export class AppController {
   }
 
   editAccount(accountId) {
-    const account = this.currentPlan.accounts.find(a => a.id === accountId);
+    const account = this.currentPlan.accounts.find((a) => a.id === accountId);
     if (!account) return;
 
     const modal = document.createElement('div');
@@ -772,12 +818,14 @@ export class AppController {
   }
 
   saveEditAccount(accountId) {
-    const account = this.currentPlan.accounts.find(a => a.id === accountId);
+    const account = this.currentPlan.accounts.find((a) => a.id === accountId);
     if (!account) return;
 
     account.name = document.getElementById('editAccountName').value.trim();
     account.balance = parseFloat(document.getElementById('editAccountBalance').value) * 100;
-    account.annualContribution = parseFloat(document.getElementById('editAccountContribution').value);
+    account.annualContribution = parseFloat(
+      document.getElementById('editAccountContribution').value
+    );
 
     this.currentPlan.touch();
     StorageManager.savePlan(this.currentPlan);
@@ -955,14 +1003,20 @@ export class AppController {
     const type = document.getElementById('incomeType').value;
     const amount = parseFloat(document.getElementById('incomeAmount').value) || 0;
     const startYear = parseInt(document.getElementById('incomeStartYear').value) || 0;
-    const endYear = document.getElementById('incomeEndYear').value ? parseInt(document.getElementById('incomeEndYear').value) : null;
+    const endYear = document.getElementById('incomeEndYear').value
+      ? parseInt(document.getElementById('incomeEndYear').value)
+      : null;
     const isOneTime = document.getElementById('incomeIsOneTime').checked;
     const growthRate = parseFloat(document.getElementById('incomeGrowthRate').value) / 100 || 0.03;
-    
+
     const startRule = document.getElementById('incomeStartRule').value;
-    const startRuleAge = document.getElementById('incomeStartRuleAge').value ? parseInt(document.getElementById('incomeStartRuleAge').value) : null;
+    const startRuleAge = document.getElementById('incomeStartRuleAge').value
+      ? parseInt(document.getElementById('incomeStartRuleAge').value)
+      : null;
     const endRule = document.getElementById('incomeEndRule').value;
-    const endRuleAge = document.getElementById('incomeEndRuleAge').value ? parseInt(document.getElementById('incomeEndRuleAge').value) : null;
+    const endRuleAge = document.getElementById('incomeEndRuleAge').value
+      ? parseInt(document.getElementById('incomeEndRuleAge').value)
+      : null;
 
     if (!name || !amount) {
       alert('Please fill required fields');
@@ -992,13 +1046,13 @@ export class AppController {
   toggleIncomeStartRuleFields() {
     const rule = document.getElementById('incomeStartRule').value;
     const ageFields = document.getElementById('incomeStartRuleAgeFields');
-    ageFields.style.display = (rule === 'age' || rule === 'retirement-if-age') ? 'block' : 'none';
+    ageFields.style.display = rule === 'age' || rule === 'retirement-if-age' ? 'block' : 'none';
   }
 
   toggleIncomeEndRuleFields() {
     const rule = document.getElementById('incomeEndRule').value;
     const ageFields = document.getElementById('incomeEndRuleAgeFields');
-    ageFields.style.display = (rule === 'age') ? 'block' : 'none';
+    ageFields.style.display = rule === 'age' ? 'block' : 'none';
   }
 
   deleteIncome(incomeId) {
@@ -1068,9 +1122,25 @@ export class AppController {
     if (!this.currentPlan) return;
 
     const content = document.getElementById('planSettingsContent');
-    const rc = this.currentPlan.rothConversions || { enabled: false, strategy: 'fixed', annualAmount: 0, percentage: 0.05, bracketTop: 0 };
-    const qcd = this.currentPlan.qcdSettings || { enabled: false, strategy: 'fixed', annualAmount: 0, percentage: 0.1, marginalTaxRate: 0.24 };
-    const tlh = this.currentPlan.taxLossHarvesting || { enabled: false, strategy: 'all', threshold: 100000 };
+    const rc = this.currentPlan.rothConversions || {
+      enabled: false,
+      strategy: 'fixed',
+      annualAmount: 0,
+      percentage: 0.05,
+      bracketTop: 0,
+    };
+    const qcd = this.currentPlan.qcdSettings || {
+      enabled: false,
+      strategy: 'fixed',
+      annualAmount: 0,
+      percentage: 0.1,
+      marginalTaxRate: 0.24,
+    };
+    const tlh = this.currentPlan.taxLossHarvesting || {
+      enabled: false,
+      strategy: 'all',
+      threshold: 100000,
+    };
 
     content.innerHTML = `
       <div class="form-group">
@@ -1196,37 +1266,49 @@ export class AppController {
 
   savePlanSettings() {
     this.currentPlan.name = document.getElementById('settingsPlanName').value.trim();
-    this.currentPlan.taxProfile.currentAge = parseInt(document.getElementById('settingsCurrentAge').value);
-    this.currentPlan.taxProfile.retirementAge = parseInt(document.getElementById('settingsRetirementAge').value);
-    this.currentPlan.taxProfile.estimatedTaxRate = parseFloat(document.getElementById('settingsEstimatedTaxRate').value) / 100;
-    this.currentPlan.withdrawalStrategy = document.getElementById('settingsWithdrawalStrategy').value;
+    this.currentPlan.taxProfile.currentAge = parseInt(
+      document.getElementById('settingsCurrentAge').value
+    );
+    this.currentPlan.taxProfile.retirementAge = parseInt(
+      document.getElementById('settingsRetirementAge').value
+    );
+    this.currentPlan.taxProfile.estimatedTaxRate =
+      parseFloat(document.getElementById('settingsEstimatedTaxRate').value) / 100;
+    this.currentPlan.withdrawalStrategy = document.getElementById(
+      'settingsWithdrawalStrategy'
+    ).value;
 
     const rcEnabled = document.getElementById('settingsRothConversionsEnabled').checked;
     const rcStrategy = document.getElementById('settingsRothConversionsStrategy').value;
-    const rcAnnualAmount = parseFloat(document.getElementById('settingsRothConversionsAnnualAmount').value) || 0;
-    const rcPercentage = parseFloat(document.getElementById('settingsRothConversionsPercentage').value) || 0;
-    const rcBracketTop = parseFloat(document.getElementById('settingsRothConversionsBracketTop').value) || 0;
+    const rcAnnualAmount =
+      parseFloat(document.getElementById('settingsRothConversionsAnnualAmount').value) || 0;
+    const rcPercentage =
+      parseFloat(document.getElementById('settingsRothConversionsPercentage').value) || 0;
+    const rcBracketTop =
+      parseFloat(document.getElementById('settingsRothConversionsBracketTop').value) || 0;
 
     this.currentPlan.rothConversions = {
       enabled: rcEnabled,
       strategy: rcStrategy,
       annualAmount: Math.round(rcAnnualAmount * 100),
       percentage: rcPercentage / 100,
-      bracketTop: Math.round(rcBracketTop * 100)
+      bracketTop: Math.round(rcBracketTop * 100),
     };
 
     const qcdEnabled = document.getElementById('settingsQCDEnabled').checked;
     const qcdStrategy = document.getElementById('settingsQCDStrategy').value;
-    const qcdAnnualAmount = parseFloat(document.getElementById('settingsQCDAnnualAmount').value) || 0;
+    const qcdAnnualAmount =
+      parseFloat(document.getElementById('settingsQCDAnnualAmount').value) || 0;
     const qcdPercentage = parseFloat(document.getElementById('settingsQCDPercentage').value) || 0;
-    const qcdMarginalTaxRate = parseFloat(document.getElementById('settingsQCDMarginalTaxRate').value) || 0;
+    const qcdMarginalTaxRate =
+      parseFloat(document.getElementById('settingsQCDMarginalTaxRate').value) || 0;
 
     this.currentPlan.qcdSettings = {
       enabled: qcdEnabled,
       strategy: qcdStrategy,
       annualAmount: Math.round(qcdAnnualAmount * 100),
       percentage: qcdPercentage / 100,
-      marginalTaxRate: qcdMarginalTaxRate / 100
+      marginalTaxRate: qcdMarginalTaxRate / 100,
     };
 
     const tlhEnabled = document.getElementById('settingsTLHEnabled').checked;
@@ -1236,7 +1318,7 @@ export class AppController {
     this.currentPlan.taxLossHarvesting = {
       enabled: tlhEnabled,
       strategy: tlhStrategy,
-      threshold: Math.round(tlhThreshold * 100)
+      threshold: Math.round(tlhThreshold * 100),
     };
 
     this.currentPlan.touch();
@@ -1258,9 +1340,11 @@ export class AppController {
   toggleQCDStrategyFields() {
     const strategy = document.getElementById('settingsQCDStrategy').value;
     const allFields = document.querySelectorAll('.qcd-fields');
-    allFields.forEach(field => field.style.display = 'none');
+    allFields.forEach((field) => (field.style.display = 'none'));
 
-    const activeField = document.getElementById(`qcd${strategy.charAt(0).toUpperCase() + strategy.slice(1)}Fields`);
+    const activeField = document.getElementById(
+      `qcd${strategy.charAt(0).toUpperCase() + strategy.slice(1)}Fields`
+    );
     if (activeField) {
       activeField.style.display = 'block';
     }
@@ -1299,22 +1383,34 @@ export class AppController {
       }
 
       // Import the calculation function
-      import('./social-security.js').then(({ calculateFullRetirementAge, calculateSocialSecurityBenefit }) => {
-        const fra = calculateFullRetirementAge(birthYear);
-        const annualBenefit = calculateSocialSecurityBenefit(monthlyBenefit, birthYear, filingAge, new Date().getFullYear(), new Date().getFullYear() + (filingAge - this.currentPlan.taxProfile.currentAge), this.currentPlan.assumptions.inflationRate) * 12;
+      import('./social-security.js').then(
+        ({ calculateFullRetirementAge, calculateSocialSecurityBenefit }) => {
+          const fra = calculateFullRetirementAge(birthYear);
+          const annualBenefit =
+            calculateSocialSecurityBenefit(
+              monthlyBenefit,
+              birthYear,
+              filingAge,
+              new Date().getFullYear(),
+              new Date().getFullYear() + (filingAge - this.currentPlan.taxProfile.currentAge),
+              this.currentPlan.assumptions.inflationRate
+            ) * 12;
 
-        // Update estimate display
-        document.getElementById('estimatedAnnualBenefit').textContent = annualBenefit.toLocaleString('en-US', {minimumFractionDigits: 0});
-        document.getElementById('estimatedFRA').textContent = `${fra.years} years ${fra.months} months`;
-        document.getElementById('socialSecurityEstimate').style.display = 'block';
-      });
+          // Update estimate display
+          document.getElementById('estimatedAnnualBenefit').textContent =
+            annualBenefit.toLocaleString('en-US', { minimumFractionDigits: 0 });
+          document.getElementById('estimatedFRA').textContent =
+            `${fra.years} years ${fra.months} months`;
+          document.getElementById('socialSecurityEstimate').style.display = 'block';
+        }
+      );
     }
 
     this.currentPlan.socialSecurity = {
       enabled,
       birthYear: birthYear || 0,
       monthlyBenefit: monthlyBenefit || 0,
-      filingAge: filingAge || this.currentPlan.taxProfile.retirementAge
+      filingAge: filingAge || this.currentPlan.taxProfile.retirementAge,
     };
 
     this.currentPlan.touch();
@@ -1340,8 +1436,8 @@ export class AppController {
       '<': '&lt;',
       '>': '&gt;',
       '"': '&quot;',
-      "'": '&#039;'
+      "'": '&#039;',
     };
-    return text.replace(/[&<>"']/g, m => map[m]);
+    return text.replace(/[&<>"']/g, (m) => map[m]);
   }
 }

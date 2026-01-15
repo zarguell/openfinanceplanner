@@ -11,38 +11,45 @@ The codebase has been refactored from a single-file implementation into a layere
 ## Tech Stack Selection
 
 **Vanilla JavaScript (ES2020+) with ES6 Modules**
+
 - Zero build process or framework dependencies
 - Native ES6 import/export for code organization
 - Modular architecture with clear layer separation
 - Eliminates framework churn and reduces maintenance burden
 
 **Web Storage API**
+
 - localStorage provides 5-10MB of persistent storage per domain
 - Synchronous API simplifies state management for single-user scenarios
 - No server infrastructure eliminates hosting costs and privacy concerns
 
 **Web Workers**
+
 - Offload heavy projection calculations to prevent UI thread blocking
 - Maintain responsive interface during complex Monte Carlo simulations or 40-year projections
 
 **IndexedDB (Future Enhancement)**
+
 - Migration path when localStorage limits become restrictive
 - Supports larger datasets for historical growth data import feature
 
 ## Major System Components
 
 ### 1. Core Calculation Engine
+
 - **ProjectionRunner**: Orchestrates year-by-year simulations across all accounts
 - **TaxEngine**: Modular rule-based system handling federal/state taxes, Roth conversions, backdoor Roth mechanics, and required minimum distributions
 - **GrowthEngine**: Applies assumed growth rates with configurable volatility; designed for easy replacement with historical data module
 - **ExpenseModeler**: Handles inflation-adjusted expense streams, one-time events, and dynamic spending rules
 
 ### 2. Data Layer
+
 - **StorageManager**: Encapsulates all localStorage operations with versioning and migration logic
 - **SchemaValidator**: JSON Schema-based validation for imported/exported data
 - **SerializationService**: Handles conversion between UI format and storage format
 
 ### 3. Rule System
+
 - **RuleRegistry**: Central registry for financial strategy implementations
 - **StrategyFactory**: Instantiates appropriate rule handlers (e.g., BackdoorRothStrategy, RothConversionLadder)
 - **TaxRuleInterface**: Standardized interface for all tax-related calculations enabling plug-and-play rule additions
@@ -127,7 +134,7 @@ const rothRule = new RothConversionRule({
   name: 'roth-conversions',
   description: 'Roth conversion strategy',
   strategy: 'bracket-fill',
-  bracketTop: 89450
+  bracketTop: 89450,
 });
 
 registry.register(rothRule);
@@ -143,6 +150,7 @@ if (!validation.valid) {
 ```
 
 **Future Enhancements:**
+
 - Rule composition (combining multiple strategies)
 - Dependency injection for projection state
 - Rule metadata UI (display available strategies)
@@ -206,6 +214,7 @@ if (!validation.valid) {
     - Configurable employer match rate and deferral limits
 
 ### 4. UI Controllers
+
 - **PlanController**: Manages plan lifecycle (create, load, save, delete)
 - **AccountController**: Handles account-specific operations and validations
 - **ProjectionController**: Manages calculation triggers and result caching
@@ -214,6 +223,7 @@ if (!validation.valid) {
 ## API Endpoints (Module Interfaces)
 
 ### StorageManager API
+
 ```javascript
 // Plan persistence
 StorageManager.savePlan(planId, planData) → Promise<void>
@@ -227,6 +237,7 @@ StorageManager.migrateData(targetVersion) → Promise<void>
 ```
 
 ### TaxEngine API
+
 ```javascript
 // Annual tax calculation
 TaxEngine.calculateYear(projectionState, taxYear) → TaxResult
@@ -251,7 +262,9 @@ TaxEngine.estimatePIA(averageIndexedEarnings) → number
 ```
 
 #### RMD Module Details
+
 **Implementation**: `src/calculations/rmd.js`
+
 - Implements IRS Uniform Lifetime Table (ages 72-120)
 - Supports SECURE Act 2.0: RMDs start at age 73 (or 72 if born in 1951)
 - Exemptions: Roth IRAs, HSAs, and taxable brokerage accounts
@@ -259,6 +272,7 @@ TaxEngine.estimatePIA(averageIndexedEarnings) → number
 - Life expectancy factors capped at age 120+
 
 **Exported Functions**:
+
 - `getLifeExpectancyFactor(age)` - Returns IRS life expectancy factor
 - `calculateRMD(accountBalance, age)` - Basic RMD calculation
 - `mustTakeRMD(age, birthYear)` - Determines if RMD required
@@ -268,7 +282,9 @@ TaxEngine.estimatePIA(averageIndexedEarnings) → number
 - `getRMDDeadline(age, birthYear)` - Returns deadline string
 
 #### Social Security Module Details
+
 **Implementation**: `src/calculations/social-security.js`
+
 - Full Retirement Age (FRA) determination based on birth year (62-67, depending on birth year)
 - Primary Insurance Amount (PIA) calculation with 2025 bend points
 - Early claiming reductions (5.5%/month first 36 months, 5/12% thereafter)
@@ -277,6 +293,7 @@ TaxEngine.estimatePIA(averageIndexedEarnings) → number
 - Cost-of-Living Adjustment (COLA) calculations for inflation
 
 **Exported Functions**:
+
 - `calculateFullRetirementAge(birthYear)` - Returns FRA in years and months
 - `calculateSocialSecurityBenefit(pia, birthYear, filingAge, currentYear, retirementYear, colaRate)` - Monthly benefit
 - `calculateSocialSecurityForYear(socialSecurity, yearOffset, currentAge, retirementAge, inflationRate)` - Annual SS for year
@@ -285,7 +302,9 @@ TaxEngine.estimatePIA(averageIndexedEarnings) → number
 - `getClaimingStrategyOptions()` - Returns common claiming age strategies
 
 #### Withdrawal Strategies Module Details
+
 **Implementation**: `src/calculations/withdrawal-strategies.js`
+
 - Provides multiple withdrawal ordering strategies for retirement distributions
 - Integrates with RMD calculations to ensure regulatory compliance
 - Supports tax-efficient withdrawal sequencing to minimize lifetime tax burden
@@ -311,23 +330,26 @@ TaxEngine.estimatePIA(averageIndexedEarnings) → number
    - Goal: Stay in lower tax brackets while managing RMDs
 
 **Exported Functions**:
+
 - `proportionalWithdrawalStrategy(accounts, totalAmount, rmdRequirements)` - Proportional distribution
 - `taxEfficientWithdrawalStrategy(accounts, totalAmount, rmdRequirements, context)` - Tax-optimized ordering
 - `taxAwareWithdrawalStrategy(accounts, totalAmount, rmdRequirements, context)` - Future bracket-aware strategy
 - `calculateWithdrawals(strategy, accounts, totalAmount, rmdRequirements, context)` - Main entry point
 
 **Account Priority Order (Tax-Efficient)**:
+
 ```javascript
 const ACCOUNT_PRIORITY = {
-  'Taxable': 1,      // Capital gains rates (typically lower)
-  'IRA': 2,          // Ordinary income (deferred)
-  '401k': 2,         // Ordinary income (deferred)
-  'Roth': 3,         // Tax-free (save for last)
-  'HSA': 4           // Tax-free medical (save for last)
+  Taxable: 1, // Capital gains rates (typically lower)
+  IRA: 2, // Ordinary income (deferred)
+  '401k': 2, // Ordinary income (deferred)
+  Roth: 3, // Tax-free (save for last)
+  HSA: 4, // Tax-free medical (save for last)
 };
 ```
 
 **Integration with Projection Engine**:
+
 - RMD requirements calculated first for all Traditional accounts
 - Roth conversions executed before withdrawals (if enabled)
 - Conversions use three strategies: fixed, bracket-fill, percentage
@@ -337,7 +359,9 @@ const ACCOUNT_PRIORITY = {
 - Pure functions (no side effects, easy to test)
 
 #### Roth Conversion Module Details
+
 **Implementation**: `src/calculations/roth-conversions.js`
+
 - Implements multiple Roth conversion strategies for tax-efficient retirement planning
 - Supports tax impact analysis and net benefit calculations
 - Handles pro-rata basis for mixed IRAs (pre-tax + after-tax)
@@ -366,6 +390,7 @@ const ACCOUNT_PRIORITY = {
    - Applies to after-tax 401(k) contributions or non-deductible IRA contributions
 
 **Exported Functions**:
+
 - `calculateConversionTax()` - Tax impact of conversion
 - `calculateBracketFillConversion()` - Fill to top of bracket
 - `calculateFixedConversion()` - Fixed annual amount
@@ -377,18 +402,22 @@ const ACCOUNT_PRIORITY = {
 - `analyzeConversion()` - Net benefit analysis
 
 **Integration with Projection**:
-  - Conversions executed after RMD calculations, before withdrawals
-  - Conversion amount taxed as ordinary income that year
-  - Balance transferred: Traditional decreased, Roth increased
-  - Conversion taxes added to yearly tax totals
-  - Results include `rothConversions` field showing annual conversions
-  
+
+- Conversions executed after RMD calculations, before withdrawals
+- Conversion amount taxed as ordinary income that year
+- Balance transferred: Traditional decreased, Roth increased
+- Conversion taxes added to yearly tax totals
+- Results include `rothConversions` field showing annual conversions
+
 **Schema Support**:
-  - `plan.rothConversions.enabled` - Whether conversions enabled
-  - `plan.rothConversions.strategy` - Strategy: 'fixed' | 'bracket-fill' | 'percentage'
+
+- `plan.rothConversions.enabled` - Whether conversions enabled
+- `plan.rothConversions.strategy` - Strategy: 'fixed' | 'bracket-fill' | 'percentage'
 
 #### QCD Module Details
+
 **Implementation**: `src/calculations/qcd.js`
+
 - Implements Qualified Charitable Distribution (QCD) calculations for tax-efficient charitable giving
 - Supports three QCD strategies: fixed amount, percentage of balance, RMD-based
 - Calculates tax benefit of QCDs vs. taxable withdrawals
@@ -413,6 +442,7 @@ const ACCOUNT_PRIORITY = {
    - Only applies if QCDs don't exceed $100,000 limit
 
 **Exported Functions**:
+
 - `mustTakeQCD(age)` - Check if user must take QCD (age 70.5+)
 - `canAccountTakeQCD(accountType)` - Check if account type eligible (IRA, 401k only)
 - `calculateQCDForAccount(account, qcdSettings, rmdAmount)` - Calculate QCD for specific account
@@ -423,6 +453,7 @@ const ACCOUNT_PRIORITY = {
 - `validateQCDSettings(qcdSettings)` - Validate QCD configuration
 
 **Integration with Projection**:
+
 - QCDs calculated after RMD requirements are determined
 - QCDs count toward RMD requirement (reduce required RMD withdrawal)
 - QCDs deducted from account balances before growth and withdrawals
@@ -431,6 +462,7 @@ const ACCOUNT_PRIORITY = {
 - QCDs only apply to IRA and 401k accounts (Roth, HSA, Taxable excluded)
 
 **Schema Support**:
+
 - `plan.qcdSettings.enabled` - Whether QCDs enabled
 - `plan.qcdSettings.strategy` - Strategy: 'fixed' | 'percentage' | 'rmd'
 - `plan.qcdSettings.annualAmount` - Fixed annual amount (in cents)
@@ -441,7 +473,9 @@ const ACCOUNT_PRIORITY = {
 - `plan.rothConversions.bracketTop` - Bracket top (cents) for bracket-fill
 
 #### Tax-Loss Harvesting Module Details
+
 **Implementation**: `src/calculations/tax-loss-harvesting.js`
+
 - Implements tax-loss harvesting calculations for Taxable accounts to reduce taxes
 - Supports two harvesting strategies: all losses, offset gains + $3,000 ordinary income
 - Calculates tax benefit from harvested losses (offsets capital gains + ordinary income)
@@ -462,6 +496,7 @@ const ACCOUNT_PRIORITY = {
    - Reduces portfolio turnover
 
 **Tax Benefit Calculation**:
+
 - Losses first offset realized capital gains (15% long-term capital gains rate assumed)
 - Remaining losses offset up to $3,000 of ordinary income (at marginal tax rate)
 - Example: $10,000 harvested loss with $5,000 gains and 24% marginal rate
@@ -470,6 +505,7 @@ const ACCOUNT_PRIORITY = {
   - Total benefit: $1,470
 
 **Exported Functions**:
+
 - `calculateUnrealizedLoss(account)` - Calculate unrealized loss for single account (Taxable only)
 - `calculateTotalUnrealizedLoss(accounts)` - Sum unrealized losses across all accounts
 - `calculateTaxBenefitFromLoss(harvestedLossCents, capitalGainsCents, marginalRate)` - Calculate tax savings
@@ -480,6 +516,7 @@ const ACCOUNT_PRIORITY = {
 - `getStrategyDescription(strategy)` - Human-readable strategy description
 
 **Integration with Projection**:
+
 - Taxable account snapshots track both balance and costBasis
 - Unrealized losses calculated each year before growth application
 - Harvesting applied when losses exceed threshold and strategy triggers
@@ -491,12 +528,14 @@ const ACCOUNT_PRIORITY = {
 - No wash-sale rule tracking (future enhancement)
 
 **Schema Support**:
+
 - `plan.taxLossHarvesting.enabled` - Whether TLH enabled
 - `plan.taxLossHarvesting.strategy` - Strategy: 'all' | 'offset-gains'
 - `plan.taxLossHarvesting.threshold` - Minimum loss to harvest (cents, default $1,000)
 - `account.costBasis` - Track cost basis for Taxable accounts (cents, equals balance initially)
 
 ### ProjectionRunner API
+
 ```javascript
 // Full projection execution
 ProjectionRunner.execute(planConfig, yearsToProject) → ProjectionResult
@@ -512,6 +551,7 @@ ProjectionRunner.terminate() → void
 ## Database Schema (localStorage)
 
 ### Key Structure: `retirement_plans_v{version}_{planId}`
+
 ```json
 {
   "metadata": {
@@ -585,6 +625,7 @@ ProjectionRunner.terminate() → void
 ```
 
 ### Storage Keys Convention
+
 - `retirement_plans_metadata`: Array of plan summaries for listing
 - `retirement_plans_v1_{uuid}`: Individual plan data
 - `app_config`: User preferences and UI state
@@ -595,32 +636,38 @@ ProjectionRunner.terminate() → void
 **Runtime: Zero dependencies**
 
 **Development/Testing:**
+
 - `jsonschema` (for validation logic porting to vanilla JS)
 - `web-worker-mock` (testing environment)
 - `puppeteer` (end-to-end testing)
 
 **Optional Enhancements:**
+
 - `chart.js` (visualizations, loaded via CDN on demand)
 - `comlink` (simplifies Web Worker communication)
 
 ## Validation and Testing Strategy
 
 ### Unit Testing
+
 - **Calculation Engine**: Test each financial formula in isolation using known test vectors from IRS publications
 - **Tax Rules**: Validate each rule against IRS worksheets (e.g., Form 8606 for Roth conversions)
 - **Storage Layer**: Mock localStorage and test serialization/deserialization roundtrips
 
 ### Integration Testing
+
 - **End-to-End Projections**: Run 1-year, 10-year, and 40-year projections comparing output to established calculators
 - **Import/Export Cycle**: Verify data integrity through export → import → re-export sequence
 - **Schema Migration**: Test automated migration from v1 to v2 schemas
 
 ### Performance Testing
+
 - **Worker Threading**: Ensure UI remains responsive during 40-year Monte Carlo simulations
 - **Memory Usage**: Monitor heap size with large plan datasets (20+ accounts, 50+ expense streams)
 - **localStorage Limits**: Test behavior as approach 5MB storage cap
 
 ### Validation Approach
+
 - JSON Schema validation for all imported data with semantic checks
 - Business rule validation (e.g., catch-up contributions only allowed after age 50)
 - Real-time input validation with contextual error messages
@@ -628,45 +675,57 @@ ProjectionRunner.terminate() → void
 ## Potential Risks and Complexity Hotspots
 
 ### 1. Tax Calculation Accuracy
+
 **Risk**: Incorrect tax calculations could lead users to make poor financial decisions.
-**Mitigation**: 
+**Mitigation**:
+
 - Separate tax engine with pluggable rules
 - Unit tests against IRS-provided examples
 - Community audit process for rule implementations
 - Clear disclaimers about estimation nature
 
 ### 2. localStorage Data Loss
+
 **Risk**: Browser data clearing or storage quotas could destroy user plans.
 **Mitigation**:
+
 - Automated export reminders
 - Versioned backups in localStorage
 - Clear user education about browser storage limitations
 - Future IndexedDB migration path
 
 ### 3. Rule System Complexity
+
 **Risk**: Interdependencies between rules (e.g., Roth conversions affecting RMDs) create combinatorial complexity.
 **Mitigation**:
+
 - Immutable state passing between rule executions
 - Directed acyclic graph for rule dependency management
 - Comprehensive integration test suite covering rule interactions
 
 ### 4. Performance with Complex Plans
+
 **Risk**: 40-year projections with multiple accounts and dynamic rules may exceed single-thread performance.
 **Mitigation**:
+
 - Web Worker implementation with chunked processing
 - Memoization of intermediate year calculations
 - Progressive loading of projection results
 
 ### 5. Schema Evolution
+
 **Risk**: Adding new features requires schema changes that break existing saved plans.
 **Mitigation**:
+
 - Versioned schema with automated migration scripts
 - Backward compatibility layer for at least two major versions
 - Export format that includes schema version metadata
 
 ### 6. Browser Compatibility
+
 **Risk**: Advanced APIs (Web Workers, structured cloning) may behave differently across browsers.
 **Mitigation**:
+
 - Feature detection with graceful degradation
 - Target modern browsers (Chrome 90+, Firefox 88+, Safari 14+)
 - Polyfill strategy for critical missing APIs

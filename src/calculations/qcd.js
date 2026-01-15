@@ -84,7 +84,10 @@ export function validateQCDSettings(settings) {
     errors.push('Fixed QCD amount must be positive');
   }
 
-  if (settings.strategy === 'percentage' && (!settings.percentage || settings.percentage <= 0 || settings.percentage > 1)) {
+  if (
+    settings.strategy === 'percentage' &&
+    (!settings.percentage || settings.percentage <= 0 || settings.percentage > 1)
+  ) {
     errors.push('QCD percentage must be between 0 and 1');
   }
 

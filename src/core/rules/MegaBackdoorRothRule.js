@@ -4,7 +4,8 @@ export class MegaBackdoorRothRule extends BaseRule {
   constructor(config) {
     super({
       name: 'mega-backdoor-roth',
-      description: 'Mega Backdoor Roth: After-tax 401(k) contributions with in-service conversion to Roth'
+      description:
+        'Mega Backdoor Roth: After-tax 401(k) contributions with in-service conversion to Roth',
     });
 
     this.annualContribution = (config.annualContribution || 15000) * 100;
@@ -30,7 +31,12 @@ export class MegaBackdoorRothRule extends BaseRule {
 
     const eligibility = this.checkEligibility(currentAge);
     if (!eligibility.eligible) {
-      return { contributionAmount: 0, conversionAmount: 0, reason: eligibility.reason, balanceModifications: [] };
+      return {
+        contributionAmount: 0,
+        conversionAmount: 0,
+        reason: eligibility.reason,
+        balanceModifications: [],
+      };
     }
 
     const annualContribution = this.getAnnualContribution(yearOffset);
@@ -40,7 +46,12 @@ export class MegaBackdoorRothRule extends BaseRule {
       .filter(({ acc }) => acc.type === '401k');
 
     if (forty1kAccounts.length === 0) {
-      return { contributionAmount: 0, conversionAmount: 0, reason: 'No 401(k) account found', balanceModifications: [] };
+      return {
+        contributionAmount: 0,
+        conversionAmount: 0,
+        reason: 'No 401(k) account found',
+        balanceModifications: [],
+      };
     }
 
     const forty1kAccountIndex = forty1kAccounts[0].idx;
@@ -48,7 +59,10 @@ export class MegaBackdoorRothRule extends BaseRule {
     const forty1kOriginal = forty1kAccounts[0].original;
 
     const totalIncome = projectionState.totalTaxableIncome || 0;
-    const employerMatch = Math.min(totalIncome * this.employerMatchRate, this.employeeDeferralLimit);
+    const employerMatch = Math.min(
+      totalIncome * this.employerMatchRate,
+      this.employeeDeferralLimit
+    );
 
     const annualEmployeeContribution = forty1kOriginal.annualContribution || 0;
     const annualDeferral = Math.min(annualEmployeeContribution, this.employeeDeferralLimit);
@@ -57,7 +71,12 @@ export class MegaBackdoorRothRule extends BaseRule {
     const maxAfterTaxContribution = Math.max(0, Math.min(annualContribution, availableRoom));
 
     if (maxAfterTaxContribution <= 0) {
-      return { contributionAmount: 0, conversionAmount: 0, reason: 'No room for after-tax contributions', balanceModifications: [] };
+      return {
+        contributionAmount: 0,
+        conversionAmount: 0,
+        reason: 'No room for after-tax contributions',
+        balanceModifications: [],
+      };
     }
 
     const afterTaxContribution = maxAfterTaxContribution;
@@ -67,7 +86,12 @@ export class MegaBackdoorRothRule extends BaseRule {
       .filter(({ acc }) => acc.type === 'Roth');
 
     if (rothAccounts.length === 0) {
-      return { contributionAmount: afterTaxContribution, conversionAmount: 0, reason: 'No Roth account found', balanceModifications: [] };
+      return {
+        contributionAmount: afterTaxContribution,
+        conversionAmount: 0,
+        reason: 'No Roth account found',
+        balanceModifications: [],
+      };
     }
 
     const rothAccountIndex = rothAccounts[0].idx;
@@ -80,18 +104,18 @@ export class MegaBackdoorRothRule extends BaseRule {
       {
         accountIndex: forty1kAccountIndex,
         change: afterTaxContribution,
-        reason: 'Mega Backdoor Roth - after-tax 401(k) contribution'
+        reason: 'Mega Backdoor Roth - after-tax 401(k) contribution',
       },
       {
         accountIndex: forty1kAccountIndex,
         change: -conversionAmount,
-        reason: 'Mega Backdoor Roth - in-service withdrawal'
+        reason: 'Mega Backdoor Roth - in-service withdrawal',
       },
       {
         accountIndex: rothAccountIndex,
         change: conversionAmount,
-        reason: 'Mega Backdoor Roth - converted to Roth'
-      }
+        reason: 'Mega Backdoor Roth - converted to Roth',
+      },
     ];
 
     return {
@@ -103,7 +127,7 @@ export class MegaBackdoorRothRule extends BaseRule {
       nonTaxableAmount: conversionAmount,
       taxOnConversion,
       availableRoom,
-      balanceModifications
+      balanceModifications,
     };
   }
 
@@ -142,7 +166,7 @@ export class MegaBackdoorRothRule extends BaseRule {
       27: 69000,
       28: 69000,
       29: 69000,
-      30: 69000
+      30: 69000,
     };
 
     const totalLimit = (total401kLimits[yearToIndex] || 69000) * 100;

@@ -14,6 +14,7 @@ A client-side financial planning application that runs entirely in your browser 
 ## Quick Start
 
 1. **Clone and open:**
+
    ```bash
    git clone https://github.com/yourusername/openfinanceplanner.git
    cd openfinanceplanner
@@ -80,6 +81,7 @@ MIT License - see LICENSE file for details
 ## Roadmap
 
 See [docs/tasks.md](docs/tasks.md) for detailed development plans including:
+
 - Advanced tax calculations with progressive brackets
 - Required Minimum Distribution (RMD) calculations
 - Roth conversion strategies (backdoor Roth, conversion ladders)

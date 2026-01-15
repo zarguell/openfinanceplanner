@@ -4,10 +4,18 @@ import { StorageManager } from '../../src/storage/StorageManager.js';
 
 global.localStorage = {
   store: {},
-  getItem(key) { return this.store[key] || null; },
-  setItem(key, value) { this.store[key] = value; },
-  removeItem(key) { delete this.store[key]; },
-  clear() { this.store = {}; }
+  getItem(key) {
+    return this.store[key] || null;
+  },
+  setItem(key, value) {
+    this.store[key] = value;
+  },
+  removeItem(key) {
+    delete this.store[key];
+  },
+  clear() {
+    this.store = {};
+  },
 };
 
 export function testRothConversionUIFields() {
@@ -22,7 +30,7 @@ export function testRothConversionUIFields() {
     strategy: 'fixed',
     annualAmount: 10000 * 100,
     percentage: 0.05,
-    bracketTop: 50000 * 100
+    bracketTop: 50000 * 100,
   };
 
   console.log('✓ Plan created with Roth Conversion settings:', plan.rothConversions);
@@ -48,20 +56,29 @@ export function testRothConversionUIFields() {
   if (reconstructedPlan.rothConversions.annualAmount !== 10000 * 100) {
     throw new Error('Roth Conversions annualAmount not preserved');
   }
-  console.log('✓ Roth Conversions annualAmount preserved:', reconstructedPlan.rothConversions.annualAmount);
+  console.log(
+    '✓ Roth Conversions annualAmount preserved:',
+    reconstructedPlan.rothConversions.annualAmount
+  );
 
   if (reconstructedPlan.rothConversions.percentage !== 0.05) {
     throw new Error('Roth Conversions percentage not preserved');
   }
-  console.log('✓ Roth Conversions percentage preserved:', reconstructedPlan.rothConversions.percentage);
+  console.log(
+    '✓ Roth Conversions percentage preserved:',
+    reconstructedPlan.rothConversions.percentage
+  );
 
   if (reconstructedPlan.rothConversions.bracketTop !== 50000 * 100) {
     throw new Error('Roth Conversions bracketTop not preserved');
   }
-  console.log('✓ Roth Conversions bracketTop preserved:', reconstructedPlan.rothConversions.bracketTop);
+  console.log(
+    '✓ Roth Conversions bracketTop preserved:',
+    reconstructedPlan.rothConversions.bracketTop
+  );
 
   plan.rothConversions.strategy = 'percentage';
-  plan.rothConversions.percentage = 0.10;
+  plan.rothConversions.percentage = 0.1;
   StorageManager.savePlan(plan);
   const loadedPlan2 = StorageManager.loadPlan(plan.id);
   const reconstructedPlan2 = Plan.fromJSON(loadedPlan2);
@@ -112,7 +129,7 @@ export function testRothConversionWithProjection() {
     strategy: 'fixed',
     annualAmount: 15000 * 100,
     percentage: 0,
-    bracketTop: 0
+    bracketTop: 0,
   };
 
   console.log('✓ Plan created with Roth Conversions');
@@ -125,9 +142,11 @@ export function testRothConversionWithProjection() {
   console.log('✓ Plan loaded from storage');
   console.log('✓ Roth Conversions settings:', reconstructedPlan.rothConversions);
 
-  if (reconstructedPlan.rothConversions.enabled !== true ||
-      reconstructedPlan.rothConversions.strategy !== 'fixed' ||
-      reconstructedPlan.rothConversions.annualAmount !== 15000 * 100) {
+  if (
+    reconstructedPlan.rothConversions.enabled !== true ||
+    reconstructedPlan.rothConversions.strategy !== 'fixed' ||
+    reconstructedPlan.rothConversions.annualAmount !== 15000 * 100
+  ) {
     throw new Error('Roth Conversion settings mismatch after load');
   }
   console.log('✓ Roth Conversion settings verified');

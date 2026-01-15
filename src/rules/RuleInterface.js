@@ -101,7 +101,14 @@ export class RuleInterface {
  * Parameter definition for rule configuration
  */
 export class ParameterDefinition {
-  constructor(name, type, required = false, defaultValue = null, validation = null, description = '') {
+  constructor(
+    name,
+    type,
+    required = false,
+    defaultValue = null,
+    validation = null,
+    description = ''
+  ) {
     this.name = name;
     this.type = type; // 'number', 'boolean', 'string', 'select'
     this.required = required;

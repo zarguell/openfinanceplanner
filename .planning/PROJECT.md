@@ -47,6 +47,7 @@ Make the codebase maintainable for long-term evolution - split monolithic files,
 This is a brownfield project with an existing, well-architected codebase:
 
 **Architectural Strengths:**
+
 - Clean layered separation (UI → Application → Domain → Calculations → Infrastructure)
 - Domain-driven design with rich models (Plan, Account, Expense, Income)
 - Strategy pattern for extensible financial rules
@@ -54,6 +55,7 @@ This is a brownfield project with an existing, well-architected codebase:
 - Repository pattern for storage abstraction
 
 **Current Technical Debt:**
+
 - Monolithic files: `src/calculations/tax.js` (2,296 lines), `src/ui/AppController.js` (1,347 lines)
 - 1,018+ hardcoded magic numbers scattered throughout codebase
 - No formal testing framework (custom test runner with manual assertions)
@@ -62,6 +64,7 @@ This is a brownfield project with an existing, well-architected codebase:
 - Missing input validation in UI controllers
 
 **Codebase Mapping:**
+
 - Architecture, Structure, Stack, Conventions, Testing, Integrations, and Concerns are fully documented in `.planning/codebase/`
 
 **User Goals:**
@@ -78,14 +81,15 @@ Focus on making the codebase more maintainable for long-term evolution.
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Split files first, then tools | Breaking monolithic files enables easier tool adoption | — Pending |
-| Extract config before refactoring | Centralizing values reduces duplicate work when splitting files | — Pending |
-| Keep vanilla JS | Avoid framework migration complexity, focus on maintainability tooling | ✓ Good |
-| Use Vitest (not Jest) | Simpler setup, works with ES6 modules without bundler | — Pending |
-| Defer security fixes | Focus limited effort on maintainability priorities | ✓ Good |
-| Maintain localStorage schema | No breaking data loss for existing users | — Pending |
+| Decision                          | Rationale                                                              | Outcome   |
+| --------------------------------- | ---------------------------------------------------------------------- | --------- |
+| Split files first, then tools     | Breaking monolithic files enables easier tool adoption                 | — Pending |
+| Extract config before refactoring | Centralizing values reduces duplicate work when splitting files        | — Pending |
+| Keep vanilla JS                   | Avoid framework migration complexity, focus on maintainability tooling | ✓ Good    |
+| Use Vitest (not Jest)             | Simpler setup, works with ES6 modules without bundler                  | — Pending |
+| Defer security fixes              | Focus limited effort on maintainability priorities                     | ✓ Good    |
+| Maintain localStorage schema      | No breaking data loss for existing users                               | — Pending |
 
 ---
-*Last updated: 2026-01-15 after initialization*
+
+_Last updated: 2026-01-15 after initialization_

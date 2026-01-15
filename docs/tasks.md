@@ -5,12 +5,14 @@
 ## ✅ MVP Pivot: User-Estimated Tax Rates (January 2026)
 
 ### Tax Calculation Approach - SIMPLIFIED FOR MVP
+
 - ✅ **MVP APPROACH**: User-estimated tax rates instead of detailed bracket calculations
 - ✅ **DEFERRED**: Complex federal/state tax bracket calculations (available as advanced feature)
 - ✅ **DEFERRED**: RMD calculations and advanced tax strategies
 - ✅ **DEFERRED**: Social Security, FICA, capital gains tax calculations
 
 ### MVP Tax Implementation
+
 - ✅ User-input estimated tax rate (federal + state combined)
 - ✅ Simple percentage-based tax calculation for withdrawals
 - ✅ Integration with projection engine using estimated rates
@@ -18,6 +20,7 @@
 - ✅ UI for tax rate input and editing
 
 ### Completed Tax Engine (Available as Advanced Feature)
+
 - ✅ Federal tax bracket calculations (Form 1040 - progressive rates for 2024/2025, all filing statuses)
 - ✅ State tax brackets for all 50 states + DC (2025 data, using for both 2024/2025)
 - ✅ Standard deductions and comprehensive tax calculations
@@ -25,14 +28,17 @@
 - ✅ Comprehensive unit tests for detailed tax calculations
 
 **Ready for Phase 2: Enhanced Calculation Features**
+
 - Roth conversion calculations - Ready to implement pro-rata rules and tax tracking
 - Medicare premium impact - Next: Model MAGI-based premium adjustments for high-income earners
 
 **Ready for Phase 3: Data Layer Enhancements**
+
 - IndexedDB implementation - Ready for large dataset support
 - Schema versioning system - Architecture designed, ready for migrations
 
 **Ready for Phase 7: Testing & Quality**
+
 - Integration tests passing - All core functionality validated
 
 **Sprint 4: Phase 1 Verification & Testing (COMPLETED ✅)**
@@ -46,6 +52,7 @@
 - ✅ Updated projection.js imports to use correct modules
 
 **Files Modified:**
+
 - `src/calculations/tax.js` - Removed duplicate function and obsolete RMD export
 - `src/calculations/projection.js` - Fixed imports
 - `tests/unit/calculations/tax.test.js` - Fixed all test expectations
@@ -64,12 +71,14 @@
 - ✅ Updated Plan model to support rothConversions field
 
 **Files Created:**
+
 - `src/calculations/roth-conversions.js` - Roth conversion module
 - `tests/unit/calculations/roth-conversions.test.js` - Unit tests
 - `tests/integration/roth-conversions-integration.test.js` - Integration tests
 - `tests/integration/roth-conversions-ui.test.js` - UI integration tests
 
 **Files Modified:**
+
 - `src/calculations/projection.js` - Integrated Roth conversions
 - `src/ui/AppController.js` - Added Roth Conversion UI
 - `src/core/models/Plan.js` - Added rothConversions support
@@ -77,6 +86,7 @@
 - `docs/tasks.md` - Marked Sprint 6 tasks complete
 
 **Test Results:**
+
 - All unit tests passing ✅
 - All integration tests passing ✅
 - Full-flow test passing ✅
@@ -110,11 +120,13 @@
 - ✅ Documentation updates (architecture.md, tasks.md)
 
 **Files Created:**
+
 - `src/calculations/qcd.js` - QCD calculation module
 - `tests/unit/calculations/qcd.test.js` - Unit tests (8 tests, all passing)
 - `tests/integration/qcd-integration.test.js` - Integration tests (4 tests, all passing)
 
 **Files Modified:**
+
 - `src/calculations/projection.js` - Integrated QCD calculations (after RMDs, before withdrawals)
 - `src/ui/AppController.js` - Added QCD UI with toggle, strategy selector, and input fields
 - `src/core/models/Plan.js` - Added qcdSettings field with defaults
@@ -122,6 +134,7 @@
 - `docs/tasks.md` - Marked Sprint 8 complete
 
 **QCD Features:**
+
 - Age 70.5+ requirement (per IRS rules)
 - $100,000 annual limit per person
 - Eligible account types: IRA and 401k only (Roth, HSA, Taxable excluded)
@@ -131,6 +144,7 @@
 - Results include `totalQCD` field showing annual QCD amounts
 
 **Test Results:**
+
 - All QCD unit tests passing ✅ (8/8)
 - All QCD integration tests passing ✅ (4/4)
 - Projection integration working ✅
@@ -148,11 +162,13 @@
 - ✅ Documentation updates (architecture.md, tasks.md)
 
 **Files Created:**
+
 - `src/calculations/tax-loss-harvesting.js` - TLH calculation module (9 exported functions)
 - `tests/unit/calculations/tax-loss-harvesting.test.js` - Unit tests (18 tests, all passing)
 - `tests/integration/tax-loss-harvesting-integration.test.js` - Integration tests (8 tests, all passing)
 
 **Files Modified:**
+
 - `src/calculations/projection.js` - Integrated TLH calculations, added costBasis to output
 - `src/core/models/Plan.js` - Added taxLossHarvesting field with defaults
 - `src/core/models/Account.js` - Added costBasis property for Taxable accounts
@@ -161,6 +177,7 @@
 - `docs/tasks.md` - Marked Sprint 9 complete
 
 **TLH Features:**
+
 - Two strategies: All available losses, Offset gains + $3,000 ordinary income
 - Tax benefit calculation (offsets capital gains at 15%, ordinary income at marginal rate)
 - $3,000 annual ordinary income offset limit (per IRS rules)
@@ -171,6 +188,7 @@
 - Results include `taxBenefitFromHarvesting` and `harvestedLoss` fields
 
 **Test Results:**
+
 - All TLH unit tests passing ✅ (18/18)
 - All TLH integration tests passing ✅ (8/8)
 - Projection integration working ✅
@@ -191,6 +209,7 @@
 - ✅ Schema validation updates for new income fields
 
 **Files Modified:**
+
 - `src/core/models/Income.js` - Added smart rule fields, new income types, updated getTaxTreatment()
 - `src/calculations/income.js` - Added evaluateStartYear(), evaluateEndYear(), updated calculateIncomeForYear(), calculateTotalIncome(), calculateTaxableIncome()
 - `src/calculations/projection.js` - Added planContext object to calculateTotalIncome() call
@@ -200,6 +219,7 @@
 - `docs/tasks.md` - Marked Sprint 10 complete
 
 **Smart Rule Features:**
+
 - Manual: Uses explicit startYear/endYear values (default)
 - Retirement: Auto-calculates based on plan's retirement age (retirementAge - currentAge)
 - Age: Uses specified age (startRuleAge/endRuleAge - currentAge)
@@ -208,6 +228,7 @@
 - New tax-accurate income types: interest (passive), non-qualified-dividends (passive)
 
 **Test Results:**
+
 - All unit tests passing ✅ (15/15 including 9 new smart rule tests)
 - Smart rule integration working ✅
 - Retirement transition logic working ✅ (salary ends at retirement, pension starts at retirement)
@@ -216,8 +237,9 @@
 
 All critical Phase 1 calculation features are complete. Remaining items deprioritized in favor of Phase 2 (Rules Engine):
 
-**Deprioritized Items (will revisit later):**
-- Backdoor Roth automation - Good for advanced users, but Phase 2 RuleRegistry will enable this more cleanly
+**Deprioritized Items:**
+
+- ~~Backdoor Roth automation~~ - **COMPLETED in Sprint 12** via Phase 2 RuleRegistry with BackdoorRothRule and MegaBackdoorRothRule ✅
 - Multiple portfolio allocation models (stocks/bonds/cash) - Lower priority without visualization layer
 - Rebalancing strategy implementation - Lower priority without dynamic allocation models
 - Scenario analysis (market downturns, inflation spikes) - Useful but not blocking for core planning
@@ -240,12 +262,14 @@ Core calculation engine is now production-ready. Advanced features like Backdoor
 **Objective:** Build extensible strategy system that enables complex, composable financial planning rules.
 
 **Current State:**
+
 - ✅ Individual strategies implemented (Roth conversions, QCD, TLH, withdrawal strategies)
 - ❌ No extensible rule system (strategies hardcoded in projection engine)
 - ❌ No strategy factory or dependency management
 - ❌ No rule composition (combining multiple strategies)
 
 **Phase 2 Goals:**
+
 1. Create RuleRegistry - Central repository for all strategy types
 2. Implement StrategyFactory - Dynamic strategy instantiation
 3. Enable rule composition - Combine multiple strategies (e.g., "Roth conversion + QCD")
@@ -266,6 +290,7 @@ Core calculation engine is now production-ready. Advanced features like Backdoor
 - ✅ All integration tests passing (QCD, TLH, full-flow)
 
 **Files Created:**
+
 - `src/core/rules/BaseRule.js` - Abstract base class defining rule interface
 - `src/core/rules/RuleRegistry.js` - Central registry with dependency management
 - `src/core/rules/StrategyFactory.js` - Factory for dynamic instantiation
@@ -276,11 +301,13 @@ Core calculation engine is now production-ready. Advanced features like Backdoor
 - `tests/unit/core/rules/RuleRegistry.test.js` - Unit tests (16 tests, all passing)
 
 **Files Modified:**
+
 - `src/calculations/projection.js` - Refactored to use RuleRegistry.applyRules()
 - `docs/architecture.md` - Added comprehensive RuleRegistry documentation
 - `docs/tasks.md` - Marked Sprint 11 complete
 
 **RuleRegistry Features:**
+
 - Rule registration and management
 - Dependency validation and circular dependency detection
 - Topological sort for correct execution order
@@ -289,11 +316,78 @@ Core calculation engine is now production-ready. Advanced features like Backdoor
 - Extensible architecture for future strategies (Backdoor Roth, etc.)
 
 **Test Results:**
+
 - All RuleRegistry unit tests passing ✅ (16/16)
 - All QCD integration tests passing ✅ (5/5)
 - All TLH integration tests passing ✅ (8/8)
 - Full-flow integration test passing ✅
 - No regressions from refactoring ✅
+
+**Sprint 12: Backdoor Roth Strategy Implementation (COMPLETED ✅)**
+
+- ✅ Implemented BackdoorRothRule class with pro-rata calculations (IRS Form 8606 compliance)
+- ✅ Implemented MegaBackdoorRothRule class with after-tax 401(k) contributions
+- ✅ Integrated both rules into projection engine with result tracking
+- ✅ Updated Plan model with backdoorRoth and megaBackdoorRoth fields
+- ✅ Updated schema validation for new fields
+- ✅ Created comprehensive unit tests (10 tests, all passing)
+- ✅ Fixed pre-existing bug in RothConversionRule (missing balanceModifications)
+- ✅ Updated architecture documentation
+
+**Files Created:**
+
+- `src/core/rules/BackdoorRothRule.js` - Backdoor Roth strategy with pro-rata calculations (174 lines)
+- `src/core/rules/MegaBackdoorRothRule.js` - Mega Backdoor Roth strategy (172 lines)
+- `tests/unit/core/rules/BackdoorRothRule.test.js` - Unit tests (490 lines, 10 tests)
+
+**Files Modified:**
+
+- `src/core/rules/index.js` - Added exports for BackdoorRothRule and MegaBackdoorRothRule
+- `src/calculations/projection.js` - Registered both rules, added result tracking fields
+- `src/core/models/Plan.js` - Added backdoorRoth and megaBackdoorRoth fields to constructor, toJSON(), fromJSON()
+- `src/storage/schema.js` - Added validation for backdoorRoth and megaBackdoorRoth fields
+- `src/core/rules/RothConversionRule.js` - Fixed missing balanceModifications bug
+- `docs/architecture.md` - Added Implemented Rules section with BackdoorRothRule and MegaBackdoorRothRule documentation
+
+**BackdoorRothRule Features:**
+
+- Pro-rata calculations for IRS Form 8606 compliance
+- Income eligibility checking with phase-out thresholds (2025: $129k-$144k for single filers)
+- Annual contribution limits by year (2025: $7,000, 2026+: $8,000 for ages 50+)
+- Age requirement: 18+
+- Applies to: Traditional IRA accounts
+- Returns structured balanceModifications for: non-deductible contribution → Traditional IRA → Roth conversion
+
+**MegaBackdoorRothRule Features:**
+
+- After-tax 401(k) contributions with in-service withdrawal
+- Enforces total 401(k) limit ($69,000 for 2025)
+- Employer match calculation and room availability
+- Plan eligibility flags (after-tax support, in-service withdrawal)
+- Applies to: 401(k) accounts with Roth conversion
+- Calculates available room for after-tax contributions
+- Immediate in-service withdrawal to Roth (tax-free)
+
+**Projection Result Tracking:**
+
+- Added fields: `backdoorRothContribution`, `backdoorRothConversion`
+- Added fields: `megaBackdoorRothContribution`, `megaBackdoorRothConversion`, `megaBackdoorRothEmployerMatch`
+
+**Test Results:**
+
+- All BackdoorRothRule unit tests passing ✅ (5/5)
+- All MegaBackdoorRothRule unit tests passing ✅ (5/5)
+- Total: 10/10 tests passing ✅
+- No regressions in existing tests ✅
+- Fixed pre-existing RothConversionRule bug ✅
+
+**Important Notes:**
+
+- UI implementation not included (focused on calculation engine per user preference)
+- Comprehensive unit tests created, no integration tests yet
+- IRS compliance maintained through pro-rata calculations (BackdoorRothRule)
+- Backward compatibility preserved (Plan.fromJSON() includes default values)
+- Only single filer income phase-out implemented (married filing jointly deferred)
 
 **Sprint 5: Tax-Efficient Withdrawal Strategy (COMPLETED ✅)**
 
@@ -306,17 +400,20 @@ Core calculation engine is now production-ready. Advanced features like Backdoor
 - ✅ Documentation updates (architecture.md)
 
 **Files Created:**
+
 - `src/calculations/withdrawal-strategies.js` - Withdrawal strategy module
 - `tests/unit/calculations/withdrawal-strategies.test.js` - Unit tests
 - `tests/integration/withdrawal-strategies-integration.test.js` - Integration tests
 
 **Files Modified:**
+
 - `src/calculations/projection.js` - Integrated withdrawal strategy system
 - `src/core/models/Plan.js` - Added withdrawalStrategy property
 - `src/ui/AppController.js` - Added withdrawal strategy dropdown to settings
 - `docs/architecture.md` - Added withdrawal strategy documentation
 
 **Test Results:**
+
 - All unit tests passing ✅
 - All integration tests passing ✅
 - Full-flow test passing ✅
@@ -333,10 +430,12 @@ Core calculation engine is now production-ready. Advanced features like Backdoor
 - ✅ Documentation updates (architecture.md)
 
 **Files Created:**
+
 - `src/calculations/rmd.js` - RMD calculation module
 - `tests/unit/calculations/rmd.test.js` - RMD unit tests
 
 **Files Modified:**
+
 - `src/calculations/projection.js` - Integrated RMD calculations
 - `docs/architecture.md` - Added RMD module documentation
 - `docs/tasks.md` - Marked Sprint 2 complete
@@ -359,6 +458,7 @@ The single-file implementation has been successfully refactored into a modular a
 Created a complete working prototype of Retirement Planner Pro with:
 
 **Core Features Implemented:**
+
 - ✅ Multi-plan management with localStorage persistence
 - ✅ Account management (401k, IRA, Roth, HSA, Taxable)
 - ✅ Expense modeling with inflation adjustment
@@ -370,18 +470,20 @@ Created a complete working prototype of Retirement Planner Pro with:
 - ✅ Results visualization with summary cards and detailed tables
 
 **Architecture:**
+
 - Modular design: `Plan`, `Account`, `Expense`, `ProjectionEngine`, `StorageManager`, `AppController`
 - Zero dependencies (vanilla JavaScript)
 - localStorage-based persistence
 - Responsive design with dark mode support
 
-***
+---
 
 ## COMPREHENSIVE TASK LIST FOR PRODUCT COMPLETION
 
 ### PHASE 1: ENHANCED CALCULATION ENGINE (Priority: Critical)
 
 **Tax Calculations**
+
 - [✅] Implement federal tax bracket calculations (Form 1040) - **FIXED and working**
 - [✅] Add state tax support (DC, CA, NY) - **Complete and tested**
 - [✅] Standard deductions (single: $15,750; married joint: $31,500; HOH: $23,625 for 2025)
@@ -391,8 +493,8 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [✅] FICA taxes - SS (6.2%) + Medicare (1.45% + 0.9% additional for high earners)
 - [✅] RMD calculations - SECURE Act 2.0 age requirements with IRS life expectancy table (COMPLETED Sprint 2)
 
-
 **Income Streams**
+
 - [✅] Social Security benefit estimation (by FRA and filing age) (COMPLETED Sprint 3)
 - [✅] Pension income modeling (COMPLETED Sprint 10)
 - [✅] Rental property income support (COMPLETED Sprint 10)
@@ -401,13 +503,15 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [✅] Earned income/wages (pre-retirement) (COMPLETED Sprint 10)
 
 **Withdrawal Strategies**
+
 - [✅] Implement Roth conversion ladder logic - **COMPLETED Sprint 6**
 - [✅] Tax-loss harvesting suggestions - **COMPLETED Sprint 9**
 - [✅] Tax-efficient withdrawal order (Taxable → Traditional → Roth → HSA) - **COMPLETED Sprint 5**
 - [✅] Qualified charitable distribution (QCD) support for age 70½+ - **COMPLETED Sprint 8**
-- [⏸️] Backdoor Roth automation - **DEPRIORITIZED** (will implement via RuleRegistry in Phase 2)
+- [✅] Backdoor Roth automation - **COMPLETED Sprint 12** (via RuleRegistry with BackdoorRothRule and MegaBackdoorRothRule)
 
 **Advanced Projections**
+
 - [x] Monte Carlo simulation (1,000 scenarios) - **COMPLETED**
 - [x] Success probability calculation - **COMPLETED**
 - [x] Sequence of returns risk analysis - **COMPLETED**
@@ -420,24 +524,27 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 2: RULES ENGINE & TAX STRATEGIES (Priority: High - IN PROGRESS)
 
 **Extensible Rule System**
-- [ ] Create RuleRegistry for financial strategies
-- [ ] Implement StrategyFactory pattern
-- [ ] Build rule dependency graph
+
+- [✅] Create RuleRegistry for financial strategies - **COMPLETED Sprint 11**
+- [✅] Implement StrategyFactory pattern - **COMPLETED Sprint 11**
+- [✅] Build rule dependency graph - **COMPLETED Sprint 11**
 - [ ] Add rule composition (combine multiple rules)
 - [ ] Create rule versioning system
 
 **Rule Implementations**
-- [ ] BackdoorRothStrategy
-- [ ] RothConversionLadderStrategy
-- [ ] TaxLossHarvestingStrategy
-- [ ] QualifiedCharitableDistributionStrategy
-- [ ] MegaBackdoorRothStrategy
+
+- [✅] BackdoorRothStrategy - **COMPLETED Sprint 12**
+- [✅] RothConversionLadderStrategy - **COMPLETED Sprint 11**
+- [✅] TaxLossHarvestingStrategy - **COMPLETED Sprint 11**
+- [✅] QualifiedCharitableDistributionStrategy - **COMPLETED Sprint 11**
+- [✅] MegaBackdoorRothStrategy - **COMPLETED Sprint 12**
 - [ ] RMDOptimizationStrategy
 - [ ] EarlyRetirementTaxOptimizationStrategy
 
 ### PHASE 3: DATA LAYER & STORAGE (Priority: High)
 
 **Enhanced Storage**
+
 - [ ] Implement IndexedDB for large datasets
 - [ ] Create automatic backup to localStorage
 - [ ] Add schema versioning with migration scripts
@@ -445,6 +552,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Add encryption for sensitive data (optional)
 
 **Import/Export Enhancements**
+
 - [ ] Support CSV import for historical data
 - [ ] Export to Excel with formatting
 - [ ] PDF report generation
@@ -452,6 +560,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Implement cloud sync (Firebase/Supabase)
 
 **Data Validation**
+
 - [ ] JSON Schema validation for all imports
 - [ ] Business rule validation
 - [ ] Semantic checks (e.g., no RMD before age 72)
@@ -461,6 +570,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 4: VISUALIZATION & REPORTING (Priority: High)
 
 **Charts & Graphs**
+
 - [ ] Balance projection line chart
 - [ ] Tax impact visualization
 - [ ] Account allocation pie chart
@@ -469,6 +579,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Account drawdown simulation
 
 **Reports**
+
 - [ ] Retirement readiness report
 - [ ] Tax projection report
 - [ ] Annual tax summary
@@ -477,6 +588,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Risk analysis report
 
 **Dashboard Enhancements**
+
 - [ ] Key metrics at-a-glance
 - [ ] Retirement probability gauge
 - [ ] Years-until-retirement countdown
@@ -486,6 +598,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 5: ADVANCED UI/UX (Priority: Medium)
 
 **UI Components**
+
 - [ ] Drag-and-drop account reordering
 - [ ] Inline account editing
 - [ ] Quick-edit modal improvements
@@ -494,6 +607,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Undo/redo support
 
 **User Experience**
+
 - [ ] Onboarding wizard for new users
 - [ ] Contextual help tooltips
 - [ ] Keyboard shortcuts
@@ -502,6 +616,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Keyboard navigation support
 
 **Settings & Preferences**
+
 - [ ] Recurring expense templates
 - [ ] Custom assumptions library
 - [ ] Theme selection (light/dark/auto)
@@ -511,12 +626,14 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 6: PERFORMANCE & SCALABILITY (Priority: Medium)
 
 **Web Workers**
+
 - [ ] Offload Monte Carlo to worker threads
 - [ ] Parallel projection calculations
 - [ ] Data processing workers
 - [ ] Progress indication for long calculations
 
 **Optimization**
+
 - [ ] Memoization of calculation results
 - [ ] Lazy loading of projections
 - [ ] Virtual scrolling for large tables
@@ -526,6 +643,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 7: TESTING & QUALITY (Priority: High)
 
 **Unit Tests**
+
 - [✅] Projection engine tests (against known vectors)
 - [✅] Tax calculation tests (against IRS examples)
 - [ ] Storage manager tests
@@ -533,6 +651,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] All utility functions tested
 
 **Integration Tests**
+
 - [✅] Full projection workflow
 - [✅] Import/export roundtrip (Social Security, RMD integration tests pass)
 - [✅] Multi-plan operations (covered in full-flow test)
@@ -540,12 +659,14 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Cross-browser compatibility
 
 **E2E Tests**
+
 - [ ] Complete user workflows
 - [ ] Plan creation to projection
 - [ ] Import/export cycle
 - [ ] Data persistence checks
 
 **Financial Accuracy**
+
 - [ ] Validate against established calculators
 - [ ] Reconcile with tax software
 - [ ] Real-world scenario testing
@@ -554,6 +675,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 8: DOCUMENTATION & DEPLOYMENT (Priority: Medium)
 
 **Documentation**
+
 - [ ] User guide with screenshots
 - [ ] API documentation for extensibility
 - [ ] Rule system documentation
@@ -563,6 +685,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] FAQ section
 
 **Deployment**
+
 - [ ] GitHub repository setup
 - [ ] Build process automation
 - [ ] CI/CD pipeline
@@ -570,6 +693,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Version management
 
 **Community**
+
 - [ ] Open source license (MIT/Apache)
 - [ ] Issue templates
 - [ ] Contribution guidelines
@@ -578,12 +702,14 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 9: ADVANCED FEATURES (Priority: Low - Future)
 
 **Multi-User & Collaboration**
+
 - [ ] Spouse/family member views
 - [ ] Shared plan access
 - [ ] Comment/annotation system
 - [ ] Audit trail
 
 **Integration Capabilities**
+
 - [ ] Fidelity API integration
 - [ ] Vanguard data import
 - [ ] IRS data verification
@@ -591,12 +717,14 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Zillow home value (for net worth)
 
 **AI-Powered Features**
+
 - [ ] Recommendation engine
 - [ ] Anomaly detection
 - [ ] Natural language queries
 - [ ] Automated optimization suggestions
 
 **Specialized Scenarios**
+
 - [ ] Early retirement (FIRE)
 - [ ] Coast-FI planning
 - [ ] Geographic arbitrage (location changes)
@@ -607,6 +735,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 ### PHASE 10: SECURITY & PRIVACY (Priority: High)
 
 **Security**
+
 - [ ] Input sanitization
 - [ ] XSS prevention
 - [ ] CSRF protection
@@ -614,17 +743,19 @@ Created a complete working prototype of Retirement Planner Pro with:
 - [ ] Regular dependency updates
 
 **Privacy**
+
 - [ ] Privacy policy
 - [ ] Data retention policy
 - [ ] No server-side storage (by default)
 - [ ] Clear data deletion options
 - [ ] GDPR compliance
 
-***
+---
 
 ## CURRENT LIMITATIONS & TECHNICAL DEBT
 
 **Known Limitations:**
+
 - Basic tax calculations (no state taxes)
 - No social security integration
 - Single-user only (no cloud sync)
@@ -634,6 +765,7 @@ Created a complete working prototype of Retirement Planner Pro with:
 - Monte Carlo results visualization (text-only, no charts yet)
 
 **Technical Debt:**
+
 - Monolithic AppController (should split by domain)
 - No error boundary
 - Limited input validation
@@ -641,9 +773,10 @@ Created a complete working prototype of Retirement Planner Pro with:
 - Hard-coded tax brackets
 - No caching strategy
 
-***
+---
 
 **Recommended Next Steps:**
+
 1. **Week 1-2**: Implement Monte Carlo engine + success probability
 2. **Week 3-4**: Add comprehensive tax calculations
 3. **Week 5-6**: Build visualization layer with charts

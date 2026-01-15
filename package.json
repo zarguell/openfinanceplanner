@@ -5,9 +5,22 @@
   "type": "module",
   "scripts": {
     "serve": "python3 -m http.server 3030",
-    "test": "echo \"Testing framework TBD\" && exit 0"
+    "test": "vitest run",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
-  "keywords": ["financial", "planning", "retirement", "calculator"],
+  "keywords": [
+    "financial",
+    "planning",
+    "retirement",
+    "calculator"
+  ],
   "author": "zarguell <zac.arguelles@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "prettier": "^3.8.0",
+    "vitest": "^4.0.17"
+  }
 }

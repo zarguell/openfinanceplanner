@@ -4,7 +4,7 @@ import {
   calculateTotalUnrealizedLoss,
   calculateTaxBenefitFromLoss,
   suggestHarvestingAmount,
-  applyHarvesting
+  applyHarvesting,
 } from '../../calculations/tax-loss-harvesting.js';
 
 export class TLHRule extends BaseRule {
@@ -22,7 +22,7 @@ export class TLHRule extends BaseRule {
         harvestedLoss: 0,
         taxBenefitFromHarvesting: 0,
         reason: 'TLH not enabled',
-        balanceModifications: []
+        balanceModifications: [],
       };
     }
 
@@ -34,7 +34,7 @@ export class TLHRule extends BaseRule {
         harvestedLoss: 0,
         taxBenefitFromHarvesting: 0,
         reason: 'No unrealized losses available',
-        balanceModifications: []
+        balanceModifications: [],
       };
     }
 
@@ -43,17 +43,22 @@ export class TLHRule extends BaseRule {
 
     const settings = {
       strategy: this.strategy,
-      threshold: this.threshold
+      threshold: this.threshold,
     };
 
-    const suggestion = suggestHarvestingAmount(unrealizedLoss, capitalGains, marginalTaxRate, settings);
+    const suggestion = suggestHarvestingAmount(
+      unrealizedLoss,
+      capitalGains,
+      marginalTaxRate,
+      settings
+    );
 
     if (suggestion.harvestAmountCents <= 0) {
       return {
         harvestedLoss: 0,
         taxBenefitFromHarvesting: 0,
         reason: suggestion.reason || 'No harvesting suggested',
-        balanceModifications: []
+        balanceModifications: [],
       };
     }
 
@@ -76,7 +81,7 @@ export class TLHRule extends BaseRule {
               accountIndex: idx,
               change: newBalance,
               reason: 'Tax-loss harvesting - reset cost basis',
-              costBasisUpdate: result.newCostBasis
+              costBasisUpdate: result.newCostBasis,
             });
             appliedHarvest += harvestFromAccount;
           }
@@ -88,7 +93,7 @@ export class TLHRule extends BaseRule {
       harvestedLoss: appliedHarvest,
       taxBenefitFromHarvesting: suggestion.taxBenefitCents,
       reason: suggestion.reason || 'Harvesting applied',
-      balanceModifications
+      balanceModifications,
     };
   }
 

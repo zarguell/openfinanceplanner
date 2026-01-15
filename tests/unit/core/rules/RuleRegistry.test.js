@@ -16,7 +16,7 @@ export function testBaseRuleValidation() {
   const rule = new MockRule({
     name: 'test-rule',
     description: 'Test rule',
-    dependencies: []
+    dependencies: [],
   });
 
   const validation = rule.validate();
@@ -31,7 +31,7 @@ export function testBaseRuleGetMetadata() {
   const rule = new MockRule({
     name: 'test-rule',
     description: 'Test rule',
-    dependencies: ['dep1', 'dep2']
+    dependencies: ['dep1', 'dep2'],
   });
 
   const metadata = rule.getMetadata();
@@ -55,7 +55,7 @@ export function testRuleRegistryRegister() {
   const rule = new MockRule({
     name: 'test-rule',
     description: 'Test rule',
-    dependencies: []
+    dependencies: [],
   });
 
   const result = registry.register(rule);
@@ -75,13 +75,13 @@ export function testRuleRegistryDuplicate() {
   const rule1 = new MockRule({
     name: 'test-rule',
     description: 'Test rule',
-    dependencies: []
+    dependencies: [],
   });
 
   const rule2 = new MockRule({
     name: 'test-rule',
     description: 'Duplicate rule',
-    dependencies: []
+    dependencies: [],
   });
 
   registry.register(rule1);
@@ -99,7 +99,7 @@ export function testRuleRegistryGet() {
   const rule = new MockRule({
     name: 'test-rule',
     description: 'Test rule',
-    dependencies: []
+    dependencies: [],
   });
 
   registry.register(rule);
@@ -134,7 +134,7 @@ export function testRuleRegistryUnregister() {
   const rule = new MockRule({
     name: 'test-rule',
     description: 'Test rule',
-    dependencies: []
+    dependencies: [],
   });
 
   registry.register(rule);
@@ -154,8 +154,12 @@ export function testRuleRegistryUnregister() {
 export function testRuleRegistryDependencies() {
   const registry = new RuleRegistry();
   registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
-  registry.register(new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] }));
-  registry.register(new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule2'] }));
+  registry.register(
+    new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] })
+  );
+  registry.register(
+    new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule2'] })
+  );
 
   const validation = registry.validateDependencies();
   if (!validation.valid) {
@@ -167,7 +171,9 @@ export function testRuleRegistryDependencies() {
 
 export function testRuleRegistryMissingDependency() {
   const registry = new RuleRegistry();
-  registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['nonexistent'] }));
+  registry.register(
+    new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['nonexistent'] })
+  );
 
   const validation = registry.validateDependencies();
   if (validation.valid) {
@@ -183,9 +189,15 @@ export function testRuleRegistryMissingDependency() {
 
 export function testRuleRegistryCircularDependencies() {
   const registry = new RuleRegistry();
-  registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['rule2'] }));
-  registry.register(new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule3'] }));
-  registry.register(new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1'] }));
+  registry.register(
+    new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['rule2'] })
+  );
+  registry.register(
+    new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule3'] })
+  );
+  registry.register(
+    new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1'] })
+  );
 
   const detection = registry.detectCircularDependencies();
   if (detection.valid) {
@@ -202,8 +214,12 @@ export function testRuleRegistryCircularDependencies() {
 export function testRuleRegistryExecutionOrder() {
   const registry = new RuleRegistry();
   registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
-  registry.register(new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] }));
-  registry.register(new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1', 'rule2'] }));
+  registry.register(
+    new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] })
+  );
+  registry.register(
+    new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1', 'rule2'] })
+  );
 
   const order = registry.getExecutionOrder();
   if (order.length !== 3) {
@@ -240,8 +256,8 @@ export function testStrategyFactoryCreate() {
     type: 'mock',
     name: 'test-rule',
     settings: {
-      description: 'Test rule created by factory'
-    }
+      description: 'Test rule created by factory',
+    },
   });
 
   if (!(rule instanceof MockRule)) {
@@ -261,7 +277,7 @@ export function testStrategyFactoryUnknownType() {
   try {
     factory.create({
       type: 'nonexistent',
-      name: 'test-rule'
+      name: 'test-rule',
     });
     throw new Error('Should throw error for unknown rule type');
   } catch (error) {
@@ -279,7 +295,7 @@ export function testStrategyFactoryCreateMany() {
 
   const rules = factory.createMany([
     { type: 'mock', name: 'rule1', settings: { description: 'Rule 1' } },
-    { type: 'mock', name: 'rule2', settings: { description: 'Rule 2' } }
+    { type: 'mock', name: 'rule2', settings: { description: 'Rule 2' } },
   ]);
 
   if (rules.length !== 2) {

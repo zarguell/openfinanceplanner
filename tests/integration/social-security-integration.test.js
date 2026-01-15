@@ -23,7 +23,7 @@ export function testSocialSecurityIntegration() {
     estimatedTaxRate: 0.25,
     filingStatus: 'single',
     state: 'CA',
-    taxYear: 2025
+    taxYear: 2025,
   };
 
   const expenses = new Expense('Living Expenses', 60000, 0, true);
@@ -34,14 +34,14 @@ export function testSocialSecurityIntegration() {
     equityGrowthRate: 0.07,
     bondGrowthRate: 0.04,
     equityVolatility: 0.12,
-    bondVolatility: 0.04
+    bondVolatility: 0.04,
   };
 
   plan.socialSecurity = {
     enabled: true,
     birthYear: new Date().getFullYear() - 62,
     monthlyBenefit: 2000,
-    filingAge: 67
+    filingAge: 67,
   };
 
   const results = project(plan, 10);
@@ -53,7 +53,9 @@ export function testSocialSecurityIntegration() {
     if (year.socialSecurityIncome > 0) {
       yearsWithSS++;
       if (index === 0) {
-        console.log(`  Year ${year.year} (age ${year.age}): SS = $${(year.socialSecurityIncome).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`);
+        console.log(
+          `  Year ${year.year} (age ${year.age}): SS = $${year.socialSecurityIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        );
       }
     }
   });
@@ -64,7 +66,7 @@ export function testSocialSecurityIntegration() {
 
   console.log(`✓ Social Security calculated for ${yearsWithSS} years`);
 
-  const yearAtFilingAge = results.find(r => r.age === 67);
+  const yearAtFilingAge = results.find((r) => r.age === 67);
 
   if (!yearAtFilingAge || yearAtFilingAge.socialSecurityIncome === 0) {
     throw new Error('Expected Social Security income at age 67');
@@ -77,7 +79,9 @@ export function testSocialSecurityIntegration() {
     throw new Error(`Expected ~$${expectedAnnualSS} at age 67, got $${ssAt67}`);
   }
 
-  console.log(`  Age 67 SS: $${(ssAt67).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`);
+  console.log(
+    `  Age 67 SS: $${ssAt67.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+  );
   console.log('✓ Social Security amount at filing age is correct');
   console.log('✅ Social Security integration test passed!');
 }
@@ -96,7 +100,7 @@ export function testSocialSecurityEarlyClaiming() {
     estimatedTaxRate: 0.25,
     filingStatus: 'single',
     state: 'CA',
-    taxYear: 2025
+    taxYear: 2025,
   };
 
   const expenses = new Expense('Living Expenses', 60000, 0, true);
@@ -107,14 +111,14 @@ export function testSocialSecurityEarlyClaiming() {
     equityGrowthRate: 0.07,
     bondGrowthRate: 0.04,
     equityVolatility: 0.12,
-    bondVolatility: 0.04
+    bondVolatility: 0.04,
   };
 
   plan.socialSecurity = {
     enabled: true,
     birthYear: new Date().getFullYear() - 62,
     monthlyBenefit: 2000,
-    filingAge: 62
+    filingAge: 62,
   };
 
   const results = project(plan, 5);
@@ -123,7 +127,9 @@ export function testSocialSecurityEarlyClaiming() {
     throw new Error('Expected Social Security income at age 62');
   }
 
-  console.log(`  Age 62 SS: $${(results[0].socialSecurityIncome).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`);
+  console.log(
+    `  Age 62 SS: $${results[0].socialSecurityIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+  );
   console.log('✓ Social Security starts at age 62');
   console.log('✅ Early claiming test passed!');
 }
@@ -142,7 +148,7 @@ export function testSocialSecurityDelayedClaiming() {
     estimatedTaxRate: 0.25,
     filingStatus: 'single',
     state: 'CA',
-    taxYear: 2025
+    taxYear: 2025,
   };
 
   const expenses = new Expense('Living Expenses', 60000, 0, true);
@@ -153,25 +159,27 @@ export function testSocialSecurityDelayedClaiming() {
     equityGrowthRate: 0.07,
     bondGrowthRate: 0.04,
     equityVolatility: 0.12,
-    bondVolatility: 0.04
+    bondVolatility: 0.04,
   };
 
   plan.socialSecurity = {
     enabled: true,
     birthYear: new Date().getFullYear() - 65,
     monthlyBenefit: 2000,
-    filingAge: 70
+    filingAge: 70,
   };
 
   const results = project(plan, 10);
 
-  const ssAtAge70 = results.find(r => r.age === 70);
+  const ssAtAge70 = results.find((r) => r.age === 70);
 
   if (!ssAtAge70 || ssAtAge70.socialSecurityIncome === 0) {
     throw new Error('Expected Social Security income at age 70');
   }
 
-  console.log(`  Age 70 SS: $${(ssAtAge70.socialSecurityIncome).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0})}`);
+  console.log(
+    `  Age 70 SS: $${ssAtAge70.socialSecurityIncome.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+  );
   console.log('✓ Social Security starts at age 70');
   console.log('✅ Delayed claiming test passed!');
 }
@@ -190,7 +198,7 @@ export function testSocialSecurityDisabled() {
     estimatedTaxRate: 0.25,
     filingStatus: 'single',
     state: 'CA',
-    taxYear: 2025
+    taxYear: 2025,
   };
 
   const expenses = new Expense('Living Expenses', 60000, 0, true);
@@ -201,14 +209,14 @@ export function testSocialSecurityDisabled() {
     equityGrowthRate: 0.07,
     bondGrowthRate: 0.04,
     equityVolatility: 0.12,
-    bondVolatility: 0.04
+    bondVolatility: 0.04,
   };
 
   plan.socialSecurity = {
     enabled: false,
     birthYear: new Date().getFullYear() - 65,
     monthlyBenefit: 2000,
-    filingAge: 67
+    filingAge: 67,
   };
 
   const results = project(plan, 10);
@@ -216,7 +224,9 @@ export function testSocialSecurityDisabled() {
   const ssIncome = results.reduce((sum, r) => sum + r.socialSecurityIncome, 0);
 
   if (ssIncome !== 0) {
-    throw new Error(`Expected no Social Security income when disabled, got $${(ssIncome / 100).toLocaleString()}`);
+    throw new Error(
+      `Expected no Social Security income when disabled, got $${(ssIncome / 100).toLocaleString()}`
+    );
   }
 
   console.log('✓ No Social Security income when disabled');

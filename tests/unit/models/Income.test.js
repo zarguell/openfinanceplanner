@@ -7,7 +7,8 @@ export function testIncomeCreation() {
     throw new Error('Expected income name to match');
   }
 
-  if (income.baseAmount !== 12000000) { // Stored in cents
+  if (income.baseAmount !== 12000000) {
+    // Stored in cents
     throw new Error('Expected baseAmount to be in cents');
   }
 

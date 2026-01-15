@@ -20,7 +20,7 @@ export function evaluateStartYear(income, currentAge, retirementAge) {
   if (income.startRule === 'retirement-if-age' && income.startRuleAge !== null) {
     const expectedRetirementYear = retirementAge - currentAge;
     const expectedAgeYear = income.startRuleAge - currentAge;
-    
+
     return retirementAge >= income.startRuleAge ? expectedRetirementYear : expectedAgeYear;
   }
 
@@ -84,7 +84,8 @@ export function calculateIncomeForYear(income, yearOffset, inflationRate, planCo
   // Apply income-specific growth rate (raises, business growth, etc.)
   // Growth is relative to start year, not from year 0
   const yearsSinceStart = yearOffset - evaluatedStartYear;
-  const growthMultiplier = yearsSinceStart > 0 ? Math.pow(1 + income.growthRate, yearsSinceStart) : 1;
+  const growthMultiplier =
+    yearsSinceStart > 0 ? Math.pow(1 + income.growthRate, yearsSinceStart) : 1;
 
   return baseAmount * growthMultiplier;
 }
@@ -115,7 +116,7 @@ export function calculateTaxableIncome(incomes, yearOffset, inflationRate, planC
   let passiveIncome = 0;
   let qualifiedDividends = 0;
 
-  incomes.forEach(income => {
+  incomes.forEach((income) => {
     const amount = calculateIncomeForYear(income, yearOffset, inflationRate, planContext);
     totalIncome += amount;
 
@@ -136,6 +137,6 @@ export function calculateTaxableIncome(incomes, yearOffset, inflationRate, planC
     totalIncome,
     earnedIncome,
     passiveIncome,
-    qualifiedDividends
+    qualifiedDividends,
   };
 }

@@ -12,7 +12,7 @@ export class Income {
     this.isOneTime = false; // True for one-time income events
     this.type = type; // 'salary', 'business', 'pension', 'rental', 'dividends', 'interest', 'other'
     this.growthRate = 0.03; // Annual growth rate (raises, business growth, etc.)
-    
+
     // Smart rule flags for dynamic start/end calculation
     this.startRule = 'manual'; // 'manual' | 'retirement' | 'age' | 'retirement-if-age'
     this.startRuleAge = null; // For 'age' and 'retirement-if-age' rules
@@ -27,14 +27,14 @@ export class Income {
   // Get tax treatment based on income type
   getTaxTreatment() {
     const treatments = {
-      'salary': 'earned',                    // Ordinary income tax rates
-      'business': 'earned',                  // Ordinary income tax rates
-      'pension': 'earned',                   // Ordinary income tax rates
-      'rental': 'earned',                    // Ordinary income tax rates
-      'dividends': 'qualified',              // Qualified dividend rates (lower than ordinary)
-      'interest': 'passive',                 // Interest income (ordinary rates)
-      'non-qualified-dividends': 'passive',  // Non-qualified dividends (ordinary rates)
-      'other': 'earned'                      // Default to earned income
+      salary: 'earned', // Ordinary income tax rates
+      business: 'earned', // Ordinary income tax rates
+      pension: 'earned', // Ordinary income tax rates
+      rental: 'earned', // Ordinary income tax rates
+      dividends: 'qualified', // Qualified dividend rates (lower than ordinary)
+      interest: 'passive', // Interest income (ordinary rates)
+      'non-qualified-dividends': 'passive', // Non-qualified dividends (ordinary rates)
+      other: 'earned', // Default to earned income
     };
     return treatments[this.type] || 'earned';
   }
@@ -52,17 +52,12 @@ export class Income {
       startRule: this.startRule,
       startRuleAge: this.startRuleAge,
       endRule: this.endRule,
-      endRuleAge: this.endRuleAge
+      endRuleAge: this.endRuleAge,
     };
   }
 
   static fromJSON(data) {
-    const income = new Income(
-      data.name,
-      data.baseAmount / 100,
-      data.startYear,
-      data.type
-    );
+    const income = new Income(data.name, data.baseAmount / 100, data.startYear, data.type);
     income.id = data.id;
     income.endYear = data.endYear || null;
     income.isOneTime = data.isOneTime || false;

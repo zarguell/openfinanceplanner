@@ -52,7 +52,7 @@ export class StrategyFactory {
       name,
       description: settings.description || `${type} strategy`,
       dependencies: settings.dependencies || [],
-      ...settings
+      ...settings,
     };
 
     const rule = new RuleClass(ruleConfig);
@@ -75,7 +75,7 @@ export class StrategyFactory {
    * @returns {BaseRule[]} Array of rule instances
    */
   createMany(configs) {
-    return configs.map(config => this.create(config));
+    return configs.map((config) => this.create(config));
   }
 
   /**

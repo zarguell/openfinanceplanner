@@ -48,7 +48,11 @@ export function calculateTotalUnrealizedLoss(accounts) {
  * @param {number} marginalTaxRate - Marginal tax rate (0-1)
  * @returns {number} Tax benefit in cents
  */
-export function calculateTaxBenefitFromLoss(harvestedLossCents, capitalGainsCents, marginalTaxRate) {
+export function calculateTaxBenefitFromLoss(
+  harvestedLossCents,
+  capitalGainsCents,
+  marginalTaxRate
+) {
   if (harvestedLossCents <= 0) {
     return 0;
   }
@@ -78,12 +82,17 @@ export function calculateTaxBenefitFromLoss(harvestedLossCents, capitalGainsCent
  * @param {Object} settings - TLH settings
  * @returns {Object} { harvestAmountCents, taxBenefitCents, reason }
  */
-export function suggestHarvestingAmount(unrealizedLossCents, capitalGainsCents, marginalTaxRate, settings) {
+export function suggestHarvestingAmount(
+  unrealizedLossCents,
+  capitalGainsCents,
+  marginalTaxRate,
+  settings
+) {
   if (unrealizedLossCents <= 0) {
     return {
       harvestAmountCents: 0,
       taxBenefitCents: 0,
-      reason: 'No unrealized losses available'
+      reason: 'No unrealized losses available',
     };
   }
 
@@ -94,7 +103,7 @@ export function suggestHarvestingAmount(unrealizedLossCents, capitalGainsCents, 
     return {
       harvestAmountCents: 0,
       taxBenefitCents: 0,
-      reason: `Loss ($${(unrealizedLossCents / 100).toFixed(0)}) below threshold ($${(threshold / 100).toFixed(0)})`
+      reason: `Loss ($${(unrealizedLossCents / 100).toFixed(0)}) below threshold ($${(threshold / 100).toFixed(0)})`,
     };
   }
 
@@ -118,7 +127,7 @@ export function suggestHarvestingAmount(unrealizedLossCents, capitalGainsCents, 
   return {
     harvestAmountCents: harvestAmount,
     taxBenefitCents: taxBenefit,
-    reason: reason
+    reason: reason,
   };
 }
 
@@ -159,7 +168,7 @@ export function applyHarvesting(account, harvestAmountCents) {
     return {
       success: false,
       newCostBasis: account.costBasis,
-      harvestedLoss: 0
+      harvestedLoss: 0,
     };
   }
 
@@ -170,7 +179,7 @@ export function applyHarvesting(account, harvestAmountCents) {
   return {
     success: true,
     newCostBasis: newCostBasis,
-    harvestedLoss: harvestAmountCents
+    harvestedLoss: harvestAmountCents,
   };
 }
 
@@ -190,9 +199,9 @@ export function isHarvestingEnabled(settings) {
  */
 export function getStrategyDescription(strategy) {
   const descriptions = {
-    'all': 'Harvest all available losses',
+    all: 'Harvest all available losses',
     'offset-gains': 'Harvest enough to offset capital gains + $3,000 ordinary income',
-    'conservative': 'Only harvest losses exceeding $10,000'
+    conservative: 'Only harvest losses exceeding $10,000',
   };
 
   return descriptions[strategy] || strategy;

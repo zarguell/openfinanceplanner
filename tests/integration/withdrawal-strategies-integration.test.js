@@ -31,17 +31,25 @@ export function testTaxEfficientVsProportionalStrategy() {
   plan.withdrawalStrategy = 'proportional';
   const projectionProportional = project(plan, 10);
   const finalBalanceProportional = projectionProportional[10].totalBalance;
-  const totalTaxProportional = projectionProportional.slice(0, 11).reduce((sum, year) => sum + year.totalTax, 0);
+  const totalTaxProportional = projectionProportional
+    .slice(0, 11)
+    .reduce((sum, year) => sum + year.totalTax, 0);
 
-  console.log(`Proportional Strategy: Final balance: \$${finalBalanceProportional.toFixed(2)}, Total tax: \$${totalTaxProportional.toFixed(2)}`);
+  console.log(
+    `Proportional Strategy: Final balance: \$${finalBalanceProportional.toFixed(2)}, Total tax: \$${totalTaxProportional.toFixed(2)}`
+  );
 
   // Test 2: Tax-Efficient Strategy
   plan.withdrawalStrategy = 'tax-efficient';
   const projectionTaxEfficient = project(plan, 10);
   const finalBalanceTaxEfficient = projectionTaxEfficient[10].totalBalance;
-  const totalTaxTaxEfficient = projectionTaxEfficient.slice(0, 11).reduce((sum, year) => sum + year.totalTax, 0);
+  const totalTaxTaxEfficient = projectionTaxEfficient
+    .slice(0, 11)
+    .reduce((sum, year) => sum + year.totalTax, 0);
 
-  console.log(`Tax-Efficient Strategy: Final balance: \$${finalBalanceTaxEfficient.toFixed(2)}, Total tax: \$${totalTaxTaxEfficient.toFixed(2)}`);
+  console.log(
+    `Tax-Efficient Strategy: Final balance: \$${finalBalanceTaxEfficient.toFixed(2)}, Total tax: \$${totalTaxTaxEfficient.toFixed(2)}`
+  );
 
   // Tax-efficient should preserve more wealth by using Roth last
   console.assert(
@@ -85,17 +93,11 @@ export function testWithdrawalStrategyWithRMDs() {
 
   // Year 0: Age 72 (before RMD age 73) - no RMD required
   const age72RMD = projection[0].totalRmdAmount;
-  console.assert(
-    age72RMD === 0,
-    'Test 1 failed: No RMD at age 72'
-  );
+  console.assert(age72RMD === 0, 'Test 1 failed: No RMD at age 72');
 
   // Year 1: Age 73 (RMD age) - RMD should be calculated
   const age73RMD = projection[1].totalRmdAmount;
-  console.assert(
-    age73RMD > 0,
-    'Test 2 failed: RMD should be calculated at age 73'
-  );
+  console.assert(age73RMD > 0, 'Test 2 failed: RMD should be calculated at age 73');
   console.log(`✓ RMD at age 73: \$${age73RMD.toFixed(2)}`);
 
   // Verify withdrawals don't exceed account balances

@@ -33,7 +33,9 @@ export class RuleRegistry {
     if (this.rules.has(ruleId)) {
       const existingVersion = this.versions.get(ruleId);
       if (existingVersion !== version) {
-        console.warn(`Rule ${ruleId} version mismatch: existing ${existingVersion}, registering ${version}`);
+        console.warn(
+          `Rule ${ruleId} version mismatch: existing ${existingVersion}, registering ${version}`
+        );
       }
     }
 
@@ -109,8 +111,8 @@ export class RuleRegistry {
     }
 
     return Array.from(ruleIds)
-      .map(ruleId => this.rules.get(ruleId))
-      .filter(rule => rule !== undefined);
+      .map((ruleId) => this.rules.get(ruleId))
+      .filter((rule) => rule !== undefined);
   }
 
   /**
@@ -154,7 +156,7 @@ export class RuleRegistry {
       }
 
       const dependencies = rule.getDependencies();
-      const depsSatisfied = dependencies.every(depId => enabledSet.has(depId));
+      const depsSatisfied = dependencies.every((depId) => enabledSet.has(depId));
 
       if (depsSatisfied) {
         applicable.push(rule);
@@ -180,7 +182,7 @@ export class RuleRegistry {
       }
 
       const dependencies = rule.getDependencies();
-      const unsatisfied = dependencies.filter(depId => !enabledSet.has(depId));
+      const unsatisfied = dependencies.filter((depId) => !enabledSet.has(depId));
 
       if (unsatisfied.length > 0) {
         missingDeps.set(ruleId, unsatisfied);
@@ -189,7 +191,7 @@ export class RuleRegistry {
 
     return {
       isValid: missingDeps.size === 0,
-      missingDependencies: missingDeps
+      missingDependencies: missingDeps,
     };
   }
 
@@ -201,7 +203,7 @@ export class RuleRegistry {
     const summary = {
       totalRules: this.rules.size,
       categories: {},
-      rules: []
+      rules: [],
     };
 
     // Category counts
@@ -216,7 +218,7 @@ export class RuleRegistry {
         name: rule.getName(),
         category: rule.getCategory(),
         version: rule.getVersion(),
-        description: rule.getDescription()
+        description: rule.getDescription(),
       });
     }
 
@@ -241,9 +243,16 @@ export class RuleRegistry {
    */
   _validateRuleImplementation(rule) {
     const requiredMethods = [
-      'getId', 'getName', 'getDescription', 'getParameters',
-      'validateParameters', 'isApplicable', 'apply', 'getDependencies',
-      'getVersion', 'getCategory'
+      'getId',
+      'getName',
+      'getDescription',
+      'getParameters',
+      'validateParameters',
+      'isApplicable',
+      'apply',
+      'getDependencies',
+      'getVersion',
+      'getCategory',
     ];
 
     for (const method of requiredMethods) {
@@ -260,9 +269,16 @@ export class RuleRegistry {
 
     // Validate category
     const category = rule.getCategory();
-    const validCategories = ['tax_optimization', 'withdrawal_strategy', 'contribution_strategy', 'retirement_planning'];
+    const validCategories = [
+      'tax_optimization',
+      'withdrawal_strategy',
+      'contribution_strategy',
+      'retirement_planning',
+    ];
     if (!validCategories.includes(category)) {
-      throw new Error(`Invalid category: ${category}. Must be one of: ${validCategories.join(', ')}`);
+      throw new Error(
+        `Invalid category: ${category}. Must be one of: ${validCategories.join(', ')}`
+      );
     }
   }
 }

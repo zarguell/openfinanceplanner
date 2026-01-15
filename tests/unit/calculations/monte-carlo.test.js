@@ -2,7 +2,13 @@
  * Monte Carlo simulation tests
  */
 
-import { generateRandomReturn, runMonteCarloScenario, runMonteCarloSimulation, getSuccessProbabilityWithConfidence, analyzeSequenceOfReturnsRisk } from '../../../src/calculations/monte-carlo.js';
+import {
+  generateRandomReturn,
+  runMonteCarloScenario,
+  runMonteCarloSimulation,
+  getSuccessProbabilityWithConfidence,
+  analyzeSequenceOfReturnsRisk,
+} from '../../../src/calculations/monte-carlo.js';
 import { Plan } from '../../../src/core/models/Plan.js';
 import { Account } from '../../../src/core/models/Account.js';
 import { Expense } from '../../../src/core/models/Expense.js';
@@ -75,7 +81,11 @@ export function testRunMonteCarloSimulation() {
     throw new Error(`Expected ${numScenarios} scenarios, got ${results.numScenarios}`);
   }
 
-  if (typeof results.successProbability !== 'number' || results.successProbability < 0 || results.successProbability > 1) {
+  if (
+    typeof results.successProbability !== 'number' ||
+    results.successProbability < 0 ||
+    results.successProbability > 1
+  ) {
     throw new Error('successProbability should be a number between 0 and 1');
   }
 
@@ -93,10 +103,12 @@ export function testRunMonteCarloSimulation() {
   }
 
   // Check that percentiles are ordered correctly
-  if (results.percentiles.p10 > results.percentiles.p25 ||
-      results.percentiles.p25 > results.percentiles.p50 ||
-      results.percentiles.p50 > results.percentiles.p75 ||
-      results.percentiles.p75 > results.percentiles.p90) {
+  if (
+    results.percentiles.p10 > results.percentiles.p25 ||
+    results.percentiles.p25 > results.percentiles.p50 ||
+    results.percentiles.p50 > results.percentiles.p75 ||
+    results.percentiles.p75 > results.percentiles.p90
+  ) {
     throw new Error('Percentiles should be in ascending order');
   }
 
@@ -106,7 +118,7 @@ export function testRunMonteCarloSimulation() {
 export function testGetSuccessProbabilityWithConfidence() {
   const mockResults = {
     successProbability: 0.75,
-    numScenarios: 1000
+    numScenarios: 1000,
   };
 
   const confidence = getSuccessProbabilityWithConfidence(mockResults);
@@ -115,11 +127,17 @@ export function testGetSuccessProbabilityWithConfidence() {
     throw new Error('Should return the original probability');
   }
 
-  if (typeof confidence.lowerBound !== 'number' || confidence.lowerBound >= confidence.probability) {
+  if (
+    typeof confidence.lowerBound !== 'number' ||
+    confidence.lowerBound >= confidence.probability
+  ) {
     throw new Error('Lower bound should be less than probability');
   }
 
-  if (typeof confidence.upperBound !== 'number' || confidence.upperBound <= confidence.probability) {
+  if (
+    typeof confidence.upperBound !== 'number' ||
+    confidence.upperBound <= confidence.probability
+  ) {
     throw new Error('Upper bound should be greater than probability');
   }
 
@@ -133,9 +151,28 @@ export function testGetSuccessProbabilityWithConfidence() {
 export function testAnalyzeSequenceOfReturnsRisk() {
   // Create mock scenarios - some successful, some failed
   const scenarios = [
-    { success: true, projection: [{ totalBalance: 1000, isRetired: false }, { totalBalance: 2000, isRetired: true }] },
-    { success: false, projection: [{ totalBalance: 1000, isRetired: false }, { totalBalance: -500, isRetired: true }] },
-    { success: false, projection: [{ totalBalance: 1000, isRetired: false }, { totalBalance: 500, isRetired: false }, { totalBalance: -100, isRetired: true }] }
+    {
+      success: true,
+      projection: [
+        { totalBalance: 1000, isRetired: false },
+        { totalBalance: 2000, isRetired: true },
+      ],
+    },
+    {
+      success: false,
+      projection: [
+        { totalBalance: 1000, isRetired: false },
+        { totalBalance: -500, isRetired: true },
+      ],
+    },
+    {
+      success: false,
+      projection: [
+        { totalBalance: 1000, isRetired: false },
+        { totalBalance: 500, isRetired: false },
+        { totalBalance: -100, isRetired: true },
+      ],
+    },
   ];
 
   const analysis = analyzeSequenceOfReturnsRisk(scenarios);
