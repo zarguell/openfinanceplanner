@@ -10,10 +10,11 @@ import { StorageManager } from '../storage/StorageManager.js';
 import { ChartRenderer } from './ChartRenderer.js';
 
 export class PlanController {
-  constructor(currentPlan, storageManager) {
+  constructor(currentPlan, storageManager, accountController = null) {
     this.currentPlan = currentPlan;
     this.storageManager = storageManager;
     this.chartRenderer = new ChartRenderer();
+    this.accountController = accountController;
   }
 
   // Plan CRUD Methods
@@ -189,6 +190,12 @@ export class PlanController {
 
     this.populateAssumptionFields();
     this.populateSocialSecurityFields();
+
+    // Render accounts list if accountController is available
+    if (this.accountController) {
+      this.accountController.currentPlan = this.currentPlan;
+      this.accountController.renderAccountsList();
+    }
   }
 
   populateAssumptionFields() {
