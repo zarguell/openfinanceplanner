@@ -38,4 +38,4 @@ export function calculateFederalTax(income, filingStatus, year = 2025) {
   return totalTax;
 }
 
-export { calculateFederalTax, loadFederalBrackets, loadFederalStandardDeduction };
+export { loadFederalBrackets, loadFederalStandardDeduction };

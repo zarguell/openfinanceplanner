@@ -68,10 +68,4 @@ export function calculateStateTax(state, income, filingStatus, year = 2025) {
   return totalTax;
 }
 
-export {
-  calculateStateTax,
-  getStateTaxBrackets,
-  getStateStandardDeduction,
-  loadStateBrackets,
-  loadStateStandardDeduction,
-};
+export { loadStateBrackets, loadStateStandardDeduction };

@@ -19,7 +19,11 @@ import {
 } from './tax/states.js';
 
 // Re-export federal and state tax functions for backward compatibility
-export { calculateFederalTax, loadFederalBrackets, loadFederalStandardDeduction } from './tax/federal.js';
+export {
+  calculateFederalTax,
+  loadFederalBrackets,
+  loadFederalStandardDeduction,
+} from './tax/federal.js';
 export {
   calculateStateTax,
   getStateTaxBrackets,
@@ -27,6 +31,16 @@ export {
   loadStateBrackets,
   loadStateStandardDeduction,
 };
+
+/**
+ * Get federal standard deduction for a given year and filing status
+ * @param {number} year - Tax year (2024 or 2025)
+ * @param {string} filingStatus - Filing status
+ * @returns {number} Standard deduction in cents
+ */
+export function getStandardDeduction(year, filingStatus) {
+  return loadFederalStandardDeduction(year, filingStatus);
+}
 
 /**
  * Calculate total income tax (federal + state)
@@ -115,7 +129,7 @@ export function calculateLongTermCapitalGainsTax(gain, filingStatus, year = 2025
 
     const taxableInBracket = Math.min(
       remainingGain,
-      bracket.max === null ? remainingGain : bracket.max - bracket.min +1
+      bracket.max === null ? remainingGain : bracket.max - bracket.min + 1
     );
 
     const taxInBracket = Math.round(taxableInBracket * bracket.rate);

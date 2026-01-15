@@ -1,12 +1,105 @@
 /**
- * Loader module for tax bracket and deduction JSON config files.
- * Provides functions to read federal and state tax data from JSON files.
+ * Loader module for tax bracket and deduction config files.
+ * Provides functions to read federal and state tax data from config files.
  */
 
-import federal2024 from './federal-2024.json' assert { type: 'json' };
-import federal2025 from './federal-2025.json' assert { type: 'json' };
-import states2024 from './states-2024.json' assert { type: 'json' };
-import states2025 from './states-2025.json' assert { type: 'json' };
+import { data as states2024 } from './states-2024.js';
+import { data as states2025 } from './states-2025.js';
+
+// Embedded JSON data for federal tax brackets and standard deductions
+const federal2024 = {
+  brackets: {
+    single: [
+      { rate: 0.1, min: 0, max: 1160000 },
+      { rate: 0.12, min: 1160001, max: 4715000 },
+      { rate: 0.22, min: 4715001, max: 10052500 },
+      { rate: 0.24, min: 10052501, max: 19195000 },
+      { rate: 0.32, min: 19195001, max: 24372500 },
+      { rate: 0.35, min: 24372501, max: 60935000 },
+      { rate: 0.37, min: 60935001, max: null },
+    ],
+    married_joint: [
+      { rate: 0.1, min: 0, max: 2320000 },
+      { rate: 0.12, min: 2320001, max: 9430000 },
+      { rate: 0.22, min: 9430001, max: 20105000 },
+      { rate: 0.24, min: 20105001, max: 38390000 },
+      { rate: 0.32, min: 38390001, max: 48745000 },
+      { rate: 0.35, min: 48745001, max: 73120000 },
+      { rate: 0.37, min: 73120001, max: null },
+    ],
+    married_separate: [
+      { rate: 0.1, min: 0, max: 1160000 },
+      { rate: 0.12, min: 1160001, max: 4715000 },
+      { rate: 0.22, min: 4715001, max: 10052500 },
+      { rate: 0.24, min: 10052501, max: 19195000 },
+      { rate: 0.32, min: 19195001, max: 24372500 },
+      { rate: 0.35, min: 24372501, max: 36560000 },
+      { rate: 0.37, min: 36560001, max: null },
+    ],
+    head_of_household: [
+      { rate: 0.1, min: 0, max: 1655000 },
+      { rate: 0.12, min: 1655001, max: 6310000 },
+      { rate: 0.22, min: 6310001, max: 10050000 },
+      { rate: 0.24, min: 10050001, max: 19195000 },
+      { rate: 0.32, min: 19195001, max: 24370000 },
+      { rate: 0.35, min: 24370001, max: 60935000 },
+      { rate: 0.37, min: 60935001, max: null },
+    ],
+  },
+  standardDeduction: {
+    single: 1460000,
+    married_joint: 2920000,
+    married_separate: 1460000,
+    head_of_household: 2190000,
+  },
+};
+
+const federal2025 = {
+  brackets: {
+    single: [
+      { rate: 0.1, min: 0, max: 1192500 },
+      { rate: 0.12, min: 1192501, max: 4847500 },
+      { rate: 0.22, min: 4847501, max: 10335000 },
+      { rate: 0.24, min: 10335001, max: 19730000 },
+      { rate: 0.32, min: 19730001, max: 25052500 },
+      { rate: 0.35, min: 25052501, max: 62635000 },
+      { rate: 0.37, min: 62635001, max: null },
+    ],
+    married_joint: [
+      { rate: 0.1, min: 0, max: 2385000 },
+      { rate: 0.12, min: 2385001, max: 9695000 },
+      { rate: 0.22, min: 9695001, max: 20670000 },
+      { rate: 0.24, min: 20670001, max: 39460000 },
+      { rate: 0.32, min: 39460001, max: 50105000 },
+      { rate: 0.35, min: 50105001, max: 75160000 },
+      { rate: 0.37, min: 75160001, max: null },
+    ],
+    married_separate: [
+      { rate: 0.1, min: 0, max: 1192500 },
+      { rate: 0.12, min: 1192501, max: 4847500 },
+      { rate: 0.22, min: 4847501, max: 10335000 },
+      { rate: 0.24, min: 10335001, max: 19730000 },
+      { rate: 0.32, min: 19730001, max: 25052500 },
+      { rate: 0.35, min: 25052501, max: 62635000 },
+      { rate: 0.37, min: 62635001, max: null },
+    ],
+    head_of_household: [
+      { rate: 0.1, min: 0, max: 1700000 },
+      { rate: 0.12, min: 1700001, max: 6485000 },
+      { rate: 0.22, min: 6485001, max: 10335000 },
+      { rate: 0.24, min: 10335001, max: 19730000 },
+      { rate: 0.32, min: 19730001, max: 25050000 },
+      { rate: 0.35, min: 25050001, max: 62635000 },
+      { rate: 0.37, min: 62635001, max: null },
+    ],
+  },
+  standardDeduction: {
+    single: 1575000,
+    married_joint: 3150000,
+    married_separate: 1575000,
+    head_of_household: 2362500,
+  },
+};
 
 // Cache for config data
 const federalCache = {
@@ -66,12 +159,7 @@ export function loadStateBrackets(stateCode, year) {
     };
   }
 
-  const config = statesCache[year];
-  if (!config) {
-    throw new Error(`Invalid tax year: ${year}. Must be 2024 or 2025.`);
-  }
-
-  const stateData = config[upperState];
+  const stateData = statesCache[year][upperState];
   if (!stateData) {
     throw new Error(`No tax data found for state: ${upperState} in ${year}`);
   }
@@ -95,12 +183,7 @@ export function loadStateStandardDeduction(stateCode, year, filingStatus) {
     return 0;
   }
 
-  const config = statesCache[year];
-  if (!config) {
-    throw new Error(`Invalid tax year: ${year}. Must be 2024 or 2025.`);
-  }
-
-  const stateData = config[upperState];
+  const stateData = statesCache[year][upperState];
   if (!stateData) {
     throw new Error(`No tax data found for state: ${upperState} in ${year}`);
   }
