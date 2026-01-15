@@ -3,3 +3,4 @@
 node_modules/.cache
 .vscode/*
 !.vscode/extensions.json
+node_modules
