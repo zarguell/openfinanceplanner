@@ -47,6 +47,108 @@ The codebase has been refactored from a single-file implementation into a layere
 - **StrategyFactory**: Instantiates appropriate rule handlers (e.g., BackdoorRothStrategy, RothConversionLadder)
 - **TaxRuleInterface**: Standardized interface for all tax-related calculations enabling plug-and-play rule additions
 
+#### RuleRegistry System (Sprint 11)
+
+The RuleRegistry provides an extensible framework for implementing financial strategies as composable rules. This enables dynamic strategy execution and future support for rule composition (e.g., "Roth conversion + QCD").
+
+**Core Components:**
+
+1. **BaseRule** (`src/core/rules/BaseRule.js`)
+   - Abstract base class defining the rule interface
+   - All strategies must extend BaseRule
+   - Required methods: `apply()`, `validate()`, `getDependencies()`
+   - Optional methods: `canApply()`, `getMetadata()`
+
+2. **RuleRegistry** (`src/core/rules/RuleRegistry.js`)
+   - Central registry for all rule instances
+   - Features:
+     - Rule registration with validation
+     - Dependency validation (missing dependencies, circular detection)
+     - Topological sort for execution order
+     - Rule retrieval and management
+
+3. **StrategyFactory** (`src/core/rules/StrategyFactory.js`)
+   - Factory pattern for dynamic rule instantiation
+   - Register rule classes, create instances from config
+   - Supports declarative rule configuration
+
+**BaseRule Interface:**
+
+```javascript
+class CustomRule extends BaseRule {
+  constructor(config) {
+    super(config);
+    this.name = config.name;
+    this.description = config.description;
+    this.dependencies = config.dependencies || [];
+    // Custom properties
+  }
+
+  apply(context) {
+    // context: { plan, yearOffset, projectionState }
+    // Returns: { resultKey: value }
+  }
+
+  validate(config) {
+    // Returns: { valid: boolean, errors: string[] }
+  }
+
+  canApply(context) {
+    // Returns: boolean
+  }
+}
+```
+
+**Implemented Strategy Rules:**
+
+- **RothConversionRule** (`src/core/rules/RothConversionRule.js`)
+  - Wraps roth-conversions.js calculations
+  - Strategies: fixed, bracket-fill, percentage
+  - Applies to: Traditional 401k/IRA accounts
+
+- **QCDRule** (`src/core/rules/QCDRule.js`)
+  - Wraps qcd.js calculations
+  - Strategies: fixed, percentage, rmd-based
+  - Age requirement: 70.5+
+
+- **TLHRule** (`src/core/rules/TLHRule.js`)
+  - Wraps tax-loss-harvesting.js calculations
+  - Strategies: all, offset-gains
+  - Applies to: Taxable accounts only
+
+**Usage Example:**
+
+```javascript
+import { RuleRegistry, RothConversionRule } from './core/rules/index.js';
+
+// Create registry and register rules
+const registry = new RuleRegistry();
+const rothRule = new RothConversionRule({
+  name: 'roth-conversions',
+  description: 'Roth conversion strategy',
+  strategy: 'bracket-fill',
+  bracketTop: 89450
+});
+
+registry.register(rothRule);
+
+// Get execution order (topological sort)
+const rules = registry.getExecutionOrder();
+
+// Validate dependencies
+const validation = registry.validateDependencies();
+if (!validation.valid) {
+  console.error(validation.errors);
+}
+```
+
+**Future Enhancements:**
+- Rule composition (combining multiple strategies)
+- Dependency injection for projection state
+- Rule metadata UI (display available strategies)
+- Custom rule creation via UI
+- Backdoor Roth strategy implementation
+
 ### 4. UI Controllers
 - **PlanController**: Manages plan lifecycle (create, load, save, delete)
 - **AccountController**: Handles account-specific operations and validations
