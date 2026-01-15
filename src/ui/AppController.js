@@ -507,25 +507,6 @@ export class AppController {
     this.currentPlan = this.planController.currentPlan;
   }
 
-  toggleQCDStrategyFields() {
-    const strategy = document.getElementById('settingsQCDStrategy').value;
-    const allFields = document.querySelectorAll('.qcd-fields');
-    allFields.forEach((field) => (field.style.display = 'none'));
-
-    const activeField = document.getElementById(
-      `qcd${strategy.charAt(0).toUpperCase() + strategy.slice(1)}Fields`
-    );
-    if (activeField) {
-      activeField.style.display = 'block';
-    }
-  }
-
-  toggleTLHFields() {
-    const enabled = document.getElementById('settingsTLHEnabled').checked;
-    const fields = document.getElementById('tlhFields');
-    fields.style.display = enabled ? 'block' : 'none';
-  }
-
   // Modal Helpers (kept in AppController for shared use)
 
   openModal(id) {
