@@ -79,22 +79,22 @@ export class ChartRenderer {
           annotation:
             retirementIndex >= 0
               ? {
-                  annotations: {
-                    retirementLine: {
-                      type: 'line',
-                      xMin: retirementIndex,
-                      xMax: retirementIndex,
-                      borderColor: 'rgb(255, 99, 132)',
-                      borderWidth: 2,
-                      borderDash: [5, 5],
-                      label: {
-                        display: true,
-                        content: 'Retirement',
-                        position: 'start',
-                      },
+                annotations: {
+                  retirementLine: {
+                    type: 'line',
+                    xMin: retirementIndex,
+                    xMax: retirementIndex,
+                    borderColor: 'rgb(255, 99, 132)',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    label: {
+                      display: true,
+                      content: 'Retirement',
+                      position: 'start',
                     },
                   },
-                }
+                },
+              }
               : {},
         },
         scales: {

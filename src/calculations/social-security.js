@@ -3,35 +3,10 @@
  * Based on SSA formulas and rules as of 2024/2025
  */
 
-/**
- * Calculate Full Retirement Age (FRA) based on birth year
- * @param {number} birthYear - Year of birth
- * @returns {object} { years: number, months: number } - FRA in years and months
- */
-export function calculateFullRetirementAge(birthYear) {
-  if (birthYear <= 1937) {
-    return { years: 65, months: 0 };
-  } else if (birthYear >= 1960) {
-    return { years: 67, months: 0 };
-  } else if (birthYear >= 1943 && birthYear <= 1954) {
-    return { years: 66, months: 0 };
-  } else if (birthYear === 1955) {
-    return { years: 66, months: 2 };
-  } else if (birthYear === 1956) {
-    return { years: 66, months: 4 };
-  } else if (birthYear === 1957) {
-    return { years: 66, months: 6 };
-  } else if (birthYear === 1958) {
-    return { years: 66, months: 8 };
-  } else if (birthYear === 1959) {
-    return { years: 66, months: 10 };
-  } else if (birthYear >= 1938 && birthYear <= 1942) {
-    const months = (birthYear - 1937) * 2;
-    return { years: 65, months: months };
-  }
+import { getFullRetirementAge } from '../../config/loader.js';
 
-  return { years: 67, months: 0 };
-}
+// Re-export for convenience
+export { getFullRetirementAge as calculateFullRetirementAge };
 
 /**
  * Convert FRA object to total months
@@ -60,7 +35,7 @@ export function calculateSocialSecurityBenefit(
   retirementYear,
   colaRate = 0.025
 ) {
-  const fra = calculateFullRetirementAge(birthYear);
+  const fra = getFullRetirementAge(birthYear);
   const fraMonths = fraToMonths(fra);
   const filingMonths = filingAge * 12;
 

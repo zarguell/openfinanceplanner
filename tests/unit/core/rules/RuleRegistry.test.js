@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { BaseRule, RuleRegistry, StrategyFactory } from '../../../../src/core/rules/index.js';
 
 class MockRule extends BaseRule {
@@ -12,340 +13,252 @@ class MockRule extends BaseRule {
   }
 }
 
-export function testBaseRuleValidation() {
-  const rule = new MockRule({
-    name: 'test-rule',
-    description: 'Test rule',
-    dependencies: [],
-  });
+describe('BaseRule', () => {
+  describe('validation', () => {
+    it('should pass validation for valid rule', () => {
+      const rule = new MockRule({
+        name: 'test-rule',
+        description: 'Test rule',
+        dependencies: [],
+      });
 
-  const validation = rule.validate();
-  if (!validation.valid) {
-    throw new Error(`BaseRule validation failed: ${validation.errors.join(', ')}`);
-  }
-
-  console.log('✓ testBaseRuleValidation passed');
-}
-
-export function testBaseRuleGetMetadata() {
-  const rule = new MockRule({
-    name: 'test-rule',
-    description: 'Test rule',
-    dependencies: ['dep1', 'dep2'],
-  });
-
-  const metadata = rule.getMetadata();
-  if (metadata.name !== 'test-rule') {
-    throw new Error(`Expected name "test-rule", got "${metadata.name}"`);
-  }
-
-  if (metadata.description !== 'Test rule') {
-    throw new Error(`Expected description "Test rule", got "${metadata.description}"`);
-  }
-
-  if (metadata.dependencies.length !== 2) {
-    throw new Error(`Expected 2 dependencies, got ${metadata.dependencies.length}`);
-  }
-
-  console.log('✓ testBaseRuleGetMetadata passed');
-}
-
-export function testRuleRegistryRegister() {
-  const registry = new RuleRegistry();
-  const rule = new MockRule({
-    name: 'test-rule',
-    description: 'Test rule',
-    dependencies: [],
-  });
-
-  const result = registry.register(rule);
-  if (!result.success) {
-    throw new Error(`Failed to register rule: ${result.error}`);
-  }
-
-  if (!registry.has('test-rule')) {
-    throw new Error('Rule was not registered');
-  }
-
-  console.log('✓ testRuleRegistryRegister passed');
-}
-
-export function testRuleRegistryDuplicate() {
-  const registry = new RuleRegistry();
-  const rule1 = new MockRule({
-    name: 'test-rule',
-    description: 'Test rule',
-    dependencies: [],
-  });
-
-  const rule2 = new MockRule({
-    name: 'test-rule',
-    description: 'Duplicate rule',
-    dependencies: [],
-  });
-
-  registry.register(rule1);
-  const result = registry.register(rule2);
-
-  if (result.success) {
-    throw new Error('Should not allow duplicate rule registration');
-  }
-
-  console.log('✓ testRuleRegistryDuplicate passed');
-}
-
-export function testRuleRegistryGet() {
-  const registry = new RuleRegistry();
-  const rule = new MockRule({
-    name: 'test-rule',
-    description: 'Test rule',
-    dependencies: [],
-  });
-
-  registry.register(rule);
-  const retrieved = registry.get('test-rule');
-
-  if (retrieved !== rule) {
-    throw new Error('Retrieved rule is not the same instance');
-  }
-
-  console.log('✓ testRuleRegistryGet passed');
-}
-
-export function testRuleRegistryList() {
-  const registry = new RuleRegistry();
-  registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
-  registry.register(new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: [] }));
-
-  const rules = registry.list();
-  if (rules.length !== 2) {
-    throw new Error(`Expected 2 rules, got ${rules.length}`);
-  }
-
-  if (!rules.includes('rule1') || !rules.includes('rule2')) {
-    throw new Error('Rule list does not contain expected rules');
-  }
-
-  console.log('✓ testRuleRegistryList passed');
-}
-
-export function testRuleRegistryUnregister() {
-  const registry = new RuleRegistry();
-  const rule = new MockRule({
-    name: 'test-rule',
-    description: 'Test rule',
-    dependencies: [],
-  });
-
-  registry.register(rule);
-  const removed = registry.unregister('test-rule');
-
-  if (!removed) {
-    throw new Error('Failed to unregister rule');
-  }
-
-  if (registry.has('test-rule')) {
-    throw new Error('Rule was not unregistered');
-  }
-
-  console.log('✓ testRuleRegistryUnregister passed');
-}
-
-export function testRuleRegistryDependencies() {
-  const registry = new RuleRegistry();
-  registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
-  registry.register(
-    new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] })
-  );
-  registry.register(
-    new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule2'] })
-  );
-
-  const validation = registry.validateDependencies();
-  if (!validation.valid) {
-    throw new Error(`Dependency validation failed: ${validation.errors.join(', ')}`);
-  }
-
-  console.log('✓ testRuleRegistryDependencies passed');
-}
-
-export function testRuleRegistryMissingDependency() {
-  const registry = new RuleRegistry();
-  registry.register(
-    new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['nonexistent'] })
-  );
-
-  const validation = registry.validateDependencies();
-  if (validation.valid) {
-    throw new Error('Should detect missing dependency');
-  }
-
-  if (validation.errors.length === 0) {
-    throw new Error('Should have validation errors');
-  }
-
-  console.log('✓ testRuleRegistryMissingDependency passed');
-}
-
-export function testRuleRegistryCircularDependencies() {
-  const registry = new RuleRegistry();
-  registry.register(
-    new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['rule2'] })
-  );
-  registry.register(
-    new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule3'] })
-  );
-  registry.register(
-    new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1'] })
-  );
-
-  const detection = registry.detectCircularDependencies();
-  if (detection.valid) {
-    throw new Error('Should detect circular dependencies');
-  }
-
-  if (detection.cycles.length === 0) {
-    throw new Error('Should have found circular dependency cycles');
-  }
-
-  console.log('✓ testRuleRegistryCircularDependencies passed');
-}
-
-export function testRuleRegistryExecutionOrder() {
-  const registry = new RuleRegistry();
-  registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
-  registry.register(
-    new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] })
-  );
-  registry.register(
-    new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1', 'rule2'] })
-  );
-
-  const order = registry.getExecutionOrder();
-  if (order.length !== 3) {
-    throw new Error(`Expected 3 rules in execution order, got ${order.length}`);
-  }
-
-  if (order[0].name !== 'rule1') {
-    throw new Error('Rule 1 should execute first (no dependencies)');
-  }
-
-  if (order[2].name !== 'rule3') {
-    throw new Error('Rule 3 should execute last (depends on rule1 and rule2)');
-  }
-
-  console.log('✓ testRuleRegistryExecutionOrder passed');
-}
-
-export function testStrategyFactoryRegister() {
-  const factory = new StrategyFactory();
-  factory.registerRuleClass('mock', MockRule);
-
-  if (!factory.hasRuleType('mock')) {
-    throw new Error('Rule type was not registered');
-  }
-
-  console.log('✓ testStrategyFactoryRegister passed');
-}
-
-export function testStrategyFactoryCreate() {
-  const factory = new StrategyFactory();
-  factory.registerRuleClass('mock', MockRule);
-
-  const rule = factory.create({
-    type: 'mock',
-    name: 'test-rule',
-    settings: {
-      description: 'Test rule created by factory',
-    },
-  });
-
-  if (!(rule instanceof MockRule)) {
-    throw new Error('Factory did not create MockRule instance');
-  }
-
-  if (rule.name !== 'test-rule') {
-    throw new Error(`Expected name "test-rule", got "${rule.name}"`);
-  }
-
-  console.log('✓ testStrategyFactoryCreate passed');
-}
-
-export function testStrategyFactoryUnknownType() {
-  const factory = new StrategyFactory();
-
-  try {
-    factory.create({
-      type: 'nonexistent',
-      name: 'test-rule',
+      const validation = rule.validate();
+      expect(validation.valid).toBe(true);
     });
-    throw new Error('Should throw error for unknown rule type');
-  } catch (error) {
-    if (!error.message.includes('Unknown rule type')) {
-      throw new Error(`Expected "Unknown rule type" error, got: ${error.message}`);
-    }
-  }
+  });
 
-  console.log('✓ testStrategyFactoryUnknownType passed');
-}
+  describe('getMetadata', () => {
+    it('should return correct metadata', () => {
+      const rule = new MockRule({
+        name: 'test-rule',
+        description: 'Test rule',
+        dependencies: ['dep1', 'dep2'],
+      });
 
-export function testStrategyFactoryCreateMany() {
-  const factory = new StrategyFactory();
-  factory.registerRuleClass('mock', MockRule);
+      const metadata = rule.getMetadata();
 
-  const rules = factory.createMany([
-    { type: 'mock', name: 'rule1', settings: { description: 'Rule 1' } },
-    { type: 'mock', name: 'rule2', settings: { description: 'Rule 2' } },
-  ]);
+      expect(metadata.name).toBe('test-rule');
+      expect(metadata.description).toBe('Test rule');
+      expect(metadata.dependencies.length).toBe(2);
+    });
+  });
+});
 
-  if (rules.length !== 2) {
-    throw new Error(`Expected 2 rules, got ${rules.length}`);
-  }
+describe('RuleRegistry', () => {
+  describe('register', () => {
+    it('should successfully register a rule', () => {
+      const registry = new RuleRegistry();
+      const rule = new MockRule({
+        name: 'test-rule',
+        description: 'Test rule',
+        dependencies: [],
+      });
 
-  if (rules[0].name !== 'rule1' || rules[1].name !== 'rule2') {
-    throw new Error('Rules do not have expected names');
-  }
+      const result = registry.register(rule);
 
-  console.log('✓ testStrategyFactoryCreateMany passed');
-}
+      expect(result.success).toBe(true);
+      expect(registry.has('test-rule')).toBe(true);
+    });
 
-export function testStrategyFactoryListTypes() {
-  const factory = new StrategyFactory();
-  factory.registerRuleClass('mock', MockRule);
+    it('should reject duplicate rule registration', () => {
+      const registry = new RuleRegistry();
+      const rule1 = new MockRule({
+        name: 'test-rule',
+        description: 'Test rule',
+        dependencies: [],
+      });
 
-  const types = factory.listRuleTypes();
-  if (types.length !== 1) {
-    throw new Error(`Expected 1 rule type, got ${types.length}`);
-  }
+      const rule2 = new MockRule({
+        name: 'test-rule',
+        description: 'Duplicate rule',
+        dependencies: [],
+      });
 
-  if (!types.includes('mock')) {
-    throw new Error('Rule types should include "mock"');
-  }
+      registry.register(rule1);
+      const result = registry.register(rule2);
 
-  console.log('✓ testStrategyFactoryListTypes passed');
-}
+      expect(result.success).toBe(false);
+    });
+  });
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  try {
-    testBaseRuleValidation();
-    testBaseRuleGetMetadata();
-    testRuleRegistryRegister();
-    testRuleRegistryDuplicate();
-    testRuleRegistryGet();
-    testRuleRegistryList();
-    testRuleRegistryUnregister();
-    testRuleRegistryDependencies();
-    testRuleRegistryMissingDependency();
-    testRuleRegistryCircularDependencies();
-    testRuleRegistryExecutionOrder();
-    testStrategyFactoryRegister();
-    testStrategyFactoryCreate();
-    testStrategyFactoryUnknownType();
-    testStrategyFactoryCreateMany();
-    testStrategyFactoryListTypes();
-    console.log('All RuleRegistry and StrategyFactory tests passed!');
-  } catch (error) {
-    console.error('Test failed:', error.message);
-    process.exit(1);
-  }
-}
+  describe('get', () => {
+    it('should retrieve registered rule', () => {
+      const registry = new RuleRegistry();
+      const rule = new MockRule({
+        name: 'test-rule',
+        description: 'Test rule',
+        dependencies: [],
+      });
+
+      registry.register(rule);
+      const retrieved = registry.get('test-rule');
+
+      expect(retrieved).toBe(rule);
+    });
+  });
+
+  describe('list', () => {
+    it('should return list of registered rules', () => {
+      const registry = new RuleRegistry();
+      registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
+      registry.register(new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: [] }));
+
+      const rules = registry.list();
+
+      expect(rules.length).toBe(2);
+      expect(rules.includes('rule1')).toBe(true);
+      expect(rules.includes('rule2')).toBe(true);
+    });
+  });
+
+  describe('unregister', () => {
+    it('should successfully unregister a rule', () => {
+      const registry = new RuleRegistry();
+      const rule = new MockRule({
+        name: 'test-rule',
+        description: 'Test rule',
+        dependencies: [],
+      });
+
+      registry.register(rule);
+      const removed = registry.unregister('test-rule');
+
+      expect(removed).toBe(true);
+      expect(registry.has('test-rule')).toBe(false);
+    });
+  });
+
+  describe('validateDependencies', () => {
+    it('should pass for valid dependencies', () => {
+      const registry = new RuleRegistry();
+      registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
+      registry.register(
+        new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] })
+      );
+      registry.register(
+        new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule2'] })
+      );
+
+      const validation = registry.validateDependencies();
+
+      expect(validation.valid).toBe(true);
+    });
+
+    it('should detect missing dependency', () => {
+      const registry = new RuleRegistry();
+      registry.register(
+        new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['nonexistent'] })
+      );
+
+      const validation = registry.validateDependencies();
+
+      expect(validation.valid).toBe(false);
+      expect(validation.errors.length).toBeGreaterThan(0);
+    });
+
+    it('should detect circular dependencies', () => {
+      const registry = new RuleRegistry();
+      registry.register(
+        new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: ['rule2'] })
+      );
+      registry.register(
+        new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule3'] })
+      );
+      registry.register(
+        new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1'] })
+      );
+
+      const detection = registry.detectCircularDependencies();
+
+      expect(detection.valid).toBe(false);
+      expect(detection.cycles.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('getExecutionOrder', () => {
+    it('should return rules in correct execution order', () => {
+      const registry = new RuleRegistry();
+      registry.register(new MockRule({ name: 'rule1', description: 'Rule 1', dependencies: [] }));
+      registry.register(
+        new MockRule({ name: 'rule2', description: 'Rule 2', dependencies: ['rule1'] })
+      );
+      registry.register(
+        new MockRule({ name: 'rule3', description: 'Rule 3', dependencies: ['rule1', 'rule2'] })
+      );
+
+      const order = registry.getExecutionOrder();
+
+      expect(order.length).toBe(3);
+      expect(order[0].name).toBe('rule1');
+      expect(order[2].name).toBe('rule3');
+    });
+  });
+});
+
+describe('StrategyFactory', () => {
+  describe('registerRuleClass', () => {
+    it('should register rule class', () => {
+      const factory = new StrategyFactory();
+      factory.registerRuleClass('mock', MockRule);
+
+      expect(factory.hasRuleType('mock')).toBe(true);
+    });
+  });
+
+  describe('create', () => {
+    it('should create rule instance', () => {
+      const factory = new StrategyFactory();
+      factory.registerRuleClass('mock', MockRule);
+
+      const rule = factory.create({
+        type: 'mock',
+        name: 'test-rule',
+        settings: {
+          description: 'Test rule created by factory',
+        },
+      });
+
+      expect(rule instanceof MockRule).toBe(true);
+      expect(rule.name).toBe('test-rule');
+    });
+
+    it('should throw error for unknown rule type', () => {
+      const factory = new StrategyFactory();
+
+      expect(() => {
+        factory.create({
+          type: 'nonexistent',
+          name: 'test-rule',
+        });
+      }).toThrow('Unknown rule type');
+    });
+  });
+
+  describe('createMany', () => {
+    it('should create multiple rule instances', () => {
+      const factory = new StrategyFactory();
+      factory.registerRuleClass('mock', MockRule);
+
+      const rules = factory.createMany([
+        { type: 'mock', name: 'rule1', settings: { description: 'Rule 1' } },
+        { type: 'mock', name: 'rule2', settings: { description: 'Rule 2' } },
+      ]);
+
+      expect(rules.length).toBe(2);
+      expect(rules[0].name).toBe('rule1');
+      expect(rules[1].name).toBe('rule2');
+    });
+  });
+
+  describe('listRuleTypes', () => {
+    it('should return list of registered rule types', () => {
+      const factory = new StrategyFactory();
+      factory.registerRuleClass('mock', MockRule);
+
+      const types = factory.listRuleTypes();
+
+      expect(types.length).toBe(1);
+      expect(types.includes('mock')).toBe(true);
+    });
+  });
+});

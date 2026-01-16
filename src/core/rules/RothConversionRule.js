@@ -50,29 +50,29 @@ export class RothConversionRule extends BaseRule {
     let conversionAmount = 0;
 
     switch (this.strategy) {
-      case 'fixed':
-        conversionAmount = calculateFixedConversion(
-          this.annualAmount,
-          totalTraditionalBalance,
-          currentAge,
-          mustTakeRMD
-        );
-        break;
+    case 'fixed':
+      conversionAmount = calculateFixedConversion(
+        this.annualAmount,
+        totalTraditionalBalance,
+        currentAge,
+        mustTakeRMD
+      );
+      break;
 
-      case 'bracket-fill':
-        conversionAmount = calculateBracketFillConversion(
-          totalTaxableIncome,
-          this.bracketTop,
-          totalTraditionalBalance
-        );
-        break;
+    case 'bracket-fill':
+      conversionAmount = calculateBracketFillConversion(
+        totalTaxableIncome,
+        this.bracketTop,
+        totalTraditionalBalance
+      );
+      break;
 
-      case 'percentage':
-        conversionAmount = calculatePercentageConversion(this.percentage, totalTraditionalBalance);
-        break;
+    case 'percentage':
+      conversionAmount = calculatePercentageConversion(this.percentage, totalTraditionalBalance);
+      break;
 
-      default:
-        conversionAmount = 0;
+    default:
+      conversionAmount = 0;
     }
 
     if (conversionAmount <= 0) {

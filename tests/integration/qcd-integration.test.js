@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Plan } from '../../src/core/models/Plan.js';
 import { Account } from '../../src/core/models/Account.js';
 import { Expense } from '../../src/core/models/Expense.js';
@@ -20,207 +21,156 @@ global.localStorage = {
   },
 };
 
-export function testQCDSettingsPersistence() {
-  console.log('Testing QCD settings persistence...');
+describe('QCD Integration', () => {
+  beforeEach(() => {
+    global.localStorage.store = {};
+  });
 
-  const plan = new Plan('QCD Test', 65, 75);
-  plan.addAccount(new Account('IRA', 'IRA', 500000));
-  plan.addExpense(new Expense('Living Expenses', 60000, 0, true));
+  describe('Settings Persistence', () => {
+    it('should preserve QCD enabled setting', () => {
+      const plan = new Plan('QCD Test', 65, 75);
+      plan.addAccount(new Account('IRA', 'IRA', 500000));
+      plan.addExpense(new Expense('Living Expenses', 60000, 0, true));
 
-  plan.qcdSettings = {
-    enabled: true,
-    strategy: 'fixed',
-    annualAmount: 10000 * 100,
-    percentage: 0.1,
-    marginalTaxRate: 0.24,
-  };
+      plan.qcdSettings = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.1,
+        marginalTaxRate: 0.24,
+      };
 
-  console.log('✓ Plan created with QCD settings:', plan.qcdSettings);
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  StorageManager.savePlan(plan);
-  console.log('✓ Plan saved to storage');
+      expect(reconstructedPlan.qcdSettings.enabled).toBe(true);
+    });
 
-  const loadedPlan = StorageManager.loadPlan(plan.id);
-  const reconstructedPlan = Plan.fromJSON(loadedPlan);
+    it('should preserve QCD strategy', () => {
+      const plan = new Plan('QCD Test', 65, 75);
+      plan.addAccount(new Account('IRA', 'IRA', 500000));
+      plan.addExpense(new Expense('Living Expenses', 60000, 0, true));
 
-  console.log('✓ Plan loaded from storage');
+      plan.qcdSettings = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.1,
+        marginalTaxRate: 0.24,
+      };
 
-  if (reconstructedPlan.qcdSettings.enabled !== true) {
-    throw new Error('QCD enabled setting not preserved');
-  }
-  console.log('✓ QCD enabled preserved');
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  if (reconstructedPlan.qcdSettings.strategy !== 'fixed') {
-    throw new Error('QCD strategy not preserved');
-  }
-  console.log('✓ QCD strategy preserved:', reconstructedPlan.qcdSettings.strategy);
+      expect(reconstructedPlan.qcdSettings.strategy).toBe('fixed');
+    });
 
-  if (reconstructedPlan.qcdSettings.annualAmount !== 10000 * 100) {
-    throw new Error('QCD annualAmount not preserved');
-  }
-  console.log('✓ QCD annualAmount preserved');
+    it('should preserve annual amount', () => {
+      const plan = new Plan('QCD Test', 65, 75);
+      plan.addAccount(new Account('IRA', 'IRA', 500000));
+      plan.addExpense(new Expense('Living Expenses', 60000, 0, true));
 
-  StorageManager.deletePlan(plan.id);
-  console.log('✓ Cleanup: Test plan deleted');
+      plan.qcdSettings = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.1,
+        marginalTaxRate: 0.24,
+      };
 
-  console.log('✅ testQCDSettingsPersistence PASSED\n');
-}
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-export function testQCDWithProjection() {
-  console.log('Testing QCD with projection...');
+      expect(reconstructedPlan.qcdSettings.annualAmount).toBe(10000 * 100);
+    });
+  });
 
-  const plan = new Plan('QCD Projection Test', 71, 80);
-  plan.addAccount(new Account('IRA', 'IRA', 500000));
-  plan.addExpense(new Expense('Living Expenses', 40000, 0, true));
+  describe('Projection Integration', () => {
+    it('should calculate QCD in projections', () => {
+      const plan = new Plan('QCD Projection Test', 71, 80);
+      plan.addAccount(new Account('IRA', 'IRA', 500000));
+      plan.addExpense(new Expense('Living Expenses', 40000, 0, true));
 
-  plan.qcdSettings = {
-    enabled: true,
-    strategy: 'fixed',
-    annualAmount: 10000 * 100,
-    percentage: 0,
-    marginalTaxRate: 0.24,
-  };
+      plan.qcdSettings = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0,
+        marginalTaxRate: 0.24,
+      };
 
-  console.log('✓ Plan created with QCD enabled (age 71)');
+      const results = project(plan, 20, 2025);
 
-  const results = project(plan, 20, 2025);
+      const totalQCD = results.reduce((sum, year) => sum + (year.totalQCD || 0), 0);
 
-  console.log('✓ Projection completed');
+      expect(totalQCD).toBe(210000);
+      const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
+      expect(yearsWithQCD.length).toBe(21);
+    });
 
-  const totalQCD = results.reduce((sum, year) => sum + (year.totalQCD || 0), 0);
+    it('should calculate percentage-based QCD', () => {
+      const plan = new Plan('QCD Percentage Test', 70, 80);
+      plan.addAccount(new Account('IRA', 'IRA', 400000));
+      plan.addExpense(new Expense('Living Expenses', 50000, 0, true));
 
-  if (totalQCD !== 210000) {
-    throw new Error(`Expected total QCD of $210,000, got $${totalQCD}`);
-  }
-  console.log('✓ Total QCD in projection:', totalQCD);
+      plan.qcdSettings = {
+        enabled: true,
+        strategy: 'percentage',
+        annualAmount: 0,
+        percentage: 0.1,
+        marginalTaxRate: 0.22,
+      };
 
-  const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
+      const results = project(plan, 15, 2025);
 
-  if (yearsWithQCD.length !== 21) {
-    throw new Error(`Expected 21 years with QCD, got ${yearsWithQCD.length}`);
-  }
-  console.log('✓ QCD active for 21 years (age 71-90)');
+      const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
+      expect(yearsWithQCD.length).toBeGreaterThan(0);
 
-  StorageManager.deletePlan(plan.id);
-  console.log('✓ Cleanup: Test plan deleted');
+      const totalQCD = results.reduce((sum, year) => sum + (year.totalQCD || 0), 0);
+      expect(totalQCD).toBeGreaterThan(0);
+    });
 
-  console.log('✅ testQCDWithProjection PASSED\n');
-}
+    it('should calculate RMD-based QCD', () => {
+      const plan = new Plan('QCD RMD Test', 72, 85);
+      plan.addAccount(new Account('IRA', 'IRA', 600000));
+      plan.addExpense(new Expense('Living Expenses', 40000, 0, true));
 
-export function testQCDPercentageStrategy() {
-  console.log('Testing QCD percentage strategy...');
+      plan.qcdSettings = {
+        enabled: true,
+        strategy: 'rmd',
+        annualAmount: 0,
+        percentage: 0,
+        marginalTaxRate: 0.24,
+      };
 
-  const plan = new Plan('QCD Percentage Test', 70, 80);
-  plan.addAccount(new Account('IRA', 'IRA', 400000));
-  plan.addExpense(new Expense('Living Expenses', 50000, 0, true));
+      const results = project(plan, 15, 2025);
 
-  plan.qcdSettings = {
-    enabled: true,
-    strategy: 'percentage',
-    annualAmount: 0,
-    percentage: 0.1,
-    marginalTaxRate: 0.22,
-  };
+      const yearsWithRMD = results.filter((year) => year.totalRmdAmount > 0);
+      const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
 
-  const results = project(plan, 15, 2025);
+      expect(yearsWithQCD.length).toBe(yearsWithRMD.length);
+    });
 
-  const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
+    it('should not calculate QCD when disabled', () => {
+      const plan = new Plan('QCD Disabled Test', 75, 85);
+      plan.addAccount(new Account('IRA', 'IRA', 500000));
+      plan.addExpense(new Expense('Living Expenses', 50000, 0, true));
 
-  if (yearsWithQCD.length === 0) {
-    throw new Error('Expected QCDs to be calculated');
-  }
-  console.log('✓ Percentage strategy QCD calculated for', yearsWithQCD.length, 'years');
+      plan.qcdSettings = {
+        enabled: false,
+        strategy: 'fixed',
+        annualAmount: 0,
+        percentage: 0,
+        marginalTaxRate: 0.24,
+      };
 
-  const totalQCD = results.reduce((sum, year) => sum + (year.totalQCD || 0), 0);
+      const results = project(plan, 10, 2025);
 
-  if (totalQCD <= 0) {
-    throw new Error('Expected positive QCD total');
-  }
-  console.log('✓ Percentage strategy QCD total:', totalQCD);
-
-  StorageManager.deletePlan(plan.id);
-  console.log('✓ Cleanup: Test plan deleted');
-
-  console.log('✅ testQCDPercentageStrategy PASSED\n');
-}
-
-export function testQCDRMDBased() {
-  console.log('Testing QCD based on RMD amount...');
-
-  const plan = new Plan('QCD RMD Test', 72, 85);
-  plan.addAccount(new Account('IRA', 'IRA', 600000));
-  plan.addExpense(new Expense('Living Expenses', 40000, 0, true));
-
-  plan.qcdSettings = {
-    enabled: true,
-    strategy: 'rmd',
-    annualAmount: 0,
-    percentage: 0,
-    marginalTaxRate: 0.24,
-  };
-
-  const results = project(plan, 15, 2025);
-
-  const yearsWithRMD = results.filter((year) => year.totalRmdAmount > 0);
-  console.log('✓ RMDs required for', yearsWithRMD.length, 'years');
-
-  const yearsWithQCD = results.filter((year) => year.totalQCD > 0);
-
-  if (yearsWithQCD.length !== yearsWithRMD.length) {
-    throw new Error('QCD should match RMD years');
-  }
-  console.log('✓ QCD years match RMD years');
-
-  StorageManager.deletePlan(plan.id);
-  console.log('✓ Cleanup: Test plan deleted');
-
-  console.log('✅ testQCDRMDBased PASSED\n');
-}
-
-export function testQCDDisabled() {
-  console.log('Testing QCD disabled...');
-
-  const plan = new Plan('QCD Disabled Test', 75, 85);
-  plan.addAccount(new Account('IRA', 'IRA', 500000));
-  plan.addExpense(new Expense('Living Expenses', 50000, 0, true));
-
-  plan.qcdSettings = {
-    enabled: false,
-    strategy: 'fixed',
-    annualAmount: 0,
-    percentage: 0,
-    marginalTaxRate: 0.24,
-  };
-
-  const results = project(plan, 10, 2025);
-
-  const totalQCD = results.reduce((sum, year) => sum + (year.totalQCD || 0), 0);
-
-  if (totalQCD !== 0) {
-    throw new Error('Expected no QCD when disabled, got QCDs');
-  }
-  console.log('✓ No QCD when disabled');
-
-  StorageManager.deletePlan(plan.id);
-  console.log('✓ Cleanup: Test plan deleted');
-
-  console.log('✅ testQCDDisabled PASSED\n');
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('=== QCD Integration Tests ===\n');
-
-  try {
-    testQCDSettingsPersistence();
-    testQCDWithProjection();
-    testQCDPercentageStrategy();
-    testQCDRMDBased();
-    testQCDDisabled();
-
-    console.log('=== All QCD Integration Tests PASSED ✅ ===\n');
-  } catch (error) {
-    console.error('❌ Test failed:', error.message);
-    console.error(error.stack);
-    process.exit(1);
-  }
-}
+      const totalQCD = results.reduce((sum, year) => sum + (year.totalQCD || 0), 0);
+      expect(totalQCD).toBe(0);
+    });
+  });
+});

@@ -233,14 +233,14 @@ export class BackdoorRothStrategy extends RuleInterface {
     let limit;
 
     switch (filingStatus) {
-      case 'married_joint':
-        limit = 230000; // Bottom of phase-out range
-        break;
-      case 'single':
-      case 'head':
-      default:
-        limit = 146000; // Bottom of phase-out range
-        break;
+    case 'married_joint':
+      limit = 230000; // Bottom of phase-out range
+      break;
+    case 'single':
+    case 'head':
+    default:
+      limit = 146000; // Bottom of phase-out range
+      break;
     }
 
     // Estimate current income - this is very simplified
@@ -271,12 +271,12 @@ export class BackdoorRothStrategy extends RuleInterface {
 
     // Rough estimate based on filing status
     switch (taxProfile.filingStatus) {
-      case 'single':
-        return 0.25; // Assume 25% marginal rate
-      case 'married_joint':
-        return 0.2; // Assume 20% marginal rate
-      default:
-        return 0.25;
+    case 'single':
+      return 0.25; // Assume 25% marginal rate
+    case 'married_joint':
+      return 0.2; // Assume 20% marginal rate
+    default:
+      return 0.25;
     }
   }
 }

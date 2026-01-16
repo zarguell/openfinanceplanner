@@ -1,4 +1,5 @@
 import { BaseRule } from './BaseRule.js';
+import { getContributionLimit, getTotalContributionLimit } from '../../../config/loader.js';
 
 export class MegaBackdoorRothRule extends BaseRule {
   constructor(config) {
@@ -12,8 +13,23 @@ export class MegaBackdoorRothRule extends BaseRule {
     this.planSupportsAfterTax = config.planSupportsAfterTax !== false;
     this.planSupportsInServiceWithdrawal = config.planSupportsInServiceWithdrawal !== false;
     this.employerMatchRate = config.employerMatchRate || 0.04;
-    this.employeeDeferralLimit = (config.employeeDeferralLimit || 23500) * 100;
-    this.total401kLimit = (config.total401kLimit || 69000) * 100;
+
+    // Handle both dollar inputs (from tests/old code) and cent inputs (from config)
+    if (config.employeeDeferralLimit) {
+      this.employeeDeferralLimit = config.employeeDeferralLimit < 100000
+        ? config.employeeDeferralLimit * 100  // Convert dollars to cents
+        : config.employeeDeferralLimit;        // Already in cents
+    } else {
+      this.employeeDeferralLimit = getContributionLimit('401k');
+    }
+
+    if (config.total401kLimit) {
+      this.total401kLimit = config.total401kLimit < 1000000
+        ? config.total401kLimit * 100  // Convert dollars to cents
+        : config.total401kLimit;        // Already in cents
+    } else {
+      this.total401kLimit = getTotalContributionLimit('401k');
+    }
   }
 
   apply(context) {
@@ -133,43 +149,7 @@ export class MegaBackdoorRothRule extends BaseRule {
 
   getAnnualContribution(yearOffset) {
     const currentYear = new Date().getFullYear() + yearOffset;
-    const yearToIndex = currentYear - new Date().getFullYear();
-
-    const total401kLimits = {
-      0: 69000,
-      1: 69000,
-      2: 69000,
-      3: 69000,
-      4: 69000,
-      5: 69000,
-      6: 69000,
-      7: 69000,
-      8: 69000,
-      9: 69000,
-      10: 69000,
-      11: 69000,
-      12: 69000,
-      13: 69000,
-      14: 69000,
-      15: 69000,
-      16: 69000,
-      17: 69000,
-      18: 69000,
-      19: 69000,
-      20: 69000,
-      21: 69000,
-      22: 69000,
-      23: 69000,
-      24: 69000,
-      25: 69000,
-      26: 69000,
-      27: 69000,
-      28: 69000,
-      29: 69000,
-      30: 69000,
-    };
-
-    const totalLimit = (total401kLimits[yearToIndex] || 69000) * 100;
+    const totalLimit = getTotalContributionLimit('401k', currentYear);
     const assumedAverageAllocation = 3;
 
     return Math.min(this.annualContribution, totalLimit / assumedAverageAllocation);

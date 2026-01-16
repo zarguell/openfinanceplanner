@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Plan } from '../../src/core/models/Plan.js';
 import { Account } from '../../src/core/models/Account.js';
 import { StorageManager } from '../../src/storage/StorageManager.js';
@@ -18,156 +19,201 @@ global.localStorage = {
   },
 };
 
-export function testRothConversionUIFields() {
-  console.log('Testing Roth Conversion UI fields...');
+describe('Roth Conversions UI Integration', () => {
+  beforeEach(() => {
+    global.localStorage.store = {};
+  });
 
-  const plan = new Plan('Roth Conversion Test', 45, 65);
-  plan.addAccount(new Account('401k', '401k', 500000));
-  plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
+  describe('UI Fields Persistence', () => {
+    it('should preserve Roth conversion enabled setting', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-  plan.rothConversions = {
-    enabled: true,
-    strategy: 'fixed',
-    annualAmount: 10000 * 100,
-    percentage: 0.05,
-    bracketTop: 50000 * 100,
-  };
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  console.log('✓ Plan created with Roth Conversion settings:', plan.rothConversions);
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  StorageManager.savePlan(plan);
-  console.log('✓ Plan saved to storage');
+      expect(reconstructedPlan.rothConversions.enabled).toBe(true);
+    });
 
-  const loadedPlan = StorageManager.loadPlan(plan.id);
-  const reconstructedPlan = Plan.fromJSON(loadedPlan);
+    it('should preserve Roth conversion strategy', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-  console.log('✓ Plan loaded from storage');
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  if (reconstructedPlan.rothConversions.enabled !== true) {
-    throw new Error('Roth Conversions enabled setting not preserved');
-  }
-  console.log('✓ Roth Conversions enabled preserved');
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  if (reconstructedPlan.rothConversions.strategy !== 'fixed') {
-    throw new Error('Roth Conversions strategy not preserved');
-  }
-  console.log('✓ Roth Conversions strategy preserved:', reconstructedPlan.rothConversions.strategy);
+      expect(reconstructedPlan.rothConversions.strategy).toBe('fixed');
+    });
 
-  if (reconstructedPlan.rothConversions.annualAmount !== 10000 * 100) {
-    throw new Error('Roth Conversions annualAmount not preserved');
-  }
-  console.log(
-    '✓ Roth Conversions annualAmount preserved:',
-    reconstructedPlan.rothConversions.annualAmount
-  );
+    it('should preserve annual amount', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-  if (reconstructedPlan.rothConversions.percentage !== 0.05) {
-    throw new Error('Roth Conversions percentage not preserved');
-  }
-  console.log(
-    '✓ Roth Conversions percentage preserved:',
-    reconstructedPlan.rothConversions.percentage
-  );
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  if (reconstructedPlan.rothConversions.bracketTop !== 50000 * 100) {
-    throw new Error('Roth Conversions bracketTop not preserved');
-  }
-  console.log(
-    '✓ Roth Conversions bracketTop preserved:',
-    reconstructedPlan.rothConversions.bracketTop
-  );
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  plan.rothConversions.strategy = 'percentage';
-  plan.rothConversions.percentage = 0.1;
-  StorageManager.savePlan(plan);
-  const loadedPlan2 = StorageManager.loadPlan(plan.id);
-  const reconstructedPlan2 = Plan.fromJSON(loadedPlan2);
+      expect(reconstructedPlan.rothConversions.annualAmount).toBe(10000 * 100);
+    });
 
-  if (reconstructedPlan2.rothConversions.strategy !== 'percentage') {
-    throw new Error('Percentage strategy not preserved');
-  }
-  console.log('✓ Percentage strategy preserved:', reconstructedPlan2.rothConversions.strategy);
-  console.log('✓ Percentage value preserved:', reconstructedPlan2.rothConversions.percentage);
+    it('should preserve percentage value', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-  plan.rothConversions.strategy = 'bracket-fill';
-  plan.rothConversions.bracketTop = 95000 * 100;
-  StorageManager.savePlan(plan);
-  const loadedPlan3 = StorageManager.loadPlan(plan.id);
-  const reconstructedPlan3 = Plan.fromJSON(loadedPlan3);
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  if (reconstructedPlan3.rothConversions.strategy !== 'bracket-fill') {
-    throw new Error('Bracket-fill strategy not preserved');
-  }
-  console.log('✓ Bracket-fill strategy preserved:', reconstructedPlan3.rothConversions.strategy);
-  console.log('✓ Bracket-top value preserved:', reconstructedPlan3.rothConversions.bracketTop);
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  plan.rothConversions.enabled = false;
-  StorageManager.savePlan(plan);
-  const loadedPlan4 = StorageManager.loadPlan(plan.id);
-  const reconstructedPlan4 = Plan.fromJSON(loadedPlan4);
+      expect(reconstructedPlan.rothConversions.percentage).toBe(0.05);
+    });
 
-  if (reconstructedPlan4.rothConversions.enabled !== false) {
-    throw new Error('Disabled Roth Conversions setting not preserved');
-  }
-  console.log('✓ Disabled Roth Conversions preserved');
+    it('should preserve bracket top value', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-  StorageManager.deletePlan(plan.id);
-  console.log('✓ Cleanup: Test plan deleted');
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  console.log('✅ testRothConversionUIFields PASSED\n');
-}
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-export function testRothConversionWithProjection() {
-  console.log('Testing Roth Conversion with projection...');
+      expect(reconstructedPlan.rothConversions.bracketTop).toBe(50000 * 100);
+    });
 
-  const plan = new Plan('Roth Projection Test', 50, 65);
-  plan.addAccount(new Account('401k', '401k', 500000));
-  plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
+    it('should update and preserve percentage strategy', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-  plan.rothConversions = {
-    enabled: true,
-    strategy: 'fixed',
-    annualAmount: 15000 * 100,
-    percentage: 0,
-    bracketTop: 0,
-  };
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  console.log('✓ Plan created with Roth Conversions');
+      plan.rothConversions.strategy = 'percentage';
+      plan.rothConversions.percentage = 0.1;
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  StorageManager.savePlan(plan);
+      expect(reconstructedPlan.rothConversions.strategy).toBe('percentage');
+      expect(reconstructedPlan.rothConversions.percentage).toBe(0.1);
+    });
 
-  const loadedPlan = StorageManager.loadPlan(plan.id);
-  const reconstructedPlan = Plan.fromJSON(loadedPlan);
+    it('should update and preserve bracket-fill strategy', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-  console.log('✓ Plan loaded from storage');
-  console.log('✓ Roth Conversions settings:', reconstructedPlan.rothConversions);
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  if (
-    reconstructedPlan.rothConversions.enabled !== true ||
-    reconstructedPlan.rothConversions.strategy !== 'fixed' ||
-    reconstructedPlan.rothConversions.annualAmount !== 15000 * 100
-  ) {
-    throw new Error('Roth Conversion settings mismatch after load');
-  }
-  console.log('✓ Roth Conversion settings verified');
+      plan.rothConversions.strategy = 'bracket-fill';
+      plan.rothConversions.bracketTop = 95000 * 100;
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-  StorageManager.deletePlan(plan.id);
-  console.log('✓ Cleanup: Test plan deleted');
+      expect(reconstructedPlan.rothConversions.strategy).toBe('bracket-fill');
+      expect(reconstructedPlan.rothConversions.bracketTop).toBe(95000 * 100);
+    });
 
-  console.log('✅ testRothConversionWithProjection PASSED\n');
-}
+    it('should preserve disabled setting', () => {
+      const plan = new Plan('Roth Conversion Test', 45, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('=== Roth Conversion UI Integration Tests ===\n');
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        percentage: 0.05,
+        bracketTop: 50000 * 100,
+      };
 
-  try {
-    testRothConversionUIFields();
-    testRothConversionWithProjection();
+      plan.rothConversions.enabled = false;
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
 
-    console.log('=== All Roth Conversion UI Integration Tests PASSED ✅ ===\n');
-  } catch (error) {
-    console.error('❌ Test failed:', error.message);
-    console.error(error.stack);
-    process.exit(1);
-  }
-}
+      expect(reconstructedPlan.rothConversions.enabled).toBe(false);
+    });
+  });
+
+  describe('Projection Integration', () => {
+    it('should save and load Roth conversion settings with projection', () => {
+      const plan = new Plan('Roth Projection Test', 50, 65);
+      plan.addAccount(new Account('401k', '401k', 500000));
+      plan.addAccount(new Account('Roth IRA', 'Roth', 100000));
+
+      plan.rothConversions = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 15000 * 100,
+        percentage: 0,
+        bracketTop: 0,
+      };
+
+      StorageManager.savePlan(plan);
+      const loadedPlan = StorageManager.loadPlan(plan.id);
+      const reconstructedPlan = Plan.fromJSON(loadedPlan);
+
+      expect(reconstructedPlan.rothConversions.enabled).toBe(true);
+      expect(reconstructedPlan.rothConversions.strategy).toBe('fixed');
+      expect(reconstructedPlan.rothConversions.annualAmount).toBe(15000 * 100);
+    });
+  });
+});

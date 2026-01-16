@@ -1,8 +1,4 @@
-/**
- * Tax Calculations - Unit tests
- * Testing against IRS tax bracket calculations and known examples
- */
-
+import { describe, it, expect } from 'vitest';
 import {
   calculateFederalTax,
   calculateLongTermCapitalGainsTax,
@@ -13,255 +9,170 @@ import {
   calculateMedicareTax,
   calculateFicaTax,
   getStandardDeduction,
-} from '/Users/zach/localcode/openfinanceplanner/src/calculations/tax.js';
+} from '../../../src/calculations/tax.js';
 
-export function testFederalTax() {
-  console.log('Testing calculateFederalTax...');
+describe('Federal Tax Calculations', () => {
+  describe('calculateFederalTax', () => {
+    it('should calculate federal tax for single filer at $50,000 income', () => {
+      const tax = calculateFederalTax(5000000, 'single', 2025);
 
-  const tax1 = calculateFederalTax(5000000, 'single', 2025);
-  console.assert(tax1 === 387150, 'Test 1 failed: $50,000 income should be $3,871.50 tax');
-  console.assert(tax1 / 5000000 === 0.07743, 'Test 1 failed: Effective rate should be 7.743%');
+      expect(tax).toBe(387150);
+      expect(tax / 5000000).toBeCloseTo(0.07743, 4);
+    });
 
-  const tax2 = calculateFederalTax(10000000, 'single', 2024);
-  console.assert(tax2 === 1384100, 'Test 2 failed: $100,000 income should be $13,841.00 tax');
-  console.assert(tax2 / 10000000 === 0.13841, 'Test 2 failed: Effective rate should be 13.841%');
+    it('should calculate federal tax for single filer at $100,000 income', () => {
+      const tax = calculateFederalTax(10000000, 'single', 2024);
 
-  const tax3 = calculateFederalTax(5000000, 'married_joint', 2025);
-  console.assert(tax3 === 185000, 'Test 3 failed: $50,000 income should be $1,850.00 tax');
-  console.assert(tax3 / 5000000 === 0.037, 'Test 3 failed: Effective rate should be 3.70%');
+      expect(tax).toBe(1384100);
+      expect(tax / 10000000).toBeCloseTo(0.13841, 4);
+    });
 
-  const tax4 = calculateFederalTax(0, 'single', 2025);
-  console.assert(tax4 === 0, 'Test 4 failed: $0 income should be $0 tax');
-  console.assert(tax4 === 0, 'Test 4 failed: Zero income should be $0 tax');
+    it('should calculate federal tax for married joint at $50,000 income', () => {
+      const tax = calculateFederalTax(5000000, 'married_joint', 2025);
 
-  console.log('All federal tax tests passed! ✓');
-}
+      expect(tax).toBe(185000);
+      expect(tax / 5000000).toBe(0.037);
+    });
 
-export function testNetInvestmentIncomeTax() {
-  console.log('Testing Net Investment Income Tax calculations...');
+    it('should return 0 tax for $0 income', () => {
+      const tax = calculateFederalTax(0, 'single', 2025);
 
-  // Test below threshold - no NIIT
-  const niit1 = calculateNetInvestmentIncomeTax(5000000, 15000000, 'single', 2025);
-  console.assert(
-    niit1 === 0,
-    'Test 1 failed: MAGI $150K (below $200K threshold) should have $0 NIIT'
-  );
-  console.assert(niit1 === 0, 'Test 1 failed: No NIIT below threshold');
+      expect(tax).toBe(0);
+    });
+  });
+});
 
-  // Test above threshold - NIIT applies (limited by MAGI over threshold)
-  const niit2 = calculateNetInvestmentIncomeTax(10000000, 25000000, 'single', 2025);
-  console.assert(
-    niit2 === 190000,
-    'Test 2 failed: $100K investment income with MAGI $250K should have $1,900 NIIT (lesser of $100K income and $50K MAGI over threshold)'
-  );
-  console.assert(niit2 === 190000, 'Test 2 failed: NIIT should be $1,900');
+describe('Net Investment Income Tax', () => {
+  describe('calculateNetInvestmentIncomeTax', () => {
+    it('should return 0 for MAGI below threshold', () => {
+      const niit = calculateNetInvestmentIncomeTax(5000000, 15000000, 'single', 2025);
 
-  // Test where investment income limits NIIT (MAGI far exceeds threshold)
-  const niit3 = calculateNetInvestmentIncomeTax(10000000, 30000000, 'single', 2025);
-  console.assert(
-    niit3 === 380000,
-    'Test 3 failed: $100K investment income with MAGI $300K should have $3,800 NIIT (limited by investment income)'
-  );
-  console.assert(
-    niit3 / 10000000 === 0.038,
-    'Test 3 failed: NIIT should be limited by investment income'
-  );
+      expect(niit).toBe(0);
+    });
 
-  // Test married joint threshold
-  const niit4 = calculateNetInvestmentIncomeTax(5000000, 26000000, 'married_joint', 2025);
-  console.assert(
-    niit4 === 38000,
-    'Test 4 failed: $50K investment income with MAGI $260K (married joint) should have $380 NIIT (lesser of $50K income and $10K MAGI over threshold)'
-  );
-  console.assert(
-    niit4 / 5000000 === 0.0076,
-    'Test 4 failed: NIIT effective rate should be 0.76% for married joint'
-  );
+    it('should calculate NIIT when MAGI exceeds threshold', () => {
+      const niit = calculateNetInvestmentIncomeTax(10000000, 25000000, 'single', 2025);
 
-  console.log('All NIIT tests passed! ✓');
-}
+      expect(niit).toBe(190000);
+    });
 
-export function testCapitalGainsTax() {
-  console.log('Testing capital gains tax calculations...');
+    it('should limit NIIT by investment income', () => {
+      const niit = calculateNetInvestmentIncomeTax(10000000, 30000000, 'single', 2025);
 
-  const tax1 = calculateLongTermCapitalGainsTax(3000000, 'single', 2025);
-  console.assert(tax1 === 0, 'Test 1 failed: $30,000 gains in 0% bracket should be $0 tax');
-  console.assert(tax1 / 3000000 === 0, 'Test 1 failed: Effective rate should be 0%');
+      expect(niit).toBe(380000);
+      expect(niit / 10000000).toBe(0.038);
+    });
 
-  const tax2 = calculateLongTermCapitalGainsTax(10000000, 'married_joint', 2025);
-  console.assert(
-    tax2 === 23850,
-    'Test 2 failed: $100,000 gains (98.4K in 0% bracket + 1.6K in 15% bracket) should be $238.50 tax'
-  );
-  console.assert(tax2 / 10000000 === 0.002385, 'Test 2 failed: Effective rate should be 0.2385%');
+    it('should use married joint threshold', () => {
+      const niit = calculateNetInvestmentIncomeTax(5000000, 26000000, 'married_joint', 2025);
 
-  const tax3 = calculateShortTermCapitalGainsTax(5000000, 'single', 2025);
-  console.assert(
-    tax3 === 387150,
-    'Test 3 failed: $50,000 short-term gains should be taxed as ordinary income = $3,871.50'
-  );
-  console.assert(tax3 / 5000000 === 0.07743, 'Test 3 failed: Effective rate should be 7.743%');
+      expect(niit).toBe(38000);
+      expect(niit / 5000000).toBeCloseTo(0.0076, 3);
+    });
+  });
+});
 
-  // Test updated calculateCapitalGainsTax function with NIIT
-  const cgTax1 = calculateCapitalGainsTax(4905000, 0, 15000000, 'single', 2025);
-  console.assert(
-    cgTax1.totalTax === 0,
-    'Test 4 failed: $49,050 LTCG with MAGI $150K should have $0 total tax (no NIIT below threshold)'
-  );
-  console.assert(cgTax1.ordinaryTax === 0, 'Test 4 failed: Ordinary LTCG tax should be $0');
-  console.assert(cgTax1.niit === 0, 'Test 4 failed: NIIT should be $0 below threshold');
+describe('Capital Gains Tax', () => {
+  describe('calculateLongTermCapitalGainsTax', () => {
+    it('should return 0 for gains in 0% bracket', () => {
+      const tax = calculateLongTermCapitalGainsTax(3000000, 'single', 2025);
 
-  const cgTax2 = calculateCapitalGainsTax(4905000, 0, 25000000, 'single', 2025);
-  console.assert(
-    cgTax2.totalTax === 186390,
-    'Test 5 failed: $49,050 LTCG with MAGI $250K should have $1,863.90 total tax'
-  );
-  console.assert(
-    cgTax2.ordinaryTax === 0,
-    'Test 5 failed: Ordinary LTCG tax should be $0 (in 0% bracket)'
-  );
-  console.assert(
-    cgTax2.niit === 186390,
-    'Test 5 failed: NIIT should be $1,863.90 (lesser of $49,050 investment income and $50K MAGI over $200K threshold)'
-  );
+      expect(tax).toBe(0);
+      expect(tax / 3000000).toBe(0);
+    });
 
-  console.log('All capital gains tests passed! ✓');
-}
+    it('should calculate LTCG tax for married joint', () => {
+      const tax = calculateLongTermCapitalGainsTax(10000000, 'married_joint', 2025);
 
-export function testSocialSecurityAndMedicareTax() {
-  console.log('Testing Social Security and Medicare tax calculations...');
+      expect(tax).toBe(23850);
+      expect(tax / 10000000).toBeCloseTo(0.002385, 4);
+    });
+  });
 
-  const wages = 17610000;
-  const ssTax1 = calculateSocialSecurityTax(wages, 2025);
-  console.assert(
-    ssTax1 === 1091820,
-    'Test 1 failed: SS tax should be 6.2% of $176,100 = $10,918.20'
-  );
-  console.assert(ssTax1 / wages === 0.062, 'Test 1 failed: SS rate should be 6.2%');
+  describe('calculateShortTermCapitalGainsTax', () => {
+    it('should tax short-term gains as ordinary income', () => {
+      const tax = calculateShortTermCapitalGainsTax(5000000, 'single', 2025);
 
-  const medicareTax1 = calculateMedicareTax(10000000, 'single', 2025);
-  console.assert(
-    medicareTax1 === 145000,
-    'Test 2 failed: Medicare tax should be 1.45% of $100,000 = $1,450.00'
-  );
-  console.assert(
-    medicareTax1 / 10000000 === 0.0145,
-    'Test 2 failed: Medicare rate should be 1.45%'
-  );
+      expect(tax).toBe(387150);
+      expect(tax / 5000000).toBeCloseTo(0.07743, 4);
+    });
+  });
 
-  const medicareTax2 = calculateMedicareTax(25000000, 'single', 2025);
-  console.assert(
-    medicareTax2 === 407500,
-    'Test 3 failed: Medicare tax for $250,000 should be $4,075.00 ($3,625 @ 1.45% + $450 @ 0.9% on $50k over threshold)'
-  );
-  console.assert(
-    medicareTax2 / 25000000 === 0.0163,
-    'Test 3 failed: Medicare effective rate should be 1.63%'
-  );
+  describe('calculateCapitalGainsTax', () => {
+    it('should calculate total tax with NIIT below threshold', () => {
+      const cgTax = calculateCapitalGainsTax(4905000, 0, 15000000, 'single', 2025);
 
-  const fica1 = calculateFicaTax(10000000, 'single', 2025);
-  console.assert(
-    fica1.totalFicaTax === 765000,
-    'Test 4 failed: FICA tax should be $7,650.00 (SS: $6,200.00 + Medicare: $1,450.00)'
-  );
-  console.assert(fica1.ssTax / 10000000 === 0.062, 'Test 4 failed: SS portion should be 6.2%');
-  console.assert(
-    fica1.medicareTax / 10000000 === 0.0145,
-    'Test 4 failed: Medicare portion should be 1.45%'
-  );
+      expect(cgTax.totalTax).toBe(0);
+      expect(cgTax.ordinaryTax).toBe(0);
+      expect(cgTax.niit).toBe(0);
+    });
 
-  console.log('All Social Security and Medicare tests passed! ✓');
-}
+    it('should calculate total tax with NIIT above threshold', () => {
+      const cgTax = calculateCapitalGainsTax(4905000, 0, 25000000, 'single', 2025);
 
-export function testStandardDeduction() {
-  console.log('Testing standard deduction retrieval...');
+      expect(cgTax.totalTax).toBe(186390);
+      expect(cgTax.ordinaryTax).toBe(0);
+      expect(cgTax.niit).toBe(186390);
+    });
+  });
+});
 
-  const deduction1 = getStandardDeduction(2025, 'single');
-  console.assert(deduction1 === 1575000, 'Test 1 failed: 2025 single deduction should be $15,750');
+describe('Social Security and Medicare Tax', () => {
+  describe('calculateSocialSecurityTax', () => {
+    it('should calculate SS tax at 6.2% rate', () => {
+      const wages = 17610000;
+      const ssTax = calculateSocialSecurityTax(wages, 2025);
 
-  const deduction2 = getStandardDeduction(2025, 'married_joint');
-  console.assert(
-    deduction2 === 3150000,
-    'Test 2 failed: 2025 married joint deduction should be $31,500'
-  );
+      expect(ssTax).toBe(1091820);
+      expect(ssTax / wages).toBe(0.062);
+    });
+  });
 
-  const deduction3 = getStandardDeduction(2025, 'head_of_household');
-  console.assert(
-    deduction3 === 2362500,
-    'Test 3 failed: 2025 head of household deduction should be $23,625'
-  );
+  describe('calculateMedicareTax', () => {
+    it('should calculate Medicare tax at 1.45% rate', () => {
+      const medicareTax = calculateMedicareTax(10000000, 'single', 2025);
 
-  console.log('All standard deduction tests passed! ✓');
-}
+      expect(medicareTax).toBe(145000);
+      expect(medicareTax / 10000000).toBe(0.0145);
+    });
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('=== Running All Tax Calculation Tests ===\n');
+    it('should include additional Medicare tax for high income', () => {
+      const medicareTax = calculateMedicareTax(25000000, 'single', 2025);
 
-  testFederalTax();
-  testNetInvestmentIncomeTax();
-  testCapitalGainsTax();
-  testSocialSecurityAndMedicareTax();
-  testStandardDeduction();
+      expect(medicareTax).toBe(407500);
+      expect(medicareTax / 25000000).toBeCloseTo(0.0163, 3);
+    });
+  });
 
-  console.log('\n=== All Tests Completed Successfully! ===\n');
+  describe('calculateFicaTax', () => {
+    it('should calculate combined FICA tax', () => {
+      const fica = calculateFicaTax(10000000, 'single', 2025);
 
-  console.log('Summary:');
-  console.log('- Federal income tax calculations: PASSED');
-  console.log('- Net Investment Income Tax calculations: PASSED');
-  console.log('- Capital gains tax calculations: PASSED');
-  console.log('- Social Security and Medicare tax calculations: PASSED');
-  console.log('- Standard deduction retrieval: PASSED');
-}
+      expect(fica.totalFicaTax).toBe(765000);
+      expect(fica.ssTax / 10000000).toBe(0.062);
+      expect(fica.medicareTax / 10000000).toBe(0.0145);
+    });
+  });
+});
 
-export function runAllTests() {
-  console.log('\n=== Running All Tax Calculation Tests ===\n');
+describe('Standard Deduction', () => {
+  describe('getStandardDeduction', () => {
+    it('should return 2025 single deduction', () => {
+      const deduction = getStandardDeduction(2025, 'single');
 
-  try {
-    testFederalTax();
-  } catch (error) {
-    console.error('Federal tax tests failed:', error.message);
-    return false;
-  }
+      expect(deduction).toBe(1575000);
+    });
 
-  try {
-    testNetInvestmentIncomeTax();
-  } catch (error) {
-    console.error('NIIT tests failed:', error.message);
-    return false;
-  }
+    it('should return 2025 married joint deduction', () => {
+      const deduction = getStandardDeduction(2025, 'married_joint');
 
-  try {
-    testCapitalGainsTax();
-  } catch (error) {
-    console.error('Capital gains tests failed:', error.message);
-    return false;
-  }
+      expect(deduction).toBe(3150000);
+    });
 
-  try {
-    testSocialSecurityAndMedicareTax();
-  } catch (error) {
-    console.error('SS/Medicare tests failed:', error.message);
-    return false;
-  }
+    it('should return 2025 head of household deduction', () => {
+      const deduction = getStandardDeduction(2025, 'head_of_household');
 
-  try {
-    testStandardDeduction();
-  } catch (error) {
-    console.error('Standard deduction tests failed:', error.message);
-    return false;
-  }
-
-  console.log('\n=== All Tests Completed Successfully! ===\n');
-  console.log('Summary:');
-  console.log('- Federal income tax calculations: PASSED');
-  console.log('- Net Investment Income Tax calculations: PASSED');
-  console.log('- Capital gains tax calculations: PASSED');
-  console.log('- Social Security and Medicare tax calculations: PASSED');
-  console.log('- Standard deduction retrieval: PASSED');
-  return true;
-}
-
-// Run tests if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  runAllTests();
-}
+      expect(deduction).toBe(2362500);
+    });
+  });
+});

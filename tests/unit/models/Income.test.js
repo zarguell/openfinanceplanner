@@ -1,83 +1,59 @@
+import { describe, it, expect } from 'vitest';
 import { Income } from '../../../src/core/models/Income.js';
 
-export function testIncomeCreation() {
-  const income = new Income('Software Engineer Salary', 120000, 0, 'salary');
+describe('Income', () => {
+  describe('creation', () => {
+    it('should create income with correct name', () => {
+      const income = new Income('Software Engineer Salary', 120000, 0, 'salary');
+      expect(income.name).toBe('Software Engineer Salary');
+    });
 
-  if (income.name !== 'Software Engineer Salary') {
-    throw new Error('Expected income name to match');
-  }
+    it('should store baseAmount in cents', () => {
+      const income = new Income('Software Engineer Salary', 120000, 0, 'salary');
+      expect(income.baseAmount).toBe(12000000);
+    });
 
-  if (income.baseAmount !== 12000000) {
-    // Stored in cents
-    throw new Error('Expected baseAmount to be in cents');
-  }
+    it('should set correct type', () => {
+      const income = new Income('Salary', 100000, 0, 'salary');
+      expect(income.type).toBe('salary');
+    });
 
-  if (income.type !== 'salary') {
-    throw new Error('Expected type to be salary');
-  }
+    it('should have default growth rate of 0.03', () => {
+      const income = new Income('Salary', 100000, 0, 'salary');
+      expect(income.growthRate).toBe(0.03);
+    });
+  });
 
-  if (income.growthRate !== 0.03) {
-    throw new Error('Expected default growthRate to be 0.03');
-  }
+  describe('tax treatment', () => {
+    it('should return earned for salary income', () => {
+      const salaryIncome = new Income('Salary', 100000, 0, 'salary');
+      expect(salaryIncome.getTaxTreatment()).toBe('earned');
+    });
 
-  console.log('✓ testIncomeCreation passed');
-}
+    it('should return qualified for dividends', () => {
+      const dividendIncome = new Income('Dividends', 5000, 0, 'dividends');
+      expect(dividendIncome.getTaxTreatment()).toBe('qualified');
+    });
 
-export function testIncomeTaxTreatment() {
-  const salaryIncome = new Income('Salary', 100000, 0, 'salary');
-  const dividendIncome = new Income('Dividends', 5000, 0, 'dividends');
-  const rentalIncome = new Income('Rental', 20000, 0, 'rental');
+    it('should return earned for rental income', () => {
+      const rentalIncome = new Income('Rental', 20000, 0, 'rental');
+      expect(rentalIncome.getTaxTreatment()).toBe('earned');
+    });
+  });
 
-  if (salaryIncome.getTaxTreatment() !== 'earned') {
-    throw new Error('Expected salary to be earned income');
-  }
+  describe('JSON round trip', () => {
+    it('should correctly serialize and deserialize income', () => {
+      const income = new Income('Business Income', 80000, 2, 'business');
+      income.endYear = 25;
+      income.growthRate = 0.05;
 
-  if (dividendIncome.getTaxTreatment() !== 'qualified') {
-    throw new Error('Expected dividends to be qualified income');
-  }
+      const json = income.toJSON();
+      const restored = Income.fromJSON(json);
 
-  if (rentalIncome.getTaxTreatment() !== 'earned') {
-    throw new Error('Expected rental to be earned income');
-  }
-
-  console.log('✓ testIncomeTaxTreatment passed');
-}
-
-export function testIncomeJSONRoundTrip() {
-  const income = new Income('Business Income', 80000, 2, 'business');
-  income.endYear = 25;
-  income.growthRate = 0.05;
-
-  const json = income.toJSON();
-  const restored = Income.fromJSON(json);
-
-  if (restored.name !== income.name) {
-    throw new Error('Expected restored name to match');
-  }
-
-  if (restored.type !== 'business') {
-    throw new Error('Expected restored type to be business');
-  }
-
-  if (restored.growthRate !== 0.05) {
-    throw new Error('Expected restored growthRate to be 0.05');
-  }
-
-  if (restored.endYear !== 25) {
-    throw new Error('Expected restored endYear to be 25');
-  }
-
-  console.log('✓ testIncomeJSONRoundTrip passed');
-}
-
-if (import.meta.url === `file://${process.argv[1]}`) {
-  try {
-    testIncomeCreation();
-    testIncomeTaxTreatment();
-    testIncomeJSONRoundTrip();
-    console.log('All Income tests passed!');
-  } catch (error) {
-    console.error('Test failed:', error.message);
-    process.exit(1);
-  }
-}
+      expect(restored.name).toBe(income.name);
+      expect(restored.type).toBe('business');
+      expect(restored.growthRate).toBe(0.05);
+      expect(restored.endYear).toBe(25);
+    });
+  });
+});

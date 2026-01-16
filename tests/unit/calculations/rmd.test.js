@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import {
   calculateRMDForAccount,
   calculateTotalRMD,
@@ -6,156 +7,108 @@ import {
   getLifeExpectancyFactor,
 } from '../../../src/calculations/rmd.js';
 
-export function testGetLifeExpectancyFactor() {
-  const result = getLifeExpectancyFactor(72);
-  if (result !== 27.4) {
-    throw new Error(`Expected 27.4 for age 72, got ${result}`);
-  }
-  console.log('✓ testGetLifeExpectancyFactor passed');
-}
+describe('RMD Calculations', () => {
+  describe('getLifeExpectancyFactor', () => {
+    it('should return 27.4 for age 72', () => {
+      const result = getLifeExpectancyFactor(72);
 
-export function testGetLifeExpectancyFactorUnder72() {
-  const result = getLifeExpectancyFactor(70);
-  if (result !== null) {
-    throw new Error('Expected null for age under 72, got ' + result);
-  }
-  console.log('✓ testGetLifeExpectancyFactorUnder72 passed');
-}
+      expect(result).toBe(27.4);
+    });
 
-export function testGetLifeExpectancyFactorOver120() {
-  const result = getLifeExpectancyFactor(125);
-  if (result !== 1.9) {
-    throw new Error(`Expected 1.9 for age 125 (capped at 120), got ${result}`);
-  }
-  console.log('✓ testGetLifeExpectancyFactorOver120 passed');
-}
+    it('should return null for age under 72', () => {
+      const result = getLifeExpectancyFactor(70);
 
-export function testCalculateRMDStandard() {
-  const account = { type: '401k', balance: 5000000 };
-  const rmd = calculateRMDForAccount(account, 75);
+      expect(result).toBeNull();
+    });
 
-  const expected = Math.round(5000000 / 24.6);
-  if (Math.abs(rmd - expected) > 100) {
-    throw new Error(`Expected ~${expected}, got ${rmd}`);
-  }
-  console.log('✓ testCalculateRMDStandard passed');
-}
+    it('should cap at 1.9 for age over 120', () => {
+      const result = getLifeExpectancyFactor(125);
 
-export function testCalculateRMDUnder72() {
-  const account = { type: 'IRA', balance: 10000000 };
-  const rmd = calculateRMDForAccount(account, 70);
+      expect(result).toBe(1.9);
+    });
+  });
 
-  if (rmd !== 0) {
-    throw new Error(`Expected 0 for age under 72, got ${rmd}`);
-  }
-  console.log('✓ testCalculateRMDUnder72 passed');
-}
+  describe('calculateRMDForAccount', () => {
+    it('should calculate standard RMD for 401k', () => {
+      const account = { type: '401k', balance: 5000000 };
+      const rmd = calculateRMDForAccount(account, 75);
 
-export function testCalculateRMDRoth() {
-  const account = { type: 'Roth', balance: 10000000 };
-  const rmd = calculateRMDForAccount(account, 75);
+      const expected = Math.round(5000000 / 24.6);
+      expect(Math.abs(rmd - expected)).toBeLessThan(100);
+    });
 
-  if (rmd !== 0) {
-    throw new Error(`Expected 0 for Roth accounts, got ${rmd}`);
-  }
-  console.log('✓ testCalculateRMDRoth passed');
-}
+    it('should return 0 for age under 72', () => {
+      const account = { type: 'IRA', balance: 10000000 };
+      const rmd = calculateRMDForAccount(account, 70);
 
-export function testCalculateRMDHSA() {
-  const account = { type: 'HSA', balance: 5000000 };
-  const rmd = calculateRMDForAccount(account, 75);
+      expect(rmd).toBe(0);
+    });
 
-  if (rmd !== 0) {
-    throw new Error(`Expected 0 for HSA accounts, got ${rmd}`);
-  }
-  console.log('✓ testCalculateRMDHSA passed');
-}
+    it('should return 0 for Roth accounts', () => {
+      const account = { type: 'Roth', balance: 10000000 };
+      const rmd = calculateRMDForAccount(account, 75);
 
-export function testCalculateRMDTaxable() {
-  const account = { type: 'Taxable', balance: 10000000 };
-  const rmd = calculateRMDForAccount(account, 75);
+      expect(rmd).toBe(0);
+    });
 
-  if (rmd !== 0) {
-    throw new Error(`Expected 0 for Taxable accounts (no RMDs), got ${rmd}`);
-  }
-  console.log('✓ testCalculateRMDTaxable passed');
-}
+    it('should return 0 for HSA accounts', () => {
+      const account = { type: 'HSA', balance: 5000000 };
+      const rmd = calculateRMDForAccount(account, 75);
 
-export function testCalculateTotalRMD() {
-  const accounts = [
-    { type: '401k', balance: 20000000 },
-    { type: 'IRA', balance: 15000000 },
-    { type: 'Roth', balance: 5000000 },
-  ];
-  const rmd = calculateTotalRMD(accounts, 75);
+      expect(rmd).toBe(0);
+    });
 
-  const expected = Math.round(20000000 / 24.6) + Math.round(15000000 / 24.6);
-  if (Math.abs(rmd - expected) > 100) {
-    throw new Error(`Expected ~${expected}, got ${rmd}`);
-  }
-  console.log('✓ testCalculateTotalRMD passed');
-}
+    it('should return 0 for Taxable accounts', () => {
+      const account = { type: 'Taxable', balance: 10000000 };
+      const rmd = calculateRMDForAccount(account, 75);
 
-export function testMustTakeRMD() {
-  if (mustTakeRMD(70)) {
-    throw new Error('Expected false for age 70');
-  }
-  console.log('✓ testMustTakeRMD passed');
-}
+      expect(rmd).toBe(0);
+    });
+  });
 
-export function testMustTakeRMD73() {
-  if (!mustTakeRMD(73)) {
-    throw new Error('Expected true for age 73');
-  }
-  console.log('✓ testMustTakeRMD73 passed');
-}
+  describe('calculateTotalRMD', () => {
+    it('should sum RMDs for all applicable accounts', () => {
+      const accounts = [
+        { type: '401k', balance: 20000000 },
+        { type: 'IRA', balance: 15000000 },
+        { type: 'Roth', balance: 5000000 },
+      ];
+      const rmd = calculateTotalRMD(accounts, 75);
 
-export function testMustTakeRMD72_1951() {
-  if (!mustTakeRMD(72, 1951)) {
-    throw new Error('Expected true for age 72 with 1951 birth year');
-  }
-  console.log('✓ testMustTakeRMD72_1951 passed');
-}
+      const expected = Math.round(20000000 / 24.6) + Math.round(15000000 / 24.6);
+      expect(Math.abs(rmd - expected)).toBeLessThan(100);
+    });
+  });
 
-export function testMustTakeRMD73_1951() {
-  if (!mustTakeRMD(73, 1951)) {
-    throw new Error('Expected true for age 73 with 1951 birth year');
-  }
-  console.log('✓ testMustTakeRMD73_1951 passed');
-}
+  describe('mustTakeRMD', () => {
+    it('should return false for age 70', () => {
+      expect(mustTakeRMD(70)).toBe(false);
+    });
 
-export function testGetRMDStartAgeStandard() {
-  const age = getRMDStartAge();
-  if (age !== 73) {
-    throw new Error(`Expected 73, got ${age}`);
-  }
-  console.log('✓ testGetRMDStartAgeStandard passed');
-}
+    it('should return true for age 73', () => {
+      expect(mustTakeRMD(73)).toBe(true);
+    });
 
-export function testGetRMDStartAge1951() {
-  const age = getRMDStartAge(1951);
-  if (age !== 72) {
-    throw new Error(`Expected 72 for 1951 birth year, got ${age}`);
-  }
-  console.log('✓ testGetRMDStartAge1951 passed');
-}
+    it('should return true for age 72 with 1951 birth year', () => {
+      expect(mustTakeRMD(72, 1951)).toBe(true);
+    });
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  testGetLifeExpectancyFactor();
-  testGetLifeExpectancyFactorUnder72();
-  testGetLifeExpectancyFactorOver120();
-  testCalculateRMDStandard();
-  testCalculateRMDUnder72();
-  testCalculateRMDRoth();
-  testCalculateRMDHSA();
-  testCalculateRMDTaxable();
-  testCalculateTotalRMD();
-  testMustTakeRMD();
-  testMustTakeRMD73();
-  testMustTakeRMD72_1951();
-  testMustTakeRMD73_1951();
-  testGetRMDStartAgeStandard();
-  testGetRMDStartAge1951();
+    it('should return true for age 73 with 1951 birth year', () => {
+      expect(mustTakeRMD(73, 1951)).toBe(true);
+    });
+  });
 
-  console.log('\n✅ All RMD tests passed!');
-}
+  describe('getRMDStartAge', () => {
+    it('should return 73 for standard case', () => {
+      const age = getRMDStartAge();
+
+      expect(age).toBe(73);
+    });
+
+    it('should return 72 for 1951 birth year', () => {
+      const age = getRMDStartAge(1951);
+
+      expect(age).toBe(72);
+    });
+  });
+});

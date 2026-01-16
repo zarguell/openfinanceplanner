@@ -1,50 +1,38 @@
+import { describe, it, expect } from 'vitest';
 import { Plan } from '../../../src/core/models/Plan.js';
 
-export function testPlanCreation() {
-  const plan = new Plan('Test Plan', 35, 65);
+describe('Plan', () => {
+  describe('creation', () => {
+    it('should create plan with correct name', () => {
+      const plan = new Plan('Test Plan', 35, 65);
+      expect(plan.name).toBe('Test Plan');
+    });
 
-  if (plan.name !== 'Test Plan') {
-    throw new Error('Expected plan name to be "Test Plan"');
-  }
+    it('should generate unique ID on creation', () => {
+      const plan = new Plan('Test Plan', 35, 65);
+      expect(plan.id).toBeDefined();
+      expect(typeof plan.id).toBe('string');
+    });
 
-  if (plan.id === undefined || plan.id === null) {
-    throw new Error('Expected plan to have an ID');
-  }
+    it('should initialize with empty accounts array', () => {
+      const plan = new Plan('Test Plan', 35, 65);
+      expect(plan.accounts).toEqual([]);
+      expect(plan.accounts.length).toBe(0);
+    });
+  });
 
-  if (plan.accounts.length !== 0) {
-    throw new Error('Expected new plan to have no accounts');
-  }
-
-  console.log('✓ testPlanCreation passed');
-}
-
-export function testPlanAddAccount() {
-  const plan = new Plan('Test Plan', 35, 65);
-  const account = {
-    id: 'acc_test',
-    name: 'Test Account',
-    type: '401k',
-    balance: 100000,
-    annualContribution: 10000,
-  };
-
-  plan.addAccount(account);
-
-  if (plan.accounts.length !== 1) {
-    throw new Error('Expected plan to have 1 account');
-  }
-
-  console.log('✓ testPlanAddAccount passed');
-}
-
-// Run tests if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  try {
-    testPlanCreation();
-    testPlanAddAccount();
-    console.log('All Plan tests passed!');
-  } catch (error) {
-    console.error('Test failed:', error.message);
-    process.exit(1);
-  }
-}
+  describe('addAccount', () => {
+    it('should add account to plan', () => {
+      const plan = new Plan('Test Plan', 35, 65);
+      const account = {
+        id: 'acc_test',
+        name: 'Test Account',
+        type: '401k',
+        balance: 100000,
+        annualContribution: 10000,
+      };
+      plan.addAccount(account);
+      expect(plan.accounts).toHaveLength(1);
+    });
+  });
+});

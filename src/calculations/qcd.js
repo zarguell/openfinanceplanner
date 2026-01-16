@@ -3,8 +3,10 @@
  * IRS rules: QCDs available at age 70½, excluded from taxable income, counts toward RMD
  */
 
+import { getQCDLimit as getConfigQCDLimit } from '../../config/loader.js';
+
 const QCD_MINIMUM_AGE = 70.5;
-const QCD_ANNUAL_LIMIT = 100000 * 100;
+const QCD_ANNUAL_LIMIT = getConfigQCDLimit();
 
 export function mustTakeQCD(age) {
   return age >= QCD_MINIMUM_AGE;

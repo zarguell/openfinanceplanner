@@ -1,19 +1,4 @@
-global.localStorage = {
-  store: {},
-  getItem(key) {
-    return this.store[key] || null;
-  },
-  setItem(key, value) {
-    this.store[key] = value;
-  },
-  removeItem(key) {
-    delete this.store[key];
-  },
-  clear() {
-    this.store = {};
-  },
-};
-
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   mustTakeQCD,
   canAccountTakeQCD,
@@ -25,236 +10,213 @@ import {
   validateQCDSettings,
 } from '../../../src/calculations/qcd.js';
 
-export function testMustTakeQCD() {
-  console.log('Testing mustTakeQCD...');
+const mockStorage = new Map();
 
-  if (mustTakeQCD(70) !== false) {
-    throw new Error('Age 70 should not qualify for QCD');
-  }
-  console.log('✓ Age 70 does not qualify');
+beforeEach(() => {
+  vi.stubGlobal('localStorage', {
+    getItem: vi.fn((key) => mockStorage.get(key) || null),
+    setItem: vi.fn((key, value) => mockStorage.set(key, value)),
+    removeItem: vi.fn((key) => mockStorage.delete(key)),
+    clear: vi.fn(() => mockStorage.clear()),
+    get length() {
+      return mockStorage.size;
+    },
+    key: vi.fn((index) => {
+      const keys = Array.from(mockStorage.keys());
+      return keys[index] || null;
+    }),
+  });
+});
 
-  if (mustTakeQCD(70.5) !== true) {
-    throw new Error('Age 70.5 should qualify for QCD');
-  }
-  console.log('✓ Age 70.5 qualifies');
+afterEach(() => {
+  vi.unstubAllGlobals();
+  mockStorage.clear();
+});
 
-  if (mustTakeQCD(71) !== true) {
-    throw new Error('Age 71 should qualify for QCD');
-  }
-  console.log('✓ Age 71 qualifies');
+describe('QCD Calculations', () => {
+  describe('mustTakeQCD', () => {
+    it('should return false for age 70', () => {
+      expect(mustTakeQCD(70)).toBe(false);
+    });
 
-  if (mustTakeQCD(80) !== true) {
-    throw new Error('Age 80 should qualify for QCD');
-  }
-  console.log('✓ Age 80 qualifies');
+    it('should return true for age 70.5', () => {
+      expect(mustTakeQCD(70.5)).toBe(true);
+    });
 
-  console.log('✅ testMustTakeQCD PASSED\n');
-}
+    it('should return true for age 71', () => {
+      expect(mustTakeQCD(71)).toBe(true);
+    });
 
-export function testCanAccountTakeQCD() {
-  console.log('Testing canAccountTakeQCD...');
+    it('should return true for age 80', () => {
+      expect(mustTakeQCD(80)).toBe(true);
+    });
+  });
 
-  if (canAccountTakeQCD('IRA') !== true) {
-    throw new Error('IRA should qualify for QCD');
-  }
-  console.log('✓ IRA qualifies');
+  describe('canAccountTakeQCD', () => {
+    it('should return true for IRA', () => {
+      expect(canAccountTakeQCD('IRA')).toBe(true);
+    });
 
-  if (canAccountTakeQCD('401k') !== true) {
-    throw new Error('401k should qualify for QCD');
-  }
-  console.log('✓ 401k qualifies');
+    it('should return true for 401k', () => {
+      expect(canAccountTakeQCD('401k')).toBe(true);
+    });
 
-  if (canAccountTakeQCD('Roth') !== false) {
-    throw new Error('Roth should not qualify for QCD');
-  }
-  console.log('✓ Roth does not qualify');
+    it('should return false for Roth', () => {
+      expect(canAccountTakeQCD('Roth')).toBe(false);
+    });
 
-  if (canAccountTakeQCD('HSA') !== false) {
-    throw new Error('HSA should not qualify for QCD');
-  }
-  console.log('✓ HSA does not qualify');
+    it('should return false for HSA', () => {
+      expect(canAccountTakeQCD('HSA')).toBe(false);
+    });
 
-  if (canAccountTakeQCD('Taxable') !== false) {
-    throw new Error('Taxable should not qualify for QCD');
-  }
-  console.log('✓ Taxable does not qualify');
+    it('should return false for Taxable', () => {
+      expect(canAccountTakeQCD('Taxable')).toBe(false);
+    });
+  });
 
-  console.log('✅ testCanAccountTakeQCD PASSED\n');
-}
+  describe('calculateQCDForAccount', () => {
+    it('should calculate fixed strategy QCD', () => {
+      const settings = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 5000 * 100,
+        currentAge: 71,
+      };
+      const account = { type: 'IRA', balance: 100000 * 100 };
 
-export function testCalculateQCDForAccount() {
-  console.log('Testing calculateQCDForAccount...');
+      const qcd = calculateQCDForAccount(account, settings, 0);
 
-  const settings = { enabled: true, strategy: 'fixed', annualAmount: 5000 * 100, currentAge: 71 };
-  const account = { type: 'IRA', balance: 100000 * 100 };
+      expect(qcd).toBe(5000 * 100);
+    });
 
-  const qcd = calculateQCDForAccount(account, settings, 0);
-  if (qcd !== 5000 * 100) {
-    throw new Error(`Expected QCD of ${5000 * 100}, got ${qcd}`);
-  }
-  console.log('✓ Fixed strategy QCD calculated correctly');
+    it('should calculate percentage strategy QCD', () => {
+      const settings = { enabled: true, strategy: 'percentage', percentage: 0.1, currentAge: 71 };
+      const account = { type: 'IRA', balance: 100000 * 100 };
 
-  const percentageSettings = {
-    enabled: true,
-    strategy: 'percentage',
-    percentage: 0.1,
-    currentAge: 71,
-  };
-  const qcdPercentage = calculateQCDForAccount(account, percentageSettings, 0);
-  if (qcdPercentage !== 10000 * 100) {
-    throw new Error(`Expected QCD of ${10000 * 100}, got ${qcdPercentage}`);
-  }
-  console.log('✓ Percentage strategy QCD calculated correctly');
+      const qcd = calculateQCDForAccount(account, settings, 0);
 
-  const rmdSettings = { enabled: true, strategy: 'rmd', currentAge: 71 };
-  const qcdRMD = calculateQCDForAccount(account, rmdSettings, 3000 * 100);
-  if (qcdRMD !== 3000 * 100) {
-    throw new Error(`Expected QCD of ${3000 * 100}, got ${qcdRMD}`);
-  }
-  console.log('✓ RMD strategy QCD calculated correctly');
+      expect(qcd).toBe(10000 * 100);
+    });
 
-  const disabledSettings = {
-    enabled: false,
-    strategy: 'fixed',
-    annualAmount: 5000 * 100,
-    currentAge: 71,
-  };
-  const qcdDisabled = calculateQCDForAccount(account, disabledSettings, 0);
-  if (qcdDisabled !== 0) {
-    throw new Error(`Expected QCD of 0 when disabled, got ${qcdDisabled}`);
-  }
-  console.log('✓ Disabled QCD returns 0');
+    it('should calculate RMD strategy QCD', () => {
+      const settings = { enabled: true, strategy: 'rmd', currentAge: 71 };
+      const account = { type: 'IRA', balance: 100000 * 100 };
 
-  const youngSettings = {
-    enabled: true,
-    strategy: 'fixed',
-    annualAmount: 5000 * 100,
-    currentAge: 65,
-  };
-  const qcdYoung = calculateQCDForAccount(account, youngSettings, 0);
-  if (qcdYoung !== 0) {
-    throw new Error(`Expected QCD of 0 for age 65, got ${qcdYoung}`);
-  }
-  console.log('✓ QCD returns 0 for age < 70.5');
+      const qcd = calculateQCDForAccount(account, settings, 3000 * 100);
 
-  console.log('✅ testCalculateQCDForAccount PASSED\n');
-}
+      expect(qcd).toBe(3000 * 100);
+    });
 
-export function testCalculateTotalQCD() {
-  console.log('Testing calculateTotalQCD...');
+    it('should return 0 when disabled', () => {
+      const settings = {
+        enabled: false,
+        strategy: 'fixed',
+        annualAmount: 5000 * 100,
+        currentAge: 71,
+      };
+      const account = { type: 'IRA', balance: 100000 * 100 };
 
-  const accounts = [
-    { type: 'IRA', balance: 200000 * 100 },
-    { type: '401k', balance: 300000 * 100 },
-    { type: 'Roth', balance: 100000 * 100 },
-  ];
+      const qcd = calculateQCDForAccount(account, settings, 0);
 
-  const settings = { enabled: true, strategy: 'fixed', annualAmount: 10000 * 100, currentAge: 72 };
-  const totalQCD = calculateTotalQCD(accounts, settings, 0);
+      expect(qcd).toBe(0);
+    });
 
-  if (totalQCD !== 20000 * 100) {
-    throw new Error(`Expected total QCD of ${20000 * 100}, got ${totalQCD}`);
-  }
-  console.log('✓ Total QCD calculated correctly across eligible accounts');
+    it('should return 0 for age under 70.5', () => {
+      const settings = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 5000 * 100,
+        currentAge: 65,
+      };
+      const account = { type: 'IRA', balance: 100000 * 100 };
 
-  console.log('✅ testCalculateTotalQCD PASSED\n');
-}
+      const qcd = calculateQCDForAccount(account, settings, 0);
 
-export function testGetQCDLimit() {
-  console.log('Testing getQCDLimit...');
+      expect(qcd).toBe(0);
+    });
+  });
 
-  const limit = getQCDLimit();
-  if (limit !== 100000 * 100) {
-    throw new Error(`Expected QCD limit of ${100000 * 100}, got ${limit}`);
-  }
-  console.log('✓ QCD limit is $100,000');
+  describe('calculateTotalQCD', () => {
+    it('should calculate total QCD across eligible accounts', () => {
+      const accounts = [
+        { type: 'IRA', balance: 200000 * 100 },
+        { type: '401k', balance: 300000 * 100 },
+        { type: 'Roth', balance: 100000 * 100 },
+      ];
 
-  console.log('✅ testGetQCDLimit PASSED\n');
-}
+      const settings = {
+        enabled: true,
+        strategy: 'fixed',
+        annualAmount: 10000 * 100,
+        currentAge: 72,
+      };
+      const totalQCD = calculateTotalQCD(accounts, settings, 0);
 
-export function testGetQCDMinimumAge() {
-  console.log('Testing getQCDMinimumAge...');
+      expect(totalQCD).toBe(20000 * 100);
+    });
+  });
 
-  const minAge = getQCDMinimumAge();
-  if (minAge !== 70.5) {
-    throw new Error(`Expected minimum age of 70.5, got ${minAge}`);
-  }
-  console.log('✓ QCD minimum age is 70.5');
+  describe('getQCDLimit', () => {
+    it('should return $100,000 limit', () => {
+      const limit = getQCDLimit();
 
-  console.log('✅ testGetQCDMinimumAge PASSED\n');
-}
+      expect(limit).toBe(100000 * 100);
+    });
+  });
 
-export function testCalculateQCDTaxBenefit() {
-  console.log('Testing calculateQCDTaxBenefit...');
+  describe('getQCDMinimumAge', () => {
+    it('should return 70.5', () => {
+      const minAge = getQCDMinimumAge();
 
-  const benefit = calculateQCDTaxBenefit(10000 * 100, 0.24);
-  const expectedBenefit = 10000 * 100 * 0.24;
+      expect(minAge).toBe(70.5);
+    });
+  });
 
-  if (benefit !== expectedBenefit) {
-    throw new Error(`Expected tax benefit of ${expectedBenefit}, got ${benefit}`);
-  }
-  console.log('✓ Tax benefit calculated correctly');
+  describe('calculateQCDTaxBenefit', () => {
+    it('should calculate tax benefit correctly', () => {
+      const benefit = calculateQCDTaxBenefit(10000 * 100, 0.24);
+      const expectedBenefit = 10000 * 100 * 0.24;
 
-  const zeroBenefit = calculateQCDTaxBenefit(0, 0.24);
-  if (zeroBenefit !== 0) {
-    throw new Error(`Expected tax benefit of 0 for zero QCD, got ${zeroBenefit}`);
-  }
-  console.log('✓ Zero QCD returns zero tax benefit');
+      expect(benefit).toBe(expectedBenefit);
+    });
 
-  console.log('✅ testCalculateQCDTaxBenefit PASSED\n');
-}
+    it('should return 0 for zero QCD', () => {
+      const zeroBenefit = calculateQCDTaxBenefit(0, 0.24);
 
-export function testValidateQCDSettings() {
-  console.log('Testing validateQCDSettings...');
+      expect(zeroBenefit).toBe(0);
+    });
+  });
 
-  const validSettings = { enabled: true, strategy: 'fixed', annualAmount: 5000 * 100 };
-  const errors1 = validateQCDSettings(validSettings);
-  if (errors1.length !== 0) {
-    throw new Error(`Valid settings should have no errors, got: ${errors1.join(', ')}`);
-  }
-  console.log('✓ Valid settings pass validation');
+  describe('validateQCDSettings', () => {
+    it('should pass validation for valid settings', () => {
+      const validSettings = { enabled: true, strategy: 'fixed', annualAmount: 5000 * 100 };
+      const errors = validateQCDSettings(validSettings);
 
-  const invalidStrategy = { enabled: true, strategy: 'invalid', annualAmount: 5000 * 100 };
-  const errors2 = validateQCDSettings(invalidStrategy);
-  if (errors2.length === 0 || !errors2[0].includes('Invalid QCD strategy')) {
-    throw new Error('Invalid strategy should produce error');
-  }
-  console.log('✓ Invalid strategy detected');
+      expect(errors.length).toBe(0);
+    });
 
-  const negativeAmount = { enabled: true, strategy: 'fixed', annualAmount: -100 };
-  const errors3 = validateQCDSettings(negativeAmount);
-  if (errors3.length === 0 || !errors3[0].includes('Fixed QCD amount must be positive')) {
-    throw new Error('Negative amount should produce error');
-  }
-  console.log('✓ Negative amount detected');
+    it('should detect invalid strategy', () => {
+      const invalidStrategy = { enabled: true, strategy: 'invalid', annualAmount: 5000 * 100 };
+      const errors = validateQCDSettings(invalidStrategy);
 
-  const invalidPercentage = { enabled: true, strategy: 'percentage', percentage: 1.5 };
-  const errors4 = validateQCDSettings(invalidPercentage);
-  if (errors4.length === 0 || !errors4[0].includes('percentage must be between 0 and 1')) {
-    throw new Error('Invalid percentage should produce error');
-  }
-  console.log('✓ Invalid percentage detected');
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0]).toMatch(/Invalid QCD strategy/);
+    });
 
-  console.log('✅ testValidateQCDSettings PASSED\n');
-}
+    it('should detect negative amount', () => {
+      const negativeAmount = { enabled: true, strategy: 'fixed', annualAmount: -100 };
+      const errors = validateQCDSettings(negativeAmount);
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  console.log('=== QCD Calculation Unit Tests ===\n');
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0]).toMatch(/Fixed QCD amount must be positive/);
+    });
 
-  try {
-    testMustTakeQCD();
-    testCanAccountTakeQCD();
-    testCalculateQCDForAccount();
-    testCalculateTotalQCD();
-    testGetQCDLimit();
-    testGetQCDMinimumAge();
-    testCalculateQCDTaxBenefit();
-    testValidateQCDSettings();
+    it('should detect invalid percentage', () => {
+      const invalidPercentage = { enabled: true, strategy: 'percentage', percentage: 1.5 };
+      const errors = validateQCDSettings(invalidPercentage);
 
-    console.log('=== All QCD Unit Tests PASSED ✅ ===\n');
-  } catch (error) {
-    console.error('❌ Test failed:', error.message);
-    console.error(error.stack);
-    process.exit(1);
-  }
-}
+      expect(errors.length).toBeGreaterThan(0);
+      expect(errors[0]).toMatch(/percentage must be between 0 and 1/);
+    });
+  });
+});

@@ -121,15 +121,15 @@ export function calculateTaxableIncome(incomes, yearOffset, inflationRate, planC
     totalIncome += amount;
 
     switch (income.getTaxTreatment()) {
-      case 'earned':
-        earnedIncome += amount;
-        break;
-      case 'qualified':
-        qualifiedDividends += amount;
-        break;
-      default:
-        passiveIncome += amount;
-        break;
+    case 'earned':
+      earnedIncome += amount;
+      break;
+    case 'qualified':
+      qualifiedDividends += amount;
+      break;
+    default:
+      passiveIncome += amount;
+      break;
     }
   });
 

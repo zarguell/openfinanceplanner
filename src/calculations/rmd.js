@@ -3,69 +3,10 @@
  * Implements IRS Uniform Lifetime Table per SECURE Act 2.0
  */
 
-const UNIFORM_LIFETIME_TABLE = {
-  72: 27.4,
-  73: 26.5,
-  74: 25.5,
-  75: 24.6,
-  76: 23.7,
-  77: 22.9,
-  78: 22.0,
-  79: 21.1,
-  80: 20.2,
-  81: 19.4,
-  82: 18.5,
-  83: 17.7,
-  84: 16.8,
-  85: 16.0,
-  86: 15.2,
-  87: 14.4,
-  88: 13.7,
-  89: 12.9,
-  90: 12.2,
-  91: 11.5,
-  92: 10.8,
-  93: 10.1,
-  94: 9.5,
-  95: 8.9,
-  96: 8.4,
-  97: 7.8,
-  98: 7.3,
-  99: 6.8,
-  100: 6.4,
-  101: 6.0,
-  102: 5.6,
-  103: 5.2,
-  104: 4.9,
-  105: 4.6,
-  106: 4.3,
-  107: 4.0,
-  108: 3.7,
-  109: 3.5,
-  110: 3.4,
-  111: 3.3,
-  112: 3.1,
-  113: 3.0,
-  114: 2.9,
-  115: 2.8,
-  116: 2.7,
-  117: 2.5,
-  118: 2.3,
-  119: 2.1,
-  120: 1.9,
-};
+import { getLifeExpectancyFactor, getRMDStartAge } from '../../config/loader.js';
 
-export function getLifeExpectancyFactor(age) {
-  if (age < 72) {
-    return null;
-  }
-
-  if (age > 120) {
-    age = 120;
-  }
-
-  return UNIFORM_LIFETIME_TABLE[age] || null;
-}
+// Re-export for convenience
+export { getLifeExpectancyFactor, getRMDStartAge };
 
 export function calculateRMD(accountBalance, age) {
   const factor = getLifeExpectancyFactor(age);
@@ -79,35 +20,24 @@ export function calculateRMD(accountBalance, age) {
 
 export function mustTakeRMD(age, birthYear) {
   const currentYear = new Date().getFullYear();
+  const rmdStartAge = birthYear ? getRMDStartAge(birthYear) : getRMDStartAge();
 
-  if (age < 72) {
+  if (age < rmdStartAge) {
     return false;
   }
 
   if (birthYear) {
-    const age73Year = birthYear + 73;
+    const ageStartYear = birthYear + rmdStartAge;
     const turned72In2023 = birthYear === 1951;
 
     if (turned72In2023) {
-      return age >= 72;
+      return age >= getRMDStartAge(1951);
     }
 
-    return currentYear >= age73Year;
+    return currentYear >= ageStartYear;
   }
 
-  return age >= 73;
-}
-
-export function getRMDStartAge(birthYear) {
-  if (!birthYear) {
-    return 73;
-  }
-
-  if (birthYear === 1951) {
-    return 72;
-  }
-
-  return 73;
+  return age >= getRMDStartAge();
 }
 
 export function calculateRMDForAccount(account, age) {

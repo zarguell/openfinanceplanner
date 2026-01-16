@@ -216,38 +216,40 @@ export function optimizeConversionsAcrossYears(plan, yearsToProject, strategy = 
     let reason = '';
 
     switch (strategy) {
-      case 'bracket-fill':
-        const bracketTop = 89450 * 100;
-        const taxableIncome = 100000 * 100;
-        conversionAmount = calculateBracketFillConversion(
-          taxableIncome,
-          bracketTop,
-          totalTraditionalBalance
-        );
-        reason = 'Fill up to top of tax bracket';
-        break;
+    case 'bracket-fill':
+      // Example values for demonstration (actual implementation should use real tax data)
+      const bracketTop = 89450 * 100;
+      const taxableIncome = 100000 * 100;
+      conversionAmount = calculateBracketFillConversion(
+        taxableIncome,
+        bracketTop,
+        totalTraditionalBalance
+      );
+      reason = 'Fill up to top of tax bracket';
+      break;
 
-      case 'fixed':
-        const annualAmount = 10000 * 100;
-        const rmdRequired = age >= 73;
-        conversionAmount = calculateFixedConversion(
-          annualAmount,
-          totalTraditionalBalance,
-          age,
-          rmdRequired
-        );
-        reason = 'Fixed annual conversion';
-        break;
+    case 'fixed':
+      // Example annual conversion amount for demonstration
+      const annualAmount = 10000 * 100;
+      const rmdRequired = age >= 73;
+      conversionAmount = calculateFixedConversion(
+        annualAmount,
+        totalTraditionalBalance,
+        age,
+        rmdRequired
+      );
+      reason = 'Fixed annual conversion';
+      break;
 
-      case 'percentage':
-        const percentage = 0.1;
-        conversionAmount = calculatePercentageConversion(percentage, totalTraditionalBalance);
-        reason = '10% of traditional balance';
-        break;
+    case 'percentage':
+      const percentage = 0.1;
+      conversionAmount = calculatePercentageConversion(percentage, totalTraditionalBalance);
+      reason = '10% of traditional balance';
+      break;
 
-      default:
-        conversionAmount = 0;
-        reason = 'No conversion strategy selected';
+    default:
+      conversionAmount = 0;
+      reason = 'No conversion strategy selected';
     }
 
     conversions.push({

@@ -1,0 +1,30 @@
+{
+  "2024": {
+    "401k": {
+      "employeeDeferralLimit": 23000,
+      "totalContributionLimit": 69000,
+      "catchupLimit": 7500
+    },
+    "ira": {
+      "contributionLimit": 7000,
+      "catchupLimit": 1000
+    },
+    "qcd": {
+      "annualLimit": 100000
+    }
+  },
+  "2025": {
+    "401k": {
+      "employeeDeferralLimit": 23500,
+      "totalContributionLimit": 76000,
+      "catchupLimit": 7500
+    },
+    "ira": {
+      "contributionLimit": 7000,
+      "catchupLimit": 1000
+    },
+    "qcd": {
+      "annualLimit": 100000
+    }
+  }
+}
