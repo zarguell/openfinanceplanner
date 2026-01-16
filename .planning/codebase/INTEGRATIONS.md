@@ -1,113 +1,99 @@
 # External Integrations
 
-**Analysis Date:** 2026-01-15
+**Analysis Date:** 2026-01-16
 
 ## APIs & External Services
 
-**Data Visualization:**
+**External Libraries:**
 
-- Chart.js - Interactive charts for financial projections
-  - SDK/Client: CDN load via `index.html` (v4.4.0)
-  - Auth: No authentication required
-  - Endpoints used: None (client-side only)
+- Chart.js 4.4.0 - Data visualization for financial projections
+  - Integration method: CDN-loaded in `index.html` (line 11)
+  - Usage: Chart rendering for projection results and analysis
 
 **External APIs:**
 
-- None - No external API integrations
-  - Integration method: Not applicable
-  - Auth: Not applicable
-  - Rate limits: Not applicable
+- Not detected - No external API calls found (no fetch, axios, or XMLHttpRequest usage)
 
 ## Data Storage
 
-**Databases:**
+**Client-Side Storage:**
 
-- None - No database integration
-  - Connection: Not applicable
-  - Client: Not applicable
-  - Migrations: Not applicable
+- Browser localStorage - User data persistence
+  - Implementation: `src/storage/StorageManager.js`
+  - Schema: `src/storage/schema.js`
+  - Purpose: Store financial plans, accounts, and user settings
 
-**File Storage:**
+**Configuration Data:**
 
-- localStorage - Client-side browser storage
-  - SDK/Client: Browser built-in API
-  - Auth: Not applicable (browser-scoped)
-  - Capacity: 5-10MB limit per domain
-
-**Caching:**
-
-- None - All calculations run in real-time
+- Embedded tax configuration - Federal and state tax brackets
+  - Location: `src/calculations/tax/config/federal-2024.js`, `src/calculations/tax/config/federal-2025.js`
+  - Location: `src/calculations/tax/config/states-2024.js`, `src/calculations/tax/config/states-2025.js`
+  - Location: `config/loader.js` for contribution limits and thresholds
 
 ## Authentication & Identity
 
-**Auth Provider:**
+**No Authentication Required:**
 
-- None - No authentication system
-  - Implementation: Not applicable
-  - Token storage: Not applicable
-  - Session management: Not applicable
-
-**OAuth Integrations:**
-
-- None - No OAuth providers
+- Client-side only application with no user accounts
+- No external identity providers
+- Data stored locally in browser only
 
 ## Monitoring & Observability
 
 **Error Tracking:**
 
-- None - No error tracking service
+- None - No external error tracking service
 
 **Analytics:**
 
-- None - No analytics integration
+- None - No usage analytics or tracking
 
 **Logs:**
 
-- Browser console - console.log, console.error for debugging
-  - Integration: Browser DevTools only
-  - Retention: Session-only (not persisted)
+- Browser console only - No centralized logging service
 
 ## CI/CD & Deployment
 
-**Hosting:**
+**Development Server:**
 
-- Static file hosting - Any static hosting provider or CDN
-  - Deployment: Manual file upload or GitHub Pages
-  - Environment vars: Not applicable
+- Python HTTP Server 3.x - Local development
+  - Command: `python3 -m http.server 3030`
+  - Configuration: `package.json` script
 
-**CI Pipeline:**
+**Static Hosting:**
 
-- None - No continuous integration
+- Any static web server - Production deployment
+  - Requirements: ES6 module support in browser
+  - Files: Static assets served from project root
 
 ## Environment Configuration
 
 **Development:**
 
-- Required env vars: None
-- Secrets location: Not applicable (no secrets)
-- Mock/stub services: Not applicable (all client-side)
+- No environment variables required
+- Configuration embedded in JavaScript modules
+- No secrets management needed
 
 **Staging:**
 
-- Environment-specific differences: Not applicable
-- Data: Same as production (localStorage)
+- Not applicable - No separate staging environment
 
 **Production:**
 
-- Secrets management: Not applicable
-- Failover/redundancy: Not applicable (client-side only)
+- No external configuration
+- Self-contained application with no external dependencies
 
 ## Webhooks & Callbacks
 
 **Incoming:**
 
-- None - No webhooks
+- None - No server endpoints or webhooks
 
 **Outgoing:**
 
-- None - No external callbacks
+- None - No external service communication
 
 ---
 
-_Integration audit: 2026-01-15_
+_Integration audit: 2026-01-16_
 _Update when adding/removing external services_

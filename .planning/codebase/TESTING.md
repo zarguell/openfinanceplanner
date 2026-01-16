@@ -1,57 +1,59 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-01-15
+**Analysis Date:** 2026-01-16
 
 ## Test Framework
 
 **Runner:**
 
-- Custom test runner - Plain JavaScript with assert-style testing
-- Direct Node.js execution pattern: `if (import.meta.url === \`file://${process.argv[1]}\`)`
-- No formal testing framework (no Jest, Mocha, Vitest)
+- Vitest - Modern JavaScript test framework
+- Config: `vitest.config.js` in project root
 
 **Assertion Library:**
 
-- Manual assertions (if statements with throw on failure)
-- Example: `if (plan.name !== 'Test Plan') { throw new Error('Expected...'); }`
+- Vitest built-in expect
+- Matchers: toBe, toEqual, toThrow, toHaveLength, toMatchObject
 
 **Run Commands:**
 
 ```bash
-node tests/unit/models/Plan.test.js              # Run specific test file
-node tests/integration/full-flow.test.js        # Run integration test
-npm test                                        # Placeholder (TBD)
+npm test                              # Run all tests
+npm test -- --watch                   # Watch mode
+npm test -- path/to/file.test.js     # Single file
+npm run test:coverage                 # Coverage report
+npm run test:ui                      # Test UI interface
+npm run lint                         # Run linting
+npm run format                       # Format code
 ```
 
 ## Test File Organization
 
 **Location:**
 
-- tests/unit/ - Unit tests alongside source structure
-- tests/integration/ - Integration tests for workflows
-- Not collocated with source (separate tests/ directory)
+- Separate tests/ directory tree mirroring src/
+- `tests/unit/` for isolated module tests
+- `tests/integration/` for cross-component tests
 
 **Naming:**
 
-- \*.test.js for all test files
-- Descriptive names (full-flow.test.js, roth-conversions-integration.test.js)
+- Same name as source file with `.test.js` suffix
+- No distinction between unit/integration in filename
+- Integration tests in dedicated directory
 
 **Structure:**
 
 ```
 tests/
-  unit/
-    models/              # Domain model tests
-      Plan.test.js
-      Account.test.js
-    calculations/        # Calculation function tests
-      projection.test.js
-      tax.test.js
-    rules/              # Rule engine tests
-      BackdoorRothRule.test.js
-  integration/
-    full-flow.test.js   # Complete application workflow
-    roth-conversions-integration.test.js
+├── integration/         # Cross-component workflow tests
+│   ├── full-flow.test.js
+│   └── withdrawal-strategies-integration.test.js
+├── unit/              # Isolated module tests
+│   ├── core/
+│   │   └── models/
+│   ├── calculations/
+│   ├── storage/
+│   └── ui/
+└── test-helper.js      # Shared test utilities
 ```
 
 ## Test Structure
@@ -59,149 +61,208 @@ tests/
 **Suite Organization:**
 
 ```javascript
-export function testPlanCreation() {
-  // arrange
-  const plan = new Plan('Test Plan', 35, 65);
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-  // act
-  plan.addAccount(account401k);
+describe('ModuleName', () => {
+  describe('functionName', () => {
+    beforeEach(() => {
+      // reset state
+    });
 
-  // assert
-  if (plan.accounts.length !== 1) {
-    throw new Error('Expected 1 account');
-  }
+    it('should handle valid input', () => {
+      // arrange
+      const input = createTestInput();
 
-  console.log('✓ testPlanCreation passed');
-}
+      // act
+      const result = functionName(input);
 
-// Run if executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
-  testPlanCreation();
-}
+      // assert
+      expect(result).toEqual(expectedOutput);
+    });
+
+    it('should throw on invalid input', () => {
+      expect(() => functionName(null)).toThrow('Invalid input');
+    });
+  });
+});
 ```
 
 **Patterns:**
 
-- No setup/teardown (beforeEach, afterEach not used)
-- Manual test execution order
-- Explicit console.log for test pass confirmation
-- throw Error for test failures
+- Use beforeEach for per-test setup, avoid beforeAll
+- Use afterEach to restore mocks: vi.restoreAllMocks()
+- Explicit arrange/act/assert comments in complex tests
+- One assertion focus per test (multiple expects acceptable)
 
 ## Mocking
 
 **Framework:**
 
-- No mocking framework (manual mocking only)
-- Manual stubs for external dependencies (localStorage)
+- Vitest built-in mocking (vi)
+- Module mocking via vi.mock() at top of test file
 
 **Patterns:**
 
 ```javascript
-// Mock localStorage (manual)
-global.localStorage = {
-  getItem: () => JSON.stringify(mockData),
-  setItem: () => {},
-  // ...
-};
+import { vi } from 'vitest';
+import { externalFunction } from './external';
 
-// Mock in test before calling function under test
+// Mock module
+vi.mock('./external', () => ({
+  externalFunction: vi.fn(),
+}));
+
+describe('test suite', () => {
+  it('mocks function', () => {
+    const mockFn = vi.mocked(externalFunction);
+    mockFn.mockReturnValue('mocked result');
+
+    // test code using mocked function
+
+    expect(mockFn).toHaveBeenCalledWith('expected arg');
+  });
+});
 ```
 
 **What to Mock:**
 
-- Browser APIs (localStorage, window, document)
-- External dependencies (Chart.js)
+- File system operations (localStorage in tests)
+- External APIs (none currently)
+- Environment variables (process.env)
+- Browser APIs (DOM, console)
 
 **What NOT to Mock:**
 
-- Pure functions (test them directly)
-- Domain models (use real instances)
+- Internal pure functions
+- Simple utilities (string manipulation, array helpers)
+- Business logic calculations
 
 ## Fixtures and Factories
 
 **Test Data:**
 
 ```javascript
-// Inline test data
-const plan = new Plan('Test Plan', 35, 65);
-const account401k = new Account('My 401k', '401k', 100000);
+// Factory functions in test file
+function createTestPlan(overrides = {}) {
+  return {
+    name: 'Test Plan',
+    accounts: [],
+    expenses: [],
+    ...overrides,
+  };
+}
+
+// Shared fixtures in test-helper.js
+export const mockTaxData = {
+  federal: {
+    /* tax brackets */
+  },
+  state: {
+    /* state tax */
+  },
+};
 ```
 
 **Location:**
 
-- Inline in test files (no shared fixtures directory)
-- No factory functions (manual object creation)
+- Factory functions: define in test file near usage
+- Shared fixtures: `tests/test-helper.js` for common utilities
+- Mock data: inline in test when simple, factory when complex
 
 ## Coverage
 
 **Requirements:**
 
-- No enforced coverage target
-- Coverage tracked for awareness
-- High coverage for core domain models and calculations
+- 50% minimum for lines, functions, branches, statements
+- Coverage tracked for awareness, not enforcement
+- Focus on critical paths (parsers, service logic)
 
 **Configuration:**
 
-- No coverage tool (manual assessment)
-- No coverage reports
+- Vitest coverage via v8 (built-in)
+- Report formats: text, json, html, lcov
+- Coverage directory: `./coverage/`
+
+**Exclusions:**
+
+- Test files themselves (`**/*.test.js`)
+- Test helpers (`**/test-helper.js`)
+- Config files (`**/vitest.config.js`)
+- Build directories (`node_modules/`, `dist/`, `.planning/`, `docs/`)
 
 **View Coverage:**
 
 ```bash
-# Not available - no coverage tool
+npm run test:coverage
+open coverage/index.html
 ```
 
 ## Test Types
 
 **Unit Tests:**
 
-- Test single function or class in isolation
-- Mock external dependencies (localStorage)
-- Examples: Plan.test.js, projection.test.js
+- Test single function/class in isolation
+- Mock all external dependencies (localStorage, DOM)
+- Fast: each test <100ms
+- Examples: Plan.test.js, StorageManager.test.js
 
 **Integration Tests:**
 
 - Test multiple modules together
-- Full workflow tests from UI to storage
-- Examples: full-flow.test.js (complete application workflow)
+- Mock only external boundaries (browser APIs)
+- Examples: full-flow.test.js, withdrawal-strategies-integration.test.js
 
 **E2E Tests:**
 
-- Not used (no E2E test framework)
-- Manual browser testing required
+- Not currently implemented
+- Manual testing for full application workflows
 
 ## Common Patterns
 
 **Async Testing:**
 
 ```javascript
-// Not applicable - all tests are synchronous
-// No async/await in tests
+it('should handle async operation', async () => {
+  const result = await asyncFunction();
+  expect(result).toBe('expected');
+});
 ```
 
 **Error Testing:**
 
 ```javascript
-// Error test pattern
-export function testInvalidInput() {
-  try {
-    const plan = new Plan('', 35, 65); // Invalid name
-    throw new Error('Should have thrown error');
-  } catch (error) {
-    if (error.message !== 'Plan name is required') {
-      throw new Error('Wrong error message');
-    }
-  }
+it('should throw on invalid input', () => {
+  expect(() => parse(null)).toThrow('Cannot parse null');
+});
 
-  console.log('✓ testInvalidInput passed');
-}
+// Async error
+it('should reject on failure', async () => {
+  await expect(asyncCall()).rejects.toThrow('error message');
+});
+```
+
+**DOM Mocking:**
+
+```javascript
+import { vi } from 'vitest';
+
+// Mock localStorage
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
+  clear: vi.fn(),
+};
+
+global.localStorage = localStorageMock;
 ```
 
 **Snapshot Testing:**
 
-- Not used (no snapshot framework)
+- Not used in this codebase
+- Prefer explicit assertions for clarity
 
 ---
 
-_Testing analysis: 2026-01-15_
+_Testing analysis: 2026-01-16_
 _Update when test patterns change_

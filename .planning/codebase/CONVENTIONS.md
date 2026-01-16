@@ -1,149 +1,159 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-01-15
+**Analysis Date:** 2026-01-16
 
 ## Naming Patterns
 
 **Files:**
 
-- PascalCase.js for domain models (Plan.js, Account.js, Expense.js)
-- PascalCase.js for rules (RothConversionRule.js, QCDRule.js)
-- kebab-case.js for calculations (projection.js, tax.js, monte-carlo.js)
-- PascalCase.js for UI (AppController.js, ChartRenderer.js)
+- PascalCase.js for classes: `AppController.js`, `Plan.js`, `StorageManager.js`
+- camelCase.js for modules: `projection.js`, `loader.js`
+- kebab-case.json for configuration: `defaults.json`, `limits.json`
+- kebab-case.css for styles: `base.css`, `components.css`
 - \*.test.js for test files alongside source
-- kebab-case.css for styles (variables.css, base.css)
 
 **Functions:**
 
-- camelCase for all functions (addAccount, calculateExpenseForYear)
-- No special prefix for async functions (all functions sync)
-- onEventName pattern for event handlers (if needed)
+- camelCase for all functions: `addAccount`, `generateId`, `calculateFederalTax`
+- No special prefix for async functions
+- handleEventName pattern for event handlers: `handleClick`, `handleSubmit`
 
 **Variables:**
 
-- camelCase for variables (totalBalance, annualContribution)
-- UPPER_SNAKE_CASE for constants (CURRENT_SCHEMA_VERSION, STORAGE_KEYS)
+- camelCase for variables: `currentPlan`, `projectionResults`, `annualContribution`
+- UPPER_SNAKE_CASE for constants: CSS variables like `--color-primary`
+- No underscore prefix for private members
 
 **Types:**
 
-- PascalCase for classes (Plan, Account, BaseRule)
-- No interfaces (plain JavaScript, no TypeScript)
+- PascalCase for classes: `Plan`, `Account`, `StorageManager`
+- No TypeScript interfaces (pure JavaScript)
+- Enums not used (JavaScript objects for constants)
 
 ## Code Style
 
 **Formatting:**
 
-- No Prettier config (manual consistency)
-- 100 character line length (generally)
+- Prettier with `.prettierrc.json`
+- 100 character line length
 - Single quotes for strings
-- Semicolons required after statements
-- 2-space indentation (not tabs)
+- Semicolons required
+- 2 space indentation
+- ES5 trailing commas
 
 **Linting:**
 
-- No ESLint config (manual code consistency)
-- No automated linting tools
-- Manual code review for style adherence
+- ESLint with `eslint.config.js`
+- Modern flat configuration
+- Custom rules for quotes, semicolons, indentation
+- Run: `npm run lint`
 
 ## Import Organization
 
 **Order:**
 
-1. External packages (rare - only Chart.js via CDN)
-2. Internal modules (relative imports with ./)
-3. Type imports (not applicable - no TypeScript)
+1. External packages (none currently)
+2. Internal modules (relative imports)
+3. No type imports (JavaScript)
 
 **Grouping:**
 
-- No blank lines between imports typically
-- Alphabetical within groups (not strictly enforced)
+- Blank line between import groups
+- Alphabetical within each group
+- No path aliases used
 
 **Path Aliases:**
 
-- No path aliases (direct relative imports only)
+- No path aliases configured
+- Uses relative imports throughout
 
 ## Error Handling
 
 **Patterns:**
 
-- Throw errors for invalid inputs
-- console.error for logging without user feedback
-- Inconsistent error handling across files
-- No centralized error boundary
+- Inconsistent - some areas handle errors, others don't
+- Mix of try/catch and direct parsing without validation
+- Limited error propagation to users
 
 **Error Types:**
 
-- Throw on invalid input, schema validation failures
-- Console.error for storage errors
-- No custom error classes
-- No user-facing error messages
+- Missing error handling in user input parsing (`src/ui/AccountController.js:163-164`)
+- Some strategy files log errors but don't propagate to caller
+- No custom error classes defined
+
+**Logging:**
+
+- Console logging in strategy files (`console.error`)
+- No structured logging framework
+- Errors sometimes logged but not always propagated
 
 ## Logging
 
 **Framework:**
 
-- Browser console only (console.log, console.error, console.warn)
-- No structured logging
-- No log levels (debug, info, etc.)
+- Browser console only (console.log, console.error)
+- No external logging services
 
 **Patterns:**
 
-- Console.log for debugging
-- Console.error for errors
-- No logging service integration
+- Informal logging throughout codebase
+- Some error logging in strategy files
+- No structured logging with context
 
 ## Comments
 
 **When to Comment:**
 
-- Explain why, not what (business logic, complex calculations)
-- Document non-obvious financial rules
-- JSDoc for public methods
+- JSDoc comments for classes and methods (`src/core/models/Plan.js`)
+- File headers with brief purpose description (`src/ui/AppController.js`)
+- Inline comments used sparingly for complex business logic
 
 **JSDoc/TSDoc:**
 
-- Required for public API methods (StorageManager, domain models)
-- Use @param, @returns tags
-- Clear descriptions of business logic
+- Comprehensive JSDoc for classes and public methods
+- Documented parameters and return values
+- Examples: `src/core/models/Plan.js`, `src/rules/RuleInterface.js`
 
 **TODO Comments:**
 
-- Format: // TODO: description
-- No issue tracking links (manual TODOs)
+- No TODO comments found in current analysis
+- Legacy TODO comments may exist in older code
 
 ## Function Design
 
 **Size:**
 
-- Keep under 50 lines when possible
-- Extract helpers for complex logic
-- Large files exist (tax.js: 2,296 lines, AppController.js: 1,347 lines)
+- Functions vary widely in size
+- Some large functions (>200 lines) that could be extracted
+- Strategy for extracting helpers not consistently applied
 
 **Parameters:**
 
-- Max 3-4 parameters (more if object parameter)
-- No destructuring in parameter list typically
+- No parameter limit enforced
+- Some functions accept many parameters
+- Destructuring used inconsistently
 
 **Return Values:**
 
-- Explicit returns preferred
-- Early returns for guard clauses (some inconsistency)
+- Explicit return statements preferred
+- Some functions use implicit returns
+- Return early patterns used inconsistently
 
 ## Module Design
 
 **Exports:**
 
-- Named exports preferred (export class, export function)
-- Default exports not used (ES6 module pattern)
-- No barrel files (direct imports)
+- Named exports preferred throughout
+- ES6 module syntax used consistently
+- Default exports rarely used
 
 **Barrel Files:**
 
-- No index.js/index.ts barrel files
-- Direct imports from specific files
-- No circular dependency issues
+- `src/core/models/index.js` for model exports
+- `src/core/rules/index.js` for rule exports
+- Avoids circular dependencies
 
 ---
 
-_Convention analysis: 2026-01-15_
+_Convention analysis: 2026-01-16_
 _Update when patterns change_

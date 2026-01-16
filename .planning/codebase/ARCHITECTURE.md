@@ -1,152 +1,150 @@
 # Architecture
 
-**Analysis Date:** 2026-01-15
+**Analysis Date:** 2026-01-16
 
 ## Pattern Overview
 
-**Overall:** Layered Monolith with Domain-Driven Design and Strategy Pattern
+**Overall:** Client-Side Monolith with Layered Architecture
 
 **Key Characteristics:**
 
-- Single-page application (SPA) with clear layer separation
-- Strategy pattern for extensible financial rules
-- Pure functions for all calculations (side-effect-free)
-- Client-side only (privacy-first design)
+- Pure client-side application running entirely in browser
+- ES6 modules for clean dependency management
+- No backend services or external API dependencies
+- Local storage for data persistence
+- Clear separation of concerns across layers
 
 ## Layers
 
-**Presentation Layer (UI):**
+**Presentation Layer:**
 
-- Purpose: Handle user interactions and display data
-- Contains: UI controllers, Chart.js integration, event handlers
-- Depends on: Domain layer, calculation layer, storage layer
-- Used by: Browser via `index.html`
+- Purpose: UI coordination and user interaction handling
+- Contains: AppController, specialized domain controllers, ChartRenderer
+- Location: `src/ui/`
+- Depends on: Business logic layer, storage layer
+- Used by: Browser DOM events, user interactions
 
-**Application Layer:**
+**Business Logic Layer:**
 
-- Purpose: Orchestrate business logic and coordinate rules
-- Contains: Rule engine, strategy factory, projection orchestration
-- Depends on: Domain models, calculation functions
+- Purpose: Financial calculations and domain models
+- Contains: Pure calculation functions, domain entities, strategy rules
+- Location: `src/calculations/`, `src/core/`
+- Depends on: Configuration layer only
 - Used by: Presentation layer
 
-**Domain Layer:**
+**Data Persistence Layer:**
 
-- Purpose: Core business logic and entity modeling
-- Contains: Plan (aggregate root), Account, Expense, Income entities, financial rules
-- Depends on: Nothing (domain-independent)
-- Used by: Application layer, calculation layer
-
-**Calculation Layer:**
-
-- Purpose: Pure computation functions for financial projections
-- Contains: Tax calculations, projection engine, Monte Carlo simulation, social security, RMDs
-- Depends on: Domain models (as input only)
-- Used by: Application layer, presentation layer
-
-**Infrastructure Layer:**
-
-- Purpose: Data persistence and schema management
-- Contains: StorageManager (localStorage), schema validation, migrations
+- Purpose: Abstract localStorage operations with validation
+- Contains: StorageManager, schema validation
+- Location: `src/storage/`
 - Depends on: Browser localStorage API
-- Used by: All layers for persistence
+- Used by: Business logic layer
+
+**Configuration Layer:**
+
+- Purpose: Centralized configuration and external data
+- Contains: Tax brackets, contribution limits, age thresholds
+- Location: `config/`
+- Depends on: None (static embedded data)
+- Used by: Business logic layer
 
 ## Data Flow
 
-**User Action Flow:**
+**Plan Operations Flow:**
 
-1. User interacts with UI (click, input) → DOM event in `index.html`
-2. AppController event handler invoked → UI layer (`src/ui/AppController.js`)
-3. Controller validates input → Domain model update (`src/core/models/`)
-4. Projection execution requested → `project()` function (`src/calculations/projection.js`)
-5. Rule engine applies strategies → RuleRegistry (`src/core/rules/RuleRegistry.js`)
-6. Tax calculations performed → Pure functions (`src/calculations/tax.js`)
-7. Results generated → Year-by-year projection data
-8. Visualization updated → ChartRenderer (`src/ui/ChartRenderer.js`)
-9. Persistence → StorageManager saves to localStorage (`src/storage/StorageManager.js`)
+1. User interaction triggers DOM event in browser
+2. Controller method invoked (e.g., `PlanController.addAccount()`)
+3. Controller validates input and calls domain model
+4. Domain model processes business logic
+5. StorageManager saves to localStorage
+6. UI updates to reflect changes
+
+**Projection Calculation Flow:**
+
+1. User requests projection via UI controller
+2. ProjectionController gathers current plan data
+3. Calculation engine (`src/calculations/projection.js`) processes projections
+4. Rule registry applies financial strategies
+5. Tax calculations applied using embedded configuration
+6. ChartRenderer visualizes results using Chart.js
 
 **State Management:**
 
-- Client-side only - No server communication
-- localStorage for persistence (versioned with migration support)
-- In-memory state during runtime (no Redux/store pattern)
+- Client-side localStorage for persistent data
+- In-memory objects during execution
+- No server-side state or databases
 
 ## Key Abstractions
 
-**Strategy Pattern (Financial Rules):**
+**Controller Pattern:**
 
-- Purpose: Extensible framework for financial strategies
-- Examples: RothConversionRule, QCDRule, TLHRule, MegaBackdoorRothRule, BackdoorRothRule
-- Pattern: BaseRule abstract class → Concrete implementations → RuleRegistry
+- Purpose: Thin coordinators between UI and business logic
+- Examples: `AppController.js`, `PlanController.js`, `AccountController.js`
+- Pattern: ES6 classes with dependency injection
 
-**Domain Models:**
+**Strategy Pattern:**
 
-- Purpose: Rich entities with business behavior
-- Examples: Plan (aggregate root), Account, Expense, Income (`src/core/models/`)
-- Pattern: ES6 classes with toJSON/fromJSON methods
-
-**Pure Functions:**
-
-- Purpose: Side-effect-free calculations
-- Examples: calculateTax, projectPlan, calculateSocialSecurity (`src/calculations/`)
-- Pattern: Stateless functions → input → output (no mutations)
+- Purpose: Extensible financial strategy system
+- Examples: `RothConversionRule`, `QCDRule`, `TLHRule`
+- Pattern: BaseRule abstract class with specific implementations
 
 **Repository Pattern:**
 
-- Purpose: Encapsulate persistence concerns
-- Examples: StorageManager (`src/storage/StorageManager.js`)
-- Pattern: Static methods for all CRUD operations
+- Purpose: Data access abstraction
+- Examples: `StorageManager.js`
+- Pattern: Encapsulates localStorage with validation
+
+**Pure Function Architecture:**
+
+- Purpose: Side-effect-free business logic
+- Examples: Functions in `src/calculations/`
+- Pattern: Input → calculation → output, no side effects
 
 ## Entry Points
 
-**Primary Entry:**
+**Main Application Entry:**
 
-- Location: `index.html` - HTML entry point with ES6 module imports
+- Location: `index.html` (lines 160-165)
 - Triggers: Browser loads page
-- Responsibilities: Import ES6 modules, load Chart.js CDN, initialize AppController
+- Responsibilities: Import AppController, initialize application
 
-**Development Entry:**
+**Development Server:**
 
-- Location: `npm run serve` script in `package.json`
-- Triggers: Developer runs `npm run serve`
-- Responsibilities: Start Python HTTP server on port 3030
-
-**Test Entry:**
-
-- Location: Individual test files in `tests/`
-- Triggers: `node tests/unit/models/Plan.test.js` (for example)
-- Responsibilities: Execute tests and report results
+- Location: `package.json` script
+- Triggers: `npm run serve`
+- Responsibilities: Start Python HTTP server for development
 
 ## Error Handling
 
-**Strategy:** Validation + console.error, throw errors for invalid state
+**Strategy:** Inconsistent - some areas handle errors, others don't
 
 **Patterns:**
 
-- Schema validation in StorageManager (`src/storage/schema.js`)
-- Console.error for logging without user feedback
-- Throw statements for invalid inputs
-- No centralized error boundary (gaps in error handling)
+- Calculation functions: Often lack error handling, could fail silently
+- Controllers: Mix of try/catch and direct parsing without validation
+- Storage layer: Basic validation in schema
+- UI: Limited error display to users
 
 ## Cross-Cutting Concerns
 
 **Logging:**
 
-- Browser console only - console.log, console.error, console.warn
-- No structured logging framework
-- Console used for debugging in development
+- Browser console only (console.log, console.error)
+- No structured logging or external services
 
 **Validation:**
 
 - Schema validation in storage layer (`src/storage/schema.js`)
-- Input validation in UI controllers (inconsistent)
-- No centralized validation framework
+- Limited input validation in UI controllers
+- Missing validation in some calculation functions
 
-**Theming:**
+**Configuration Management:**
 
-- CSS custom properties for dark mode support (`src/styles/variables.css`)
-- `@media (prefers-color-scheme: dark)` for automatic theme switching
+- Embedded JavaScript configuration files
+- Centralized loader (`config/loader.js`)
+- Tax year management scattered across multiple files
 
 ---
 
-_Architecture analysis: 2026-01-15_
+_Architecture analysis: 2026-01-16_
 _Update when major patterns change_

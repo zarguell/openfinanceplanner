@@ -1,223 +1,198 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-01-15
+**Analysis Date:** 2026-01-16
 
 ## Directory Layout
 
 ```
 openfinanceplanner/
-├── index.html                    # Main HTML entry point
-├── package.json                   # Project manifest (minimal)
-├── src/
-│   ├── core/                     # Domain models and business logic
-│   │   ├── models/              # Domain entities
-│   │   │   ├── Plan.js         # Plan aggregate root
-│   │   │   ├── Account.js      # Financial account entity
-│   │   │   ├── Expense.js      # Expense value object
-│   │   │   └── Income.js      # Income entity with smart rules
-│   │   └── rules/               # Strategy pattern implementation
-│   │       ├── BaseRule.js       # Abstract base class
-│   │       ├── RuleRegistry.js   # Central rule management
-│   │       ├── StrategyFactory.js # Rule factory
-│   │       ├── RothConversionRule.js
-│   │       ├── QCDRule.js
-│   │       ├── TLHRule.js
-│   │       ├── BackdoorRothRule.js
-│   │       └── MegaBackdoorRothRule.js
-│   ├── calculations/             # Pure calculation functions
-│   │   ├── projection.js        # Main projection engine
-│   │   ├── tax.js             # Tax calculations (2,296 lines)
-│   │   ├── monte-carlo.js      # Monte Carlo simulation
-│   │   ├── social-security.js   # SSA benefit calculations
-│   │   ├── rmd.js             # Required minimum distributions
-│   │   ├── roth-conversions.js # Roth conversion strategies
-│   │   ├── withdrawal-strategies.js # Account withdrawal ordering
-│   │   ├── tax-loss-harvesting.js # Tax optimization
-│   │   ├── qcd.js             # Qualified charitable distributions
-│   │   └── income.js          # Income modeling
-│   ├── storage/                 # Data persistence layer
-│   │   ├── StorageManager.js   # localStorage operations
-│   │   └── schema.js          # Schema validation & migrations
-│   ├── ui/                      # UI controllers and visualization
-│   │   ├── AppController.js    # Main UI controller (1,347 lines)
-│   │   └── ChartRenderer.js   # Chart.js wrapper
-│   └── styles/                  # CSS styling
-│       ├── variables.css       # CSS custom properties (theming)
-│       ├── base.css            # Reset & typography
-│       ├── layout.css          # Layout styles
-│       └── components.css      # Component styles
-├── tests/
-│   ├── unit/                   # Unit tests
-│   │   ├── models/            # Domain model tests
-│   │   ├── calculations/       # Calculation function tests
-│   │   └── rules/             # Rule engine tests
-│   └── integration/            # Integration tests
-│       ├── full-flow.test.js   # Complete workflow test
-│       ├── roth-conversions-integration.test.js
-│       └── ...
-├── docs/                      # Architecture documentation
-│   ├── architecture.md
-│   ├── tasks.md
-│   └── research/
-├── CLAUDE.md                 # Instructions for Claude Code
-└── README.md                  # User-facing documentation
+├── config/               # Configuration data and tax information
+│   ├── defaults.json     # Default application settings
+│   ├── limits.json       # Account contribution limits
+│   ├── ages.json        # Age threshold configurations
+│   └── loader.js       # Configuration loader for ES6 compatibility
+├── src/                 # Application source code
+│   ├── calculations/     # Financial calculation engines
+│   │   ├── tax/        # Tax calculation subsystem
+│   │   │   └── config/ # Tax year-specific data files
+│   │   ├── projection.js # Main projection engine
+│   │   └── [other calculations]
+│   ├── core/            # Domain models and business rules
+│   │   ├── models/      # Core domain entities
+│   │   └── rules/       # Financial strategy rules
+│   ├── rules/           # Legacy rules system (being migrated)
+│   │   └── strategies/  # Strategy implementations
+│   ├── storage/         # Data persistence abstraction
+│   ├── styles/          # CSS styling (component-based)
+│   └── ui/             # User interface controllers
+├── tests/              # Test suite
+│   ├── integration/     # Cross-component workflow tests
+│   ├── unit/          # Isolated module tests
+│   └── test-helper.js  # Test utilities
+├── index.html         # Main application entry point
+├── package.json       # Project manifest and dependencies
+├── package-lock.json  # Dependency lockfile
+├── .gitignore        # Git ignore rules
+└── README.md         # User documentation
 ```
 
 ## Directory Purposes
 
-**src/core/models/**
+**config/**
 
-- Purpose: Domain entities with business logic
-- Contains: Plan (aggregate root), Account, Expense, Income
-- Key files: Plan.js (aggregate root with accounts/expenses/incomes)
-- Subdirectories: None
-
-**src/core/rules/**
-
-- Purpose: Strategy pattern for financial strategies
-- Contains: BaseRule, RuleRegistry, concrete rule implementations
-- Key files: RuleRegistry.js (central rule management), BaseRule.js (abstract base)
-- Subdirectories: None
+- Purpose: Centralized configuration and reference data
+- Contains: JSON configuration files, JavaScript loader
+- Key files: `loader.js` - centralized configuration management
+- Subdirectories: None (flat structure)
 
 **src/calculations/**
 
-- Purpose: Pure calculation functions (side-effect-free)
-- Contains: Projection engine, tax calculations, specialized calculators
-- Key files: projection.js (main year-by-year loop), tax.js (comprehensive tax engine)
-- Subdirectories: None
+- Purpose: Pure financial calculation functions
+- Contains: Projection engine, tax calculations, financial strategies
+- Key files: `projection.js` (434 lines, core calculation engine)
+- Subdirectories: `tax/` for tax-specific calculations
+
+**src/core/**
+
+- Purpose: Domain models and business logic
+- Contains: Entity classes, strategy rules, validation logic
+- Key files: `models/Plan.js` (238 lines, core business entity)
+- Subdirectories: `models/` for entities, `rules/` for strategies
+
+**src/rules/**
+
+- Purpose: Legacy financial rules system (being migrated to core/)
+- Contains: Rule engine, strategy implementations, interfaces
+- Key files: `RuleEngine.js` (383 lines, complex rule processing)
+- Subdirectories: `strategies/` for specific strategy implementations
 
 **src/storage/**
 
-- Purpose: Data persistence with schema management
-- Contains: StorageManager, schema validation
-- Key files: StorageManager.js (localStorage wrapper), schema.js (validation/migration)
-- Subdirectories: None
-
-**src/ui/**
-
-- Purpose: Presentation layer and user interaction
-- Contains: Controllers, chart rendering
-- Key files: AppController.js (main UI logic), ChartRenderer.js (visualization)
+- Purpose: Data persistence abstraction layer
+- Contains: localStorage wrapper, schema validation, data migration
+- Key files: `StorageManager.js` (177 lines, localStorage abstraction)
 - Subdirectories: None
 
 **src/styles/**
 
-- Purpose: Styling with modular organization
-- Contains: CSS variables, base styles, layout, components
-- Key files: variables.css (theming with custom properties)
+- Purpose: CSS styling organized by component
+- Contains: Base styles, layout, components, CSS variables
+- Key files: `variables.css` (CSS custom properties)
+- Subdirectories: None (component-based organization)
+
+**src/ui/**
+
+- Purpose: User interface controllers and coordination
+- Contains: App controllers, specialized domain controllers, chart rendering
+- Key files: `AppController.js` (315 lines, main application coordinator)
 - Subdirectories: None
 
-**tests/unit/**
+**tests/**
 
-- Purpose: Unit tests for individual components
-- Contains: Model tests, calculation tests, rule tests
-- Key files: Plan.test.js, projection.test.js
-- Subdirectories: models/, calculations/, rules/
-
-**tests/integration/**
-
-- Purpose: End-to-end workflow tests
-- Contains: Full application flow tests
-- Key files: full-flow.test.js (complete workflow)
-- Subdirectories: None
+- Purpose: Test suite with unit and integration tests
+- Contains: Unit tests for individual modules, integration tests for workflows
+- Key files: `test-helper.js` (shared test utilities)
+- Subdirectories: `unit/`, `integration/`
 
 ## Key File Locations
 
 **Entry Points:**
 
-- `index.html` - Main HTML entry point with ES6 module imports
-- `package.json` - Project manifest with serve and test scripts
+- `index.html` - Main application entry point, loads ES6 modules
+- `package.json` - Scripts for development and testing
 
 **Configuration:**
 
-- Not applicable - No config files (configuration embedded in code)
+- `config/loader.js` - Centralized configuration management
+- `config/defaults.json` - Application default settings
+- `config/limits.json` - Account contribution limits
+- `config/ages.json` - Age threshold configurations
 
 **Core Logic:**
 
-- `src/core/models/Plan.js` - Plan aggregate root
-- `src/calculations/projection.js` - Projection engine
-- `src/storage/StorageManager.js` - localStorage persistence
-- `src/core/rules/RuleRegistry.js` - Strategy rule management
+- `src/core/models/Plan.js` - Core business entity (238 lines)
+- `src/calculations/projection.js` - Main projection engine (434 lines)
+- `src/ui/AppController.js` - Main application coordinator (315 lines)
 
 **Testing:**
 
-- `tests/unit/` - Unit tests (models, calculations, rules)
-- `tests/integration/` - Integration tests (full workflows)
+- `tests/unit/` - Unit tests for individual modules
+- `tests/integration/` - Cross-component workflow tests
+- `tests/test-helper.js` - Shared test utilities
 
 **Documentation:**
 
-- `CLAUDE.md` - Instructions for Claude Code
 - `README.md` - User-facing documentation
-- `docs/architecture.md` - Architecture documentation
+- `config/README.md` - Configuration documentation
 
 ## Naming Conventions
 
 **Files:**
 
-- PascalCase.js for domain models (Plan.js, Account.js)
-- PascalCase.js for rules (RothConversionRule.js, QCDRule.js)
-- kebab-case.js for calculations (projection.js, tax.js, monte-carlo.js)
-- PascalCase.js for UI (AppController.js, ChartRenderer.js)
-- \*.test.js for test files alongside source
-- \*.css for styles (lowercase, kebab-case)
+- PascalCase.js for classes: `AppController.js`, `Plan.js`, `StorageManager.js`
+- camelCase.js for modules: `projection.js`, `loader.js`
+- kebab-case.json for configuration: `defaults.json`, `limits.json`
+- kebab-case.css for styles: `base.css`, `components.css`
 
 **Directories:**
 
-- lowercase with hyphens (kebab-case) for all directories
-- Plural names for collections: models/, calculations/, rules/, tests/
-- Singular names for utilities: storage/, ui/, styles/
+- kebab-case for all directories: `calculations/`, `storage/`, `styles/`
+- Plural for collections: `models/`, `rules/`, `strategies/`
+- Singular for concepts: `core/`, `storage/`, `ui/`
 
 **Special Patterns:**
 
-- index.html - Main HTML entry point
-- No index.ts/index.js barrel files (direct imports)
+- `[Year]-[file].js` for year-specific data: `federal-2024.js`, `states-2025.js`
+- `[Name]Controller.js` for UI controllers: `PlanController.js`, `AccountController.js`
+- `[Name]Rule.js` for strategy rules: `RothConversionRule.js`, `TLHRule.js`
 
 ## Where to Add New Code
 
-**New Domain Model:**
+**New Feature:**
 
-- Primary code: `src/core/models/YourModel.js`
-- Tests: `tests/unit/models/YourModel.test.js`
-- Config if needed: `src/core/rules/YourRule.js` (if strategy pattern)
+- Primary code: `src/ui/[Feature]Controller.js`
+- Business logic: `src/calculations/[feature].js`
+- Tests: `tests/unit/calculations/[feature].test.js`
 
-**New Calculation:**
+**New Component/Module:**
 
-- Primary code: `src/calculations/your-calculation.js`
-- Tests: `tests/unit/calculations/your-calculation.test.js`
+- Implementation: `src/ui/[Component].js`
+- Types: `src/core/models/[Model].js`
+- Tests: `tests/unit/ui/[Component].test.js`
 
-**New Financial Rule (Strategy):**
+**New Strategy Rule:**
 
-- Primary code: `src/core/rules/YourRule.js` (extends BaseRule)
-- Tests: `tests/unit/rules/YourRule.test.js`
-- Register in: `src/core/rules/RuleRegistry.js`
+- Implementation: `src/core/rules/[Strategy]Rule.js`
+- Register: Update `src/core/rules/RuleRegistry.js`
+- Tests: `tests/unit/rules/[Strategy]Rule.test.js`
 
-**New UI Component:**
+**New Configuration:**
 
-- Primary code: `src/ui/YourComponent.js`
-- Styles: `src/styles/components.css` (if needed)
-- Tests: Not typically tested (UI layer thin)
+- Data file: `config/[name].json`
+- Loader update: Add to `config/loader.js`
+- Validation: Update relevant model schemas
 
-**New Storage Operation:**
+**Utilities:**
 
-- Primary code: `src/storage/StorageManager.js` (add static method)
-- Tests: `tests/unit/storage/StorageManager.test.js`
-- Schema update: `src/storage/schema.js` (if data structure changes)
+- Shared helpers: `src/core/[utility].js`
+- Storage helpers: Extend `src/storage/StorageManager.js`
+- UI helpers: `src/ui/[utility].js`
 
 ## Special Directories
 
-**tests/**
+**src/calculations/tax/config/**
 
-- Purpose: All test files (unit and integration)
-- Source: Hand-written tests with custom runner
-- Committed: Yes
+- Purpose: Tax year-specific data files
+- Source: Embedded tax bracket data for federal and state taxes
+- Committed: Yes (source of truth for tax calculations)
 
-**docs/**
+**tests/coverage/**
 
-- Purpose: Architecture documentation and research
-- Source: Manual documentation
-- Committed: Yes
+- Purpose: Generated test coverage reports
+- Source: Auto-generated by Vitest
+- Committed: No (in .gitignore)
 
 ---
 
-_Structure analysis: 2026-01-15_
+_Structure analysis: 2026-01-16_
 _Update when directory structure changes_
