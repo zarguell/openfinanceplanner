@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-01-15)
 
 **Core value:** Make the codebase maintainable for long-term evolution - split monolithic files, centralize configuration, and add quality tooling without breaking existing functionality
-**Current focus:** Phase 3 — UI Controller Refactor (COMPLETE)
+**Current focus:** Phase 4 — Configuration Centralization (COMPLETE)
 
 ## Current Position
 
-Phase: 3 of 6 (UI Controller Refactor)
-Plan: 03-04 completed
-Status: Phase 3 complete, ready for Phase 4
-Last activity: 2026-01-15 — AppController refactored to thin coordinator, ProjectionController created
+Phase: 4 of 6 (Configuration Centralization)
+Plan: 04-03 completed
+Status: Phase 4 complete, all 3 plans executed successfully
+Last activity: 2026-01-15 — Centralized default growth rates, tax rates, and volatility into config/defaults.json
 
-Progress: ████████░░ 67% (4 of 6 phases complete)
+Progress: █████████░ 83% (5 of 6 phases complete)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 13
+- Total plans completed: 16
 - Average duration: ~5 min/plan
-- Total execution time: ~65 min (1.1 hours)
+- Total execution time: ~80 min (1.3 hours)
 
 **By Phase:**
 
@@ -31,13 +31,13 @@ Progress: ████████░░ 67% (4 of 6 phases complete)
 | 1     | 3     | 3     | 5 min    |
 | 2     | 4     | 7     | 5 min    |
 | 3     | 4     | 11    | 5 min    |
-| 4     | 0     | 11    | -        |
+| 4     | 3     | 14    | 5 min    |
 
 **Recent Trend:**
 
-- Last 5 plans: 03-03 (Expense and Income Management), 03-04 (Projection Rendering)
-- Trend: ✅ All tasks completed successfully, AppController reduced from 1,444 lines → 314 lines (78% reduction)
-- Phase 3 complete with 4 specialized controllers extracted (Plan, Account, ExpenseIncome, Projection)
+- Last 3 plans: 04-01 (Extract Tax Bracket Constants), 04-02 (Extract Age Thresholds), 04-03 (Centralize Default Rates)
+- Trend: ✅ All config centralization complete, all hardcoded defaults moved to config/
+- Phase 4 complete with 3 config files created (limits.json, ages.json, defaults.json) and loader.js extended with accessor functions
 
 ## Accumulated Context
 
@@ -70,6 +70,13 @@ Recent decisions affecting current work:
   - Projection and Monte Carlo rendering logic fully extracted to dedicated controller
   - Delegator methods in AppController sync projectionResults and monteCarloResults
   - AppController now thin coordinator (314 lines, down from 1,444 lines - 78% reduction)
+- 2026-01-15 Phase 4 config centralization decisions:
+  - Use embedded data objects in loader.js for ES6 compatibility (no build process)
+  - Separate config files (limits.json, ages.json, defaults.json) for human readability
+  - Accessor functions provide clean API and validate inputs (getContributionLimit, getRMDStartAge, getDefaultTaxRate, etc.)
+  - Strategy-specific defaults (Roth conversion %, QCD %, employer match rate) kept in Plan model as domain-specific values
+  - Statutory tax rates (long-term capital gains 0.15, Medicare rates) kept in calculation files, not in config
+  - Task 4 removed from 04-03 plan - calculation file defaults are different from user-customizable Plan defaults
 
 ### Deferred Issues
 
@@ -81,7 +88,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-15 22:45
-Stopped at: Phase 3 complete, ProjectionController created with projection rendering methods
-Resume file: .planning/phases/03-ui-refactor/03-04-SUMMARY.md
-Next action: Execute 04-01-PLAN.md (Extract Tax Bracket Constants)
+Last session: 2026-01-15 22:48
+Stopped at: Phase 4 complete, all config centralized (limits, ages, defaults)
+Resume file: .planning/phases/04-config-centralization/04-03-SUMMARY.md
+Next action: Determine next phase (see ROADMAP.md for remaining work)
