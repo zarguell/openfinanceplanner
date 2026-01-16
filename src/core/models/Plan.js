@@ -1,11 +1,18 @@
 import { Income } from './Income.js';
+import {
+  getDefaultInflationRate,
+  getDefaultEquityGrowthRate,
+  getDefaultBondGrowthRate,
+  getDefaultVolatility,
+  getDefaultTaxRate
+} from '../../../config/loader.js';
 
 /**
  * Plan - Core domain model for financial plans
  * Pure business logic with no UI dependencies
  */
 export class Plan {
-  constructor(name, currentAge, retirementAge, estimatedTaxRate = 0.25) {
+  constructor(name, currentAge, retirementAge, estimatedTaxRate = getDefaultTaxRate()) {
     this.id = this.generateId();
     this.name = name;
     this.created = new Date().toISOString();
@@ -16,16 +23,16 @@ export class Plan {
       estimatedTaxRate, // MVP: User-estimated tax rate (federal + state combined)
       // Keep legacy fields for future advanced features
       filingStatus: 'single',
-      federalTaxRate: 0.24,
+      federalTaxRate: getDefaultTaxRate(),
       taxYear: 2025,
       state: null,
     };
     this.assumptions = {
-      inflationRate: 0.03,
-      equityGrowthRate: 0.07,
-      bondGrowthRate: 0.04,
-      equityVolatility: 0.12, // 12% annual volatility for stocks
-      bondVolatility: 0.04, // 4% annual volatility for bonds
+      inflationRate: getDefaultInflationRate(),
+      equityGrowthRate: getDefaultEquityGrowthRate(),
+      bondGrowthRate: getDefaultBondGrowthRate(),
+      equityVolatility: getDefaultVolatility('equity'),
+      bondVolatility: getDefaultVolatility('bond'),
     };
     this.socialSecurity = {
       enabled: false,
@@ -49,7 +56,7 @@ export class Plan {
       strategy: 'fixed',
       annualAmount: 0,
       percentage: 0.1,
-      marginalTaxRate: 0.24,
+      marginalTaxRate: getDefaultTaxRate(),
     };
     this.taxLossHarvesting = {
       enabled: false,
@@ -154,16 +161,16 @@ export class Plan {
 
     // Ensure legacy fields exist for backward compatibility
     if (plan.taxProfile.federalTaxRate === undefined) {
-      plan.taxProfile.federalTaxRate = 0.24;
+      plan.taxProfile.federalTaxRate = getDefaultTaxRate();
     }
 
     // Merge assumptions with defaults for backward compatibility
     plan.assumptions = {
-      inflationRate: 0.03,
-      equityGrowthRate: 0.07,
-      bondGrowthRate: 0.04,
-      equityVolatility: 0.12,
-      bondVolatility: 0.04,
+      inflationRate: getDefaultInflationRate(),
+      equityGrowthRate: getDefaultEquityGrowthRate(),
+      bondGrowthRate: getDefaultBondGrowthRate(),
+      equityVolatility: getDefaultVolatility('equity'),
+      bondVolatility: getDefaultVolatility('bond'),
       ...data.assumptions, // Override with saved data
     };
 
@@ -190,7 +197,7 @@ export class Plan {
       strategy: 'fixed',
       annualAmount: 0,
       percentage: 0.1,
-      marginalTaxRate: 0.24,
+      marginalTaxRate: getDefaultTaxRate(),
       ...data.qcdSettings,
     };
 
