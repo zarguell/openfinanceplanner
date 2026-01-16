@@ -57,7 +57,7 @@ export function calculateTaxBenefitFromLoss(
     return 0;
   }
 
-  // Long-term capital gains tax rates (simplified)
+  // Long-term capital gains tax rates (statutory rate set by IRS, not configurable)
   // Most taxpayers: 15% (high income: 20%, low income: 0%)
   // We'll use 15% as default for long-term gains
   const longTermGainsRate = 0.15;
@@ -115,11 +115,11 @@ export function suggestHarvestingAmount(
     // Harvest enough to offset capital gains + $3,000 ordinary income
     const targetHarvest = Math.max(0, capitalGainsCents) + 300000; // gains + $3,000
     harvestAmount = Math.min(unrealizedLossCents, targetHarvest);
-    reason = `Harvesting to offset gains + $3,000 ordinary income`;
+    reason = 'Harvesting to offset gains + $3,000 ordinary income';
   } else {
     // Default: harvest all available losses
     harvestAmount = unrealizedLossCents;
-    reason = `Harvesting all available losses`;
+    reason = 'Harvesting all available losses';
   }
 
   const taxBenefit = calculateTaxBenefitFromLoss(harvestAmount, capitalGainsCents, marginalTaxRate);

@@ -324,6 +324,7 @@ export function project(plan, yearsToProject = 40, taxYear = 2025) {
       totalWithdrawalNeeded = Math.abs(netCashFlow);
     }
 
+    // Convert totalQCDAmount from dollars to cents for calculation
     const rmdAfterQCD = Math.max(0, totalRmdWithdrawalCents - totalQCDAmount * 100);
     totalWithdrawalNeeded = Math.max(totalWithdrawalNeeded, rmdAfterQCD / 100);
 

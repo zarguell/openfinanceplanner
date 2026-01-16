@@ -180,7 +180,7 @@ export function calculateNetInvestmentIncomeTax(investmentIncome, magi, filingSt
     return 0;
   }
 
-  // NIIT rate is 3.8%
+  // NIIT rate is 3.8% (statutory rate set by IRS, not configurable)
   const niitRate = 0.038;
 
   // NIIT applies to the lesser of:
@@ -243,8 +243,9 @@ export function calculateSocialSecurityTax(wages, year = 2025) {
  * @returns {number} Medicare tax in cents
  */
 export function calculateMedicareTax(wages, filingStatus, year = 2025) {
-  const baseRate = 0.0145;
-  const additionalRate = 0.009;
+  // Medicare tax rates (statutory rates set by IRS, not configurable)
+  const baseRate = 0.0145; // 1.45% (FICA - Medicare)
+  const additionalRate = 0.009; // 0.9% (Additional Medicare Tax)
 
   // Additional Medicare tax threshold (same for all filing statuses in 2024/2025)
   const threshold = 20000000; // $200,000
