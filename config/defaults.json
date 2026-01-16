@@ -1,0 +1,34 @@
+{
+  "growth": {
+    "inflationRate": 0.03,
+    "equityGrowthRate": 0.07,
+    "bondGrowthRate": 0.04,
+    "equityVolatility": 0.12,
+    "bondVolatility": 0.04
+  },
+  "tax": {
+    "federalRate": 0.24,
+    "estimatedTaxRate": 0.25,
+    "niitRate": 0.038,
+    "medicareBaseRate": 0.0145,
+    "medicareAdditionalRate": 0.009,
+    "longTermGainsRate": 0.15
+  },
+  "strategies": {
+    "rothConversions": {
+      "defaultPercentage": 0.05,
+      "assumedGrowthRate": 0.07
+    },
+    "qcd": {
+      "defaultPercentage": 0.1,
+      "marginalTaxRate": 0.24
+    },
+    "taxLossHarvesting": {
+      "threshold": 100000,
+      "strategy": "all"
+    },
+    "megaBackdoorRoth": {
+      "employerMatchRate": 0.04
+    }
+  }
+}
