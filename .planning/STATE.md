@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2026-01-15)
 
 **Core value:** Make the codebase maintainable for long-term evolution - split monolithic files, centralize configuration, and add quality tooling without breaking existing functionality
-**Current focus:** Phase 4 — Configuration Centralization (COMPLETE) → Phase 5 next
+**Current focus:** Phase 5 — Test Migration (nearly complete)
 
 ## Current Position
 
-Phase: 4 of 6 (Configuration Centralization)
-Plan: 04-04 completed
-Status: Phase 4 complete, all 4 plans executed successfully
-Last activity: 2026-01-15 — Completed configuration centralization with documentation
+Phase: 5 of 6 (Test Migration)
+Plan: 05-03 completed
+Status: Phase 5 nearly complete (3 of 3 plans done)
+Last activity: 2026-01-17 — Completed coverage reporting and CI integration
 
-Progress: █████████░ 83% (4 of 6 phases complete)
+Progress: █████████░ 95% (5 of 6 phases nearly complete)
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 16
+- Total plans completed: 19
 - Average duration: ~5 min/plan
-- Total execution time: ~80 min (1.3 hours)
+- Total execution time: ~95 min (1.5 hours)
 
 **By Phase:**
 
@@ -32,12 +32,13 @@ Progress: █████████░ 83% (4 of 6 phases complete)
 | 2     | 4     | 7     | 5 min    |
 | 3     | 4     | 11    | 5 min    |
 | 4     | 4     | 15    | 5 min    |
+| 5     | 3     | 18    | 5 min    |
 
 **Recent Trend:**
 
-- Last 4 plans: 04-01 (Extract Tax Bracket Constants), 04-02 (Extract Age Thresholds), 04-03 (Centralize Default Rates), 04-04 (Complete Config Centralization)
-- Trend: ✅ All config centralization complete, config system validated and documented
-- Phase 4 complete with 3 config files created (limits.json, ages.json, defaults.json), loader.js with 13 accessor functions, and comprehensive documentation
+- Last 3 plans: 05-01 (Unit test migration), 05-02 (Integration test migration), 05-03 (Coverage and CI integration)
+- Trend: ✅ All tests migrated to Vitest, coverage reporting configured, CI workflow set up
+- Phase 5 complete with all 308 tests passing, coverage at ~57%, thresholds enforced at 50%
 
 ## Accumulated Context
 
@@ -83,10 +84,20 @@ Recent decisions affecting current work:
   - config/README.md created with comprehensive documentation
   - CLAUDE.md updated with Configuration section and principle #6
   - All critical unit tests pass (Plan, QCD, RMD, Social Security)
+- 2026-01-17 Phase 5 test migration decisions:
+  - Use @vitest/coverage-v8 (v8 provider) for faster coverage reports
+  - Set coverage thresholds at 50% (below current 57% to prevent regression)
+  - Configure 4 reporters: text (terminal), json (automation), html (browseable), lcov (codecov)
+  - Set up GitHub Actions CI to run tests and enforce coverage on every push/PR
+  - Add test:coverage and test:ui scripts to package.json
+  - ESLint errors in UI files deferred (193 errors - browser globals not configured)
 
 ### Deferred Issues
 
-None yet.
+- **ESLint browser globals** - 193 errors in UI files (document, window, alert, etc. not defined)
+  - Impact: CI workflow fails on linter step
+  - Plan: Address in Phase 6 or dedicated lint fix phase
+  - Workaround: Tests pass, coverage working, linter issues isolated to UI code
 
 ### Blockers/Concerns
 
@@ -94,7 +105,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-01-15
-Stopped at: Phase 4 complete, all config centralized and documented
-Resume file: .planning/phases/04-config-centralization/04-04-SUMMARY.md
-Next action: Proceed to Phase 5 (Test Migration) or use /gsd:progress to verify phase completion
+Last session: 2026-01-17
+Stopped at: Phase 5 plan 05-03 complete (coverage and CI integration)
+Resume file: .planning/phases/05-test-migration/05-03-SUMMARY.md
+Next action: Verify Phase 5 complete or proceed to Phase 6 (Final Polish)
