@@ -29,9 +29,27 @@ A client-side financial planning application that runs entirely in your browser 
 
 ## Project Status
 
-**Current Version:** 0.1.0 (Prototype Phase)
+**Current Version:** 0.1.0
 
-This project has been recently refactored from a single-file implementation into a modular architecture. Core features are functional, but advanced financial modeling (progressive tax brackets, RMDs, Roth conversions, Monte Carlo simulations) is planned for future releases.
+**Maintainability Overhaul Complete** (2026-01-17)
+
+This project has completed a comprehensive maintainability overhaul across 6 phases:
+
+1. **Phase 1: Tooling Setup** - ESLint 9 flat config, Prettier formatting
+2. **Phase 2: Configuration Centralization** - Extracted hardcoded values to config system
+3. **Phase 3: UI Controller Extraction** - Split monolithic AppController into focused modules
+4. **Phase 4: Tax Module Refactoring** - Modularized tax calculations (federal, state, config)
+5. **Phase 5: Test Migration** - Migrated to Vitest framework, added coverage reporting
+6. **Phase 6: Validation & Polish** - Fixed ESLint browser globals, updated documentation
+
+**Key Improvements:**
+- Modular architecture with separated concerns
+- Centralized configuration management
+- Modern tooling (ESLint, Prettier, Vitest)
+- 308 tests passing with 57% coverage
+- CI/CD pipeline with quality enforcement
+
+Core features are fully functional including progressive tax brackets, RMDs, Roth conversions, and Monte Carlo simulations.
 
 ## Architecture
 
@@ -39,10 +57,20 @@ The application uses a layered architecture with ES6 modules:
 
 ```
 src/
-├── core/models/      # Domain models (Plan, Account, Expense)
+├── core/models/      # Domain models (Plan, Account, Expense, Income)
+├── core/rules/       # Strategy pattern for financial rules
 ├── calculations/     # Pure calculation functions
+│   ├── tax/         # Federal and state tax calculations
+│   │   └── config/  # Centralized configuration
+│   └── ...
+├── config/           # Centralized configuration management
 ├── storage/          # localStorage with versioning
-├── ui/               # Thin UI controllers
+├── ui/               # Modular UI controllers
+│   ├── AppController.js        # Main coordinator
+│   ├── PlanController.js       # Plan management
+│   ├── AccountController.js    # Account CRUD
+│   ├── ExpenseIncomeController.js # Expenses & Income
+│   └── ProjectionController.js # Projection rendering
 └── styles/           # Modular CSS
 ```
 
@@ -53,13 +81,33 @@ See [CLAUDE.md](CLAUDE.md) for detailed architecture documentation.
 ### Running Tests
 
 ```bash
-# Run unit tests
-node tests/unit/models/Plan.test.js
-node tests/unit/calculations/projection.test.js
+# Run all tests
+npm test
 
-# Run integration tests
-node tests/integration/full-flow.test.js
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests with interactive UI
+npm run test:ui
 ```
+
+### Code Quality
+
+```bash
+# Run linter
+npm run lint
+
+# Format code
+npm run format
+```
+
+### CI/CD
+
+The project uses GitHub Actions for continuous integration:
+- Runs tests on every push and pull request
+- Enforces minimum 50% code coverage
+- Runs ESLint for code quality checks
+- Coverage reports uploaded to Codecov
 
 ### Project Structure
 
