@@ -100,9 +100,9 @@ Plans:
 
 Plans:
 
-- [ ] 05-01: Migrate unit tests to Vitest format
-- [ ] 05-02: Migrate integration tests to Vitest
-- [ ] 05-03: Add coverage reporting and CI hooks
+- [x] 05-01: Migrate unit tests to Vitest format ✅
+- [x] 05-02: Migrate integration tests to Vitest ✅
+- [x] 05-03: Add coverage reporting and CI hooks ✅
 
 ### Phase 6: Validation & Polish
 
@@ -128,5 +128,5 @@ Plans:
 | 2. Tax Module Refactor          | 4/4            | Complete    | ✅            |
 | 3. UI Controller Refactor       | 4/4            | Complete    | ✅ 2026-01-15 |
 | 4. Configuration Centralization | 4/4            | Complete    | ✅ 2026-01-15 |
-| 5. Test Migration               | 0/3            | Not started | -             |
+| 5. Test Migration               | 3/3            | Complete    | ✅ 2026-01-17 |
 | 6. Validation & Polish          | 0/3            | Not started | -             |
