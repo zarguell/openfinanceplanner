@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import globals from 'globals';
 
 export default [
   js.configs.recommended,
@@ -26,9 +27,18 @@ export default [
     },
   },
   {
+    files: ['src/ui/**/*.js'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
+  },
+  {
     files: ['tests/**/*.js', 'vitest.config.js'],
     languageOptions: {
       globals: {
+        ...globals.node,
         describe: 'readonly',
         it: 'readonly',
         test: 'readonly',
@@ -37,9 +47,6 @@ export default [
         afterAll: 'readonly',
         beforeEach: 'readonly',
         afterEach: 'readonly',
-        console: 'readonly',
-        process: 'readonly',
-        global: 'readonly',
       },
     },
   },
