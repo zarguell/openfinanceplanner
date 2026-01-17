@@ -23,15 +23,25 @@ Make the codebase maintainable for long-term evolution - split monolithic files,
 - ✓ Rule engine for financial strategies — existing
 - ✓ Chart.js data visualization — existing
 
-### Active
+### Validated
 
-- [ ] Split monolithic files into focused modules
-- [ ] Extract hardcoded values to centralized configuration
-- [ ] Add ESLint for code quality enforcement
-- [ ] Add Prettier for consistent formatting
-- [ ] Add Vitest testing framework
-- [ ] Migrate existing custom tests to Vitest
-- [ ] Maintain backward compatibility with localStorage schema
+- ✓ Multi-account financial projections (401k, IRA, Roth IRA, HSA, Taxable) — existing
+- ✓ Expense modeling with inflation adjustment — existing
+- ✓ Customizable growth rates (equities, bonds) — existing
+- ✓ Client-side localStorage with schema versioning — existing
+- ✓ Import/export JSON for portability — existing
+- ✓ Dark mode support — existing
+- ✓ Comprehensive tax calculations (federal + all 50 states) — existing
+- ✓ Year-by-year projection engine — existing
+- ✓ Rule engine for financial strategies — existing
+- ✓ Chart.js data visualization — existing
+- ✓ Split monolithic files into focused modules
+- ✓ Extract hardcoded values to centralized configuration
+- ✓ Add ESLint for code quality enforcement
+- ✓ Add Prettier for consistent formatting
+- ✓ Add Vitest testing framework
+- ✓ Migrate existing custom tests to Vitest
+- ✓ Maintain backward compatibility with localStorage schema
 
 ### Out of Scope
 
@@ -43,6 +53,8 @@ Make the codebase maintainable for long-term evolution - split monolithic files,
 - External service integrations — Keep zero-dependency approach
 
 ## Context
+
+Maintainability overhaul completed (Phase 1-6, 2026-01-17). Codebase is now modular, well-configured, and equipped with modern tooling (ESLint, Prettier, Vitest, CI/CD).
 
 This is a brownfield project with an existing, well-architected codebase:
 
@@ -81,15 +93,15 @@ Focus on making the codebase more maintainable for long-term evolution.
 
 ## Key Decisions
 
-| Decision                          | Rationale                                                              | Outcome   |
-| --------------------------------- | ---------------------------------------------------------------------- | --------- |
-| Split files first, then tools     | Breaking monolithic files enables easier tool adoption                 | — Pending |
-| Extract config before refactoring | Centralizing values reduces duplicate work when splitting files        | — Pending |
-| Keep vanilla JS                   | Avoid framework migration complexity, focus on maintainability tooling | ✓ Good    |
-| Use Vitest (not Jest)             | Simpler setup, works with ES6 modules without bundler                  | — Pending |
-| Defer security fixes              | Focus limited effort on maintainability priorities                     | ✓ Good    |
-| Maintain localStorage schema      | No breaking data loss for existing users                               | — Pending |
+| Decision                          | Rationale                                                              | Outcome       |
+| --------------------------------- | ---------------------------------------------------------------------- | ------------- |
+| Split files first, then tools     | Breaking monolithic files enables easier tool adoption                 | ✓ Complete    |
+| Extract config before refactoring | Centralizing values reduces duplicate work when splitting files        | ✓ Complete    |
+| Keep vanilla JS                   | Avoid framework migration complexity, focus on maintainability tooling | ✓ Good        |
+| Use Vitest (not Jest)             | Simpler setup, works with ES6 modules without bundler                  | ✓ Complete    |
+| Defer security fixes              | Focus limited effort on maintainability priorities                     | ✓ Good        |
+| Maintain localStorage schema      | No breaking data loss for existing users                               | ✓ Complete    |
 
 ---
 
-_Last updated: 2026-01-15 after initialization_
+_Last updated: 2026-01-17 after Phase 6 completion_
