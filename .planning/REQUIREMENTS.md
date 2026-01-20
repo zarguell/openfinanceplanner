@@ -79,37 +79,37 @@
 
 ## Traceability
 
-| Requirement | Phase   | Status  |
-| ----------- | ------- | ------- |
-| BUGFIX-01   | Phase 1 | Pending |
-| BUGFIX-02   | Phase 1 | Pending |
-| BUGFIX-03   | Phase 1 | Pending |
-| BUGFIX-04   | Phase 1 | Pending |
-| E2E-01      | Phase 2 | Pending |
-| E2E-02      | Phase 2 | Pending |
-| E2E-03      | Phase 3 | Pending |
-| E2E-04      | Phase 3 | Pending |
-| E2E-05      | Phase 4 | Pending |
-| E2E-06      | Phase 4 | Pending |
-| VIZ-01      | Phase 5 | Pending |
-| VIZ-02      | Phase 5 | Pending |
-| VIZ-03      | Phase 5 | Pending |
-| VIZ-04      | Phase 5 | Pending |
-| VIZ-05      | Phase 5 | Pending |
-| VIZ-06      | Phase 5 | Pending |
-| REPORT-01   | Phase 6 | Pending |
-| REPORT-02   | Phase 6 | Pending |
-| REPORT-03   | Phase 6 | Pending |
-| REPORT-04   | Phase 6 | Pending |
-| REPORT-05   | Phase 6 | Pending |
-| COV-01      | Phase 4 | Pending |
-| COV-02      | Phase 4 | Pending |
-| COV-03      | Phase 4 | Pending |
-| COV-04      | Phase 4 | Pending |
+| Requirement | Phase    | Status  |
+| ----------- | -------- | ------- |
+| BUGFIX-01   | Phase 7  | Pending |
+| BUGFIX-02   | Phase 7  | Pending |
+| BUGFIX-03   | Phase 7  | Pending |
+| BUGFIX-04   | Phase 7  | Pending |
+| E2E-01      | Phase 8  | Pending |
+| E2E-02      | Phase 8  | Pending |
+| E2E-06      | Phase 8  | Pending |
+| E2E-03      | Phase 9  | Pending |
+| E2E-04      | Phase 9  | Pending |
+| E2E-05      | Phase 10 | Pending |
+| COV-01      | Phase 10 | Pending |
+| COV-02      | Phase 10 | Pending |
+| COV-03      | Phase 10 | Pending |
+| COV-04      | Phase 10 | Pending |
+| VIZ-01      | Phase 11 | Pending |
+| VIZ-02      | Phase 11 | Pending |
+| VIZ-03      | Phase 11 | Pending |
+| VIZ-04      | Phase 11 | Pending |
+| VIZ-05      | Phase 11 | Pending |
+| VIZ-06      | Phase 11 | Pending |
+| REPORT-01   | Phase 12 | Pending |
+| REPORT-02   | Phase 12 | Pending |
+| REPORT-03   | Phase 12 | Pending |
+| REPORT-04   | Phase 12 | Pending |
+| REPORT-05   | Phase 12 | Pending |
 
 **Coverage:**
 
-- v1 requirements: 25 total
+- v1.1 requirements: 25 total
 - Mapped to phases: 25
 - Unmapped: 0 ✓
 
