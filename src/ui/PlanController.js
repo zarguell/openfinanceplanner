@@ -260,6 +260,10 @@ export class PlanController {
   }
 
   saveAssumptions() {
+    if (!this.currentPlan) {
+      alert('Please create or select a plan first');
+      return;
+    }
     this.currentPlan.assumptions.inflationRate =
       parseFloat(document.getElementById('inflationRate').value) / 100;
     this.currentPlan.assumptions.equityGrowthRate =
@@ -469,6 +473,10 @@ export class PlanController {
   }
 
   savePlanSettings() {
+    if (!this.currentPlan) {
+      alert('Please create or select a plan first');
+      return;
+    }
     this.currentPlan.name = document.getElementById('settingsPlanName').value.trim();
     this.currentPlan.taxProfile.currentAge = parseInt(
       document.getElementById('settingsCurrentAge').value
@@ -550,6 +558,10 @@ export class PlanController {
   }
 
   saveSocialSecurity() {
+    if (!this.currentPlan) {
+      alert('Please create or select a plan first');
+      return;
+    }
     const enabled = document.getElementById('socialSecurityEnabled').checked;
     const birthYear = parseInt(document.getElementById('birthYear').value);
     const monthlyBenefit = parseFloat(document.getElementById('monthlyBenefit').value);

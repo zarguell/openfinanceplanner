@@ -89,6 +89,10 @@ export class ExpenseIncomeController {
   }
 
   addExpense() {
+    if (!this.currentPlan) {
+      alert('Please create or select a plan first');
+      return;
+    }
     const name = document.getElementById('expenseName').value.trim();
     const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
     const startYear = parseInt(document.getElementById('expenseStartYear').value) || 0;
@@ -256,6 +260,10 @@ export class ExpenseIncomeController {
   }
 
   addIncome() {
+    if (!this.currentPlan) {
+      alert('Please create or select a plan first');
+      return;
+    }
     const name = document.getElementById('incomeName').value.trim();
     const type = document.getElementById('incomeType').value;
     const amount = parseFloat(document.getElementById('incomeAmount').value) || 0;

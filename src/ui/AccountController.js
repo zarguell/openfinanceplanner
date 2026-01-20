@@ -97,6 +97,10 @@ export class AccountController {
   // CRUD Operations
 
   addAccount() {
+    if (!this.currentPlan) {
+      alert('Please create or select a plan first');
+      return;
+    }
     const name = document.getElementById('accountName').value.trim();
     const type = document.getElementById('accountType').value;
     const balance = parseFloat(document.getElementById('accountBalance').value) || 0;
@@ -123,6 +127,10 @@ export class AccountController {
   }
 
   editAccount(accountId) {
+    if (!this.currentPlan) {
+      alert('Please create or select a plan first');
+      return;
+    }
     const account = this.currentPlan.accounts.find((a) => a.id === accountId);
     if (!account) return;
 
