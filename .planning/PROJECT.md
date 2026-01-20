@@ -8,6 +8,20 @@ Open Finance Planner is a client-side financial planning application that runs e
 
 Make the codebase maintainable for long-term evolution - split monolithic files, centralize configuration, and add quality tooling without breaking existing functionality.
 
+## Current Milestone: v1.1 — Fix It, Trust It, Visualize It
+
+**Goal:** Fix blocking bugs preventing users from using the app, add comprehensive E2E testing to validate critical workflows, and implement visualizations (balance projection charts, retirement readiness report) so users can trust calculations and see their financial future at a glance.
+
+**Target features:**
+
+- Fix console errors and broken imports (ProjectionController, app object)
+- E2E testing infrastructure (Vitest Browser Mode + Playwright)
+- Page Object Model and test fixtures
+- Critical user flow tests (plan creation, accounts, projections)
+- Balance projection line chart (wealth trajectory, retirement milestone, interactive tooltips)
+- Retirement readiness report (gauge/meter, "on track" / "need more" assessment)
+- Increased test coverage (monte-carlo.js 0% → 70%, storage 45% → 70%)
+
 ## Current State
 
 **Version:** v1.0 (Shipped 2026-01-19)
@@ -33,16 +47,19 @@ Make the codebase maintainable for long-term evolution - split monolithic files,
 - Vitest v4.0.17 with coverage reporting
 - Chart.js via CDN
 
-## Next Milestone Goals
+## Current Milestone: v1.1 — Fix It, Trust It, Visualize It
 
-**v1.1** — TBD (open for planning)
+**Goal:** Fix blocking bugs preventing users from using the app, add comprehensive E2E testing to validate critical workflows, and implement visualizations (balance projection charts, retirement readiness report) so users can trust calculations and see their financial future at a glance.
 
-Potential focus areas:
+**Target features:**
 
-- Increase test coverage in storage and UI modules
-- Performance optimization for large projection datasets
-- Enhanced user experience features
-- Additional financial planning capabilities
+- Fix console errors and broken imports (ProjectionController, app object)
+- E2E testing infrastructure (Vitest Browser Mode + Playwright)
+- Page Object Model and test fixtures
+- Critical user flow tests (plan creation, accounts, projections)
+- Balance projection line chart (wealth trajectory, retirement milestone, interactive tooltips)
+- Retirement readiness report (gauge/meter, "on track" / "need more" assessment)
+- Increased test coverage (monte-carlo.js 0% → 70%, storage 45% → 70%)
 
 ## Requirements
 
