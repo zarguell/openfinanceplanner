@@ -56,9 +56,18 @@ export class AppController {
   }
 
   loadPlan(planId) {
+    // Load plan into PlanController
     this.planController.currentPlan = this.currentPlan;
     this.planController.loadPlan(planId);
+
+    // Sync to AppController to trigger setter and sync all controllers
     this.currentPlan = this.planController.currentPlan;
+
+    // Render UI after currentPlan is synced to all controllers
+    this.renderPlanUI();
+    this.accountController.renderAccountsList();
+    this.expenseIncomeController.renderExpensesList();
+    this.expenseIncomeController.renderIncomesList();
   }
 
   renderPlanUI() {

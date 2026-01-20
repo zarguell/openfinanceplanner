@@ -21,6 +21,8 @@ export class PlanController {
     this.chartRenderer = new ChartRenderer();
     this.accountController = accountController;
     this.expenseIncomeController = expenseIncomeController;
+    // Reference to app controller for routing onclick handlers
+    this.appController = null; // Will be set by AppController
   }
 
   // Plan CRUD Methods
@@ -39,7 +41,8 @@ export class PlanController {
     list.forEach((meta) => {
       const li = document.createElement('li');
       li.className = `plan-item ${this.currentPlan?.id === meta.id ? 'active' : ''}`;
-      li.onclick = () => this.loadPlan(meta.id);
+      // Route through AppController to trigger setter and sync all controllers
+      li.onclick = () => window.app.loadPlan(meta.id);
       li.innerHTML = `
         <div class="plan-item-name">${this.escapeHtml(meta.name)}</div>
         <div class="plan-item-date">${new Date(meta.lastModified).toLocaleDateString()}</div>
@@ -62,7 +65,7 @@ export class PlanController {
         ? planData.incomes.map((inc) => (inc instanceof Income ? inc : Income.fromJSON(inc)))
         : [];
 
-      this.renderPlanUI();
+      // Update plan list to show active selection
       this.loadPlansList();
     }
   }
@@ -300,7 +303,14 @@ export class PlanController {
     this.storageManager.savePlan(plan);
     document.getElementById('newPlanModal').classList.remove('active');
     this.loadPlansList();
-    this.loadPlan(plan.id);
+
+    // Route through AppController to trigger setter and sync all controllers
+    if (window.app) {
+      window.app.loadPlan(plan.id);
+    } else {
+      // Fallback if app not initialized
+      this.loadPlan(plan.id);
+    }
 
     document.getElementById('newPlanName').value = '';
     document.getElementById('newPlanAge').value = '';
