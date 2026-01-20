@@ -7,10 +7,10 @@
 
 ### Bug Fixes (BLOCKING - Priority: CRITICAL)
 
-- [ ] **BUGFIX-01**: Fix broken imports in ProjectionController (getSuccessProbabilityWithConfidence doesn't exist)
-- [ ] **BUGFIX-02**: Fix global `app` object initialization (HTML onclick handlers fail)
-- [ ] **BUGFIX-03**: Fix all console errors visible in Chrome DevTools
-- [ ] **BUGFIX-04**: Verify all user workflows work end-to-end (create plan, add account, run projection)
+- [x] **BUGFIX-01**: Fix broken imports in ProjectionController (getSuccessProbabilityWithConfidence doesn't exist)
+- [x] **BUGFIX-02**: Fix global `app` object initialization (HTML onclick handlers fail)
+- [x] **BUGFIX-03**: Fix all console errors visible in Chrome DevTools
+- [x] **BUGFIX-04**: Verify all user workflows work end-to-end (create plan, add account, run projection)
 
 ### E2E Testing Infrastructure (Priority: CRITICAL - Trust)
 
