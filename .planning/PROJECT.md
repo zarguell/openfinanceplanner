@@ -1,16 +1,54 @@
-# OFP Maintainability Overhaul
+# Open Finance Planner
 
 ## What This Is
 
-Open Finance Planner is a client-side financial planning application that runs entirely in the browser with zero external dependencies. The codebase has solid architectural foundations with layered design, domain-driven patterns, and comprehensive financial calculations (tax, projections, Monte Carlo simulations). However, maintainability concerns have accumulated: monolithic files, hardcoded values, and lack of modern tooling (linting, formatting, testing frameworks). This project will address these maintainability gaps while preserving the core architectural strengths.
+Open Finance Planner is a client-side financial planning application that runs entirely in the browser with zero external dependencies. The application features modular architecture with layered design, domain-driven patterns, and comprehensive financial calculations (tax, projections, Monte Carlo simulations). A maintainability overhaul in v1.0 addressed technical debt through code splitting, configuration centralization, and modern tooling adoption.
 
 ## Core Value
 
 Make the codebase maintainable for long-term evolution - split monolithic files, centralize configuration, and add quality tooling without breaking existing functionality.
 
+## Current State
+
+**Version:** v1.0 (Shipped 2026-01-19)
+
+**Codebase:**
+
+- 14,258 lines of JavaScript across modular architecture
+- 27 test files, 308 tests passing, 57.93% coverage
+- 0 ESLint errors (224 resolved during v1.0)
+- ES6 modules with zero-build process
+
+**Architecture:**
+
+- Tax calculations: Modular (federal.js, states.js, config/)
+- UI controllers: 5 focused controllers (App, Plan, Account, ExpenseIncome, Projection)
+- Configuration: Centralized (limits.json, ages.json, defaults.json)
+- Testing: Vitest with GitHub Actions CI
+
+**Tooling:**
+
+- ESLint 9.x with flat config
+- Prettier for code formatting
+- Vitest v4.0.17 with coverage reporting
+- Chart.js via CDN
+
+## Next Milestone Goals
+
+**v1.1** — TBD (open for planning)
+
+Potential focus areas:
+
+- Increase test coverage in storage and UI modules
+- Performance optimization for large projection datasets
+- Enhanced user experience features
+- Additional financial planning capabilities
+
 ## Requirements
 
-### Validated
+### Validated (v1.0 Complete)
+
+**Original Features:**
 
 - ✓ Multi-account financial projections (401k, IRA, Roth IRA, HSA, Taxable) — existing
 - ✓ Expense modeling with inflation adjustment — existing
@@ -23,25 +61,15 @@ Make the codebase maintainable for long-term evolution - split monolithic files,
 - ✓ Rule engine for financial strategies — existing
 - ✓ Chart.js data visualization — existing
 
-### Validated
+**Maintainability Improvements:**
 
-- ✓ Multi-account financial projections (401k, IRA, Roth IRA, HSA, Taxable) — existing
-- ✓ Expense modeling with inflation adjustment — existing
-- ✓ Customizable growth rates (equities, bonds) — existing
-- ✓ Client-side localStorage with schema versioning — existing
-- ✓ Import/export JSON for portability — existing
-- ✓ Dark mode support — existing
-- ✓ Comprehensive tax calculations (federal + all 50 states) — existing
-- ✓ Year-by-year projection engine — existing
-- ✓ Rule engine for financial strategies — existing
-- ✓ Chart.js data visualization — existing
-- ✓ Split monolithic files into focused modules
-- ✓ Extract hardcoded values to centralized configuration
-- ✓ Add ESLint for code quality enforcement
-- ✓ Add Prettier for consistent formatting
-- ✓ Add Vitest testing framework
-- ✓ Migrate existing custom tests to Vitest
-- ✓ Maintain backward compatibility with localStorage schema
+- ✓ Split monolithic files into focused modules — v1.0
+- ✓ Extract hardcoded values to centralized configuration — v1.0
+- ✓ Add ESLint for code quality enforcement — v1.0
+- ✓ Add Prettier for consistent formatting — v1.0
+- ✓ Add Vitest testing framework — v1.0
+- ✓ Migrate existing custom tests to Vitest — v1.0
+- ✓ Maintain backward compatibility with localStorage schema — v1.0
 
 ### Out of Scope
 
@@ -93,14 +121,14 @@ Focus on making the codebase more maintainable for long-term evolution.
 
 ## Key Decisions
 
-| Decision                          | Rationale                                                              | Outcome       |
-| --------------------------------- | ---------------------------------------------------------------------- | ------------- |
-| Split files first, then tools     | Breaking monolithic files enables easier tool adoption                 | ✓ Complete    |
-| Extract config before refactoring | Centralizing values reduces duplicate work when splitting files        | ✓ Complete    |
-| Keep vanilla JS                   | Avoid framework migration complexity, focus on maintainability tooling | ✓ Good        |
-| Use Vitest (not Jest)             | Simpler setup, works with ES6 modules without bundler                  | ✓ Complete    |
-| Defer security fixes              | Focus limited effort on maintainability priorities                     | ✓ Good        |
-| Maintain localStorage schema      | No breaking data loss for existing users                               | ✓ Complete    |
+| Decision                          | Rationale                                                              | Outcome    |
+| --------------------------------- | ---------------------------------------------------------------------- | ---------- |
+| Split files first, then tools     | Breaking monolithic files enables easier tool adoption                 | ✓ Complete |
+| Extract config before refactoring | Centralizing values reduces duplicate work when splitting files        | ✓ Complete |
+| Keep vanilla JS                   | Avoid framework migration complexity, focus on maintainability tooling | ✓ Good     |
+| Use Vitest (not Jest)             | Simpler setup, works with ES6 modules without bundler                  | ✓ Complete |
+| Defer security fixes              | Focus limited effort on maintainability priorities                     | ✓ Good     |
+| Maintain localStorage schema      | No breaking data loss for existing users                               | ✓ Complete |
 
 ---
 
