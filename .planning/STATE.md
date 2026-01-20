@@ -10,12 +10,12 @@ See: .planning/PROJECT.md (updated 2026-01-19)
 ## Current Position
 
 Milestone: v1.1 — Fix It, Trust It, Visualize It
-Phase: Phase 7 - Critical Bug Fixes (next to plan)
-Plan: Not started
-Status: Roadmap created, ready to begin Phase 7 planning
-Last activity: 2026-01-20 — v1.1 roadmap created with 6 phases (25 requirements mapped)
+Phase: Phase 7 - Critical Bug Fixes (1 of 3 plans complete)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-01-20 — Completed 07-01-PLAN.md
 
-Progress: ░░░░░░░░░░ 0% (v1.1 roadmap complete)
+Progress: ████████░░░ 4% (1 of 25 v1.1 plans complete)
 
 ## Performance Metrics
 
@@ -26,15 +26,15 @@ Progress: ░░░░░░░░░░ 0% (v1.1 roadmap complete)
 
 **v1.1 Phase Structure:**
 
-| Phase | Requirements | Est. Plans |
-| ----- | ------------ | ---------- |
-| 7     | 4            | TBD        |
-| 8     | 3            | TBD        |
-| 9     | 2            | TBD        |
-| 10    | 5            | TBD        |
-| 11    | 6            | TBD        |
-| 12    | 5            | TBD        |
-| Total | 25           | TBD        |
+| Phase | Requirements | Plans |
+| ----- | ------------ | ----- |
+| 7     | 4            | 3     |
+| 8     | 3            | TBD   |
+| 9     | 2            | TBD   |
+| 10    | 5            | TBD   |
+| 11    | 6            | TBD   |
+| 12    | 5            | TBD   |
+| Total | 25           | TBD   |
 
 **v1.1 Goals:**
 
@@ -57,6 +57,11 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - **Research Integration:** E2E architecture from research/SUMMARY.md informed Phases 8-10 (Vitest Browser Mode + Playwright)
 - **Success Criteria:** All 6 phases have 2-7 observable user behaviors per phase
 
+**Phase 7-01 Decision (2026-01-20):**
+
+- **Restoration Approach:** Restored Monte Carlo from git commit 9d7b704 rather than reimplementing from scratch - implementation was tested and working
+- **Documentation Deletions:** Confirmed AGENTS.md and GEMINI.md were intentional cleanup, not accidental code deletions
+
 ### v1.0 Decisions (Archived)
 
 See v1.0 COMPLETION.md or STATE.md archive for full decision history.
@@ -74,9 +79,9 @@ See v1.0 COMPLETION.md or STATE.md archive for full decision history.
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Roadmap creation complete (ROADMAP.md, STATE.md updated)
-Resume state: Ready for Phase 7 planning (`/gsd-plan-phase 7`)
-Next action: Begin Phase 7 breakdown to fix critical bugs blocking users
+Stopped at: Completed 07-01-PLAN.md (Monte Carlo restoration)
+Resume file: None
+Next action: Continue Phase 7 - Verify window.app initialization (07-02)
 
 ---
 

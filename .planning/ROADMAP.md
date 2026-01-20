@@ -36,11 +36,11 @@ v1.1 delivers a trustworthy financial planning tool through three pillars: fix b
 
 Plans:
 
-- [ ] 07-01-PLAN.md — Restore Monte Carlo implementation from git history (BUGFIX-01)
+- [x] 07-01-PLAN.md — Restore Monte Carlo implementation from git history (BUGFIX-01) ✓
 - [ ] 07-02-PLAN.md — Verify app initialization and clear console errors (BUGFIX-02, BUGFIX-03)
 - [ ] 07-03-PLAN.md — End-to-end workflow verification (BUGFIX-04)
 
-**Progress:** 0/4 requirements complete
+**Progress:** 1/4 requirements complete (25%)
 
 ---
 
