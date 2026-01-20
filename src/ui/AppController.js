@@ -11,20 +11,33 @@ import { ProjectionController } from './ProjectionController.js';
 
 export class AppController {
   constructor() {
-    this.currentPlan = null;
+    this._currentPlan = null;
     this.projectionResults = null;
     this.monteCarloResults = null;
     this.chartRenderer = new ChartRenderer();
-    this.accountController = new AccountController(this.currentPlan, StorageManager);
-    this.expenseIncomeController = new ExpenseIncomeController(this.currentPlan, StorageManager);
+    this.accountController = new AccountController(this._currentPlan, StorageManager);
+    this.expenseIncomeController = new ExpenseIncomeController(this._currentPlan, StorageManager);
     this.planController = new PlanController(
-      this.currentPlan,
+      this._currentPlan,
       StorageManager,
       this.accountController,
       this.expenseIncomeController
     );
-    this.projectionController = new ProjectionController(this.currentPlan, this.chartRenderer);
+    this.projectionController = new ProjectionController(this._currentPlan, this.chartRenderer);
     this.init();
+  }
+
+  get currentPlan() {
+    return this._currentPlan;
+  }
+
+  set currentPlan(value) {
+    this._currentPlan = value;
+    // Sync currentPlan to all controllers
+    this.planController.currentPlan = value;
+    this.accountController.currentPlan = value;
+    this.expenseIncomeController.currentPlan = value;
+    this.projectionController.currentPlan = value;
   }
 
   init() {
