@@ -523,15 +523,27 @@ export class PlanController {
       marginalTaxRate: qcdMarginalTaxRate / 100,
     };
 
-    const tlhEnabled = document.getElementById('settingsTLHEnabled').checked;
-    const tlhStrategy = document.getElementById('settingsTLHStrategy').value;
-    const tlhThreshold = parseFloat(document.getElementById('settingsTLHThreshold').value) || 1000;
+    // Tax Loss Harvesting - defensive check (TLH UI fields not yet in modal)
+    const tlhEnabledEl = document.getElementById('settingsTLHEnabled');
+    if (tlhEnabledEl) {
+      const tlhEnabled = tlhEnabledEl.checked;
+      const tlhStrategy = document.getElementById('settingsTLHStrategy').value;
+      const tlhThreshold =
+        parseFloat(document.getElementById('settingsTLHThreshold').value) || 1000;
 
-    this.currentPlan.taxLossHarvesting = {
-      enabled: tlhEnabled,
-      strategy: tlhStrategy,
-      threshold: Math.round(tlhThreshold * 100),
-    };
+      this.currentPlan.taxLossHarvesting = {
+        enabled: tlhEnabled,
+        strategy: tlhStrategy,
+        threshold: Math.round(tlhThreshold * 100),
+      };
+    } else {
+      // Preserve existing TLH settings or set default
+      this.currentPlan.taxLossHarvesting = this.currentPlan.taxLossHarvesting || {
+        enabled: false,
+        strategy: 'threshold',
+        threshold: 100000,
+      };
+    }
 
     this.currentPlan.touch();
     this.storageManager.savePlan(this.currentPlan);
