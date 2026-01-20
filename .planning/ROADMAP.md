@@ -37,10 +37,11 @@ v1.1 delivers a trustworthy financial planning tool through three pillars: fix b
 Plans:
 
 - [x] 07-01-PLAN.md — Restore Monte Carlo implementation from git history (BUGFIX-01) ✓
-- [ ] 07-02-PLAN.md — Verify app initialization and clear console errors (BUGFIX-02, BUGFIX-03)
-- [ ] 07-03-PLAN.md — End-to-end workflow verification (BUGFIX-04)
+- [x] 07-02-PLAN.md — Verify app initialization and clear console errors (BUGFIX-02, BUGFIX-03) ✓
+- [x] 07-03-PLAN.md — End-to-end workflow verification (BUGFIX-04) ✓
 
-**Progress:** 1/4 requirements complete (25%)
+**Status:** Phase 7 complete ✓
+**Progress:** 4/4 requirements complete (100%)
 
 ---
 
@@ -177,13 +178,13 @@ Plans:
 
 | Phase     | Name                             | Requirements | Complete | Progress |
 | --------- | -------------------------------- | ------------ | -------- | -------- |
-| 7         | Critical Bug Fixes               | 4            | 0        | 0%       |
+| 7         | Critical Bug Fixes               | 4            | 4        | 100%     |
 | 8         | E2E Testing Infrastructure       | 3            | 0        | 0%       |
 | 9         | E2E Test Foundation              | 2            | 0        | 0%       |
 | 10        | Critical User Flow E2E Tests     | 5            | 0        | 0%       |
 | 11        | Balance Projection Visualization | 6            | 0        | 0%       |
 | 12        | Retirement Readiness Report      | 5            | 0        | 0%       |
-| **Total** | **6 phases**                     | **25**       | **0**    | **0%**   |
+| **Total** | **6 phases**                     | **25**       | **4**    | **16%**  |
 
 ## Coverage Validation
 
