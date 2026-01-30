@@ -65,6 +65,14 @@ Plans:
 4. Smoke test creates a plan via browser automation and verifies it exists
 5. `npm run test:e2e:ui` launches interactive test debugging UI
 
+**Plans:** 3 plans in 3 waves
+
+Plans:
+
+- [ ] 08-01-PLAN.md — Install and configure Vitest Browser Mode with Playwright (E2E-01, E2E-02)
+- [ ] 08-02-PLAN.md — Create E2E test scripts and smoke test (E2E-06)
+- [ ] 08-03-PLAN.md — Configure CI workflow and verify infrastructure
+
 **Progress:** 0/3 requirements complete
 
 ---

@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-01-19)
 ## Current Position
 
 Milestone: v1.1 — Fix It, Trust It, Visualize It
-Phase: Phase 8 - E2E Testing Infrastructure (next to plan)
-Plan: Not started
+Phase: Phase 8 - E2E Testing Infrastructure (in progress)
+Plan: 08-01-PLAN.md (first of 3)
 Status: Phase 7 complete, verified, all requirements met
-Last activity: 2026-01-20 — Phase 7 verified (100% success rate)
+Last activity: 2026-01-21 — Phase 8 planning complete
 
 Progress: ████████████░░ 12% (3 of 25 v1.1 plans complete, 4/25 requirements met)
 
