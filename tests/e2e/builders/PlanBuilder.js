@@ -1,5 +1,5 @@
-import { Plan } from '../../src/core/models/Plan.js';
-import { Account } from '../../src/core/models/Account.js';
+import { Plan } from '../../../src/core/models/Plan.js';
+import { Account } from '../../../src/core/models/Account.js';
 
 /**
  * PlanBuilder - Fluent builder for creating Plan test data

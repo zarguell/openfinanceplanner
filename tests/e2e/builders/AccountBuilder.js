@@ -1,4 +1,4 @@
-import { Account } from '../../src/core/models/Account.js';
+import { Account } from '../../../src/core/models/Account.js';
 
 /**
  * AccountBuilder - Fluent builder for creating Account test data
