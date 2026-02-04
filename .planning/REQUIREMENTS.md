@@ -16,8 +16,8 @@
 
 - [x] **E2E-01**: Install Vitest Browser Mode with Playwright provider
 - [x] **E2E-02**: Configure E2E test environment (vitest.config.js, playwright config)
-- [ ] **E2E-03**: Create Page Object Model classes (AppPage, PlanPage, AccountPage, ProjectionPage)
-- [ ] **E2E-04**: Create test fixtures and data builders (PlanBuilder, AccountBuilder)
+- [x] **E2E-03**: Create Page Object Model classes (AppPage, PlanPage, AccountPage, ProjectionPage)
+- [x] **E2E-04**: Create test fixtures and data builders (PlanBuilder, AccountBuilder)
 - [ ] **E2E-05**: Write E2E tests for critical user workflows (plan creation, account management, projection)
 - [x] **E2E-06**: Add test scripts (test:e2e, test:e2e:ui, test:e2e:debug)
 
