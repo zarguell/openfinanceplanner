@@ -107,7 +107,7 @@ export class PlanPage {
     await this.openPlanSettings();
     const nameInput = this.page.locator('#settingsPlanName');
     await nameInput.fill(newName);
-    await this.page.locator('.btn-primary').filter({ hasText: 'Save' }).click();
+    await this.page.getByRole('button', { name: 'Save' }).click();
     await this.page.waitForSelector('#planSettingsModal', { state: 'hidden' });
   }
 }

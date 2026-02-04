@@ -42,7 +42,7 @@ export class AppPage {
 
   async closeModal(modalId) {
     const modal = this.page.locator(`#${modalId}`);
-    await modal.locator('.btn-outline').first().click();
+    await modal.getByRole('button', { name: 'Cancel' }).first().click();
     await modal.waitFor({ state: 'hidden' });
   }
 
