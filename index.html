@@ -49,13 +49,14 @@
         <div class="header">
           <h1 id="headerTitle">Welcome</h1>
           <div class="header-actions">
-            <button class="btn btn-outline btn-small" onclick="app.showPlanSettingsModal()">
+            <button class="btn btn-outline btn-small" onclick="app.showPlanSettingsModal()" data-testid="settings-button">
               Settings
             </button>
             <button
               class="btn btn-danger btn-small"
               onclick="app.deletePlan()"
               id="deleteBtn"
+              data-testid="delete-plan-button"
               style="display: none"
             >
               Delete
@@ -87,6 +88,7 @@
             id="newPlanName"
             class="form-control"
             placeholder="e.g., Retirement 2050"
+            data-testid="plan-name-input"
           />
         </div>
         <div class="form-group">
@@ -98,6 +100,7 @@
             placeholder="40"
             min="18"
             max="100"
+            data-testid="plan-age-input"
           />
         </div>
         <div class="form-group">
@@ -109,11 +112,12 @@
             placeholder="67"
             min="18"
             max="100"
+            data-testid="plan-retirement-age-input"
           />
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="app.closeModal('newPlanModal')">Cancel</button>
-          <button class="btn btn-primary" onclick="app.createNewPlan()">Create</button>
+          <button class="btn btn-primary" onclick="app.createNewPlan()" data-testid="create-plan-button">Create</button>
         </div>
       </div>
     </div>

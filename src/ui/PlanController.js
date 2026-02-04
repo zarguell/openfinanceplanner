@@ -79,13 +79,13 @@ export class PlanController {
 
     contentArea.innerHTML = `
       <div class="tabs">
-        <button class="tab active" onclick="app.switchTab('overview')">Overview</button>
-        <button class="tab" onclick="app.switchTab('assumptions')">Assumptions</button>
-        <button class="tab" onclick="app.switchTab('socialsecurity')">Social Security</button>
-        <button class="tab" onclick="app.switchTab('income')">Income</button>
-        <button class="tab" onclick="app.switchTab('accounts')">Accounts</button>
-        <button class="tab" onclick="app.switchTab('expenses')">Expenses</button>
-        <button class="tab" onclick="app.switchTab('projection')">Projection</button>
+        <button class="tab active" onclick="app.switchTab('overview')" data-testid="tab-overview">Overview</button>
+        <button class="tab" onclick="app.switchTab('assumptions')" data-testid="tab-assumptions">Assumptions</button>
+        <button class="tab" onclick="app.switchTab('socialsecurity')" data-testid="tab-socialsecurity">Social Security</button>
+        <button class="tab" onclick="app.switchTab('income')" data-testid="tab-income">Income</button>
+        <button class="tab" onclick="app.switchTab('accounts')" data-testid="tab-accounts">Accounts</button>
+        <button class="tab" onclick="app.switchTab('expenses')" data-testid="tab-expenses">Expenses</button>
+        <button class="tab" onclick="app.switchTab('projection')" data-testid="tab-projection">Projection</button>
       </div>
 
       <div id="overviewTab" class="tab-content active">

@@ -25,6 +25,8 @@ export class AccountController {
     this.currentPlan.accounts.forEach((account) => {
       const card = document.createElement('div');
       card.className = 'card';
+      card.setAttribute('data-testid', `account-card-${account.id}`);
+      card.setAttribute('data-testid', 'account-card');
       card.innerHTML = `
         <div class="card-header">
           <h4>${this.escapeHtml(account.name)} <span class="badge badge-success">${account.type}</span></h4>
@@ -65,11 +67,11 @@ export class AccountController {
         </div>
         <div class="form-group">
           <label class="form-label">Account Name</label>
-          <input type="text" id="accountName" class="form-control" placeholder="e.g., 401(k)">
+          <input type="text" id="accountName" class="form-control" placeholder="e.g., 401(k)" data-testid="account-name-input">
         </div>
         <div class="form-group">
           <label class="form-label">Account Type</label>
-          <select id="accountType" class="form-control">
+          <select id="accountType" class="form-control" data-testid="account-type-select">
             <option value="401k">401(k)</option>
             <option value="IRA">Traditional IRA</option>
             <option value="Roth">Roth IRA</option>
@@ -79,15 +81,15 @@ export class AccountController {
         </div>
         <div class="form-group">
           <label class="form-label">Current Balance <span class="form-label-hint">$</span></label>
-          <input type="number" id="accountBalance" class="form-control" placeholder="100000" min="0" step="1000">
+          <input type="number" id="accountBalance" class="form-control" placeholder="100000" min="0" step="1000" data-testid="account-balance-input">
         </div>
         <div class="form-group">
           <label class="form-label">Annual Contribution <span class="form-label-hint">$</span></label>
-          <input type="number" id="accountContribution" class="form-control" placeholder="23500" min="0" step="100">
+          <input type="number" id="accountContribution" class="form-control" placeholder="23500" min="0" step="100" data-testid="account-contribution-input">
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="document.getElementById('addAccountModal').remove()">Cancel</button>
-          <button class="btn btn-primary" onclick="app.addAccount()">Add</button>
+          <button class="btn btn-primary" onclick="app.addAccount()" data-testid="add-account-button">Add</button>
         </div>
       </div>
     `;
@@ -144,19 +146,19 @@ export class AccountController {
         </div>
         <div class="form-group">
           <label class="form-label">Account Name</label>
-          <input type="text" id="editAccountName" class="form-control" value="${this.escapeHtml(account.name)}">
+          <input type="text" id="editAccountName" class="form-control" value="${this.escapeHtml(account.name)}" data-testid="edit-account-name-input">
         </div>
         <div class="form-group">
           <label class="form-label">Current Balance <span class="form-label-hint">$</span></label>
-          <input type="number" id="editAccountBalance" class="form-control" value="${(account.balance / 100).toFixed(2)}" min="0" step="1000">
+          <input type="number" id="editAccountBalance" class="form-control" value="${(account.balance / 100).toFixed(2)}" min="0" step="1000" data-testid="edit-account-balance-input">
         </div>
         <div class="form-group">
           <label class="form-label">Annual Contribution <span class="form-label-hint">$</span></label>
-          <input type="number" id="editAccountContribution" class="form-control" value="${account.annualContribution}" min="0" step="100">
+          <input type="number" id="editAccountContribution" class="form-control" value="${account.annualContribution}" min="0" step="100" data-testid="edit-account-contribution-input">
         </div>
         <div class="modal-footer">
           <button class="btn btn-outline" onclick="document.getElementById('editAccountModal').remove()">Cancel</button>
-          <button class="btn btn-primary" onclick="app.saveEditAccount('${accountId}')">Save</button>
+          <button class="btn btn-primary" onclick="app.saveEditAccount('${accountId}')" data-testid="save-account-button">Save</button>
         </div>
       </div>
     `;

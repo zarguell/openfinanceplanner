@@ -58,14 +58,14 @@ export class ProjectionController {
             : 'badge-danger';
 
       monteCarloSection = `
-        <div class="card">
+        <div class="card" data-testid="monte-carlo-card">
           <div class="card-header">
             <h3>Monte Carlo Analysis (1,000 Scenarios)</h3>
           </div>
           <div class="results-grid">
             <div class="result-card">
               <div class="result-label">Success Probability</div>
-              <div class="result-value"><span class="badge ${successClass}">${(successProb.probability * 100).toFixed(1)}%</span></div>
+              <div class="result-value"><span class="badge ${successClass}" data-testid="success-probability-badge">${(successProb.probability * 100).toFixed(1)}%</span></div>
               <div class="result-sublabel">${successProb.lowerBound.toFixed(3)} - ${successProb.upperBound.toFixed(3)} (95% CI)</div>
             </div>
             <div class="result-card">
@@ -101,12 +101,12 @@ export class ProjectionController {
       <div class="results-grid">
         <div class="result-card">
           <div class="result-label">Final Balance (Age 97)</div>
-          <div class="result-value">$${finalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
+          <div class="result-value" data-testid="final-balance-result">$${finalBalance.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
           <div class="result-sublabel">${this.projectionResults[this.projectionResults.length - 1].year}</div>
         </div>
         <div class="result-card">
           <div class="result-label">Balance at Retirement</div>
-          <div class="result-value">$${retirementBalance.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
+          <div class="result-value" data-testid="retirement-balance-result">$${retirementBalance.toLocaleString('en-US', { minimumFractionDigits: 0 })}</div>
           <div class="result-sublabel">${retirementYear}</div>
         </div>
       </div>
@@ -118,7 +118,7 @@ export class ProjectionController {
           <h3>Portfolio Balance Projection</h3>
         </div>
         <div class="chart-container">
-          <canvas id="balanceChart"></canvas>
+          <canvas id="balanceChart" data-testid="balance-chart-canvas"></canvas>
         </div>
       </div>
 
@@ -188,7 +188,7 @@ export class ProjectionController {
           <h3>Year-by-Year Projection</h3>
         </div>
         <div class="table-responsive">
-          <table>
+          <table data-testid="year-by-year-table">
             <thead>
               <tr>
                 <th>Year</th>
