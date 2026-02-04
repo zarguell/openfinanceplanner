@@ -47,12 +47,15 @@ test.describe('Fixtures Demo', () => {
       .build();
 
     expect(plan.name).toBe('Complex Test Plan');
-    expect(plan.currentAge).toBe(30);
-    expect(plan.retirementAge).toBe(60);
+    expect(plan.taxProfile.currentAge).toBe(30);
+    expect(plan.taxProfile.retirementAge).toBe(60);
     expect(plan.accounts.length).toBe(2);
   });
 
   test('storageHelper manages localStorage', async ({ page, storageHelper }) => {
+    // Navigate first (required for localStorage access)
+    await page.goto('http://localhost:3030');
+
     const plan = aPlan().withName('Storage Test').withAges(40, 67).build();
 
     await storageHelper.setPlan(plan);

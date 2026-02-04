@@ -66,6 +66,9 @@ export const test = base.extend({
   // authenticatedPage fixture - creates a test plan before each test
   // Provides all page objects and a pre-populated test plan
   authenticatedPage: async ({ page, storageHelper }, use) => {
+    // Navigate to app first (required for localStorage access)
+    await page.goto('http://localhost:3030');
+
     // Import builder for test data
     const { aPlan } = await import('../builders/PlanBuilder.js');
 
@@ -78,8 +81,8 @@ export const test = base.extend({
 
     await storageHelper.setPlan(testPlan);
 
-    // Navigate to app
-    await page.goto('http://localhost:3030');
+    // Reload to see the plan
+    await page.reload();
 
     // Provide page objects
     const appPage = new AppPage(page);
