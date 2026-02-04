@@ -37,3 +37,12 @@ jobs:
       - name: Check coverage thresholds
         run: |
           echo "Coverage thresholds enforced by Vitest"
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start server and run E2E tests
+        run: |
+          npm run serve &
+          sleep 5
+          npm run test:e2e
