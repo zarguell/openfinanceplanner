@@ -100,6 +100,12 @@ Plans:
 
 **Progress:** 0/2 requirements complete
 
+**Plans:** 2 plans in 2 waves
+
+Plans:
+- [ ] 09-01-PLAN.md — Create Page Object Model classes (AppPage, PlanPage, AccountPage, ProjectionPage) with resilient selectors
+- [ ] 09-02-PLAN.md — Create test fixtures and data builders (PlanBuilder, AccountBuilder, StorageHelper)
+
 ---
 
 ### Phase 10: Critical User Flow E2E Tests
