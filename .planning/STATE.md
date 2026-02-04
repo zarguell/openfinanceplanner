@@ -11,11 +11,11 @@ See: .planning/PROJECT.md (updated 2026-01-19)
 
 Milestone: v1.1 — Fix It, Trust It, Visualize It
 Phase: Phase 8 - E2E Testing Infrastructure (in progress)
-Plan: 08-01-PLAN.md (first of 3)
-Status: Phase 7 complete, verified, all requirements met
-Last activity: 2026-01-21 — Phase 8 planning complete
+Plan: 08-01-PLAN.md (first of 3) - COMPLETE
+Status: E2E testing infrastructure established, smoke test passing
+Last activity: 2026-02-03 — Completed E2E testing infrastructure setup
 
-Progress: ████████████░░ 12% (3 of 25 v1.1 plans complete, 4/25 requirements met)
+Progress: ████████████░░ 16% (4 of 25 v1.1 plans complete, 4/25 requirements met)
 
 ## Performance Metrics
 
@@ -73,6 +73,13 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - **Verification-Only Plan:** No code changes required - all 4 BUGFIX requirements met through previous plans
 - **Zero Console Errors Baseline:** Established zero console errors as quality baseline for future phases
 
+**Phase 8-01 Decision (2026-02-03):**
+
+- **E2E Testing Approach:** Switched from Vitest Browser Mode to Playwright test runner for true E2E automation. Vitest Browser Mode runs tests in-browser (integration testing), while Playwright provides traditional E2E control from Node.js with navigation and browser automation.
+- **Page Object Model:** Adopted POM pattern for maintainable test code - encapsulated page interactions in AppPage class with reusable methods.
+- **Test Selectors Strategy:** Added data-testid attributes to UI elements for stable, reliable test selectors that won't break with CSS or text changes.
+- **Browser Coverage:** Chromium-only testing per CONTEXT.md decision - reduces complexity and test execution time.
+
 ### v1.0 Decisions (Archived)
 
 See v1.0 COMPLETION.md or STATE.md archive for full decision history.
@@ -89,11 +96,11 @@ See v1.0 COMPLETION.md or STATE.md archive for full decision history.
 
 ## Session Continuity
 
-Last session: 2026-01-20
-Stopped at: Completed 07-03-PLAN.md (End-to-end workflow verification)
+Last session: 2026-02-03
+Stopped at: Completed 08-01-PLAN.md (E2E testing infrastructure)
 Resume file: None
-Next action: Begin Phase 8 - E2E Testing Infrastructure (08-01-PLAN.md)
+Next action: Begin Phase 8 - Plan 02 (08-02-PLAN.md)
 
 ---
 
-_Last updated: 2026-01-20 after v1.1 roadmap creation_
+_Last updated: 2026-02-03 after E2E testing infrastructure completion_
