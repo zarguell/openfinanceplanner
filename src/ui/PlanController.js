@@ -41,6 +41,7 @@ export class PlanController {
     list.forEach((meta) => {
       const li = document.createElement('li');
       li.className = `plan-item ${this.currentPlan?.id === meta.id ? 'active' : ''}`;
+      li.setAttribute('data-testid', 'plan-item');
       // Route through AppController to trigger setter and sync all controllers
       li.onclick = () => window.app.loadPlan(meta.id);
       li.innerHTML = `
