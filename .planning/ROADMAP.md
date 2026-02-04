@@ -135,6 +135,16 @@ Plans:
 
 **Progress:** 0/5 requirements complete
 
+**Plans:** 6 plans in 1 wave
+
+Plans:
+- [ ] 10-01-PLAN.md — Create E2E tests for Plan CRUD operations (create, rename, delete, switch) with localStorage verification
+- [ ] 10-02-PLAN.md — Create E2E tests for Account Management (add, edit, delete, type validation) with projection updates
+- [ ] 10-03-PLAN.md — Create E2E tests for Projection Calculation (run projection, Monte Carlo, localStorage persistence)
+- [ ] 10-04-PLAN.md — Create unit tests for monte-carlo.js (0% → 70%+ coverage) with range assertions
+- [ ] 10-05-PLAN.md — Create unit tests for StorageManager and schema (45% → 70%+ coverage)
+- [ ] 10-06-PLAN.md — Expand unit tests for tax and RMD calculations (30% → 70%+ coverage) to complete COV-04
+
 ---
 
 ### Phase 11: Balance Projection Visualization
