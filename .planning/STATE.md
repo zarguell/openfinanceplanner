@@ -19,6 +19,7 @@ Progress: [████░░░░░] 40%
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 2
 - Average duration: 5.5min
 - Total execution time: 0.18 hours
@@ -26,14 +27,15 @@ Progress: [████░░░░░] 40%
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 13 | 2 | 5 | 5.5min |
+| ----- | ----- | ----- | -------- |
+| 13    | 2     | 5     | 5.5min   |
 
 **Recent Trend:**
+
 - Last 5 plans: 8min (13-03)
 - Trend: On track
 
-*Updated after each plan completion*
+_Updated after each plan completion_
 
 ## Accumulated Context
 
@@ -43,11 +45,13 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 **Build Tooling (Phase 13-01):**
+
 - Manual project structure creation (not using `create vite` CLI) - cleaner control over existing directory
 - Simplified tsconfig without project references - avoids composite build complexity
-- Path aliases configured upfront (@/core, @/components, @/*) - enables scalable imports
+- Path aliases configured upfront (@/core, @/components, @/\*) - enables scalable imports
 
 **Test Infrastructure (Phase 13-03):**
+
 - Vitest over Jest (Vite-native, faster, better TypeScript support)
 - jsdom environment for future React component testing
 - v8 coverage provider (faster than istanbul)
@@ -61,6 +65,7 @@ None yet.
 ### Blockers/Concerns
 
 **Next Phase Readiness:**
+
 - No blockers - build system and test infrastructure complete
 - TypeScript strict mode ensures type safety for all future code
 - Path aliases enable clean component/core architecture

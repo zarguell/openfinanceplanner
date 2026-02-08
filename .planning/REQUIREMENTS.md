@@ -100,70 +100,72 @@ Deferred to future release. Tracked but not in current roadmap.
 
 Explicitly excluded. Documented to prevent scope creep.
 
-| Feature | Reason |
-|---------|--------|
-| Account aggregation | Privacy-first design; users input abstractions, no bank connections |
-| Backend/Auth | Runs entirely client-side; no user accounts or cloud sync in MVP |
-| Real-time sync | Offline-first PWA; sync complexity deferred to future versions |
-| Social features | Individual planning tool; advisor/social features planned for v0.3.0+ |
-| Advanced tax modeling | Basic projections in MVP; multi-jurisdiction support in v0.2.0+ |
-| Monte Carlo | Deterministic projections only in MVP; stochastic analysis in v0.2.0+ |
+| Feature               | Reason                                                                |
+| --------------------- | --------------------------------------------------------------------- |
+| Account aggregation   | Privacy-first design; users input abstractions, no bank connections   |
+| Backend/Auth          | Runs entirely client-side; no user accounts or cloud sync in MVP      |
+| Real-time sync        | Offline-first PWA; sync complexity deferred to future versions        |
+| Social features       | Individual planning tool; advisor/social features planned for v0.3.0+ |
+| Advanced tax modeling | Basic projections in MVP; multi-jurisdiction support in v0.2.0+       |
+| Monte Carlo           | Deterministic projections only in MVP; stochastic analysis in v0.2.0+ |
 
 ## Traceability
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| ARCH-01 | Phase 13 | Pending |
-| ARCH-02 | Phase 13 | Pending |
-| ARCH-03 | Phase 13 | Pending |
-| ARCH-04 | Phase 13 | Pending |
-| ARCH-05 | Phase 13 | Pending |
-| ARCH-06 | Phase 13 | Pending |
-| ENGINE-01 | Phase 14 | Pending |
-| ENGINE-02 | Phase 14 | Pending |
-| ENGINE-03 | Phase 14 | Pending |
-| ENGINE-04 | Phase 14 | Pending |
-| ENGINE-05 | Phase 14 | Pending |
-| ENGINE-06 | Phase 14 | Pending |
-| STATE-01 | Phase 15 | Pending |
-| STATE-02 | Phase 15 | Pending |
-| STATE-03 | Phase 15 | Pending |
-| STATE-04 | Phase 15 | Pending |
-| STATE-05 | Phase 15 | Pending |
-| STATE-06 | Phase 15 | Pending |
-| UI-01 | Phase 16 | Pending |
-| UI-02 | Phase 16 | Pending |
-| UI-03 | Phase 16 | Pending |
-| UI-04 | Phase 16 | Pending |
-| UI-05 | Phase 16 | Pending |
-| UI-06 | Phase 16 | Pending |
-| UI-07 | Phase 16 | Pending |
-| VIS-01 | Phase 17 | Pending |
-| VIS-02 | Phase 17 | Pending |
-| VIS-03 | Phase 17 | Pending |
-| VIS-04 | Phase 17 | Pending |
-| VIS-05 | Phase 17 | Pending |
-| PWA-01 | Phase 18 | Pending |
-| PWA-02 | Phase 18 | Pending |
-| PWA-03 | Phase 18 | Pending |
-| PWA-04 | Phase 18 | Pending |
-| PWA-05 | Phase 18 | Pending |
-| PWA-06 | Phase 18 | Pending |
-| TEST-01 | Phase 13 | Pending |
-| TEST-02 | Phase 13 | Pending |
-| TEST-03 | Phase 14 | Pending |
-| TEST-04 | Phase 14 | Pending |
-| TEST-05 | Phase 14 | Pending |
-| TEST-06 | All Phases | Pending |
-| TEST-07 | All Phases | Pending |
+| Requirement | Phase      | Status  |
+| ----------- | ---------- | ------- |
+| ARCH-01     | Phase 13   | Pending |
+| ARCH-02     | Phase 13   | Pending |
+| ARCH-03     | Phase 13   | Pending |
+| ARCH-04     | Phase 13   | Pending |
+| ARCH-05     | Phase 13   | Pending |
+| ARCH-06     | Phase 13   | Pending |
+| ENGINE-01   | Phase 14   | Pending |
+| ENGINE-02   | Phase 14   | Pending |
+| ENGINE-03   | Phase 14   | Pending |
+| ENGINE-04   | Phase 14   | Pending |
+| ENGINE-05   | Phase 14   | Pending |
+| ENGINE-06   | Phase 14   | Pending |
+| STATE-01    | Phase 15   | Pending |
+| STATE-02    | Phase 15   | Pending |
+| STATE-03    | Phase 15   | Pending |
+| STATE-04    | Phase 15   | Pending |
+| STATE-05    | Phase 15   | Pending |
+| STATE-06    | Phase 15   | Pending |
+| UI-01       | Phase 16   | Pending |
+| UI-02       | Phase 16   | Pending |
+| UI-03       | Phase 16   | Pending |
+| UI-04       | Phase 16   | Pending |
+| UI-05       | Phase 16   | Pending |
+| UI-06       | Phase 16   | Pending |
+| UI-07       | Phase 16   | Pending |
+| VIS-01      | Phase 17   | Pending |
+| VIS-02      | Phase 17   | Pending |
+| VIS-03      | Phase 17   | Pending |
+| VIS-04      | Phase 17   | Pending |
+| VIS-05      | Phase 17   | Pending |
+| PWA-01      | Phase 18   | Pending |
+| PWA-02      | Phase 18   | Pending |
+| PWA-03      | Phase 18   | Pending |
+| PWA-04      | Phase 18   | Pending |
+| PWA-05      | Phase 18   | Pending |
+| PWA-06      | Phase 18   | Pending |
+| TEST-01     | Phase 13   | Pending |
+| TEST-02     | Phase 13   | Pending |
+| TEST-03     | Phase 14   | Pending |
+| TEST-04     | Phase 14   | Pending |
+| TEST-05     | Phase 14   | Pending |
+| TEST-06     | All Phases | Pending |
+| TEST-07     | All Phases | Pending |
 
 **Coverage:**
+
 - v1 requirements: 38 total
 - Mapped to phases: 38
 - Unmapped: 0 ✓
 
 ---
-*Requirements defined: 2025-02-08*
-*Last updated: 2025-02-08 after roadmap creation*
+
+_Requirements defined: 2025-02-08_
+_Last updated: 2025-02-08 after roadmap creation_

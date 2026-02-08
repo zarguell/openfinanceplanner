@@ -1,4 +1,4 @@
-import { afterEach, vi } from 'vitest'
+import { afterEach, vi } from 'vitest';
 
 /**
  * Test setup file for Vitest.
@@ -12,8 +12,8 @@ import { afterEach, vi } from 'vitest'
 
 // Clear all mocks after each test to prevent state leakage
 afterEach(() => {
-  vi.clearAllMocks()
-})
+  vi.clearAllMocks();
+});
 
 // Reusable test utilities
 export const testUtils = {
@@ -22,13 +22,13 @@ export const testUtils = {
    * Usage: testUtils.mockConsole()
    */
   mockConsole: () => {
-    vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.spyOn(console, 'error').mockImplementation(() => {});
   },
 
   /**
    * Restore console.error after mocking
    */
   restoreConsole: () => {
-    vi.restoreAllMocks()
+    vi.restoreAllMocks();
   },
-}
+};

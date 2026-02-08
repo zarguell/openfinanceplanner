@@ -38,12 +38,14 @@ An open-source, static, offline-first retirement projection application (similar
 ## Context
 
 **Technical Context:**
+
 - TypeScript rewrite of previous JavaScript implementation
 - Research completed: ProjectionLab feature analysis documented in RESEARCH.md
 - Draft phases outlined in DRAFT_PHASES.md (comprehensive feature roadmap)
 - Phase 12 (retirement readiness report) verification exists from previous implementation
 
 **Architectural Decisions:**
+
 - **Clean Architecture / Engine Pattern**: Math logic (`src/core`) isolated from UI layer
 - **State Management**: Zustand chosen for simplicity and performance
 - **Persistence**: IndexedDB via `idb-keyval` to handle large datasets (multiple scenarios, simulations)
@@ -51,6 +53,7 @@ An open-source, static, offline-first retirement projection application (similar
 - **Mobile-First**: PWA with offline capability, responsive patterns throughout
 
 **Domain Complexity:**
+
 - Financial projections require accurate tax modeling, account-type rules, withdrawal logic
 - Multi-decade simulations with yearly (potentially monthly) resolution
 - Rich visualizations (net worth, cash flow, taxes, Sankey diagrams)
@@ -67,14 +70,15 @@ An open-source, static, offline-first retirement projection application (similar
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| TypeScript strict mode | Catch errors at compile time, better IDE support | ✓ Good |
-| Zustand over Redux | Simpler API, less boilerplate, better performance | — Pending |
-| IndexedDB over localStorage | Handle larger datasets (multiple scenarios, simulations) | — Pending |
-| Pure functions in `src/core` | Testability, reusability, clear separation of concerns | — Pending |
-| Recharts over D3.js | Easier React integration, sufficient for financial charts | — Pending |
-| Mantine UI library | Comprehensive component library, accessible, themeable | — Pending |
+| Decision                     | Rationale                                                 | Outcome   |
+| ---------------------------- | --------------------------------------------------------- | --------- |
+| TypeScript strict mode       | Catch errors at compile time, better IDE support          | ✓ Good    |
+| Zustand over Redux           | Simpler API, less boilerplate, better performance         | — Pending |
+| IndexedDB over localStorage  | Handle larger datasets (multiple scenarios, simulations)  | — Pending |
+| Pure functions in `src/core` | Testability, reusability, clear separation of concerns    | — Pending |
+| Recharts over D3.js          | Easier React integration, sufficient for financial charts | — Pending |
+| Mantine UI library           | Comprehensive component library, accessible, themeable    | — Pending |
 
 ---
-*Last updated: 2025-02-08 after Initial Beta milestone planning*
+
+_Last updated: 2025-02-08 after Initial Beta milestone planning_
