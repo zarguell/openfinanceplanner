@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { Button, Container, Group, Paper, Text, Portal } from '@mantine/core';
-import { usePWA } from '@/hooks/usePWA';
+import { usePWAContext } from '@/components/PWAProvider';
 
 /**
  * PWAUpdateNotice Component
  *
  * Displays notifications for PWA offline readiness and available updates.
- * Uses the usePWA hook to access service worker state and update functions.
+ * Uses the PWAProvider context to access service worker state and update functions.
  *
  * Features:
  * - Shows when app is ready to work offline
@@ -16,7 +16,7 @@ import { usePWA } from '@/hooks/usePWA';
  * - Uses Portal for proper z-index layering
  */
 export function PWAUpdateNotice() {
-  const { offlineReady, needRefresh, updateServiceWorker } = usePWA();
+  const { offlineReady, needRefresh, updateServiceWorker } = usePWAContext();
 
   useEffect(() => {
     if (offlineReady) {

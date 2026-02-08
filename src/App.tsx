@@ -5,34 +5,37 @@ import { ProjectionTable } from '@/components/tables';
 import { NetWorthChart } from '@/components/charts';
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { PWAUpdateNotice } from '@/components/PWAUpdateNotice';
+import { PWAProvider } from '@/components/PWAProvider';
 
 function App() {
   return (
-    <MantineProvider defaultColorScheme="light">
-      <PWAInstallPrompt />
-      <PWAUpdateNotice />
-      <Container size="lg" py="xl">
-        <Stack gap="xl">
-          <Stack gap="xs">
-            <Title order={1} ta="center">
-              Open Finance Planner
+    <PWAProvider>
+      <MantineProvider defaultColorScheme="light">
+        <PWAInstallPrompt />
+        <PWAUpdateNotice />
+        <Container size="lg" py="xl">
+          <Stack gap="xl">
+            <Stack gap="xs">
+              <Title order={1} ta="center">
+                Open Finance Planner
+              </Title>
+              <Text c="dimmed" ta="center">
+                Privacy-first financial projections. Your data stays on your
+                device.
+              </Text>
+            </Stack>
+
+            <ProfileForm />
+
+            <Title order={2} ta="center">
+              Projection Results
             </Title>
-            <Text c="dimmed" ta="center">
-              Privacy-first financial projections. Your data stays on your
-              device.
-            </Text>
+            <NetWorthChart />
+            <ProjectionTable />
           </Stack>
-
-          <ProfileForm />
-
-          <Title order={2} ta="center">
-            Projection Results
-          </Title>
-          <NetWorthChart />
-          <ProjectionTable />
-        </Stack>
-      </Container>
-    </MantineProvider>
+        </Container>
+      </MantineProvider>
+    </PWAProvider>
   );
 }
 
