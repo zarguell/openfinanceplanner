@@ -170,7 +170,7 @@ describe('calculateProjection', () => {
     [40, 250000, 6, 50000, 60, 'mid-career'],
   ])(
     'calculates projection for %s',
-    (age, savings, rate, spending, expectedYears, scenario) => {
+    (age, savings, rate, spending, expectedYears, _scenario) => {
       const profile: UserProfile = {
         age,
         currentSavings: savings,
