@@ -215,3 +215,155 @@ describe('calculateProjection', () => {
     }
   });
 });
+
+describe('calculateProjection - Edge Cases', () => {
+  it('should handle very large savings amounts', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 10000000, // 10 million
+      annualGrowthRate: 7.0,
+      annualSpending: 40000,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].startingBalance).toBe(10000000);
+    expect(result[0].growth).toBeCloseTo(700000, 4);
+    expect(result[0].endingBalance).toBeCloseTo(10660000, 2);
+  });
+
+  it('should handle very small savings amounts', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 0.01, // 1 cent
+      annualGrowthRate: 7.0,
+      annualSpending: 40000,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].startingBalance).toBe(0.01);
+    expect(result[0].endingBalance).toBe(0); // Floor at 0
+  });
+
+  it('should handle floating-point precision correctly', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100.1,
+      annualGrowthRate: 7.7,
+      annualSpending: 50.5,
+    };
+
+    const result = calculateProjection(profile);
+
+    // Floating-point math: 100.1 * 0.077 = 7.7077
+    expect(result[0].growth).toBeCloseTo(7.7077, 4);
+    // 100.1 + 7.7077 - 50.5 = 57.3077
+    expect(result[0].endingBalance).toBeCloseTo(57.3077, 4);
+  });
+
+  it('should handle growth rate with many decimal places', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 7.123456789,
+      annualSpending: 40000,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].growth).toBeGreaterThan(0);
+    expect(result[0].endingBalance).toBeGreaterThan(0);
+  });
+
+  it('should handle extremely high growth rate', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 100, // 100% growth
+      annualSpending: 40000,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].growth).toBe(100000); // 100k * 1.0
+    expect(result[0].endingBalance).toBe(160000); // 100k + 100k - 40k
+  });
+
+  it('should handle zero growth with high spending', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 50000,
+      annualGrowthRate: 0,
+      annualSpending: 60000,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].growth).toBe(0);
+    expect(result[0].endingBalance).toBe(0); // Floor at 0
+  });
+
+  it('should handle spending exactly equal to balance', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 0,
+      annualSpending: 100000,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].endingBalance).toBe(0);
+  });
+
+  it('should handle negative growth rate (market loss)', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: -10, // 10% loss
+      annualSpending: 40000,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].growth).toBe(-10000); // 100k * -0.10
+    expect(result[0].endingBalance).toBe(50000); // 100k - 10k - 40k
+  });
+
+  it('should handle negative growth with zero spending', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: -5,
+      annualSpending: 0,
+    };
+
+    const result = calculateProjection(profile);
+
+    expect(result[0].growth).toBe(-5000);
+    expect(result[0].endingBalance).toBe(95000);
+  });
+});
+
+describe('calculateProjection - Future Extensibility', () => {
+  it('should support multi-year projection structure', () => {
+    // This test documents the intention to support multi-year projections
+    // Current implementation projects until age 100
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 7.0,
+      annualSpending: 40000,
+    };
+
+    const result = calculateProjection(profile);
+
+    // Current implementation: projects until age 100 (70 years)
+    expect(result.length).toBeGreaterThanOrEqual(1);
+    expect(result[0].year).toBe(0);
+
+    // Structure supports custom projection horizons
+    // Future: add projectionYears parameter to UserProfile
+  });
+});
