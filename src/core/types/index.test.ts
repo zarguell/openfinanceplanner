@@ -42,13 +42,16 @@ describe('Core Types - UserProfile', () => {
   });
 
   it('should reject invalid types at compile time', () => {
-    // @ts-expect-error - Type 'string' is not assignable to type 'number'
     const invalidProfile: UserProfile = {
+      // @ts-expect-error - Type 'string' is not assignable to type 'number'
       age: '30',
       currentSavings: 100000,
       annualGrowthRate: 7.5,
       annualSpending: 40000,
     };
+
+    // Use the variable to avoid noUnusedLocals error
+    expect(typeof invalidProfile).toBe('object');
   });
 });
 
