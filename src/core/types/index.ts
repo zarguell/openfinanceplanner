@@ -1,12 +1,37 @@
 /**
- * Core type definitions for the Open Finance Planner.
+ * User profile data for financial projection
  *
- * This directory contains domain model types (interfaces, types) used
- * throughout the application. Types defined here are imported by both
- * core business logic and UI components.
- *
- * Phase 14 will populate this with UserProfile, SimulationResult, etc.
+ * All properties are readonly to ensure immutability in pure functions.
+ * Annual growth rate is expressed as a percentage (e.g., 7.5 for 7.5%).
  */
+export type UserProfile = Readonly<{
+  /** Current age in years (0-100) */
+  age: number;
+  /** Total current savings/investments in dollars */
+  currentSavings: number;
+  /** Expected annual growth rate as percentage (e.g., 7.5 for 7.5%) */
+  annualGrowthRate: number;
+  /** Annual spending/withdrawal amount in dollars */
+  annualSpending: number;
+}>;
 
-// Export placeholder for Phase 14
-export type {}
+/**
+ * Single year simulation result
+ *
+ * Represents the financial state for one year of the projection.
+ * All properties are readonly to ensure immutability.
+ */
+export type SimulationResult = Readonly<{
+  /** Year index (0 = first year of projection) */
+  year: number;
+  /** Age at the end of this year */
+  age: number;
+  /** Starting balance for this year */
+  startingBalance: number;
+  /** Investment growth earned this year */
+  growth: number;
+  /** Amount spent/withdrawn this year */
+  spending: number;
+  /** Ending balance after growth and spending */
+  endingBalance: number;
+}>;
