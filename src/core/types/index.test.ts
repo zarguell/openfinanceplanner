@@ -120,4 +120,99 @@ describe('Core Types - Type Safety', () => {
 
     expect(noReactImports).toBe(true);
   });
+
+  it('should prevent excess properties', () => {
+    // TypeScript should reject objects with extra properties
+    const invalidProfile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 7.5,
+      annualSpending: 40000,
+      // @ts-expect-error - Object literal may only specify known properties
+      extraProperty: 'not allowed',
+    };
+
+    // Use variable to avoid noUnusedLocals error
+    expect(typeof invalidProfile).toBe('object');
+  });
+
+  it('should require all properties', () => {
+    // TypeScript should reject objects missing properties
+    // @ts-expect-error - Property 'annualSpending' is missing
+    const incompleteProfile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 7.5,
+    };
+
+    // Use variable to avoid noUnusedLocals error
+    expect(typeof incompleteProfile).toBe('object');
+  });
+
+  it('should enforce number types strictly', () => {
+    const invalidAge: UserProfile = {
+      // @ts-expect-error - Type 'boolean' is not assignable to type 'number'
+      age: true,
+      currentSavings: 100000,
+      annualGrowthRate: 7.5,
+      annualSpending: 40000,
+    };
+
+    const nullGrowth: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      // @ts-expect-error - Type 'null' is not assignable to type 'number'
+      annualGrowthRate: null,
+      annualSpending: 40000,
+    };
+
+    // Use variables to avoid noUnusedLocals errors
+    expect(typeof invalidAge).toBe('object');
+    expect(typeof nullGrowth).toBe('object');
+  });
+
+  it('should support type narrowing', () => {
+    const isUserProfile = (obj: unknown): obj is UserProfile => {
+      return (
+        typeof obj === 'object' &&
+        obj !== null &&
+        'age' in obj &&
+        'currentSavings' in obj &&
+        'annualGrowthRate' in obj &&
+        'annualSpending' in obj
+      );
+    };
+
+    const unknownObj: unknown = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 7.5,
+      annualSpending: 40000,
+    };
+
+    if (isUserProfile(unknownObj)) {
+      // TypeScript should narrow type here
+      expect(unknownObj.age).toBe(30);
+    }
+  });
+
+  it('should provide IntelliSense for properties', () => {
+    const profile: UserProfile = {
+      age: 30,
+      currentSavings: 100000,
+      annualGrowthRate: 7.5,
+      annualSpending: 40000,
+    };
+
+    // These properties should be suggested by IDE
+    const age = profile.age;
+    const savings = profile.currentSavings;
+    const growth = profile.annualGrowthRate;
+    const spending = profile.annualSpending;
+
+    expect(typeof age).toBe('number');
+    expect(typeof savings).toBe('number');
+    expect(typeof growth).toBe('number');
+    expect(typeof spending).toBe('number');
+  });
 });
