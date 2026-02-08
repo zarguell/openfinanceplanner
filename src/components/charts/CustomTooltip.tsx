@@ -6,7 +6,7 @@ import type {
   NameType,
 } from 'recharts/types/component/DefaultTooltipContent';
 
-type CustomTooltipProps = TooltipContentProps<ValueType, NameType>;
+type CustomTooltipProps = Partial<TooltipContentProps<ValueType, NameType>>;
 
 /**
  * Custom tooltip for financial charts.
