@@ -3,10 +3,14 @@ import { MantineProvider, Container, Stack, Title, Text } from '@mantine/core';
 import { ProfileForm } from './components/forms';
 import { ProjectionTable } from '@/components/tables';
 import { NetWorthChart } from '@/components/charts';
+import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
+import { PWAUpdateNotice } from '@/components/PWAUpdateNotice';
 
 function App() {
   return (
     <MantineProvider defaultColorScheme="light">
+      <PWAInstallPrompt />
+      <PWAUpdateNotice />
       <Container size="lg" py="xl">
         <Stack gap="xl">
           <Stack gap="xs">
