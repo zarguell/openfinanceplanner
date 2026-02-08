@@ -4,7 +4,7 @@ import { MantineProvider, Container, Stack, Title, Text } from '@mantine/core';
 function App() {
   return (
     <MantineProvider defaultColorScheme="light">
-      <Container size={{ base: 'xs', sm: 'md', md: 'lg' }} p={{ base: 'sm', md: 'xl' }}>
+      <Container size="md" p={{ base: 'sm', md: 'xl' }}>
         <Stack gap="lg">
           <Title order={1}>Open Finance Planner</Title>
           <Text c="dimmed">
