@@ -1,52 +1,45 @@
-/**
- * Zustand store type definitions
- *
- * Slice pattern separates state management into logical domains.
- * Each slice contains state properties and actions for that domain.
- */
-
-import type { UserProfile, SimulationResult } from "@/core/types";
+import type { UserProfile, SimulationResult } from '@/core/types'
 
 /**
- * User profile slice - manages user financial profile data
+ * Profile slice state and actions
  */
 export interface ProfileSlice {
-  /** Current user profile (null if not set) */
-  profile: UserProfile | null;
+  /** User profile data */
+  profile: UserProfile | null
   /** Set the user profile */
-  setProfile: (profile: UserProfile) => void;
+  setProfile: (profile: UserProfile) => void
   /** Clear the user profile */
-  clearProfile: () => void;
+  clearProfile: () => void
 }
 
 /**
- * Projection slice - manages financial projection results
+ * Projection slice state and actions
  */
 export interface ProjectionSlice {
-  /** Current projection results (null if not calculated) */
-  projection: SimulationResult[] | null;
+  /** Projection results array */
+  projection: SimulationResult[] | null
   /** Set the projection results */
-  setProjection: (projection: SimulationResult[]) => void;
+  setProjection: (projection: SimulationResult[]) => void
   /** Clear the projection results */
-  clearProjection: () => void;
+  clearProjection: () => void
 }
 
 /**
- * Hydration slice - tracks persistence middleware hydration state
+ * Hydration tracking slice
  *
- * Used by zustand persist middleware to indicate when storage
- * has been hydrated into state (prevents flash of empty state).
+ * Used to prevent UI flash and loading issues during async store hydration.
+ * @see https://zustand.docs.pmnd.rs/integrations/persisting-store-data#how-can-i-check-if-my-store-has-been-hydrated
  */
 export interface HydrationSlice {
-  /** Whether persistence hydration has completed */
-  _hasHydrated: boolean;
+  /** Whether the store has finished hydrating from storage */
+  _hasHydrated: boolean
   /** Set the hydration state */
-  setHasHydrated: (state: boolean) => void;
+  setHasHydrated: (state: boolean) => void
 }
 
 /**
- * Complete store state - union of all slices
+ * Combined store state type
  *
- * Combines all slice interfaces into a single store state type.
+ * Includes profile, projection, and hydration slices.
  */
-export interface StoreState extends ProfileSlice, ProjectionSlice, HydrationSlice {}
+export type StoreState = ProfileSlice & ProjectionSlice & HydrationSlice
