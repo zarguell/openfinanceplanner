@@ -194,9 +194,9 @@ Plans:
 
 Plans:
 
-- [ ] 18-01: Configure vite-plugin-pwa with manifest and service worker settings
-- [ ] 18-02: Implement service worker registration and offline asset caching
-- [ ] 18-03: Add install prompt handling and update notification workflow
+- [ ] 18-01-PLAN.md — Configure vite-plugin-pwa with manifest and service worker settings
+- [ ] 18-02-PLAN.md — Implement service worker registration and offline asset caching
+- [ ] 18-03-PLAN.md — Add install prompt handling and update notification workflow
 
 ## Progress
 
