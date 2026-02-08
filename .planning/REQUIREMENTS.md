@@ -115,47 +115,47 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ARCH-01 | Phase 1 | Pending |
-| ARCH-02 | Phase 1 | Pending |
-| ARCH-03 | Phase 1 | Pending |
-| ARCH-04 | Phase 1 | Pending |
-| ARCH-05 | Phase 1 | Pending |
-| ARCH-06 | Phase 1 | Pending |
-| ENGINE-01 | Phase 2 | Pending |
-| ENGINE-02 | Phase 2 | Pending |
-| ENGINE-03 | Phase 2 | Pending |
-| ENGINE-04 | Phase 2 | Pending |
-| ENGINE-05 | Phase 2 | Pending |
-| ENGINE-06 | Phase 2 | Pending |
-| STATE-01 | Phase 3 | Pending |
-| STATE-02 | Phase 3 | Pending |
-| STATE-03 | Phase 3 | Pending |
-| STATE-04 | Phase 3 | Pending |
-| STATE-05 | Phase 3 | Pending |
-| STATE-06 | Phase 3 | Pending |
-| UI-01 | Phase 4 | Pending |
-| UI-02 | Phase 4 | Pending |
-| UI-03 | Phase 4 | Pending |
-| UI-04 | Phase 4 | Pending |
-| UI-05 | Phase 4 | Pending |
-| UI-06 | Phase 4 | Pending |
-| UI-07 | Phase 4 | Pending |
-| VIS-01 | Phase 5 | Pending |
-| VIS-02 | Phase 5 | Pending |
-| VIS-03 | Phase 5 | Pending |
-| VIS-04 | Phase 5 | Pending |
-| VIS-05 | Phase 5 | Pending |
-| PWA-01 | Phase 6 | Pending |
-| PWA-02 | Phase 6 | Pending |
-| PWA-03 | Phase 6 | Pending |
-| PWA-04 | Phase 6 | Pending |
-| PWA-05 | Phase 6 | Pending |
-| PWA-06 | Phase 6 | Pending |
-| TEST-01 | Phase 1 | Pending |
-| TEST-02 | Phase 1 | Pending |
-| TEST-03 | Phase 2 | Pending |
-| TEST-04 | Phase 2 | Pending |
-| TEST-05 | Phase 2 | Pending |
+| ARCH-01 | Phase 13 | Pending |
+| ARCH-02 | Phase 13 | Pending |
+| ARCH-03 | Phase 13 | Pending |
+| ARCH-04 | Phase 13 | Pending |
+| ARCH-05 | Phase 13 | Pending |
+| ARCH-06 | Phase 13 | Pending |
+| ENGINE-01 | Phase 14 | Pending |
+| ENGINE-02 | Phase 14 | Pending |
+| ENGINE-03 | Phase 14 | Pending |
+| ENGINE-04 | Phase 14 | Pending |
+| ENGINE-05 | Phase 14 | Pending |
+| ENGINE-06 | Phase 14 | Pending |
+| STATE-01 | Phase 15 | Pending |
+| STATE-02 | Phase 15 | Pending |
+| STATE-03 | Phase 15 | Pending |
+| STATE-04 | Phase 15 | Pending |
+| STATE-05 | Phase 15 | Pending |
+| STATE-06 | Phase 15 | Pending |
+| UI-01 | Phase 16 | Pending |
+| UI-02 | Phase 16 | Pending |
+| UI-03 | Phase 16 | Pending |
+| UI-04 | Phase 16 | Pending |
+| UI-05 | Phase 16 | Pending |
+| UI-06 | Phase 16 | Pending |
+| UI-07 | Phase 16 | Pending |
+| VIS-01 | Phase 17 | Pending |
+| VIS-02 | Phase 17 | Pending |
+| VIS-03 | Phase 17 | Pending |
+| VIS-04 | Phase 17 | Pending |
+| VIS-05 | Phase 17 | Pending |
+| PWA-01 | Phase 18 | Pending |
+| PWA-02 | Phase 18 | Pending |
+| PWA-03 | Phase 18 | Pending |
+| PWA-04 | Phase 18 | Pending |
+| PWA-05 | Phase 18 | Pending |
+| PWA-06 | Phase 18 | Pending |
+| TEST-01 | Phase 13 | Pending |
+| TEST-02 | Phase 13 | Pending |
+| TEST-03 | Phase 14 | Pending |
+| TEST-04 | Phase 14 | Pending |
+| TEST-05 | Phase 14 | Pending |
 | TEST-06 | All Phases | Pending |
 | TEST-07 | All Phases | Pending |
 
@@ -166,4 +166,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2025-02-08*
-*Last updated: 2025-02-08 after initial definition*
+*Last updated: 2025-02-08 after roadmap creation*
