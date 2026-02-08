@@ -108,6 +108,7 @@ Plans:
 - [x] 15-01: Install Zustand and create store structure with slice pattern
 - [x] 15-02: Configure IndexedDB persistence middleware with automatic hydration
 - [x] 15-03: Implement JSON export/import utilities and comprehensive tests
+
 5. Store can handle large datasets (multiple scenarios) without hitting storage limits
 
 **Plans**: 3 plans
@@ -166,9 +167,9 @@ Plans:
 
 Plans:
 
-- [ ] 17-01: Integrate Recharts with ResponsiveContainer for mobile adaptation
-- [ ] 17-02: Build net worth projection line/area chart with tooltips
-- [ ] 17-03: Create year-by-year data table synchronized with chart
+- [ ] 17-01-PLAN.md — Integrate Recharts with ResponsiveContainer for mobile adaptation
+- [ ] 17-02-PLAN.md — Build net worth projection line/area chart with tooltips
+- [ ] 17-03-PLAN.md — Create year-by-year data table synchronized with chart
 
 ### Phase 18: PWA & Offline Capability
 
@@ -201,13 +202,13 @@ Plans:
 **Execution Order:**
 Phases execute in numeric order: 13 → 14 → 15 → 16 → 17 → 18
 
-| Phase                                 | Milestone | Plans Complete | Status      | Completed    |
-| ------------------------------------- | --------- | -------------- | ----------- | ------------ |
-| 13. Architecture & Testing Foundation | v0.1.0    | 5/5            | ✓ Complete  | 2026-02-08   |
-| 14. Core Financial Engine             | v0.1.0    | 3/3            | ✓ Complete  | 2026-02-08   |
-| 15. State Management & Persistence    | v0.1.0    | 3/3            | ✓ Complete  | 2026-02-08   |
-| 16. UI Framework & Components         | v0.1.0    | 0/3            | Not started | -            |
-| 17. Data Visualization                | v0.1.0    | 0/3            | Not started | -            |
-| 18. PWA & Offline Capability          | v0.1.0    | 0/3            | Not started | -            |
+| Phase                                 | Milestone | Plans Complete | Status      | Completed  |
+| ------------------------------------- | --------- | -------------- | ----------- | ---------- |
+| 13. Architecture & Testing Foundation | v0.1.0    | 5/5            | ✓ Complete  | 2026-02-08 |
+| 14. Core Financial Engine             | v0.1.0    | 3/3            | ✓ Complete  | 2026-02-08 |
+| 15. State Management & Persistence    | v0.1.0    | 3/3            | ✓ Complete  | 2026-02-08 |
+| 16. UI Framework & Components         | v0.1.0    | 0/3            | Not started | -          |
+| 17. Data Visualization                | v0.1.0    | 0/3            | Not started | -          |
+| 18. PWA & Offline Capability          | v0.1.0    | 0/3            | Not started | -          |
 
 **Overall Progress:** 11/20 plans complete (55%)
