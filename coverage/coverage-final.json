@@ -1,0 +1,2 @@
+{"/Users/zach/localcode/openfinanceplanner/src/core/utils/example.ts": {"path":"/Users/zach/localcode/openfinanceplanner/src/core/utils/example.ts","statementMap":{"0":{"start":{"line":9,"column":2},"end":{"line":9,"column":null}}},"fnMap":{"0":{"name":"add","decl":{"start":{"line":8,"column":16},"end":{"line":8,"column":20}},"loc":{"start":{"line":8,"column":50},"end":{"line":10,"column":null}},"line":8}},"branchMap":{},"s":{"0":4},"f":{"0":4},"b":{},"meta":{"lastBranch":0,"lastFunction":1,"lastStatement":1,"seen":{"f:8:16:8:20":0,"s:9:2:9:Infinity":0}}}
+}

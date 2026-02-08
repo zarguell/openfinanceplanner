@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2025-02-08)
 
 **Core value:** Privacy-first financial clarity. Users own their data, get accurate projections, and can plan their financial future without creating accounts or linking real bank accounts.
-**Current focus:** Phase 13 - Architecture & Testing Foundation
+**Current focus:** Phase 14 - Core Financial Engine
 
 ## Current Position
 
-Phase: 13 of 18 (Architecture & Testing Foundation)
-Plan: 5 of 5 in current phase
-Status: Phase complete
-Last activity: 2026-02-08 — Completed 13-05: Test scripts and example test
+Phase: 14 of 18 (Core Financial Engine)
+Plan: 1 of 3 in current phase
+Status: In progress
+Last activity: 2026-02-08 — Completed 14-01: Core types (UserProfile, SimulationResult)
 
-Progress: [█████] 100%
+Progress: [█░░] 33%
 
 ## Performance Metrics
 
