@@ -5,22 +5,22 @@
 See: .planning/PROJECT.md (updated 2025-02-08)
 
 **Core value:** Privacy-first financial clarity. Users own their data, get accurate projections, and can plan their financial future without creating accounts or linking real bank accounts.
-**Current focus:** Phase 16 - UI Framework & Components
+**Current focus:** Phase 17 - Data Visualization
 
 ## Current Position
 
-Phase: 16 of 18 (UI Framework & Components)
-Plan: 1 of 4 in current phase
+Phase: 17 of 18 (Data Visualization)
+Plan: 1 of 3 in current phase
 Status: In progress
-Last activity: 2026-02-08 — Completed 16-01: Mantine UI v8 integration with PostCSS and responsive layout
+Last activity: 2026-02-08 — Completed 17-01: Recharts foundation with chart types, useChartData hook, and ResponsiveChartWrapper
 
-Progress: [█░░░] 25%
+Progress: [██░░░] 30%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 12
+- Total plans completed: 13
 - Average duration: 4min
 - Total execution time: 0.76 hours
 
@@ -32,10 +32,11 @@ Progress: [█░░░] 25%
 | 14    | 3     | 11min | 4min     |
 | 15    | 3     | 3min  | 1min     |
 | 16    | 1     | 2min  | 2min     |
+| 17    | 1     | 2min  | 2min     |
 
 **Recent Trend:**
 
-- Last 5 plans: 2min (16-01), 3min (15-03), 1min (15-02), 5min (15-01), 4min (14-03)
+- Last 5 plans: 2min (17-01), 2min (16-01), 3min (15-03), 1min (15-02), 5min (15-01)
 - Trend: Consistent
 
 _Updated after each plan completion_
@@ -63,7 +64,7 @@ Recent decisions affecting current work:
 
 **Folder Structure (Phase 13-04):**
 
-- Path aliases already configured in 13-01 (@/core, @/components, @/*)
+- Path aliases already configured in 13-01 (@/core, @/components, @/\*)
 - Clean Engine Pattern: src/core/ for business logic, src/components/ for UI
 - Namespace index files established for Phase 14 business logic
 - Verified path aliases work with test imports and build
@@ -74,7 +75,7 @@ Recent decisions affecting current work:
 - v8 coverage provider for accurate coverage reports (not istanbul)
 - Test scripts: test (watch mode), test:ui (browser UI), test:coverage (coverage report)
 - Global test APIs (describe, it, expect) available without imports
-- Test discovery via *.test.ts and *.spec.ts naming patterns
+- Test discovery via _.test.ts and _.spec.ts naming patterns
 - Example test demonstrates TDD workflow foundation
 
 **Core Financial Engine (Phase 14-01, 14-02, 14-03):**
@@ -100,13 +101,13 @@ Recent decisions affecting current work:
 - Zustand 5.x global store with persist middleware for state management
 - Custom IndexedDB storage adapter using idb-keyval following official Zustand pattern
 - Store organized into logical slices: ProfileSlice, ProjectionSlice, HydrationSlice
-- Automatic hydration tracking via _hasHydrated flag and onRehydrateStorage callback
+- Automatic hydration tracking via \_hasHydrated flag and onRehydrateStorage callback
 - Storage key 'open-finance-planner' for IndexedDB persistence
 - TypeScript types for store state with proper action signatures
 - Async storage operations with proper Promise types (Promise<string | null>, Promise<void>)
 - Single store architecture instead of multiple stores for related features
 - JSON export utility using Blob API for client-side file downloads (finance-planner-YYYY-MM-DD.json)
-- JSON import utility with FileReader API and structure validation (checks profile, projection, _hasHydrated)
+- JSON import utility with FileReader API and structure validation (checks profile, projection, \_hasHydrated)
 - Memory leak prevention via URL.revokeObjectURL and DOM cleanup in export utility
 - Comprehensive test coverage: 21 tests for store actions, export utility, and import utility
 - Pure function utilities (no direct store mutations) - component layer controls when to call useStore.setState
@@ -124,6 +125,15 @@ Recent decisions affecting current work:
 - CSS imports in main.tsx ensure styles load before component rendering
 - Build verification: 103 kB gzipped total (CSS: 30 kB, JS: 73 kB)
 
+**Data Visualization Foundation (Phase 17-01):**
+
+- Recharts 3.7.0 installed for React-based charting library
+- Chart type definitions: ChartDataPoint, ChartData, ChartSeries interfaces in src/types/chart.ts
+- useChartData hook transforms store projection data to chart-ready format with useMemo optimization
+- ResponsiveChartWrapper component ensures ResponsiveContainer has explicit parent dimensions via Mantine Box
+- Default debounce of 200ms for mobile orientation change performance
+- Chart types map simulation results (startingBalance, growth, spending, endingBalance) to visualization format
+
 ### Pending Todos
 
 None yet.
@@ -132,21 +142,19 @@ None yet.
 
 **Next Phase Readiness:**
 
-- Phase 16-01 complete - Mantine UI framework fully integrated and configured
-- MantineProvider setup complete for all component usage
-- PostCSS processing operational for CSS variables and theming
-- Mobile-first responsive breakpoint system established
-- @mantine/form infrastructure ready for form validation (Phase 16-02)
-- Mantine components available for data display (Phase 16-03)
-- Layout patterns established for advanced layout components (Phase 16-04)
+- Phase 17-01 complete - Recharts foundation with types, hook, and wrapper component
+- Chart types established mapping simulation results to visualization format
+- useChartData hook ready for transforming store projection data
+- ResponsiveChartWrapper ensures mobile-responsive chart containers
+- Foundation ready for LineChart component (17-02) and BarChart component (17-03)
 - Dev server and build both complete without errors
 
 **Blockers:**
 
-- None - Phase 16 progressing smoothly, ready for form component development
+- None - Phase 17 progressing smoothly, ready for LineChart component development
 
 ## Session Continuity
 
-Last session: 2026-02-08 (plan 16-01 execution)
-Stopped at: Phase 16-01 complete (Mantine UI v8 integrated with PostCSS and responsive layout)
-Resume file: .planning/phases/16-ui-framework-components/16-01-SUMMARY.md
+Last session: 2026-02-08 (plan 17-01 execution)
+Stopped at: Phase 17-01 complete (Recharts foundation with chart types, useChartData hook, and ResponsiveChartWrapper)
+Resume file: .planning/phases/17-data-visualization/17-01-SUMMARY.md
