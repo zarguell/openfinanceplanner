@@ -104,9 +104,9 @@ Plans:
 
 Plans:
 
-- [ ] 15-01: Create Zustand store with state structure for user profile and projections
-- [ ] 15-02: Configure IndexedDB persistence middleware with automatic hydration
-- [ ] 15-03: Implement JSON export (file download) and import (file upload + state restore)
+- [ ] 15-01-PLAN.md — Install Zustand and create store structure with slice pattern
+- [ ] 15-02-PLAN.md — Configure IndexedDB persistence middleware with automatic hydration
+- [ ] 15-03-PLAN.md — Implement JSON export/import utilities and comprehensive tests
 
 ### Phase 16: UI Framework & Components
 
