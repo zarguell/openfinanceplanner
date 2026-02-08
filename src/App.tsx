@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 import { MantineProvider, Container, Stack, Title, Text, Paper } from '@mantine/core';
+import { ProfileForm } from './components/forms';
 import { ProjectionTable } from './components/ui';
 
 // Sample data for demonstration - will be replaced with store integration in Phase 17
@@ -41,6 +42,8 @@ function App() {
               Privacy-first financial projections. Your data stays on your device.
             </Text>
           </Stack>
+
+          <ProfileForm />
 
           {sampleData.length > 0 && (
             <>
