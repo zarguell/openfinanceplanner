@@ -14,7 +14,7 @@ export default defineConfig({
 
   test: {
     globals: true,
-    environment: 'jsdom',
+    environment: 'node', // Use 'node' for engine tests, not 'jsdom'
     include: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],
     exclude: ['node_modules', 'dist', 'build'],
 
