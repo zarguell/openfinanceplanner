@@ -26,7 +26,8 @@ export default defineConfig({
         'src/test/',
         '**/*.test.{ts,tsx}',
         '**/*.spec.{ts,tsx}',
-        '**/index.ts',
+        'dist/',
+        'coverage/',
       ],
     },
 
