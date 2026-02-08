@@ -5,24 +5,24 @@
 See: .planning/PROJECT.md (updated 2025-02-08)
 
 **Core value:** Privacy-first financial clarity. Users own their data, get accurate projections, and can plan their financial future without creating accounts or linking real bank accounts.
-**Current focus:** Phase 14 - Core Financial Engine
+**Current focus:** Phase 15 - State Management & Persistence
 
 ## Current Position
 
-Phase: 14 of 18 (Core Financial Engine)
-Plan: 3 of 3 in current phase
-Status: Phase complete
-Last activity: 2026-02-08 — Completed 14-03: Comprehensive unit tests with edge cases
+Phase: 15 of 18 (State Management & Persistence)
+Plan: 2 of 5 in current phase
+Status: In progress
+Last activity: 2026-02-08 — Completed 15-02: IndexedDB storage adapter and persist middleware
 
-Progress: [███] 100%
+Progress: [██░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 8
+- Total plans completed: 9
 - Average duration: 4min
-- Total execution time: 0.53 hours
+- Total execution time: 0.60 hours
 
 **By Phase:**
 
@@ -30,11 +30,12 @@ Progress: [███] 100%
 | ----- | ----- | ----- | -------- |
 | 13    | 5     | 20min | 4min     |
 | 14    | 3     | 11min | 4min     |
+| 15    | 2     | 1min  | 1min     |
 
 **Recent Trend:**
 
-- Last 5 plans: 4min (14-03), 3min (14-02), 4min (14-01), 5min (13-05), 3min (13-04)
-- Trend: On track
+- Last 5 plans: 1min (15-02), 5min (15-01), 4min (14-03), 3min (14-02), 4min (14-01)
+- Trend: Accelerating
 
 _Updated after each plan completion_
 
@@ -93,6 +94,17 @@ Recent decisions affecting current work:
 - Edge cases: very large/small values, negative growth rates, boundary conditions
 - Compile-time type safety validation with excess properties, required properties, strict types
 
+**State Management & Persistence (Phase 15-01, 15-02):**
+
+- Zustand 5.x global store with persist middleware for state management
+- Custom IndexedDB storage adapter using idb-keyval following official Zustand pattern
+- Store organized into logical slices: ProfileSlice, ProjectionSlice, HydrationSlice
+- Automatic hydration tracking via _hasHydrated flag and onRehydrateStorage callback
+- Storage key 'open-finance-planner' for IndexedDB persistence
+- TypeScript types for store state with proper action signatures
+- Async storage operations with proper Promise types (Promise<string | null>, Promise<void>)
+- Single store architecture instead of multiple stores for related features
+
 ### Pending Todos
 
 None yet.
@@ -101,19 +113,19 @@ None yet.
 
 **Next Phase Readiness:**
 
-- Core financial engine complete with 100% test coverage
-- 44 tests passing (26 projection + 14 types + 4 example)
-- Comprehensive edge case handling (floating-point precision, negative growth, boundary conditions)
-- Type safety enforced at compile time and runtime
-- Pure function design validated with determinism tests
-- Ready to proceed with Phase 15 (State Management & Persistence)
+- Zustand store with persist middleware fully configured and type-safe
+- IndexedDB storage operational via custom idb-keyval adapter
+- Hydration tracking implemented for UI integration (prevents UI flash on app load)
+- Store structure supports profile and projection state management
+- Ready for Phase 15-03: JSON export/import functionality using Blob/File APIs
+- State management foundation ready for UI component integration
 
 **Blockers:**
 
-- None - Phase 14 complete, ready for Phase 15
+- None - State management foundation complete, proceeding with export/import functionality
 
 ## Session Continuity
 
-Last session: 2026-02-08 (plan 14-03 execution)
-Stopped at: Phase 14 complete, all 3 plans executed successfully
-Resume file: .planning/phases/14-core-financial-engine/14-03-SUMMARY.md
+Last session: 2026-02-08 (plan 15-02 execution)
+Stopped at: Phase 15, plan 2 complete (IndexedDB storage and persist middleware)
+Resume file: .planning/phases/15-state-management-persistence/15-02-SUMMARY.md
