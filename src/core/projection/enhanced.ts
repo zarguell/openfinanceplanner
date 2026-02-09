@@ -6,27 +6,26 @@ import type {
   Liability,
   TaxSettings,
 } from '@/core/types';
+import {
+  getRMDRate,
+  calculateCapitalGainsTax,
+  calculateOrdinaryIncomeTax,
+} from '@/core/tax';
 
 /**
- * Calculate enhanced year-by-year financial projection with account-level detail
+ * Calculate enhanced year-by-year financial projection with sophisticated features
  *
  * Pure function that takes an enhanced user profile and returns an array of
- * simulation results, one for each year with detailed account breakdowns.
- *
- * Algorithm:
- * 1. Start with all accounts and their balances
- * 2. For each year:
- *    - Apply appreciation to assets
- *    - Apply interest to liabilities
- *    - Apply growth to investment accounts
- *    - Apply inflation adjustments
- *    - Calculate tax implications
- *    - Process withdrawals based on strategy
- *    - Update all account balances
- * 3. Return array of yearly results with detailed breakdowns
+ * simulation results with support for:
+ * - Account-specific growth rates
+ * - Cost basis tracking for capital gains
+ * - Required Minimum Distributions (RMDs)
+ * - Social Security income
+ * - Inflation adjustments
+ * - Tax-aware withdrawals
  *
  * @param profile - Enhanced user profile with accounts and projection settings
- * @returns Array of simulation results with account-level detail
+ * @returns Array of simulation results with detailed breakdowns
  */
 export function calculateEnhancedProjection(
   profile: EnhancedUserProfile
@@ -50,8 +49,24 @@ export function calculateEnhancedProjection(
     maxProjectionYears: 100 - profile.age,
   };
 
-  // Initialize accounts with their current balances (deep copy to avoid mutation)
-  let accounts = (profile.accounts || []).map((account) => ({ ...account }));
+  // Initialize account tracking
+  const accounts = (profile.accounts || []).map((account) => ({ ...account }));
+  const accountCostBasis = new Map<string, number>();
+
+  accounts.forEach((account) => {
+    if (account.type === 'taxable') {
+      const taxableAccount = account as {
+        costBasis?: number;
+        balance: number;
+      };
+      accountCostBasis.set(
+        account.id,
+        taxableAccount.costBasis || account.balance
+      );
+    } else {
+      accountCostBasis.set(account.id, account.balance);
+    }
+  });
 
   // Project from current age until maximum projection years or age 100
   const yearsToProject = Math.min(
@@ -62,55 +77,62 @@ export function calculateEnhancedProjection(
   // Track real (inflation-adjusted) values
   let realSpending = profile.annualSpending;
   let cumulativeInflation = 1;
+  let socialSecurityBenefit = 0;
 
   for (let year = 0; year < yearsToProject; year++) {
     const age = profile.age + year;
     const isRetired = age >= settings.retirementAge;
 
+    // Calculate Social Security income
+    if (settings.socialSecurity && age >= settings.socialSecurity.startAge) {
+      socialSecurityBenefit = settings.socialSecurity.inflationAdjusted
+        ? settings.socialSecurity.monthlyBenefit * 12 * cumulativeInflation
+        : settings.socialSecurity.monthlyBenefit * 12;
+    }
+
     // Calculate starting balances by account type
     let totalStartingBalance = 0;
     const accountBalances: Record<string, number> = {};
+    const startingBalances: Record<string, number> = {};
 
     accounts.forEach((account) => {
       accountBalances[account.id] = account.balance;
+      startingBalances[account.id] = account.balance;
       totalStartingBalance += account.balance;
     });
 
-    // Apply appreciation to assets and interest to liabilities
-    accounts = accounts.map((account) => {
+    // Apply growth/appreciation to each account
+    let totalGrowth = 0;
+    accounts.forEach((account) => {
+      let growth = 0;
+
+      // Use account-specific growth rate if provided
+      const accountGrowthRate =
+        settings.accountGrowthRates?.[account.id] || profile.annualGrowthRate;
+
       if (account.type === 'real-assets' && 'appreciationRate' in account) {
         const asset = account as Asset;
         if (
           asset.appreciationRate !== undefined &&
           asset.appreciationRate > 0
         ) {
-          const appreciation = asset.balance * (asset.appreciationRate / 100);
-          return { ...account, balance: account.balance + appreciation };
+          growth = account.balance * (asset.appreciationRate / 100);
         }
       } else if (account.type === 'debts' && 'interestRate' in account) {
         const liability = account as Liability;
         if (liability.interestRate !== undefined) {
-          const interest = liability.balance * (liability.interestRate / 100);
-          return { ...account, balance: account.balance + interest };
+          growth = account.balance * (liability.interestRate / 100);
         }
       } else if (
         (account.type === 'taxable' || account.type === 'tax-advantaged') &&
-        profile.annualGrowthRate
+        accountGrowthRate
       ) {
-        // Apply growth to investment accounts
-        const growth = account.balance * (profile.annualGrowthRate / 100);
-        return { ...account, balance: account.balance + growth };
+        growth = account.balance * (accountGrowthRate / 100);
       }
-      return account;
-    });
 
-    // Calculate total growth
-    let totalEndingBalance = 0;
-    accounts.forEach((account) => {
-      totalEndingBalance += account.balance;
+      account.balance += growth;
+      totalGrowth += growth;
     });
-
-    const totalGrowth = totalEndingBalance - totalStartingBalance;
 
     // Apply inflation adjustments
     if (settings.inflation.rate > 0) {
@@ -122,18 +144,37 @@ export function calculateEnhancedProjection(
       }
     }
 
+    // Calculate RMDs for tax-deferred accounts
+    let rmdAmount = 0;
+    if (settings.rmdSettings && age >= settings.rmdSettings.rmdStartAge) {
+      const taxDeferredAccounts = accounts.filter(
+        (account) => account.taxCharacteristics === 'tax-deferred'
+      );
+
+      taxDeferredAccounts.forEach((account) => {
+        const rmdRate = getRMDRate(age, settings.rmdSettings!.rmdTable);
+        const accountRMD = account.balance * (rmdRate / 100);
+        rmdAmount += accountRMD;
+      });
+    }
+
     // Process withdrawals based on strategy
-    let totalWithdrawal = isRetired ? realSpending : 0;
+    let totalWithdrawal = isRetired
+      ? Math.max(realSpending - socialSecurityBenefit, 0)
+      : 0;
+    totalWithdrawal = Math.max(totalWithdrawal, rmdAmount);
+
     let ordinaryIncomeTax = 0;
     let capitalGainsTax = 0;
+    const accountChanges: { accountId: string; amount: number }[] = [];
 
     if (totalWithdrawal > 0) {
-      // Apply withdrawal strategy
       const withdrawals = processWithdrawals(
         accounts,
         totalWithdrawal,
         settings.withdrawalStrategy,
-        settings.tax
+        settings.tax,
+        accountCostBasis
       );
 
       totalWithdrawal = withdrawals.totalWithdrawn;
@@ -141,24 +182,39 @@ export function calculateEnhancedProjection(
       capitalGainsTax = withdrawals.capitalGainsTax;
 
       // Update account balances after withdrawals
-      accounts = accounts.map((account) => {
-        const change = withdrawals.accountChanges.find(
-          (c) => c.accountId === account.id
+      withdrawals.accountChanges.forEach((change) => {
+        const accountIndex = accounts.findIndex(
+          (a) => a.id === change.accountId
         );
-        if (change) {
-          return { ...account, balance: account.balance - change.amount };
+        if (accountIndex >= 0) {
+          accounts[accountIndex].balance -= change.amount;
+          accountChanges.push(change);
+
+          // Update cost basis for taxable accounts
+          if (accounts[accountIndex].type === 'taxable') {
+            const currentCostBasis =
+              accountCostBasis.get(change.accountId) || 0;
+            const costBasisReduction = Math.min(
+              change.amount *
+                (currentCostBasis / accounts[accountIndex].balance),
+              currentCostBasis
+            );
+            accountCostBasis.set(
+              change.accountId,
+              Math.max(0, currentCostBasis - costBasisReduction)
+            );
+          }
         }
-        return account;
       });
     }
 
-    // Recalculate ending balances after withdrawals
+    // Recalculate ending balances after all calculations
     let finalEndingBalance = 0;
     accounts.forEach((account) => {
       finalEndingBalance += account.balance;
     });
 
-    // Create account breakdown
+    // Create detailed account breakdown
     const accountBreakdown: Record<
       string,
       {
@@ -170,10 +226,15 @@ export function calculateEnhancedProjection(
     > = {};
 
     accounts.forEach((account) => {
-      const starting = accountBalances[account.id] || 0;
+      const starting = startingBalances[account.id] || 0;
       const ending = account.balance;
-      const growth = ending - starting; // Simplified for now
-      const withdrawal = 0; // Would need to track per-account withdrawals
+      const growth = ending - starting;
+
+      const withdrawal =
+        accountChanges.find(
+          (c: { accountId: string; amount: number }) =>
+            c.accountId === account.id
+        )?.amount || 0;
 
       accountBreakdown[account.id] = {
         startingBalance: starting,
@@ -205,7 +266,6 @@ export function calculateEnhancedProjection(
     });
 
     // Stop if all accounts are depleted during retirement
-    // (Don't stop in first year if starting with zero balance)
     if (finalEndingBalance <= 0 && totalWithdrawal > 0) {
       break;
     }
@@ -215,13 +275,14 @@ export function calculateEnhancedProjection(
 }
 
 /**
- * Process withdrawals according to the specified strategy
+ * Process withdrawals according to specified strategy with enhanced tax calculations
  */
 function processWithdrawals(
   accounts: Account[],
   amountNeeded: number,
   strategy: string,
-  taxSettings: TaxSettings
+  taxSettings: TaxSettings,
+  accountCostBasis: Map<string, number>
 ): {
   totalWithdrawn: number;
   ordinaryIncomeTax: number;
@@ -235,16 +296,17 @@ function processWithdrawals(
   let remainingAmount = amountNeeded;
 
   // Sort accounts based on strategy
-  const sortedAccounts = [...accounts];
+  const sortedAccounts = [...accounts].filter((account) => account.balance > 0);
 
   if (strategy === 'tax-efficient') {
-    // Order: Roth accounts first, then taxable, then tax-deferred, then tax-free
+    // Order: Roth accounts first, then taxable, then tax-deferred
     sortedAccounts.sort((a, b) => {
-      // Simplified sorting logic
       if (a.taxCharacteristics === 'tax-free') return -1;
       if (b.taxCharacteristics === 'tax-free') return 1;
       if (a.taxCharacteristics === 'taxable') return -1;
       if (b.taxCharacteristics === 'taxable') return 1;
+      if (a.taxCharacteristics === 'tax-deferred') return 1;
+      if (b.taxCharacteristics === 'tax-deferred') return -1;
       return 0;
     });
   }
@@ -267,16 +329,21 @@ function processWithdrawals(
       // Calculate tax impact based on account type
       if (taxSettings.applyTaxes) {
         if (account.taxCharacteristics === 'taxable') {
-          // Assume 50% of withdrawal is capital gains, 50% is ordinary income
-          const capitalGains = withdrawAmount * 0.5;
-          const ordinaryIncome = withdrawAmount * 0.5;
-          capitalGainsTax +=
-            capitalGains * (taxSettings.capitalGainsRate / 100);
-          ordinaryIncomeTax +=
-            ordinaryIncome * (taxSettings.ordinaryIncomeRate / 100);
+          // Calculate capital gains based on cost basis using tax module
+          const costBasis = accountCostBasis.get(account.id) || 0;
+          const result = calculateCapitalGainsTax({
+            account,
+            withdrawalAmount: withdrawAmount,
+            costBasis,
+            capitalGainsRate: taxSettings.capitalGainsRate,
+          });
+          capitalGainsTax += result.capitalGainsTax;
         } else if (account.taxCharacteristics === 'tax-deferred') {
-          ordinaryIncomeTax +=
-            withdrawAmount * (taxSettings.ordinaryIncomeRate / 100);
+          // Calculate ordinary income tax using tax module
+          ordinaryIncomeTax += calculateOrdinaryIncomeTax({
+            amount: withdrawAmount,
+            ordinaryIncomeRate: taxSettings.ordinaryIncomeRate,
+          });
         }
         // Tax-free accounts have no tax impact
       }
