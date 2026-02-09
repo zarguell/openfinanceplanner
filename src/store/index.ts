@@ -2,6 +2,9 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { StoreState } from './types';
 import { indexedDBStorage } from './middleware/indexeddb';
+export { enhancedIndexedDBStorage } from './middleware/enhanced-storage';
+export { schemaManager, backupManager } from './middleware/enhanced-storage';
+export { initializeSchemasAndMigrations } from './middleware/migrations';
 
 /**
  * Global application store with IndexedDB persistence
