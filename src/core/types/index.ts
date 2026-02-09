@@ -863,3 +863,162 @@ export type GoalHeatmapData = Readonly<{
   /** On track indicator */
   onTrack: boolean;
 }>;
+
+/**
+ * Filing status for tax calculations
+ */
+export type FilingStatus =
+  | 'single'
+  | 'married-filing-jointly'
+  | 'married-filing-separately'
+  | 'head-of-household';
+
+/**
+ * Tax bracket configuration
+ */
+export type TaxBracket = Readonly<{
+  /** Minimum income for this bracket */
+  min: number;
+  /** Maximum income for this bracket (undefined for highest bracket) */
+  max?: number;
+  /** Tax rate as percentage */
+  rate: number;
+}>;
+
+/**
+ * Tax jurisdiction type
+ */
+export type TaxJurisdictionType = 'federal' | 'state' | 'local';
+
+/**
+ * Tax strategy types for optimization
+ */
+export type TaxStrategyType =
+  | 'roth-conversion'
+  | 'sepp-distribution'
+  | 'tax-loss-harvesting'
+  | 'location-based';
+
+/**
+ * Tax jurisdiction information
+ */
+export type TaxJurisdiction = Readonly<{
+  /** Type of jurisdiction */
+  type: TaxJurisdictionType;
+  /** Country code (ISO 3166-1 alpha-2) */
+  countryCode: string;
+  /** Name of jurisdiction */
+  name: string;
+  /** State or province code */
+  stateCode?: string;
+  /** Locality or municipality name */
+  locality?: string;
+}>;
+
+/**
+ * Tax configuration for a specific jurisdiction
+ */
+export type TaxConfig = Readonly<{
+  /** Tax year */
+  year: number;
+  /** Filing status */
+  filingStatus: FilingStatus;
+  /** Jurisdiction information */
+  jurisdiction: TaxJurisdiction;
+  /** Ordinary income tax brackets */
+  ordinaryIncomeBrackets: readonly TaxBracket[];
+  /** Long-term capital gains tax brackets */
+  longTermCapitalGainsBrackets: readonly TaxBracket[];
+  /** Short-term capital gains tax rate */
+  shortTermCapitalGainsRate: number;
+  /** Standard deduction amount */
+  standardDeduction: number;
+  /** Personal exemption amount */
+  personalExemption: number;
+  /** Special tax rules */
+  specialRules: readonly TaxSpecialRule[];
+}>;
+
+/**
+ * Special tax rule configuration
+ */
+export type TaxSpecialRule = Readonly<{
+  /** Type of special rule */
+  type: string;
+  /** Description of the rule */
+  description: string;
+  /** Years this rule applies to */
+  applicableYears: readonly number[];
+  /** Condition function for rule application */
+  condition?: (income: number, context: unknown) => boolean;
+}>;
+
+/**
+ * Tax calculation result
+ */
+export type TaxCalculationResult = Readonly<{
+  /** Federal tax amount */
+  federalTax: number;
+  /** Ordinary income tax amount */
+  ordinaryIncomeTax: number;
+  /** Capital gains tax amount */
+  capitalGainsTax: number;
+  /** Marginal tax rate */
+  marginalRate: number;
+  /** Effective tax rate */
+  effectiveRate: number;
+  /** State tax amount (optional) */
+  stateTax?: number;
+}>;
+
+/**
+ * Tax analytics data
+ */
+export type TaxAnalytics = Readonly<{
+  /** Yearly tax breakdown */
+  yearlyBreakdown: readonly TaxCalculationResult[];
+  /** Total federal tax paid */
+  totalFederalTax: number;
+  /** Total state tax paid */
+  totalStateTax: number;
+  /** Total tax paid */
+  totalTax: number;
+  /** Average effective tax rate */
+  averageEffectiveRate: number;
+  /** Tax burden trend over time */
+  taxBurdenTrend: readonly number[];
+  /** Tax optimization opportunities */
+  optimizationOpportunities: readonly TaxOptimizationOpportunity[];
+}>;
+
+/**
+ * Tax optimization opportunity
+ */
+export type TaxOptimizationOpportunity = Readonly<{
+  /** Type of optimization */
+  type: string;
+  /** Description of the opportunity */
+  description: string;
+  /** Potential tax savings */
+  potentialSavings: number;
+  /** Priority level */
+  priority: 'high' | 'medium' | 'low';
+}>;
+
+/**
+ * Tax strategy configuration
+ */
+export type TaxStrategy = Readonly<{
+  /** Type of strategy */
+  type: TaxStrategyType;
+  /** Amount for conversion/distribution */
+  amount?: number;
+  /** Target year for strategy */
+  targetYear?: number;
+  /** Account balance for SEPP calculations */
+  accountBalance?: number;
+  /** Life expectancy for SEPP calculations */
+  lifeExpectancy?: number;
+  /** Strategy description */
+  description: string;
+}>;
