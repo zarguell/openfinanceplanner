@@ -1126,3 +1126,110 @@ export type HistoricalBacktestResult = Readonly<{
   /** Volatility for the period */
   volatility: number;
 }>;
+
+/**
+ * Cash flow calculation result
+ */
+export type CashFlowResult = Readonly<{
+  /** Total income for the period */
+  totalIncome: number;
+  /** Total expenses for the period */
+  totalExpenses: number;
+  /** Net cash flow (income - expenses) */
+  netCashFlow: number;
+  /** Breakdown by category */
+  byCategory: Readonly<Record<string, number>>;
+}>;
+
+/**
+ * Net worth composition result
+ */
+export type NetWorthComposition = Readonly<{
+  /** Total net worth */
+  totalNetWorth: number;
+  /** Total assets */
+  totalAssets: number;
+  /** Total liabilities */
+  totalLiabilities: number;
+  /** Breakdown by account type */
+  byType: Readonly<Record<string, number>>;
+  /** Individual account breakdown */
+  byAccount: ReadonlyArray<{
+    id: string;
+    name: string;
+    type: string;
+    balance: number;
+  }>;
+}>;
+
+/**
+ * Progress point for timeline visualization
+ */
+export type ProgressPoint = Readonly<{
+  /** Goal ID */
+  goalId: string;
+  /** Goal name */
+  goalName: string;
+  /** Progress percentage (0-1) */
+  progress: number;
+  /** Target date */
+  targetDate: string;
+  /** Status */
+  status: string;
+}>;
+
+/**
+ * Progress metrics result
+ */
+export type ProgressMetrics = Readonly<{
+  /** Overall progress across all goals */
+  totalProgress: number;
+  /** Number of completed goals */
+  completedGoals: number;
+  /** Number of in-progress goals */
+  inProgressGoals: number;
+  /** Number of on-track goals */
+  onTrackGoals: number;
+  /** Progress points for timeline visualization */
+  progressPoints: readonly ProgressPoint[];
+}>;
+
+/**
+ * Sankey node data structure
+ */
+export type SankeyNode = Readonly<{
+  /** Unique identifier */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Category (income, expense, savings) */
+  category: string;
+  /** Value amount */
+  value: number;
+  /** Color for visualization */
+  color?: string;
+}>;
+
+/**
+ * Sankey link data structure
+ */
+export type SankeyLink = Readonly<{
+  /** Source node ID */
+  source: string;
+  /** Target node ID */
+  target: string;
+  /** Flow amount */
+  value: number;
+}>;
+
+/**
+ * Complete Sankey diagram data
+ */
+export type SankeyData = Readonly<{
+  /** All nodes in the diagram */
+  nodes: readonly SankeyNode[];
+  /** All links between nodes */
+  links: readonly SankeyLink[];
+  /** Year the data represents */
+  year: number;
+}>;
