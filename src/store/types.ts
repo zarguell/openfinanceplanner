@@ -58,6 +58,14 @@ export interface PlanSlice {
   getCurrentPlan: () => Plan | undefined;
   /** Clear all plans */
   clearPlans: () => void;
+  /** Get plans indexed by ID for efficient lookup */
+  getPlanIndex: () => Record<string, Plan>;
+  /** Optimistically update a plan with rollback capability */
+  optimisticUpdatePlan: (
+    update: Partial<Plan> & { id: string }
+  ) => Promise<void>;
+  /** Get plans filtered by type */
+  getPlansByType: (type: 'fixed-date' | 'rolling') => Plan[];
 }
 
 /**
@@ -86,6 +94,12 @@ export interface IncomeExpenseSlice {
   setExpenses: (expenses: Expense[]) => void;
   /** Clear all incomes and expenses */
   clearIncomeExpenses: () => void;
+  /** Get income indexed by category for efficient lookup */
+  getIncomeByCategory: () => Record<string, Income[]>;
+  /** Get expense indexed by category for efficient lookup */
+  getExpenseByCategory: () => Record<string, Expense[]>;
+  /** Get income filtered by type */
+  getIncomeByType: (type: Income['type']) => Income[];
 }
 
 /**
@@ -143,6 +157,10 @@ export interface ScenarioSlice {
   setComparisonResult: (result: ScenarioComparisonResult) => void;
   /** Clear comparison result */
   clearComparisonResult: () => void;
+  /** Get scenarios indexed by ID for efficient lookup */
+  getScenarioIndex: () => Record<string, Scenario>;
+  /** Get scenarios filtered by base plan ID */
+  getScenariosByBasePlan: (basePlanId: string) => Scenario[];
 }
 
 /**

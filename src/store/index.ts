@@ -48,6 +48,52 @@ export const useStore = create<StoreState>()(
           : undefined;
       },
       clearPlans: () => set({ plans: [], currentPlanId: null }),
+      getPlanIndex: () => {
+        const state = get();
+        const index: Record<string, (typeof state.plans)[number]> = {};
+        state.plans.forEach((plan) => {
+          index[plan.id] = plan;
+        });
+        return index;
+      },
+      optimisticUpdatePlan: async (update) => {
+        const state = get();
+        const existingPlan = state.plans.find((p) => p.id === update.id);
+        if (!existingPlan) {
+          throw new Error(`Plan with id ${update.id} not found`);
+        }
+
+        const previousPlan = { ...existingPlan };
+
+        set((s) => ({
+          plans: s.plans.map((p) =>
+            p.id === update.id ? { ...p, ...update } : p
+          ),
+        }));
+
+        try {
+          await new Promise((resolve, reject) => {
+            setTimeout(() => {
+              if (
+                (update as unknown as { _shouldFail?: boolean })._shouldFail
+              ) {
+                reject(new Error('Simulated update failure'));
+              } else {
+                resolve(undefined);
+              }
+            }, 100);
+          });
+        } catch (error) {
+          set((s) => ({
+            plans: s.plans.map((p) => (p.id === update.id ? previousPlan : p)),
+          }));
+          throw error;
+        }
+      },
+      getPlansByType: (type) => {
+        const state = get();
+        return state.plans.filter((p) => p.type === type);
+      },
 
       // Income/Expense slice
       incomes: [],
@@ -77,6 +123,32 @@ export const useStore = create<StoreState>()(
         })),
       setExpenses: (expenses) => set({ expenses }),
       clearIncomeExpenses: () => set({ incomes: [], expenses: [] }),
+      getIncomeByCategory: () => {
+        const state = get();
+        const index: Record<string, (typeof state.incomes)[number][]> = {};
+        state.incomes.forEach((income) => {
+          if (!index[income.category]) {
+            index[income.category] = [];
+          }
+          index[income.category].push(income);
+        });
+        return index;
+      },
+      getExpenseByCategory: () => {
+        const state = get();
+        const index: Record<string, (typeof state.expenses)[number][]> = {};
+        state.expenses.forEach((expense) => {
+          if (!index[expense.category]) {
+            index[expense.category] = [];
+          }
+          index[expense.category].push(expense);
+        });
+        return index;
+      },
+      getIncomeByType: (type) => {
+        const state = get();
+        return state.incomes.filter((i) => i.type === type);
+      },
 
       // Scenario slice
       scenarios: [],
@@ -150,6 +222,18 @@ export const useStore = create<StoreState>()(
       setFlexSpendingConfig: (config) => set({ flexSpendingConfig: config }),
       setComparisonResult: (result) => set({ comparisonResult: result }),
       clearComparisonResult: () => set({ comparisonResult: null }),
+      getScenarioIndex: () => {
+        const state = get();
+        const index: Record<string, (typeof state.scenarios)[number]> = {};
+        state.scenarios.forEach((scenario) => {
+          index[scenario.id] = scenario;
+        });
+        return index;
+      },
+      getScenariosByBasePlan: (basePlanId) => {
+        const state = get();
+        return state.scenarios.filter((s) => s.basePlanId === basePlanId);
+      },
 
       // Hydration slice
       _hasHydrated: false,
