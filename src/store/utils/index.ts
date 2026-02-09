@@ -23,5 +23,5 @@
  * ```
  */
 
-export { exportState } from './export'
-export { importState } from './import'
+export { exportState } from './export';
+export { importState } from './import';

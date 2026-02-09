@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
 
 /**
@@ -55,20 +61,19 @@ interface PWAProviderProps {
  */
 export function PWAProvider({ children }: PWAProviderProps) {
   // Service worker state
-  const {
-    offlineReady,
-    needRefresh,
-    updateServiceWorker,
-  } = useRegisterSW({
+  const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
     onRegisteredSW(swUrl, registration) {
       console.log('[PWA] Service Worker registered', swUrl, registration);
 
       // Check for updates every hour
       if (registration) {
-        setInterval(() => {
-          registration.update();
-          console.log('[PWA] Checking for updates');
-        }, 60 * 60 * 1000);
+        setInterval(
+          () => {
+            registration.update();
+            console.log('[PWA] Checking for updates');
+          },
+          60 * 60 * 1000
+        );
       }
     },
     onRegisterError(error) {
@@ -77,7 +82,8 @@ export function PWAProvider({ children }: PWAProviderProps) {
   });
 
   // Install prompt state
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [canInstall, setCanInstall] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
 
@@ -140,9 +146,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
   };
 
   return (
-    <PWAContext.Provider value={contextValue}>
-      {children}
-    </PWAContext.Provider>
+    <PWAContext.Provider value={contextValue}>{children}</PWAContext.Provider>
   );
 }
 

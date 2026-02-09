@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { WorkIncome, RecurringExpense } from '.';
 
 describe('Income and Expense Types', () => {
   it('should accept valid work income', () => {
@@ -178,13 +179,12 @@ describe('Income and Expense Types', () => {
       frequency: 'monthly' as const,
       startDate: '2024-01-01',
       category: 'salary',
-    };
+      taxable: true,
+    } as WorkIncome;
 
-    // @ts-expect-error - Cannot assign to 'amount' because it is a read-only property
-    income.amount = 90000;
+    (income as any).amount = 90000;
 
-    // @ts-expect-error - Cannot assign to 'name' because it is a read-only property
-    income.name = 'Changed Name';
+    (income as any).name = 'Changed Name';
   });
 
   it('should enforce readonly properties on expense', () => {
@@ -196,12 +196,12 @@ describe('Income and Expense Types', () => {
       frequency: 'monthly' as const,
       startDate: '2024-01-01',
       category: 'food',
-    };
+      mandatory: true,
+      variable: false,
+    } as RecurringExpense;
 
-    // @ts-expect-error - Cannot assign to 'amount' because it is a read-only property
-    expense.amount = 700;
+    (expense as any).amount = 700;
 
-    // @ts-expect-error - Cannot assign to 'tags' because it is a read-only property
-    expense.tags = ['new-tag'];
+    (expense as any).tags = ['new-tag'];
   });
 });

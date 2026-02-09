@@ -1,4 +1,4 @@
-import type { StoreState } from '../types'
+import type { StoreState } from '../types';
 
 /**
  * Export store state as a downloadable JSON file
@@ -23,24 +23,24 @@ import type { StoreState } from '../types'
  */
 export function exportState(state: StoreState): void {
   // Convert state to formatted JSON string
-  const data = JSON.stringify(state, null, 2)
+  const data = JSON.stringify(state, null, 2);
 
   // Create a blob with the JSON data
-  const blob = new Blob([data], { type: 'application/json' })
+  const blob = new Blob([data], { type: 'application/json' });
 
   // Create a temporary URL for the blob
-  const url = URL.createObjectURL(blob)
+  const url = URL.createObjectURL(blob);
 
   // Create a temporary anchor element to trigger download
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `finance-planner-${new Date().toISOString().split('T')[0]}.json`
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `finance-planner-${new Date().toISOString().split('T')[0]}.json`;
 
   // Append to DOM, click, and remove
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 
   // Clean up the object URL to prevent memory leaks
-  URL.revokeObjectURL(url)
+  URL.revokeObjectURL(url);
 }

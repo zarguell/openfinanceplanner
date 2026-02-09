@@ -1,4 +1,4 @@
-import type { StoreState } from '../types'
+import type { StoreState } from '../types';
 
 /**
  * Import store state from a JSON file
@@ -29,21 +29,21 @@ import type { StoreState } from '../types'
  */
 export async function importState(file: File): Promise<StoreState> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader()
+    const reader = new FileReader();
 
     reader.onload = (e) => {
       try {
         // Parse JSON from file content
-        const content = e.target?.result
+        const content = e.target?.result;
         if (typeof content !== 'string') {
-          throw new Error('File content is not a string')
+          throw new Error('File content is not a string');
         }
 
-        const data = JSON.parse(content)
+        const data = JSON.parse(content);
 
         // Validate that data is an object and not null
         if (typeof data !== 'object' || data === null) {
-          throw new Error('Invalid file format: not an object')
+          throw new Error('Invalid file format: not an object');
         }
 
         // Validate that data has the expected structure
@@ -56,25 +56,25 @@ export async function importState(file: File): Promise<StoreState> {
         ) {
           throw new Error(
             'Invalid file format: missing required fields (profile, projection, _hasHydrated)'
-          )
+          );
         }
 
         // Return validated data as StoreState
-        resolve(data as StoreState)
+        resolve(data as StoreState);
       } catch (error) {
         if (error instanceof SyntaxError) {
-          reject(new Error('Malformed JSON: ' + error.message))
+          reject(new Error('Malformed JSON: ' + error.message));
         } else {
-          reject(error)
+          reject(error);
         }
       }
-    }
+    };
 
     reader.onerror = () => {
-      reject(new Error('File read error: ' + reader.error?.message))
-    }
+      reject(new Error('File read error: ' + reader.error?.message));
+    };
 
     // Read the file as text
-    reader.readAsText(file)
-  })
+    reader.readAsText(file);
+  });
 }

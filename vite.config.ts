@@ -12,7 +12,8 @@ export default defineConfig({
       manifest: {
         name: 'Open Finance Planner',
         short_name: 'FinancePlanner',
-        description: 'Privacy-first financial projections. Your data stays on your device.',
+        description:
+          'Privacy-first financial projections. Your data stays on your device.',
         theme_color: '#339af0',
         background_color: '#ffffff',
         display: 'standalone',

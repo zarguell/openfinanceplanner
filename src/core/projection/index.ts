@@ -17,9 +17,7 @@ import type { UserProfile, SimulationResult } from '@/core/types';
  * @param profile - User profile with age, savings, growth rate, and spending
  * @returns Array of simulation results, one per year until age 100
  */
-export function calculateProjection(
-  profile: UserProfile
-): SimulationResult[] {
+export function calculateProjection(profile: UserProfile): SimulationResult[] {
   const results: SimulationResult[] = [];
   let balance = profile.currentSavings;
 

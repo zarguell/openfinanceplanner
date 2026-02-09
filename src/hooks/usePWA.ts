@@ -18,11 +18,7 @@ interface UsePWAReturn {
  * @returns Object containing offlineReady, needRefresh states and updateServiceWorker function
  */
 export function usePWA(): UsePWAReturn {
-  const {
-    offlineReady,
-    needRefresh,
-    updateServiceWorker,
-  } = useRegisterSW({
+  const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
     onRegisteredSW(swUrl, r) {
       console.log('[PWA] Service Worker registered', swUrl, r);
     },

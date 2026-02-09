@@ -9,4 +9,4 @@
  */
 
 // Export placeholder for Phase 14
-export {}
+export {};

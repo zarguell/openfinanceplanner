@@ -239,16 +239,33 @@ Implementation Location:
 - `src/App.tsx` - Update main application layout ✅
 - `src/components/layout/` - New directory for layout components ✅
 
-### Task U.2: Forms and Data Entry
+### Task T.4: Performance Optimization ✅ COMPLETED
 
 **Requirements:**
 
-- Create guided wizards for complex data entry
-- Implement conditional form fields
-- Add form validation improvements
-- Use Lucide React icons for form actions and indicators
+- Implement caching for expensive calculations ✅
+- Add incremental recomputation on small changes ✅
+- Optimize chart rendering for large datasets ✅
 
 **Implementation Location:**
+
+- `src/core/cache/` - New directory for caching utility with LRU eviction and TTL support ✅
+- `src/core/projection/cached.ts` - Cached projection calculations ✅
+- `src/core/monte-carlo/cached.ts` - Cached Monte Carlo simulations ✅
+- Chart components already use React.memo for re-render optimization ✅
+- Existing ResponsiveChartWrapper with debounce for mobile performance ✅
+
+**Implementation Location:**
+
+- `src/core/cache/` - New directory for caching utility with LRU eviction and TTL support ✅
+- `src/core/projection/cached.ts` - Cached projection calculations ✅
+- `src/core/monte-carlo/cached.ts` - Cached Monte Carlo simulations ✅
+- Chart components already use React.memo for re-render optimization ✅
+- Existing ResponsiveChartWrapper with debounce for mobile performance ✅
+
+### Task U.2: Forms and Data Entry
+
+**Requirements:**
 
 - `src/components/forms/` - Enhance form components
 

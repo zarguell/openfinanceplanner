@@ -1,5 +1,5 @@
-import { StateStorage } from 'zustand/middleware'
-import { get, set, del } from 'idb-keyval'
+import { StateStorage } from 'zustand/middleware';
+import { get, set, del } from 'idb-keyval';
 
 /**
  * Custom IndexedDB storage adapter for Zustand persist middleware.
@@ -11,12 +11,12 @@ import { get, set, del } from 'idb-keyval'
  */
 export const indexedDBStorage: StateStorage = {
   getItem: async (name: string): Promise<string | null> => {
-    return (await get(name)) || null
+    return (await get(name)) || null;
   },
   setItem: async (name: string, value: string): Promise<void> => {
-    await set(name, value)
+    await set(name, value);
   },
   removeItem: async (name: string): Promise<void> => {
-    await del(name)
+    await del(name);
   },
-}
+};

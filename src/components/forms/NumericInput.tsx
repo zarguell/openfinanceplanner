@@ -13,7 +13,10 @@ interface NumericInputProps extends Omit<TextInputProps, 'type' | 'inputMode'> {
 }
 
 export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
-  ({ prefix, suffix, thousandSeparator, decimalScale, onChange, ...props }, ref) => {
+  (
+    { prefix, suffix, thousandSeparator, decimalScale, onChange, ...props },
+    ref
+  ) => {
     const [displayValue, setDisplayValue] = useState('');
 
     const formatValue = (value: string): string => {
@@ -49,13 +52,7 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
             textAlign: 'right',
           },
         }}
-        rightSection={
-          (prefix || suffix) && (
-            <Group gap={0}>
-              {suffix}
-            </Group>
-          )
-        }
+        rightSection={(prefix || suffix) && <Group gap={0}>{suffix}</Group>}
         leftSection={prefix}
         leftSectionProps={{ style: { pointerEvents: 'none' } }}
       />

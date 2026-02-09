@@ -30,7 +30,9 @@ export function PWAInstallPrompt() {
     <Container size="sm" mt="md">
       <Paper p="md" withBorder shadow="sm">
         <Group justify="space-between" align="center">
-          <Text size="sm">Install this app on your device for offline access</Text>
+          <Text size="sm">
+            Install this app on your device for offline access
+          </Text>
           <Button onClick={handleInstallClick} size="sm">
             Install
           </Button>

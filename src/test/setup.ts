@@ -1,4 +1,5 @@
 import { afterEach, vi } from 'vitest';
+import { IDBFactory } from 'fake-indexeddb';
 
 /**
  * Test setup file for Vitest.
@@ -6,9 +7,14 @@ import { afterEach, vi } from 'vitest';
  * This file runs before each test file and provides:
  * - Global cleanup after each test
  * - Reusable test utilities
+ * - IndexedDB mocking for persistence tests
  *
  * Configure via setupFiles in vitest.config.ts
  */
+
+// Set up fake IndexedDB for tests
+const fakeIndexedDB = new IDBFactory();
+globalThis.indexedDB = fakeIndexedDB as unknown as IDBFactory;
 
 // Clear all mocks after each test to prevent state leakage
 afterEach(() => {
