@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { useForm } from '@mantine/form';
 import { Button, Stack, TextInput, Group } from '@mantine/core';
 import type { TaxableAccount } from '@/core/types';
@@ -14,6 +15,10 @@ export function TaxableAccountForm({
   onSave,
   onCancel,
 }: TaxableAccountFormProps) {
+  const idRef = useRef(
+    account?.id || `taxable-${Math.random().toString(36).substr(2, 9)}`
+  );
+
   const form = useForm<Omit<TaxableAccount, 'type' | 'taxCharacteristics'>>({
     mode: 'uncontrolled',
     initialValues: {
@@ -34,7 +39,7 @@ export function TaxableAccountForm({
   const handleSubmit = (values: typeof form.values) => {
     const accountData: TaxableAccount = {
       ...values,
-      id: values.id || `taxable-${Date.now()}`,
+      id: values.id || idRef.current,
       type: 'taxable',
       taxCharacteristics: 'taxable',
     };

@@ -539,3 +539,199 @@ export type Event = Readonly<{
   /** Tags for filtering */
   tags?: ReadonlyArray<string>;
 }>;
+
+/**
+ * Income source types
+ */
+export type IncomeType =
+  | 'work'
+  | 'social-security'
+  | 'business'
+  | 'rental'
+  | 'investment'
+  | 'pension'
+  | 'other-income';
+
+/**
+ * Income category types
+ */
+export type IncomeCategory =
+  | 'salary'
+  | 'bonus'
+  | 'part-time'
+  | 'pension'
+  | 'business'
+  | 'rental'
+  | 'dividends'
+  | 'capital-gains'
+  | 'other-income';
+
+/**
+ * Expense type classification
+ */
+export type ExpenseType = 'recurring' | 'one-time';
+
+/**
+ * Expense category types
+ */
+export type ExpenseCategory =
+  | 'housing'
+  | 'food'
+  | 'transportation'
+  | 'healthcare'
+  | 'insurance'
+  | 'education'
+  | 'entertainment'
+  | 'shopping'
+  | 'debt-payment'
+  | 'savings'
+  | 'taxes'
+  | 'celebration'
+  | 'maintenance'
+  | 'other-expense';
+
+/**
+ * Change-over-time entry for income/expense
+ */
+export type ChangeOverTimeEntry = Readonly<{
+  /** Year when the change takes effect */
+  year: number;
+  /** New amount after change */
+  newAmount: number;
+  /** Description of the change */
+  description?: string;
+}>;
+
+/**
+ * Base income/expense interface
+ */
+interface BaseIncomeExpense {
+  /** Unique identifier */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Amount in dollars */
+  amount: number;
+  /** Frequency of occurrence */
+  frequency: RecurrenceFrequency | 'once';
+  /** Start date */
+  startDate: string;
+  /** Category */
+  category: string;
+  /** Tags for filtering and grouping */
+  tags?: ReadonlyArray<string>;
+  /** Changes over time */
+  changes?: ReadonlyArray<ChangeOverTimeEntry>;
+  /** End date (optional) */
+  endDate?: string;
+}
+
+/**
+ * Work income (salaries, bonuses, part-time work)
+ */
+export type WorkIncome = Readonly<
+  BaseIncomeExpense & {
+    type: 'work';
+    /** Whether income is subject to taxes */
+    taxable: boolean;
+    /** Employer information */
+    employer?: string;
+    /** Job title */
+    jobTitle?: string;
+  }
+>;
+
+/**
+ * Social Security or pension income
+ */
+export type PensionIncome = Readonly<
+  BaseIncomeExpense & {
+    type: 'social-security';
+    /** Whether benefits are inflation-adjusted */
+    inflationAdjusted: boolean;
+    /** Claiming age (for Social Security) */
+    claimingAge?: number;
+  }
+>;
+
+/**
+ * Business or self-employment income
+ */
+export type BusinessIncome = Readonly<
+  BaseIncomeExpense & {
+    type: 'business';
+    /** Associated business expenses */
+    associatedExpenses: number;
+    /** Business name */
+    businessName?: string;
+    /** Tax identification number */
+    taxId?: string;
+  }
+>;
+
+/**
+ * Rental property income
+ */
+export type RentalIncome = Readonly<
+  BaseIncomeExpense & {
+    type: 'rental';
+    /** Associated rental expenses (maintenance, taxes, insurance) */
+    associatedExpenses: number;
+    /** Associated property asset ID */
+    propertyId?: string;
+  }
+>;
+
+/**
+ * Investment income
+ */
+export type InvestmentIncome = Readonly<
+  BaseIncomeExpense & {
+    type: 'investment';
+    /** Type of investment income */
+    investmentType: 'dividends' | 'capital-gains' | 'interest';
+    /** Associated account ID */
+    accountId?: string;
+  }
+>;
+
+/**
+ * Union type for all income sources
+ */
+export type Income =
+  | WorkIncome
+  | PensionIncome
+  | BusinessIncome
+  | RentalIncome
+  | InvestmentIncome;
+
+/**
+ * Recurring expense
+ */
+export type RecurringExpense = Readonly<
+  BaseIncomeExpense & {
+    type: 'recurring';
+    /** Whether expense is mandatory (e.g., rent, insurance) vs flexible (e.g., dining out) */
+    mandatory: boolean;
+    /** Whether amount is fixed or can vary */
+    variable: boolean;
+  }
+>;
+
+/**
+ * One-time expense
+ */
+export type OneTimeExpense = Readonly<
+  BaseIncomeExpense & {
+    type: 'one-time';
+    /** Frequency is always 'once' */
+    frequency: 'once';
+    /** Estimated or confirmed expense */
+    status: 'estimated' | 'confirmed';
+  }
+>;
+
+/**
+ * Union type for all expense types
+ */
+export type Expense = RecurringExpense | OneTimeExpense;

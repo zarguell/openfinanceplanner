@@ -1,4 +1,10 @@
-import type { UserProfile, SimulationResult, Plan } from '@/core/types';
+import type {
+  UserProfile,
+  SimulationResult,
+  Plan,
+  Income,
+  Expense,
+} from '@/core/types';
 
 /**
  * Profile slice state and actions
@@ -51,6 +57,34 @@ export interface PlanSlice {
 }
 
 /**
+ * Income and expense slice state and actions
+ */
+export interface IncomeExpenseSlice {
+  /** Array of all income sources */
+  incomes: Income[];
+  /** Array of all expenses */
+  expenses: Expense[];
+  /** Add a new income source */
+  addIncome: (income: Income) => void;
+  /** Update an existing income source */
+  updateIncome: (income: Income) => void;
+  /** Delete an income source by ID */
+  deleteIncome: (incomeId: string) => void;
+  /** Set all income sources */
+  setIncomes: (incomes: Income[]) => void;
+  /** Add a new expense */
+  addExpense: (expense: Expense) => void;
+  /** Update an existing expense */
+  updateExpense: (expense: Expense) => void;
+  /** Delete an expense by ID */
+  deleteExpense: (expenseId: string) => void;
+  /** Set all expenses */
+  setExpenses: (expenses: Expense[]) => void;
+  /** Clear all incomes and expenses */
+  clearIncomeExpenses: () => void;
+}
+
+/**
  * Hydration tracking slice
  *
  * Used to prevent UI flash and loading issues during async store hydration.
@@ -66,9 +100,10 @@ export interface HydrationSlice {
 /**
  * Combined store state type
  *
- * Includes profile, projection, plan, and hydration slices.
+ * Includes profile, projection, plan, income/expense, and hydration slices.
  */
 export type StoreState = ProfileSlice &
   ProjectionSlice &
   PlanSlice &
+  IncomeExpenseSlice &
   HydrationSlice;

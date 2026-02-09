@@ -1,0 +1,54 @@
+.wrapper {
+  /* Mobile-first table-to-card transformation */
+}
+
+@media (max-width: 768px) {
+  .wrapper table,
+  .wrapper thead,
+  .wrapper tbody,
+  .wrapper th,
+  .wrapper td,
+  .wrapper tr {
+    display: block;
+  }
+
+  .wrapper thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .wrapper tr {
+    margin-bottom: var(--mantine-spacing-md);
+    border: 1px solid var(--mantine-color-gray-3);
+    border-radius: var(--mantine-radius-md);
+    padding: var(--mantine-spacing-sm);
+    display: block;
+  }
+
+  .wrapper td {
+    border: none;
+    border-bottom: 1px solid var(--mantine-color-gray-3);
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+    display: block;
+    padding: 0.5rem 0.5rem 0.5rem 50%;
+  }
+
+  .wrapper td:before {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    width: 45%;
+    padding-right: 0.5rem;
+    white-space: nowrap;
+    font-weight: 700;
+    content: attr(data-label);
+    color: var(--mantine-color-gray-7);
+  }
+
+  .wrapper td:last-child {
+    border-bottom: none;
+  }
+}

@@ -49,6 +49,35 @@ export const useStore = create<StoreState>()(
       },
       clearPlans: () => set({ plans: [], currentPlanId: null }),
 
+      // Income/Expense slice
+      incomes: [],
+      expenses: [],
+      addIncome: (income) =>
+        set((state) => ({ incomes: [...state.incomes, income] })),
+      updateIncome: (income) =>
+        set((state) => ({
+          incomes: state.incomes.map((i) => (i.id === income.id ? income : i)),
+        })),
+      deleteIncome: (incomeId) =>
+        set((state) => ({
+          incomes: state.incomes.filter((i) => i.id !== incomeId),
+        })),
+      setIncomes: (incomes) => set({ incomes }),
+      addExpense: (expense) =>
+        set((state) => ({ expenses: [...state.expenses, expense] })),
+      updateExpense: (expense) =>
+        set((state) => ({
+          expenses: state.expenses.map((e) =>
+            e.id === expense.id ? expense : e
+          ),
+        })),
+      deleteExpense: (expenseId) =>
+        set((state) => ({
+          expenses: state.expenses.filter((e) => e.id !== expenseId),
+        })),
+      setExpenses: (expenses) => set({ expenses }),
+      clearIncomeExpenses: () => set({ incomes: [], expenses: [] }),
+
       // Hydration slice
       _hasHydrated: false,
       setHasHydrated: (state) => set({ _hasHydrated: state }),

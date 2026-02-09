@@ -64,7 +64,7 @@ export function LiabilityForm({
   const handleSubmit = (values: typeof form.values) => {
     const liabilityData: Liability = {
       ...values,
-      id: values.id || `liability-${Date.now()}`,
+      id: values.id || `liability-${Math.random().toString(36).substr(2, 9)}`,
       type: 'debts',
       balance: values.balance <= 0 ? values.balance : -Math.abs(values.balance), // Ensure negative balance
     };

@@ -1,5 +1,6 @@
 import { Table, NumberFormatter, Box } from '@mantine/core';
 import type { SimulationResult } from '@/core/types';
+import classes from './ProjectionTable.module.css';
 
 interface ProjectionTableProps {
   data: SimulationResult[];
@@ -11,51 +12,7 @@ export function ProjectionTable({ data }: ProjectionTableProps) {
   }
 
   return (
-    <Box
-      sx={(theme) => ({
-        // Mobile-first table-to-card transformation
-        '@media (max-width: 768px)': {
-          '& table, & thead, & tbody, & th, & td, & tr': {
-            display: 'block',
-          },
-          '& thead tr': {
-            position: 'absolute',
-            top: '-9999px',
-            left: '-9999px',
-          },
-          '& tr': {
-            marginBottom: theme.spacing.md,
-            border: `1px solid ${theme.colors.gray[3]}`,
-            borderRadius: theme.radius.md,
-            padding: theme.spacing.sm,
-            display: 'block',
-          },
-          '& td': {
-            border: 'none',
-            borderBottom: `1px solid ${theme.colors.gray[3]}`,
-            position: 'relative',
-            paddingLeft: '50%',
-            textAlign: 'left',
-            display: 'block',
-            padding: '0.5rem 0.5rem 0.5rem 50%',
-          },
-          '& td:before': {
-            position: 'absolute',
-            top: '0.5rem',
-            left: '0.5rem',
-            width: '45%',
-            paddingRight: '0.5rem',
-            whiteSpace: 'nowrap',
-            fontWeight: 700,
-            content: 'attr(data-label)',
-            color: theme.colors.gray[7],
-          },
-          '& td:last-child': {
-            borderBottom: 'none',
-          },
-        },
-      })}
-    >
+    <Box className={classes.wrapper}>
       <Table striped highlightOnHover withTableBorder>
         <Table.Thead>
           <Table.Tr>

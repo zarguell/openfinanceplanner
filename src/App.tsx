@@ -6,6 +6,7 @@ import { NetWorthChart } from '@/components/charts';
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { PWAUpdateNotice } from '@/components/PWAUpdateNotice';
 import { PWAProvider } from '@/components/PWAProvider';
+import { TestIcons } from './components/TestIcons';
 
 function App() {
   return (
@@ -24,6 +25,8 @@ function App() {
                 device.
               </Text>
             </Stack>
+
+            <TestIcons />
 
             <ProfileForm />
 

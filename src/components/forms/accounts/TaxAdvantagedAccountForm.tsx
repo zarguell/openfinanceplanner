@@ -56,7 +56,9 @@ export function TaxAdvantagedAccountForm({
   const handleSubmit = (values: typeof form.values) => {
     const accountData: TaxAdvantagedAccount = {
       ...values,
-      id: values.id || `tax-advantaged-${Date.now()}`,
+      id:
+        values.id ||
+        `tax-advantaged-${Math.random().toString(36).substr(2, 9)}`,
       type: 'tax-advantaged',
       taxCharacteristics: 'tax-deferred', // Default assumption
     };
