@@ -1022,3 +1022,107 @@ export type TaxStrategy = Readonly<{
   /** Strategy description */
   description: string;
 }>;
+
+/**
+ * Return sequence type for Monte Carlo simulations
+ */
+export type ReturnSequence = ReadonlyArray<number>;
+
+/**
+ * Historical data source for backtesting
+ */
+export type HistoricalDataSource =
+  | 's-and-p-500'
+  | 'us-treasuries'
+  | 'international'
+  | 'custom';
+
+/**
+ * Return sequence configuration
+ */
+export type ReturnSequenceConfig = Readonly<{
+  /** Type of return sequence */
+  type: 'random' | 'historical' | 'bootstrap';
+  /** Mean annual return as percentage */
+  meanReturn?: number;
+  /** Volatility (standard deviation) as percentage */
+  volatility?: number;
+  /** Historical data source (for historical type) */
+  historicalSource?: HistoricalDataSource;
+  /** Seed for random number generation (for deterministic results) */
+  seed?: number;
+  /** Number of years in the sequence */
+  years: number;
+}>;
+
+/**
+ * Monte Carlo simulation result
+ */
+export type MonteCarloSimulationResult = Readonly<{
+  /** Unique identifier for this simulation */
+  id: string;
+  /** Yearly balances for this simulation */
+  yearlyBalances: readonly number[];
+  /** Whether the simulation was successful (never depleted) */
+  successful: boolean;
+  /** Year when balance depleted (if unsuccessful) */
+  depletionYear?: number;
+}>;
+
+/**
+ * Percentile band data for visualization
+ */
+export type PercentileBandData = Readonly<{
+  /** Year index */
+  year: number;
+  /** Age at this year */
+  age: number;
+  /** Balance at specified percentile */
+  [percentile: number]: number;
+}>;
+
+/**
+ * Monte Carlo configuration
+ */
+export type MonteCarloConfig = Readonly<{
+  /** Number of simulations to run */
+  numSimulations: number;
+  /** Return sequence configuration */
+  returnSequenceConfig: ReturnSequenceConfig;
+  /** Percentiles to calculate */
+  percentiles: readonly number[];
+  /** Whether to use deterministic mode (same seed for all) */
+  deterministic?: boolean;
+}>;
+
+/**
+ * Chance of success calculation
+ */
+export type ChanceOfSuccess = Readonly<{
+  /** Overall success rate as percentage (0-100) */
+  successRate: number;
+  /** Number of successful simulations */
+  successfulSimulations: number;
+  /** Total number of simulations */
+  totalSimulations: number;
+  /** Success rate by year */
+  yearlySuccessRates: readonly number[];
+}>;
+
+/**
+ * Historical backtest result
+ */
+export type HistoricalBacktestResult = Readonly<{
+  /** Historical period identifier */
+  period: string;
+  /** Start year of historical period */
+  startYear: number;
+  /** End year of historical period */
+  endYear: number;
+  /** Simulation result using actual returns */
+  result: MonteCarloSimulationResult;
+  /** Average annual return for the period */
+  averageAnnualReturn: number;
+  /** Volatility for the period */
+  volatility: number;
+}>;

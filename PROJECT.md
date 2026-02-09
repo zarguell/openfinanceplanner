@@ -129,20 +129,20 @@ Implementation Location:
 - `src/core/tax/` - New directory for tax engine ✅
 - `src/components/tax/` - New directory for tax UI components ✅
 
-### Task 2.5: Monte Carlo and Chance of Success
+### Task 2.5: Monte Carlo and Chance of Success ✅ COMPLETED
 
 **Requirements:**
 
-- Monte Carlo engine with pluggable return sequences
-- Chance-of-success UI with configuration panel
-- Percentile band charts
-- Historical backtesting capabilities
+- Monte Carlo engine with pluggable return sequences ✅
+- Chance-of-success UI with configuration panel ✅
+- Percentile band charts ✅
+- Historical backtesting capabilities ✅
 
 **Implementation Location:**
 
-- `src/core/types/index.ts` - Add MonteCarlo types
-- `src/core/monte-carlo/` - New directory for Monte Carlo engine
-- `src/components/monte-carlo/` - New directory for Monte Carlo UI
+- `src/core/types/index.ts` - Add MonteCarlo types ✅
+- `src/core/monte-carlo/` - New directory for Monte Carlo engine ✅
+- `src/components/monte-carlo/` - New directory for Monte Carlo UI ✅
 
 ### Task 2.6: Advanced Analytics and Visualization
 
