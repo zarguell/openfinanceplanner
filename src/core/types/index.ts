@@ -735,3 +735,131 @@ export type OneTimeExpense = Readonly<
  * Union type for all expense types
  */
 export type Expense = RecurringExpense | OneTimeExpense;
+
+/**
+ * Goal types for financial planning
+ */
+export type GoalType =
+  | 'retirement-savings'
+  | 'emergency-fund'
+  | 'debt-payoff'
+  | 'home-purchase'
+  | 'education'
+  | 'vacation'
+  | 'major-purchase'
+  | 'investment-growth'
+  | 'charitable-giving'
+  | 'other-goal';
+
+/**
+ * Goal status tracking
+ */
+export type GoalStatus =
+  | 'not-started'
+  | 'in-progress'
+  | 'on-track'
+  | 'behind-schedule'
+  | 'completed'
+  | 'at-risk'
+  | 'cancelled';
+
+/**
+ * Goal priority level
+ */
+export type GoalPriority = 'critical' | 'high' | 'medium' | 'low';
+
+/**
+ * Goal entity for financial planning
+ */
+export type Goal = Readonly<{
+  /** Unique identifier for the goal */
+  id: string;
+  /** Display name for the goal */
+  name: string;
+  /** Type of goal */
+  type: GoalType;
+  /** Target amount in dollars */
+  targetAmount: number;
+  /** Current amount saved/allocated */
+  currentAmount: number;
+  /** Target date for achieving the goal */
+  targetDate: string;
+  /** Start date for the goal */
+  startDate: string;
+  /** Priority level */
+  priority: GoalPriority;
+  /** Whether goal is mandatory vs flexible */
+  mandatory: boolean;
+  /** Current status */
+  status: GoalStatus;
+  /** Description of the goal */
+  description?: string;
+  /** Monthly contribution amount */
+  monthlyContribution?: number;
+  /** Associated account ID (if applicable) */
+  accountId?: string;
+  /** Tags for filtering */
+  tags?: ReadonlyArray<string>;
+}>;
+
+/**
+ * Priority configuration for cash flow allocation
+ */
+export type CashFlowPriority = Readonly<{
+  /** Unique identifier */
+  id: string;
+  /** Display name */
+  name: string;
+  /** Priority order (lower number = higher priority) */
+  order: number;
+  /** Associated goals */
+  goalIds: ReadonlyArray<string>;
+  /** Percentage of cash flow to allocate */
+  allocationPercentage: number;
+  /** Whether this priority is mandatory */
+  mandatory: boolean;
+  /** Description */
+  description?: string;
+}>;
+
+/**
+ * Priority simulation result
+ */
+export type PrioritySimulationResult = Readonly<{
+  /** Year of simulation */
+  year: number;
+  /** Total cash flow available */
+  cashFlowAvailable: number;
+  /** Allocation by priority */
+  allocations: ReadonlyArray<{
+    priorityId: string;
+    priorityName: string;
+    amountAllocated: number;
+    percentageAllocated: number;
+  }>;
+  /** Goals funded this year */
+  goalsFunded: ReadonlyArray<{
+    goalId: string;
+    goalName: string;
+    amountFunded: number;
+    progress: number;
+  }>;
+}>;
+
+/**
+ * Goal progress heatmap data
+ */
+export type GoalHeatmapData = Readonly<{
+  /** Goal ID */
+  goalId: string;
+  /** Goal name */
+  goalName: string;
+  /** Progress percentage */
+  progress: number;
+  /** Status */
+  status: GoalStatus;
+  /** Months until target */
+  monthsRemaining: number;
+  /** On track indicator */
+  onTrack: boolean;
+}>;
