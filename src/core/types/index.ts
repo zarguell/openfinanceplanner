@@ -1230,6 +1230,189 @@ export type SankeyData = Readonly<{
   nodes: readonly SankeyNode[];
   /** All links between nodes */
   links: readonly SankeyLink[];
-  /** Year the data represents */
+  /** Year data represents */
   year: number;
+}>;
+
+/**
+ * Scenario status
+ */
+export type ScenarioStatus = 'active' | 'archived' | 'deleted';
+
+/**
+ * Scenario entity for managing multiple plans
+ */
+export type Scenario = Readonly<{
+  /** Unique identifier for the scenario */
+  id: string;
+  /** Display name for the scenario */
+  name: string;
+  /** Description of the scenario */
+  description?: string;
+  /** ID of the base plan this scenario is based on */
+  basePlanId: string;
+  /** Status of the scenario */
+  status: ScenarioStatus;
+  /** Date when scenario was created */
+  createdAt: string;
+  /** Date when scenario was last modified */
+  modifiedAt: string;
+  /** ID of scenario this was cloned from (if applicable) */
+  parentScenarioId?: string;
+  /** Version number for tracking changes */
+  version: number;
+}>;
+
+/**
+ * Scenario snapshot for capturing plan state at a point in time
+ */
+export type ScenarioSnapshot = Readonly<{
+  /** Unique identifier for the snapshot */
+  id: string;
+  /** ID of the scenario this snapshot belongs to */
+  scenarioId: string;
+  /** Snapshot name/description */
+  name: string;
+  /** Date when snapshot was created */
+  createdAt: string;
+  /** Complete plan data at the time of snapshot */
+  planData: Plan;
+  /** Complete simulation results at time of snapshot */
+  simulationData?: SimulationResult[];
+  /** User profile data at time of snapshot */
+  profileData?: UserProfile;
+  /** Income data at time of snapshot */
+  incomeData?: readonly Income[];
+  /** Expense data at time of snapshot */
+  expenseData?: readonly Expense[];
+}>;
+
+/**
+ * Flex Spending rule types
+ */
+export type FlexSpendingRuleType =
+  | 'percentage-of-income'
+  | 'fixed-amount'
+  | 'inflation-adjusted'
+  | 'goal-based'
+  | 'rule-of-thumb';
+
+/**
+ * Flex Spending rule conditions
+ */
+export type FlexSpendingCondition = Readonly<{
+  /** Type of condition */
+  type: 'age' | 'year' | 'net-worth' | 'retirement-date' | 'always';
+  /** Comparison operator */
+  operator: '>' | '>=' | '<' | '<=' | '==' | '!=';
+  /** Value to compare against */
+  value: number;
+}>;
+
+/**
+ * Flex Spending rule for dynamic spending allocation
+ */
+export type FlexSpendingRule = Readonly<{
+  /** Unique identifier for the rule */
+  id: string;
+  /** Display name for the rule */
+  name: string;
+  /** Type of flex spending rule */
+  type: FlexSpendingRuleType;
+  /** Category this rule applies to */
+  category?: ExpenseCategory;
+  /** Base amount or percentage */
+  baseValue: number;
+  /** Whether baseValue is a percentage or fixed amount */
+  isPercentage: boolean;
+  /** Minimum amount (floor) */
+  minimumAmount?: number;
+  /** Maximum amount (ceiling) */
+  maximumAmount?: number;
+  /** Conditions for when this rule applies */
+  conditions: readonly FlexSpendingCondition[];
+  /** Whether this rule is enabled */
+  enabled: boolean;
+  /** Priority order (higher number = higher priority) */
+  priority: number;
+  /** Description of the rule */
+  description?: string;
+}>;
+
+/**
+ * Flex Spending configuration for a scenario
+ */
+export type FlexSpendingConfig = Readonly<{
+  /** Array of flex spending rules */
+  rules: readonly FlexSpendingRule[];
+  /** Whether flex spending is enabled */
+  enabled: boolean;
+  /** Default rule to use if no specific rules apply */
+  defaultRule?: FlexSpendingRule;
+}>;
+
+/**
+ * Scenario comparison data point
+ */
+export type ScenarioComparisonData = Readonly<{
+  /** Year of data point */
+  year: number;
+  /** Age at this year */
+  age: number;
+  /** Scenario data */
+  scenarios: readonly {
+    /** Scenario ID */
+    scenarioId: string;
+    /** Scenario name */
+    scenarioName: string;
+    /** Net worth at this year */
+    netWorth: number;
+    /** Total income for this year */
+    income: number;
+    /** Total expenses for this year */
+    expenses: number;
+    /** Cash flow for this year */
+    cashFlow: number;
+    /** Account breakdown */
+    accountBreakdown?: Record<string, number>;
+  }[];
+}>;
+
+/**
+ * Scenario comparison result
+ */
+export type ScenarioComparisonResult = Readonly<{
+  /** Comparison ID */
+  id: string;
+  /** Scenarios being compared */
+  scenarioIds: readonly string[];
+  /** Comparison data points by year */
+  comparisonData: readonly ScenarioComparisonData[];
+  /** Summary statistics */
+  summary: {
+    /** Average net worth difference between scenarios */
+    avgNetWorthDiff: number;
+    /** Maximum net worth difference */
+    maxNetWorthDiff: number;
+    /** Year of maximum difference */
+    maxDiffYear: number;
+    /** Scenario with highest ending net worth */
+    highestScenarioId: string;
+    /** Scenario with lowest ending net worth */
+    lowestScenarioId: string;
+  };
+  /** Comparison date */
+  createdAt: string;
+}>;
+
+/**
+ * Scenario update result
+ */
+export type ScenarioUpdateResult = Readonly<{
+  /** The updated scenario */
+  scenario: Scenario;
+  /** Whether the update was successful */
+  success: boolean;
+  /** Error message if update failed */
+  error?: string;
 }>;

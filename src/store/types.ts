@@ -4,6 +4,10 @@ import type {
   Plan,
   Income,
   Expense,
+  Scenario,
+  ScenarioSnapshot,
+  FlexSpendingConfig,
+  ScenarioComparisonResult,
 } from '@/core/types';
 
 /**
@@ -98,12 +102,57 @@ export interface HydrationSlice {
 }
 
 /**
+ * Scenario slice state and actions
+ */
+export interface ScenarioSlice {
+  /** Array of all scenarios */
+  scenarios: Scenario[];
+  /** Currently selected scenario ID */
+  currentScenarioId: string | null;
+  /** Array of all snapshots */
+  snapshots: ScenarioSnapshot[];
+  /** Flex spending configuration for current scenario */
+  flexSpendingConfig: FlexSpendingConfig | null;
+  /** Latest comparison result */
+  comparisonResult: ScenarioComparisonResult | null;
+  /** Add a new scenario */
+  addScenario: (scenario: Scenario) => void;
+  /** Update an existing scenario */
+  updateScenario: (scenario: Scenario) => void;
+  /** Delete a scenario by ID */
+  deleteScenario: (scenarioId: string) => void;
+  /** Clone an existing scenario */
+  cloneScenario: (scenarioId: string, newName: string) => void;
+  /** Set all scenarios (replace existing) */
+  setScenarios: (scenarios: Scenario[]) => void;
+  /** Get a scenario by ID */
+  getScenario: (scenarioId: string) => Scenario | undefined;
+  /** Set the current/active scenario */
+  setCurrentScenario: (scenarioId: string) => void;
+  /** Get the current scenario */
+  getCurrentScenario: () => Scenario | undefined;
+  /** Clear all scenarios */
+  clearScenarios: () => void;
+  /** Add a snapshot */
+  addSnapshot: (snapshot: ScenarioSnapshot) => void;
+  /** Delete a snapshot by ID */
+  deleteSnapshot: (snapshotId: string) => void;
+  /** Set flex spending config */
+  setFlexSpendingConfig: (config: FlexSpendingConfig) => void;
+  /** Set comparison result */
+  setComparisonResult: (result: ScenarioComparisonResult) => void;
+  /** Clear comparison result */
+  clearComparisonResult: () => void;
+}
+
+/**
  * Combined store state type
  *
- * Includes profile, projection, plan, income/expense, and hydration slices.
+ * Includes profile, projection, plan, income/expense, scenario, and hydration slices.
  */
 export type StoreState = ProfileSlice &
   ProjectionSlice &
   PlanSlice &
   IncomeExpenseSlice &
+  ScenarioSlice &
   HydrationSlice;

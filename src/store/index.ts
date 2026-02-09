@@ -78,6 +78,79 @@ export const useStore = create<StoreState>()(
       setExpenses: (expenses) => set({ expenses }),
       clearIncomeExpenses: () => set({ incomes: [], expenses: [] }),
 
+      // Scenario slice
+      scenarios: [],
+      currentScenarioId: null,
+      snapshots: [],
+      flexSpendingConfig: null,
+      comparisonResult: null,
+      addScenario: (scenario) =>
+        set((state) => ({ scenarios: [...state.scenarios, scenario] })),
+      updateScenario: (scenario) =>
+        set((state) => ({
+          scenarios: state.scenarios.map((s) =>
+            s.id === scenario.id ? scenario : s
+          ),
+        })),
+      deleteScenario: (scenarioId) =>
+        set((state) => ({
+          scenarios: state.scenarios.filter((s) => s.id !== scenarioId),
+          currentScenarioId:
+            state.currentScenarioId === scenarioId
+              ? null
+              : state.currentScenarioId,
+          snapshots: state.snapshots.filter(
+            (snap) => snap.scenarioId !== scenarioId
+          ),
+        })),
+      cloneScenario: (scenarioId, newName) =>
+        set((state) => {
+          const scenarioToClone = state.scenarios.find(
+            (s) => s.id === scenarioId
+          );
+          if (!scenarioToClone) {
+            return state;
+          }
+          const cloned = {
+            ...scenarioToClone,
+            id: `scenario-${Date.now()}`,
+            name: newName,
+            parentScenarioId: scenarioToClone.id,
+            createdAt: new Date().toISOString().split('T')[0],
+            modifiedAt: new Date().toISOString().split('T')[0],
+          };
+          return {
+            scenarios: [...state.scenarios, cloned],
+          };
+        }),
+      setScenarios: (scenarios) => set({ scenarios }),
+      getScenario: (scenarioId) =>
+        get().scenarios.find((s) => s.id === scenarioId),
+      setCurrentScenario: (scenarioId) =>
+        set({ currentScenarioId: scenarioId }),
+      getCurrentScenario: () => {
+        const state = get();
+        return state.currentScenarioId
+          ? state.scenarios.find((s) => s.id === state.currentScenarioId)
+          : undefined;
+      },
+      clearScenarios: () =>
+        set({
+          scenarios: [],
+          currentScenarioId: null,
+          snapshots: [],
+          comparisonResult: null,
+        }),
+      addSnapshot: (snapshot) =>
+        set((state) => ({ snapshots: [...state.snapshots, snapshot] })),
+      deleteSnapshot: (snapshotId) =>
+        set((state) => ({
+          snapshots: state.snapshots.filter((s) => s.id !== snapshotId),
+        })),
+      setFlexSpendingConfig: (config) => set({ flexSpendingConfig: config }),
+      setComparisonResult: (result) => set({ comparisonResult: result }),
+      clearComparisonResult: () => set({ comparisonResult: null }),
+
       // Hydration slice
       _hasHydrated: false,
       setHasHydrated: (state) => set({ _hasHydrated: state }),
