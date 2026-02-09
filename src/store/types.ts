@@ -1,15 +1,15 @@
-import type { UserProfile, SimulationResult } from '@/core/types'
+import type { UserProfile, SimulationResult, Plan } from '@/core/types';
 
 /**
  * Profile slice state and actions
  */
 export interface ProfileSlice {
   /** User profile data */
-  profile: UserProfile | null
-  /** Set the user profile */
-  setProfile: (profile: UserProfile) => void
+  profile: UserProfile | null;
+  /** Set user profile */
+  setProfile: (profile: UserProfile) => void;
   /** Clear the user profile */
-  clearProfile: () => void
+  clearProfile: () => void;
 }
 
 /**
@@ -17,11 +17,37 @@ export interface ProfileSlice {
  */
 export interface ProjectionSlice {
   /** Projection results array */
-  projection: SimulationResult[] | null
-  /** Set the projection results */
-  setProjection: (projection: SimulationResult[]) => void
+  projection: SimulationResult[] | null;
+  /** Set projection results */
+  setProjection: (projection: SimulationResult[]) => void;
   /** Clear the projection results */
-  clearProjection: () => void
+  clearProjection: () => void;
+}
+
+/**
+ * Plan slice state and actions
+ */
+export interface PlanSlice {
+  /** Array of all plans */
+  plans: Plan[];
+  /** Currently selected plan ID */
+  currentPlanId: string | null;
+  /** Add a new plan */
+  addPlan: (plan: Plan) => void;
+  /** Update an existing plan */
+  updatePlan: (plan: Plan) => void;
+  /** Delete a plan by ID */
+  deletePlan: (planId: string) => void;
+  /** Set all plans (replace existing) */
+  setPlans: (plans: Plan[]) => void;
+  /** Get a plan by ID */
+  getPlan: (planId: string) => Plan | undefined;
+  /** Set the current/active plan */
+  setCurrentPlan: (planId: string) => void;
+  /** Get the current plan */
+  getCurrentPlan: () => Plan | undefined;
+  /** Clear all plans */
+  clearPlans: () => void;
 }
 
 /**
@@ -31,15 +57,18 @@ export interface ProjectionSlice {
  * @see https://zustand.docs.pmnd.rs/integrations/persisting-store-data#how-can-i-check-if-my-store-has-been-hydrated
  */
 export interface HydrationSlice {
-  /** Whether the store has finished hydrating from storage */
-  _hasHydrated: boolean
-  /** Set the hydration state */
-  setHasHydrated: (state: boolean) => void
+  /** Whether store has finished hydrating from storage */
+  _hasHydrated: boolean;
+  /** Set hydration state */
+  setHasHydrated: (state: boolean) => void;
 }
 
 /**
  * Combined store state type
  *
- * Includes profile, projection, and hydration slices.
+ * Includes profile, projection, plan, and hydration slices.
  */
-export type StoreState = ProfileSlice & ProjectionSlice & HydrationSlice
+export type StoreState = ProfileSlice &
+  ProjectionSlice &
+  PlanSlice &
+  HydrationSlice;

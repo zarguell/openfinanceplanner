@@ -1,7 +1,7 @@
-import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
-import type { StoreState } from './types'
-import { indexedDBStorage } from './middleware/indexeddb'
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import type { StoreState } from './types';
+import { indexedDBStorage } from './middleware/indexeddb';
 
 /**
  * Global application store with IndexedDB persistence
@@ -13,7 +13,7 @@ import { indexedDBStorage } from './middleware/indexeddb'
  */
 export const useStore = create<StoreState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       // Profile slice
       profile: null,
       setProfile: (profile) => set({ profile }),
@@ -24,6 +24,31 @@ export const useStore = create<StoreState>()(
       setProjection: (projection) => set({ projection }),
       clearProjection: () => set({ projection: null }),
 
+      // Plan slice
+      plans: [],
+      currentPlanId: null,
+      addPlan: (plan) => set((state) => ({ plans: [...state.plans, plan] })),
+      updatePlan: (plan) =>
+        set((state) => ({
+          plans: state.plans.map((p) => (p.id === plan.id ? plan : p)),
+        })),
+      deletePlan: (planId) =>
+        set((state) => ({
+          plans: state.plans.filter((p) => p.id !== planId),
+          currentPlanId:
+            state.currentPlanId === planId ? null : state.currentPlanId,
+        })),
+      setPlans: (plans) => set({ plans }),
+      getPlan: (planId) => get().plans.find((p) => p.id === planId),
+      setCurrentPlan: (planId) => set({ currentPlanId: planId }),
+      getCurrentPlan: () => {
+        const state = get();
+        return state.currentPlanId
+          ? state.plans.find((p) => p.id === state.currentPlanId)
+          : undefined;
+      },
+      clearPlans: () => set({ plans: [], currentPlanId: null }),
+
       // Hydration slice
       _hasHydrated: false,
       setHasHydrated: (state) => set({ _hasHydrated: state }),
@@ -32,8 +57,8 @@ export const useStore = create<StoreState>()(
       name: 'open-finance-planner',
       storage: createJSONStorage(() => indexedDBStorage),
       onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true)
+        state?.setHasHydrated(true);
       },
     }
   )
-)
+);
