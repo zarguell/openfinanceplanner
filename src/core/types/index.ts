@@ -238,6 +238,87 @@ export type UserProfile = Readonly<{
 }>;
 
 /**
+ * Inflation settings for projection
+ */
+export type InflationSettings = Readonly<{
+  /** Annual inflation rate as percentage (e.g., 2.5 for 2.5%) */
+  rate: number;
+  /** Whether to adjust spending for inflation */
+  adjustSpending: boolean;
+  /** Whether to adjust growth rates for inflation */
+  adjustGrowth: boolean;
+}>;
+
+/**
+ * Tax settings for projection
+ */
+export type TaxSettings = Readonly<{
+  /** Ordinary income tax rate as percentage */
+  ordinaryIncomeRate: number;
+  /** Capital gains tax rate as percentage */
+  capitalGainsRate: number;
+  /** Whether to apply taxes to withdrawals */
+  applyTaxes: boolean;
+}>;
+
+/**
+ * Withdrawal strategy for retirement accounts
+ */
+export type WithdrawalStrategy =
+  | 'sequential'
+  | 'proportional'
+  | 'tax-efficient';
+
+/**
+ * Social Security settings
+ */
+export type SocialSecuritySettings = Readonly<{
+  /** Age to start claiming benefits */
+  startAge: number;
+  /** Monthly benefit amount in dollars */
+  monthlyBenefit: number;
+  /** Whether benefits are inflation-adjusted */
+  inflationAdjusted: boolean;
+}>;
+
+/**
+ * Required Minimum Distribution settings
+ */
+export type RMDSettings = Readonly<{
+  /** Age when RMDs start */
+  rmdStartAge: number;
+  /** IRS table type */
+  rmdTable: 'uniform' | 'joint';
+}>;
+
+/**
+ * Account-specific growth rates
+ */
+export type AccountGrowthRates = Readonly<Record<string, number>>;
+
+/**
+ * Enhanced projection settings
+ */
+export type ProjectionSettings = Readonly<{
+  /** Inflation settings */
+  inflation: InflationSettings;
+  /** Tax settings */
+  tax: TaxSettings;
+  /** Withdrawal strategy */
+  withdrawalStrategy: WithdrawalStrategy;
+  /** Retirement age */
+  retirementAge: number;
+  /** Maximum projection years */
+  maxProjectionYears: number;
+  /** Social Security settings */
+  socialSecurity?: SocialSecuritySettings;
+  /** Required Minimum Distribution settings */
+  rmdSettings?: RMDSettings;
+  /** Account-specific growth rates */
+  accountGrowthRates?: AccountGrowthRates;
+}>;
+
+/**
  * Single year simulation result
  *
  * Represents the financial state for one year of the projection.
@@ -256,4 +337,205 @@ export type SimulationResult = Readonly<{
   spending: number;
   /** Ending balance after growth and spending */
   endingBalance: number;
+  /** Inflation-adjusted values */
+  inflationAdjusted?: {
+    startingBalance: number;
+    spending: number;
+    endingBalance: number;
+  };
+  /** Tax implications for the year */
+  taxImpact?: {
+    ordinaryIncomeTax: number;
+    capitalGainsTax: number;
+    totalTax: number;
+  };
+  /** Account-specific breakdown */
+  accountBreakdown?: Record<
+    string,
+    {
+      startingBalance: number;
+      growth: number;
+      withdrawal: number;
+      endingBalance: number;
+    }
+  >;
+}>;
+
+/**
+ * Plan types
+ */
+export type PlanType = 'fixed-date' | 'rolling';
+
+/**
+ * Plan entity for financial planning
+ */
+export type Plan = Readonly<{
+  /** Unique identifier for the plan */
+  id: string;
+  /** Display name for the plan */
+  name: string;
+  /** Type of plan */
+  type: PlanType;
+  /** Start date of the plan */
+  startDate: string;
+  /** Time horizon in years */
+  timeHorizon: number;
+  /** Global assumptions for the plan */
+  assumptions: {
+    /** Inflation settings */
+    inflation: InflationSettings;
+    /** Growth model settings */
+    growthModel: {
+      /** Default annual growth rate as percentage */
+      defaultRate: number;
+      /** Account-specific growth rates */
+      accountGrowthRates?: AccountGrowthRates;
+    };
+    /** Withdrawal rules */
+    withdrawalRules: {
+      /** Withdrawal strategy */
+      strategy: WithdrawalStrategy;
+      /** Retirement age */
+      retirementAge: number;
+      /** Maximum projection years */
+      maxProjectionYears: number;
+    };
+    /** Social Security settings */
+    socialSecurity?: SocialSecuritySettings;
+    /** Required Minimum Distribution settings */
+    rmdSettings?: RMDSettings;
+  };
+}>;
+
+/**
+ * Enhanced user profile with projection settings
+ */
+export type EnhancedUserProfile = UserProfile & {
+  /** Enhanced projection settings */
+  projectionSettings?: ProjectionSettings;
+};
+
+/**
+ * Milestone types for financial planning
+ */
+export type MilestoneType =
+  | 'retirement'
+  | 'career-change'
+  | 'asset-purchase'
+  | 'asset-sale'
+  | 'family-change'
+  | 'other-milestone';
+
+/**
+ * Event types for financial planning
+ */
+export type EventType = 'income' | 'expense';
+
+/**
+ * Comparison operators for milestone conditions
+ */
+export type ComparisonOperator = '>' | '>=' | '<' | '<=' | '==' | '!=';
+
+/**
+ * Condition types for milestones
+ */
+export type ConditionType =
+  | 'age'
+  | 'net-worth'
+  | 'savings-rate'
+  | 'debt-ratio'
+  | 'date';
+
+/**
+ * Milestone condition for decision tree logic
+ */
+export type MilestoneCondition = Readonly<{
+  /** Type of condition */
+  type: ConditionType;
+  /** Comparison operator */
+  operator: ComparisonOperator;
+  /** Value to compare against (number for most types, date string for 'date' type) */
+  value: number | string;
+}>;
+
+/**
+ * Recurrence frequency for events
+ */
+export type RecurrenceFrequency =
+  | 'daily'
+  | 'weekly'
+  | 'biweekly'
+  | 'monthly'
+  | 'quarterly'
+  | 'yearly';
+
+/**
+ * Financial impact type
+ */
+export type FinancialImpactType = 'income' | 'expense';
+
+/**
+ * Financial impact for milestones and events
+ */
+export type FinancialImpact = Readonly<{
+  /** Amount in dollars */
+  amount: number;
+  /** Type of financial impact */
+  type: FinancialImpactType;
+  /** Whether this is recurring */
+  recurring: boolean;
+  /** Recurrence frequency (if recurring) */
+  frequency?: RecurrenceFrequency;
+}>;
+
+/**
+ * Milestone entity for financial planning
+ */
+export type Milestone = Readonly<{
+  /** Unique identifier for the milestone */
+  id: string;
+  /** Display name for the milestone */
+  name: string;
+  /** Type of milestone */
+  type: MilestoneType;
+  /** Target date for the milestone */
+  targetDate: string;
+  /** Whether the milestone has been completed */
+  completed: boolean;
+  /** Conditions that must be met for this milestone */
+  conditions: ReadonlyArray<MilestoneCondition>;
+  /** Description of the milestone */
+  description?: string;
+  /** Financial impact of this milestone */
+  financialImpact?: FinancialImpact;
+  /** Priority for milestone ordering */
+  priority?: number;
+}>;
+
+/**
+ * Event entity for financial planning
+ */
+export type Event = Readonly<{
+  /** Unique identifier for the event */
+  id: string;
+  /** Type of event */
+  type: EventType;
+  /** Display name for the event */
+  name: string;
+  /** Date of the event */
+  date: string;
+  /** Amount in dollars */
+  amount: number;
+  /** Whether this is a recurring event */
+  recurring: boolean;
+  /** Recurrence frequency (if recurring) */
+  frequency?: RecurrenceFrequency;
+  /** End date for recurring events */
+  endDate?: string;
+  /** Description of the event */
+  description?: string;
+  /** Category for the event */
+  category?: string;
+  /** Tags for filtering */
+  tags?: ReadonlyArray<string>;
 }>;
