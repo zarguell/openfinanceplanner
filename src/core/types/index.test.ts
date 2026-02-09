@@ -53,6 +53,89 @@ describe('Core Types - UserProfile', () => {
     // Use the variable to avoid noUnusedLocals error
     expect(typeof invalidProfile).toBe('object');
   });
+
+  // Tests for expanded UserProfile properties
+  it('should accept expanded user profile data with new properties', () => {
+    const expandedProfile: UserProfile = {
+      age: 35,
+      currentSavings: 150000,
+      annualGrowthRate: 7.0,
+      annualSpending: 50000,
+      householdStatus: 'married',
+      location: {
+        country: 'US',
+        state: 'CA',
+        city: 'San Francisco',
+      },
+      accounts: [
+        {
+          id: 'account1',
+          name: '401(k)',
+          type: 'tax-advantaged',
+          balance: 100000,
+          taxCharacteristics: 'tax-deferred',
+        },
+      ],
+      taxRegion: {
+        country: 'US',
+        state: 'CA',
+        locality: 'San Francisco',
+      },
+      currency: 'USD',
+    };
+
+    expect(expandedProfile.householdStatus).toBe('married');
+    expect(expandedProfile.location?.country).toBe('US');
+    expect(expandedProfile.accounts?.length).toBe(1);
+    expect(expandedProfile.taxRegion?.state).toBe('CA');
+    expect(expandedProfile.currency).toBe('USD');
+  });
+
+  it('should enforce readonly properties for new fields', () => {
+    const profile: UserProfile = {
+      age: 40,
+      currentSavings: 200000,
+      annualGrowthRate: 7.5,
+      annualSpending: 60000,
+      householdStatus: 'single',
+      location: {
+        country: 'US',
+        state: 'NY',
+        city: 'New York',
+      },
+      accounts: [
+        {
+          id: 'account1',
+          name: 'IRA',
+          type: 'tax-advantaged',
+          balance: 150000,
+          taxCharacteristics: 'tax-deferred',
+        },
+      ],
+    };
+
+    // TypeScript should prevent mutation at compile time
+    // @ts-expect-error - Cannot assign to 'householdStatus' because it is a read-only property
+    profile.householdStatus = 'married';
+
+    // @ts-expect-error - Cannot assign to 'location' because it is a read-only property
+    profile.location = { country: 'CA' };
+  });
+
+  it('should accept optional properties as undefined', () => {
+    const minimalProfile: UserProfile = {
+      age: 25,
+      currentSavings: 50000,
+      annualGrowthRate: 8.0,
+      annualSpending: 30000,
+      // All new properties are optional, so they can be omitted
+    };
+
+    expect(minimalProfile.age).toBe(25);
+    expect(minimalProfile.householdStatus).toBeUndefined();
+    expect(minimalProfile.location).toBeUndefined();
+    expect(minimalProfile.accounts).toBeUndefined();
+  });
 });
 
 describe('Core Types - SimulationResult', () => {
@@ -93,13 +176,13 @@ describe('Core Types - SimulationResult', () => {
     const preciseResult: SimulationResult = {
       year: 0,
       age: 30,
-      startingBalance: 100000.50,
+      startingBalance: 100000.5,
       growth: 7500.04,
       spending: 40000.99,
       endingBalance: 67000.55,
     };
 
-    expect(preciseResult.startingBalance).toBeCloseTo(100000.50, 2);
+    expect(preciseResult.startingBalance).toBeCloseTo(100000.5, 2);
     expect(preciseResult.growth).toBeCloseTo(7500.04, 2);
   });
 });

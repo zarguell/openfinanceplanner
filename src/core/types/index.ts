@@ -1,4 +1,64 @@
 /**
+ * Household status options
+ */
+export type HouseholdStatus = 'single' | 'married' | 'partnered' | 'other';
+
+/**
+ * Location information
+ */
+export type Location = Readonly<{
+  /** Country code (ISO 3166-1 alpha-2) */
+  country: string;
+  /** State or province */
+  state?: string;
+  /** City or locality */
+  city?: string;
+}>;
+
+/**
+ * Account types for financial planning
+ */
+export type AccountType =
+  | 'taxable'
+  | 'tax-advantaged'
+  | 'real-assets'
+  | 'debts';
+
+/**
+ * Tax characteristics for accounts
+ */
+export type TaxCharacteristics = 'taxable' | 'tax-deferred' | 'tax-free';
+
+/**
+ * Individual account information
+ */
+export type Account = Readonly<{
+  /** Unique identifier for the account */
+  id: string;
+  /** Display name for the account */
+  name: string;
+  /** Type of account */
+  type: AccountType;
+  /** Current balance in the account */
+  balance: number;
+  /** Tax characteristics of the account */
+  taxCharacteristics: TaxCharacteristics;
+  /** Additional account-specific properties can be added here */
+}>;
+
+/**
+ * Tax region information
+ */
+export type TaxRegion = Readonly<{
+  /** Country code (ISO 3166-1 alpha-2) */
+  country: string;
+  /** State or province */
+  state?: string;
+  /** Locality or municipality */
+  locality?: string;
+}>;
+
+/**
  * User profile data for financial projection
  *
  * All properties are readonly to ensure immutability in pure functions.
@@ -13,6 +73,16 @@ export type UserProfile = Readonly<{
   annualGrowthRate: number;
   /** Annual spending/withdrawal amount in dollars */
   annualSpending: number;
+  /** Household status */
+  householdStatus?: HouseholdStatus;
+  /** User location information */
+  location?: Location;
+  /** Collection of user accounts */
+  accounts?: Account[];
+  /** Tax region information */
+  taxRegion?: TaxRegion;
+  /** Currency preference */
+  currency?: string;
 }>;
 
 /**
