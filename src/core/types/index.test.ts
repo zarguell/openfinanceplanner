@@ -74,6 +74,7 @@ describe('Core Types - UserProfile', () => {
           type: 'tax-advantaged',
           balance: 100000,
           taxCharacteristics: 'tax-deferred',
+          accountType: '401k',
         },
       ],
       taxRegion: {
@@ -110,6 +111,7 @@ describe('Core Types - UserProfile', () => {
           type: 'tax-advantaged',
           balance: 150000,
           taxCharacteristics: 'tax-deferred',
+          accountType: 'traditional-ira',
         },
       ],
     };

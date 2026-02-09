@@ -27,12 +27,64 @@ export type AccountType =
 /**
  * Tax characteristics for accounts
  */
-export type TaxCharacteristics = 'taxable' | 'tax-deferred' | 'tax-free';
+export type TaxCharacteristics =
+  | 'taxable'
+  | 'tax-deferred'
+  | 'tax-free'
+  | 'tax-deductible'
+  | 'non-deductible';
 
 /**
- * Individual account information
+ * Specific account types for tax-advantaged accounts
  */
-export type Account = Readonly<{
+export type TaxAdvantagedAccountType =
+  | '401k'
+  | '403b'
+  | '457'
+  | 'traditional-ira'
+  | 'roth-ira'
+  | 'rollover-ira'
+  | 'inherited-traditional-ira'
+  | 'inherited-roth-ira'
+  | 'hsa'
+  | 'sep-ira'
+  | 'simple-ira'
+  | 'defined-benefit'
+  | 'employee-stock-option'
+  | 'espp';
+
+/**
+ * Specific asset types for real assets
+ */
+export type RealAssetType =
+  | 'primary-home'
+  | 'rental-property'
+  | 'vacation-home'
+  | 'vehicle'
+  | 'boat'
+  | 'art'
+  | 'jewelry'
+  | 'business'
+  | 'precious-metals'
+  | 'other-real-asset';
+
+/**
+ * Specific liability types for debts
+ */
+export type LiabilityType =
+  | 'mortgage'
+  | 'student-loan'
+  | 'credit-card'
+  | 'auto-loan'
+  | 'personal-loan'
+  | 'business-loan'
+  | 'medical-debt'
+  | 'other-liability';
+
+/**
+ * Base account interface
+ */
+interface BaseAccount {
   /** Unique identifier for the account */
   id: string;
   /** Display name for the account */
@@ -43,8 +95,108 @@ export type Account = Readonly<{
   balance: number;
   /** Tax characteristics of the account */
   taxCharacteristics: TaxCharacteristics;
-  /** Additional account-specific properties can be added here */
-}>;
+}
+
+/**
+ * Taxable investment account
+ */
+export type TaxableAccount = Readonly<
+  BaseAccount & {
+    type: 'taxable';
+    taxCharacteristics: 'taxable';
+    /** Financial institution name */
+    institution?: string;
+    /** Account number (masked) */
+    accountNumber?: string;
+    /** Cost basis for taxable investments */
+    costBasis?: number;
+    /** Contribution history */
+    contributions?: ReadonlyArray<{
+      year: number;
+      amount: number;
+      description?: string;
+    }>;
+  }
+>;
+
+/**
+ * Tax-advantaged retirement account
+ */
+export type TaxAdvantagedAccount = Readonly<
+  BaseAccount & {
+    type: 'tax-advantaged';
+    /** Specific account type */
+    accountType: TaxAdvantagedAccountType;
+    /** Financial institution name */
+    institution?: string;
+    /** Account number (masked) */
+    accountNumber?: string;
+    /** Annual contribution limit */
+    contributionLimit?: number;
+    /** Catch-up contribution amount (if eligible) */
+    catchUpContribution?: number;
+    /** Employer match information */
+    employerMatch?: {
+      percentage: number;
+      limit: number;
+    };
+    /** Vesting schedule for employer contributions */
+    vestingSchedule?: 'immediate' | 'graded' | 'cliff';
+  }
+>;
+
+/**
+ * Real asset account
+ */
+export type Asset = Readonly<
+  BaseAccount & {
+    type: 'real-assets';
+    /** Specific asset type */
+    assetType: RealAssetType;
+    /** Purchase price of the asset */
+    purchasePrice?: number;
+    /** Purchase date of the asset */
+    purchaseDate?: string;
+    /** Annual appreciation rate percentage */
+    appreciationRate?: number;
+    /** Ongoing maintenance/expenses as percentage of value */
+    ongoingExpenses?: number;
+    /** Sale assumptions */
+    saleAssumptions?: {
+      timing: 'retirement' | 'specific-year' | 'never';
+      year?: number;
+      costBasisStepUp: boolean;
+    };
+  }
+>;
+
+/**
+ * Liability account
+ */
+export type Liability = Readonly<
+  BaseAccount & {
+    type: 'debts';
+    /** Specific liability type */
+    liabilityType: LiabilityType;
+    /** Interest rate percentage */
+    interestRate: number;
+    /** Start date of the liability */
+    startDate?: string;
+    /** End date/term of the liability */
+    endDate?: string;
+    /** Minimum monthly payment */
+    minimumPayment?: number;
+    /** Amortization schedule */
+    amortizationType?: 'amortized' | 'interest-only' | 'revolving';
+    /** Tax deductibility status */
+    taxCharacteristics: 'tax-deductible' | 'non-deductible';
+  }
+>;
+
+/**
+ * Union type for all account types
+ */
+export type Account = TaxableAccount | TaxAdvantagedAccount | Asset | Liability;
 
 /**
  * Tax region information
