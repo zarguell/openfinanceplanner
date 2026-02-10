@@ -90,7 +90,7 @@ export function ProfileForm() {
   useEffect(() => {
     const initialValues = getInitialValues();
     form.setValues(initialValues);
-  }, [profile]);
+  }, [profile, form]);
 
   const handleSubmit = (values: typeof form.values) => {
     const profile: UserProfile = {
