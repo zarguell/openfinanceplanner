@@ -16,6 +16,11 @@ import {
   FileText,
   Settings,
   Menu,
+  Target,
+  Flag,
+  DollarSign,
+  BarChart3,
+  Layers,
 } from 'lucide-react';
 
 interface NavigationItem {
@@ -26,9 +31,14 @@ interface NavigationItem {
 
 const navigationItems: NavigationItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: <Home size={20} /> },
+  { id: 'goals', label: 'Goals', icon: <Target size={20} /> },
+  { id: 'milestones', label: 'Milestones', icon: <Flag size={20} /> },
   { id: 'projection', label: 'Projection', icon: <Calculator size={20} /> },
   { id: 'analytics', label: 'Analytics', icon: <TrendingUp size={20} /> },
   { id: 'accounts', label: 'Accounts', icon: <PieChart size={20} /> },
+  { id: 'tax', label: 'Tax', icon: <DollarSign size={20} /> },
+  { id: 'monte-carlo', label: 'Monte Carlo', icon: <BarChart3 size={20} /> },
+  { id: 'scenarios', label: 'Scenarios', icon: <Layers size={20} /> },
   { id: 'reports', label: 'Reports', icon: <FileText size={20} /> },
   { id: 'settings', label: 'Settings', icon: <Settings size={20} /> },
 ];

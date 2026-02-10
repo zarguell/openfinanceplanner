@@ -46,6 +46,26 @@ function App() {
             <ProjectionTable />
           </Stack>
         );
+      case 'goals':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Goals Management</Title>
+            <Text c="dimmed">
+              Manage your financial goals, priorities, and track progress with
+              heatmaps.
+            </Text>
+          </Stack>
+        );
+      case 'milestones':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Milestones & Events</Title>
+            <Text c="dimmed">
+              Plan retirement, career changes, asset purchases, and family
+              events.
+            </Text>
+          </Stack>
+        );
       case 'projection':
         return (
           <Stack gap="xl">
@@ -62,6 +82,34 @@ function App() {
         );
       case 'accounts':
         return <AccountsSection />;
+      case 'tax':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Tax Engine</Title>
+            <Text c="dimmed">
+              Tax calculation, analytics, and strategy optimization tools.
+            </Text>
+          </Stack>
+        );
+      case 'monte-carlo':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Monte Carlo Simulation</Title>
+            <Text c="dimmed">
+              Monte Carlo analysis with percentile bands and historical
+              backtesting.
+            </Text>
+          </Stack>
+        );
+      case 'scenarios':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Scenario Management</Title>
+            <Text c="dimmed">
+              Compare multiple scenarios and manage flex spending rules.
+            </Text>
+          </Stack>
+        );
       case 'reports':
         return (
           <Stack gap="xl">
