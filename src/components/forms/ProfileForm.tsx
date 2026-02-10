@@ -62,8 +62,7 @@ export function ProfileForm() {
         if (!value || value === '') return 'Age is required';
         const num = typeof value === 'string' ? parseFloat(value) : value;
         if (isNaN(num)) return 'Must be a valid number';
-        if (num < 18) return 'Must be at least 18';
-        if (num > 100) return 'Must be less than 100';
+        if (num < 18 || num > 100) return 'Age must be between 18 and 100';
         return null;
       },
       currentSavings: (value) => {
