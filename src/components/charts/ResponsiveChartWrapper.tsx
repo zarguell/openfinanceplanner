@@ -26,7 +26,14 @@ export function ResponsiveChartWrapper({
   debounce = 200, // Debounce resize calculations for mobile performance
 }: ResponsiveChartWrapperProps) {
   return (
-    <Box style={{ width: '100%', height, minHeight }}>
+    <Box
+      style={{
+        width: '100%',
+        height: `${height}px`,
+        minHeight: `${minHeight}px`,
+        position: 'relative',
+      }}
+    >
       <ResponsiveContainer width="100%" height="100%" debounce={debounce}>
         {children}
       </ResponsiveContainer>
