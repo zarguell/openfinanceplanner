@@ -32,6 +32,9 @@ vi.mock('@mantine/core', () => ({
   Box: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="box">{children}</div>
   ),
+  Stack: ({ children }: { children: React.ReactNode }) => (
+    <div data-testid="stack">{children}</div>
+  ),
 }));
 
 // Mock the ResponsiveChartWrapper
