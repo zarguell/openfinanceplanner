@@ -26,7 +26,7 @@ export function ProfileForm() {
     city: string;
     currency: string;
   }>({
-    mode: 'uncontrolled',
+    mode: 'controlled',
     initialValues: {
       age: '',
       currentSavings: '',
