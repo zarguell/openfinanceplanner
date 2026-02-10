@@ -15,6 +15,7 @@ import { PWAUpdateNotice } from '@/components/PWAUpdateNotice';
 import { PWAProvider } from '@/components/PWAProvider';
 import SidebarNavigation from '@/components/layout/SidebarNavigation';
 import { useProjectionCalculator } from '@/hooks/useProjectionCalculator';
+import { AccountsSection } from '@/components/AccountsSection';
 import { useState } from 'react';
 
 function App() {
@@ -60,12 +61,7 @@ function App() {
           </Stack>
         );
       case 'accounts':
-        return (
-          <Stack gap="xl">
-            <Title order={2}>Accounts Management</Title>
-            <Text c="dimmed">Account management features coming soon</Text>
-          </Stack>
-        );
+        return <AccountsSection />;
       case 'reports':
         return (
           <Stack gap="xl">
