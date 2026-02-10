@@ -7,8 +7,11 @@ import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { PWAUpdateNotice } from '@/components/PWAUpdateNotice';
 import { PWAProvider } from '@/components/PWAProvider';
 import { TestIcons } from './components/TestIcons';
+import { useProjectionCalculator } from '@/hooks/useProjectionCalculator';
 
 function App() {
+  useProjectionCalculator();
+
   return (
     <PWAProvider>
       <MantineProvider defaultColorScheme="light">
