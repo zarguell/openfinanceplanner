@@ -67,8 +67,11 @@ No runtime errors logged to console, suggesting the issue is in calculation logi
 ### DEF-002: Navigation Icons Non-Functional
 
 **Severity:** HIGH  
-**Status:** NEW  
+**Status:** COMPLETED ✅  
 **Component:** Navigation/Layout
+
+**Resolution:**
+Replaced the static TestIcons component with the functional SidebarNavigation component. Implemented AppShell layout with responsive navigation sidebar that provides clickable navigation items with active state management. All navigation sections are now accessible.
 
 **Description:**
 The navigation icons in the header (Calculator, Trending Up, Wallet, Settings) do not respond to clicks and do not navigate to different sections of the application. This prevents users from accessing different modules and features.
@@ -114,8 +117,11 @@ Users cannot access any features beyond the basic profile form, severely limitin
 ### DEF-003: Chart Container Has Negative Dimensions
 
 **Severity:** HIGH  
-**Status:** NEW  
+**Status:** COMPLETED ✅  
 **Component:** Charts/Visualization
+
+**Resolution:**
+Fixed the ResponsiveChartWrapper by converting height values to explicit pixel strings and adding relative positioning to ensure proper dimension calculation. This ensures ResponsiveContainer always receives positive parent dimensions.
 
 **Description:**
 The Net Worth Projection chart container has negative dimensions (-1 width, -1 height), causing Recharts to log warnings and potentially preventing proper chart rendering.
@@ -155,8 +161,11 @@ Charts may not render properly or at all, preventing users from visualizing thei
 ### DEF-004: Controlled/Uncontrolled Input Conflict
 
 **Severity:** HIGH  
-**Status:** NEW  
+**Status:** COMPLETED ✅  
 **Component:** Forms
+
+**Resolution:**
+Changed ProfileForm from uncontrolled to controlled mode. The uncontrolled mode was causing Mantine's getInputProps to return both value and defaultValue props simultaneously, resulting in React errors. Controlled mode ensures proper input state management without conflicting props.
 
 **Description:**
 Mantine input elements have both `value` and `defaultValue` props, causing React to throw errors about controlled vs uncontrolled components.
@@ -193,8 +202,11 @@ Mantine Box components contain inputs with conflicting control props
 ### DEF-005: Data Persistence Not Working
 
 **Severity:** MEDIUM  
-**Status:** NEW  
+**Status:** COMPLETED ✅  
 **Component:** State Management/Storage
+
+**Resolution:**
+Implemented proper data restoration in ProfileForm. Added getInitialValues function to extract profile data from the store and added useEffect to sync form values with store state. The form now properly initializes with persisted data on page load and updates when store data changes.
 
 **Description:**
 After saving a user profile and reloading the page, the form fields are empty and do not display the previously saved values. The application uses IndexedDB for persistence (Task T.2), but data is not being retrieved or restored properly.
@@ -236,8 +248,11 @@ Users must re-enter all data on every visit, severely degrading user experience 
 ### DEF-006: Chart X-Axis Labels Incorrect
 
 **Severity:** MEDIUM  
-**Status:** NEW  
+**Status:** COMPLETED ✅  
 **Component:** Charts
+
+**Resolution:**
+Added explicit tickFormatter to XAxis to display 'Age {value}' format. Previously, the x-axis was not using a formatter, which could cause it to display incorrect values or pick up formatting from other components.
 
 **Description:**
 The Net Worth Projection chart displays currency symbols ($) on the x-axis labels instead of year or age labels. Labels show "$0", "$1", "$2", "$3", "$4" instead of "Year 0", "Year 1", etc., or age values.
@@ -269,8 +284,13 @@ Users cannot properly interpret the chart timeline, making the visualization con
 ### DEF-007: Advanced Features Not Accessible
 
 **Severity:** LOW  
-**Status:** NEW  
+**Status:** PARTIALLY COMPLETED ✅  
 **Component:** Navigation/Feature Discovery
+
+**Resolution:**
+Implemented fully functional Accounts section with complete CRUD functionality. Created AccountsSection component that displays account totals, lists all accounts, and allows adding/editing/deleting accounts through modal forms. Integrated AccountBreakdownChart for visualization. Wired to navigation 'accounts' route.
+
+Note: Other advanced features (milestones, income/expense, goals, tax, monte-carlo, scenarios) remain accessible but not fully implemented. Account Management is now fully accessible and functional.
 
 **Description:**
 Multiple features listed as "COMPLETED" in project.md are not accessible or visible in the application UI. Users cannot access:
@@ -308,9 +328,13 @@ The application is missing the majority of its intended functionality, making it
 ### DEF-008: Age Validation Shows Only Minimum Constraint
 
 **Severity:** LOW  
-**Status:** NEW  
+**Status:** COMPLETED ✅  
 **Component:** Forms/Validation
 
+**Resolution:**
+Updated age validation message to display both minimum and maximum constraints in a single clear message: 'Age must be between 18 and 100'. Previously, only the minimum constraint was shown in the validation message.
+
+**Description:**
 **Description:**
 When entering an invalid age (e.g., -5), the validation message only shows "Must be at least 18" but does not indicate a maximum age constraint. Financial planning applications should define reasonable upper bounds (e.g., 100 or 120).
 
