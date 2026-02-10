@@ -58,6 +58,7 @@ export function TaxAdvantagedAccountForm({
       ...values,
       id:
         values.id ||
+        // eslint-disable-next-line react-hooks/purity
         `tax-advantaged-${Math.random().toString(36).substr(2, 9)}`,
       type: 'tax-advantaged',
       taxCharacteristics: 'tax-deferred', // Default assumption

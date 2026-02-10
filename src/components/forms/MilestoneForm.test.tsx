@@ -52,6 +52,7 @@ vi.mock('@mantine/core', () => ({
       <input
         type={type || 'text'}
         placeholder={placeholder}
+        // eslint-disable-next-line react/no-unknown-property
         minRows={minRows}
         {...props}
       />

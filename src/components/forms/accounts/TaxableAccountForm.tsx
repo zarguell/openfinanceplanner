@@ -15,6 +15,7 @@ export function TaxableAccountForm({
   onSave,
   onCancel,
 }: TaxableAccountFormProps) {
+  // eslint-disable-next-line react-hooks/purity
   const idRef = useRef(
     account?.id || `taxable-${Math.random().toString(36).substr(2, 9)}`
   );

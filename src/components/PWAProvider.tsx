@@ -90,7 +90,9 @@ export function PWAProvider({ children }: PWAProviderProps) {
   useEffect(() => {
     // Check if app is already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsInstalled(true);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCanInstall(false);
       return;
     }

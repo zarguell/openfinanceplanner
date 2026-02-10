@@ -18,7 +18,9 @@ export function useFormAutoSave<T extends Record<string, any>>(
   options: UseFormAutoSaveOptions<T> = {}
 ): UseFormAutoSaveReturn {
   const { debounceMs = 1000, onRestore, onSave } = options;
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
   const [isDirty, setIsDirty] = useState(false);
   const lastSavedDataRef = useRef<T | null>(null);
   const initialValuesRef = useRef<T | null>(null);
@@ -48,8 +50,10 @@ export function useFormAutoSave<T extends Record<string, any>>(
       JSON.stringify(currentData) === JSON.stringify(lastSaved) ||
       JSON.stringify(currentData) === JSON.stringify(initialValues)
     ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsDirty(false);
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsDirty(true);
     }
 

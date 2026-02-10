@@ -49,6 +49,7 @@ export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
         formatted = parts.join('.');
       }
       setDisplayValue(formatted);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
     }, [value, thousandSeparator, decimalScale]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -46,6 +46,7 @@ export function AssetForm({ asset, onSave, onCancel }: AssetFormProps) {
   const handleSubmit = (values: typeof form.values) => {
     const assetData: Asset = {
       ...values,
+      // eslint-disable-next-line react-hooks/purity
       id: values.id || `asset-${Math.random().toString(36).substr(2, 9)}`,
       type: 'real-assets',
       taxCharacteristics: 'taxable', // Default assumption

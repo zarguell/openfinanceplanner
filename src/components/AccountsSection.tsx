@@ -163,7 +163,7 @@ export function AccountsSection() {
 
           {accounts.length === 0 ? (
             <Text c="dimmed" ta="center" py="xl">
-              No accounts yet. Click "Add Account" to get started.
+              No accounts yet. Click &quot;Add Account&quot; to get started.
             </Text>
           ) : (
             <Table striped highlightOnHover withTableBorder>

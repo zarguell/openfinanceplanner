@@ -196,7 +196,7 @@ describe('createCache - with maxSize and TTL', () => {
 
 describe('createMemoizedFunction', () => {
   it('should cache function results based on arguments', () => {
-    const expensiveFn = vi.fn((x: number) => x * 2);
+    const expensiveFn = vi.fn((x) => (x as number) * 2);
     const memoized = createMemoizedFunction(expensiveFn);
 
     expect(memoized(5)).toBe(10);
@@ -207,7 +207,7 @@ describe('createMemoizedFunction', () => {
   });
 
   it('should cache different arguments separately', () => {
-    const expensiveFn = vi.fn((x: number) => x * 2);
+    const expensiveFn = vi.fn((x) => (x as number) * 2);
     const memoized = createMemoizedFunction(expensiveFn);
 
     memoized(5);
@@ -220,7 +220,7 @@ describe('createMemoizedFunction', () => {
   });
 
   it('should handle multiple arguments', () => {
-    const expensiveFn = vi.fn((a: number, b: number) => a + b);
+    const expensiveFn = vi.fn((a, b) => (a as number) + (b as number));
     const memoized = createMemoizedFunction(expensiveFn);
 
     memoized(1, 2);
@@ -233,7 +233,7 @@ describe('createMemoizedFunction', () => {
   });
 
   it('should respect maxSize limit', () => {
-    const expensiveFn = vi.fn((x: number) => x * 2);
+    const expensiveFn = vi.fn((x) => (x as number) * 2);
     const memoized = createMemoizedFunction(expensiveFn, { maxSize: 2 });
 
     memoized(1);
@@ -247,7 +247,7 @@ describe('createMemoizedFunction', () => {
 
   it('should respect TTL for cache entries', () => {
     vi.useFakeTimers();
-    const expensiveFn = vi.fn((x: number) => x * 2);
+    const expensiveFn = vi.fn((x) => (x as number) * 2);
     const memoized = createMemoizedFunction(expensiveFn, { ttl: 1000 });
 
     memoized(5);
@@ -261,7 +261,7 @@ describe('createMemoizedFunction', () => {
   });
 
   it('should provide clear method to reset cache', () => {
-    const expensiveFn = vi.fn((x: number) => x * 2);
+    const expensiveFn = vi.fn((x) => (x as number) * 2);
     const memoized = createMemoizedFunction(expensiveFn);
 
     memoized(5);
@@ -275,7 +275,8 @@ describe('createMemoizedFunction', () => {
   });
 
   it('should get cache size', () => {
-    const expensiveFn = (x: number) => x * 2;
+    const expensiveFn: (...args: unknown[]) => number = (x) =>
+      (x as number) * 2;
     const memoized = createMemoizedFunction(expensiveFn);
 
     expect(memoized.size).toBe(0);
