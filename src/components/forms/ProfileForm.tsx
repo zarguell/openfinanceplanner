@@ -11,9 +11,38 @@ import {
 import { useStore } from '@/store';
 import type { UserProfile } from '@/core/types';
 import { NumericInput } from './NumericInput';
+import { useEffect } from 'react';
 
 export function ProfileForm() {
+  const profile = useStore((state) => state.profile);
   const setProfile = useStore((state) => state.setProfile);
+
+  const getInitialValues = () => {
+    if (profile) {
+      return {
+        age: profile.age,
+        currentSavings: profile.currentSavings,
+        annualSpending: profile.annualSpending,
+        annualGrowthRate: profile.annualGrowthRate,
+        householdStatus: profile.householdStatus || '',
+        country: profile.location?.country || '',
+        state: profile.location?.state || '',
+        city: profile.location?.city || '',
+        currency: profile.currency || 'USD',
+      };
+    }
+    return {
+      age: '',
+      currentSavings: '',
+      annualSpending: '',
+      annualGrowthRate: 7,
+      householdStatus: '',
+      country: '',
+      state: '',
+      city: '',
+      currency: 'USD',
+    };
+  };
 
   const form = useForm<{
     age: number | string;
@@ -27,17 +56,7 @@ export function ProfileForm() {
     currency: string;
   }>({
     mode: 'controlled',
-    initialValues: {
-      age: '',
-      currentSavings: '',
-      annualSpending: '',
-      annualGrowthRate: 7,
-      householdStatus: '',
-      country: '',
-      state: '',
-      city: '',
-      currency: 'USD',
-    },
+    initialValues: getInitialValues(),
     validate: {
       age: (value) => {
         if (!value || value === '') return 'Age is required';
@@ -69,8 +88,12 @@ export function ProfileForm() {
     },
   });
 
+  useEffect(() => {
+    const initialValues = getInitialValues();
+    form.setValues(initialValues);
+  }, [profile]);
+
   const handleSubmit = (values: typeof form.values) => {
-    // Build the profile object with all required and optional properties
     const profile: UserProfile = {
       age: Number(values.age),
       currentSavings: Number(values.currentSavings),
@@ -85,7 +108,7 @@ export function ProfileForm() {
       }),
       ...((values.country || values.state || values.city) && {
         location: {
-          country: values.country || '', // Default to empty string if not provided
+          country: values.country || '',
           ...(values.state && { state: values.state }),
           ...(values.city && { city: values.city }),
         },
