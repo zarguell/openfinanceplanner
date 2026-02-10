@@ -5,7 +5,6 @@ import { FormReset } from './FormReset';
 import { useForm } from '@mantine/form';
 
 describe('FormReset', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onResetMock = vi.fn();
   it('renders reset button with correct label', () => {
     const form = useForm({
@@ -56,7 +55,6 @@ describe('FormReset', () => {
       initialValues: { name: 'test', age: 30 },
     });
 
-    // @ts-ignore
     render(<FormReset form={form} confirm />);
 
     const button = screen.getByRole('button', { name: /reset/i });
@@ -70,7 +68,6 @@ describe('FormReset', () => {
       initialValues: { name: 'test', age: 30 },
     });
 
-    // @ts-ignore
     render(<FormReset form={form} confirm />);
 
     act(() => {
@@ -88,7 +85,6 @@ describe('FormReset', () => {
       initialValues: { name: 'test', age: 30 },
     });
 
-    // @ts-ignore
     render(<FormReset form={form} confirm />);
 
     const button = screen.getByRole('button', { name: /reset/i });
@@ -109,7 +105,6 @@ describe('FormReset', () => {
       initialValues: { name: 'test', age: 30 },
     });
 
-    // @ts-ignore
     render(<FormReset form={form} confirm />);
 
     const button = screen.getByRole('button', { name: /reset/i });
@@ -123,7 +118,6 @@ describe('FormReset', () => {
       initialValues: { name: 'test', age: 30 },
     });
 
-    // @ts-ignore
     render(<FormReset form={form} disableWhenClean />);
 
     expect(screen.getByRole('button', { name: /reset/i })).toBeDisabled();
@@ -134,7 +128,6 @@ describe('FormReset', () => {
       initialValues: { name: 'test', age: 30 },
     });
 
-    // @ts-ignore
     render(<FormReset form={form} disableWhenClean />);
 
     act(() => {
@@ -150,7 +143,6 @@ describe('FormReset', () => {
     });
 
     render(
-      // @ts-ignore
       <FormReset form={form} confirm confirmMessage="Discard all changes?" />
     );
 
