@@ -1,23 +1,30 @@
 import '@mantine/core/styles.css';
-import { MantineProvider, Container, Stack, Title, Text } from '@mantine/core';
+import {
+  MantineProvider,
+  Container,
+  Stack,
+  Title,
+  Text,
+  AppShell,
+} from '@mantine/core';
 import { ProfileForm } from './components/forms';
 import { ProjectionTable } from '@/components/tables';
 import { NetWorthChart } from '@/components/charts';
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { PWAUpdateNotice } from '@/components/PWAUpdateNotice';
 import { PWAProvider } from '@/components/PWAProvider';
-import { TestIcons } from './components/TestIcons';
+import SidebarNavigation from '@/components/layout/SidebarNavigation';
 import { useProjectionCalculator } from '@/hooks/useProjectionCalculator';
+import { useState } from 'react';
 
 function App() {
   useProjectionCalculator();
+  const [activeSection, setActiveSection] = useState('dashboard');
 
-  return (
-    <PWAProvider>
-      <MantineProvider defaultColorScheme="light">
-        <PWAInstallPrompt />
-        <PWAUpdateNotice />
-        <Container size="lg" py="xl">
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'dashboard':
+        return (
           <Stack gap="xl">
             <Stack gap="xs">
               <Title order={1} ta="center">
@@ -29,8 +36,6 @@ function App() {
               </Text>
             </Stack>
 
-            <TestIcons />
-
             <ProfileForm />
 
             <Title order={2} ta="center">
@@ -39,7 +44,68 @@ function App() {
             <NetWorthChart />
             <ProjectionTable />
           </Stack>
-        </Container>
+        );
+      case 'projection':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Projection Analysis</Title>
+            <Text c="dimmed">Advanced projection features coming soon</Text>
+          </Stack>
+        );
+      case 'analytics':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Analytics</Title>
+            <Text c="dimmed">Analytics features coming soon</Text>
+          </Stack>
+        );
+      case 'accounts':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Accounts Management</Title>
+            <Text c="dimmed">Account management features coming soon</Text>
+          </Stack>
+        );
+      case 'reports':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Reports</Title>
+            <Text c="dimmed">Report generation features coming soon</Text>
+          </Stack>
+        );
+      case 'settings':
+        return (
+          <Stack gap="xl">
+            <Title order={2}>Settings</Title>
+            <Text c="dimmed">Settings features coming soon</Text>
+          </Stack>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <PWAProvider>
+      <MantineProvider defaultColorScheme="light">
+        <PWAInstallPrompt />
+        <PWAUpdateNotice />
+        <AppShell padding="md">
+          <AppShell.Header p="md">
+            <Title order={4}>Open Finance Planner</Title>
+          </AppShell.Header>
+          <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
+            <SidebarNavigation
+              activeSection={activeSection}
+              onSectionChange={setActiveSection}
+            />
+          </AppShell.Navbar>
+          <AppShell.Main>
+            <Container size="lg" py="xl">
+              {renderContent()}
+            </Container>
+          </AppShell.Main>
+        </AppShell>
       </MantineProvider>
     </PWAProvider>
   );
