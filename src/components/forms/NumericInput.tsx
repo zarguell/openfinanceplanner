@@ -1,7 +1,10 @@
 import { TextInput, TextInputProps, Group } from '@mantine/core';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, useEffect } from 'react';
 
-interface NumericInputProps extends Omit<TextInputProps, 'type' | 'inputMode'> {
+interface NumericInputProps extends Omit<
+  TextInputProps,
+  'type' | 'inputMode' | 'value' | 'onChange'
+> {
   /** Show prefix before value (e.g., "$") */
   prefix?: string;
   /** Show suffix after value (e.g., "%") */
@@ -10,31 +13,55 @@ interface NumericInputProps extends Omit<TextInputProps, 'type' | 'inputMode'> {
   thousandSeparator?: boolean;
   /** Decimal places to show */
   decimalScale?: number;
+  /** Value as string or number */
+  value?: string | number;
+  /** Change handler */
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const NumericInput = forwardRef<HTMLInputElement, NumericInputProps>(
   (
-    { prefix, suffix, thousandSeparator, decimalScale, onChange, ...props },
+    {
+      prefix,
+      suffix,
+      thousandSeparator,
+      decimalScale,
+      value,
+      onChange,
+      ...props
+    },
     ref
   ) => {
     const [displayValue, setDisplayValue] = useState('');
 
-    const formatValue = (value: string): string => {
-      const num = parseFloat(value);
-      if (isNaN(num)) return value;
+    useEffect(() => {
+      const stringValue = String(value ?? '');
+      const num = parseFloat(stringValue);
+      if (isNaN(num)) {
+        setDisplayValue(stringValue);
+        return;
+      }
 
-      let formatted = value;
+      let formatted = stringValue;
       if (thousandSeparator) {
         const parts = num.toFixed(decimalScale ?? 0).split('.');
         parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         formatted = parts.join('.');
       }
-      return formatted;
-    };
+      setDisplayValue(formatted);
+    }, [value, thousandSeparator, decimalScale]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = event.target.value.replace(/[^\d.-]/g, '');
-      setDisplayValue(formatValue(rawValue));
+      const num = parseFloat(rawValue);
+
+      let formatted = rawValue;
+      if (!isNaN(num) && thousandSeparator) {
+        const parts = num.toFixed(decimalScale ?? 0).split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        formatted = parts.join('.');
+      }
+      setDisplayValue(formatted);
       onChange?.(event);
     };
 
