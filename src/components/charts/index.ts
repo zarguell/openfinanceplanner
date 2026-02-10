@@ -4,3 +4,8 @@ export { NetWorthChart } from './NetWorthChart';
 export { CashFlowChart } from './CashFlowChart';
 export { AccountBreakdownChart } from './AccountBreakdownChart';
 export { DashboardMetrics } from './DashboardMetrics';
+export { ChartControls } from './ChartControls';
+export { InteractiveChartWrapper } from './InteractiveChartWrapper';
+export { SankeyChart } from './SankeyChart';
+export { ProgressTimelineChart } from './ProgressTimelineChart';
+export { NetWorthCompositionChart } from './NetWorthCompositionChart';
