@@ -125,6 +125,7 @@ export function NetWorthChart() {
           />
           <XAxis
             dataKey="age"
+            tickFormatter={(value) => `Age ${value}`}
             tick={{ fontSize: 12 }}
             tickLine={false}
             axisLine={{ stroke: '#ced4da' }}
