@@ -34,7 +34,7 @@ export function ResponsiveChartWrapper({
         position: 'relative',
       }}
     >
-      <ResponsiveContainer width="100%" height="100%" debounce={debounce}>
+      <ResponsiveContainer width="100%" height={height} debounce={debounce}>
         {children}
       </ResponsiveContainer>
     </Box>
