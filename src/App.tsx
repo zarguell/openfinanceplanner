@@ -1,5 +1,4 @@
 import '@mantine/core/styles.css';
-import React from 'react';
 import {
   MantineProvider,
   Container,
@@ -40,11 +39,14 @@ function App() {
 
             <ProfileForm />
 
-            <Title order={2} ta="center">
-              Projection Results
-            </Title>
-            <NetWorthChart />
-            <ProjectionTable />
+            {/* Live region for screen readers to announce projection updates */}
+            <div role="status" aria-live="polite" aria-atomic="true">
+              <Title order={2} ta="center">
+                Projection Results
+              </Title>
+              <NetWorthChart />
+              <ProjectionTable />
+            </div>
           </Stack>
         );
       case 'goals':
@@ -135,21 +137,58 @@ function App() {
       <MantineProvider defaultColorScheme="light">
         <PWAInstallPrompt />
         <PWAUpdateNotice />
+
+        {/* Skip navigation link for keyboard users */}
+        <a
+          href="#main-content"
+          style={{
+            position: 'absolute',
+            left: '-9999px',
+            top: '0',
+            zIndex: 9999,
+            padding: '8px 16px',
+            backgroundColor: '#228b22',
+            color: 'white',
+            textDecoration: 'none',
+          }}
+          onFocus={(e) => {
+            e.target.style.left = '8px';
+            e.target.style.top = '8px';
+          }}
+          onBlur={(e) => {
+            e.target.style.left = '-9999px';
+            e.target.style.top = '0';
+          }}
+        >
+          Skip to main content
+        </a>
+
         <AppShell padding="md">
-          <AppShell.Header p="md">
-            <Title order={4}>Open Finance Planner</Title>
-          </AppShell.Header>
-          <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
-            <SidebarNavigation
-              activeSection={activeSection}
-              onSectionChange={setActiveSection}
-            />
-          </AppShell.Navbar>
-          <AppShell.Main>
-            <Container size="lg" py="xl">
-              {renderContent()}
-            </Container>
-          </AppShell.Main>
+          {/* Semantic header element */}
+          <header role="banner">
+            <AppShell.Header p="md">
+              <Title order={4}>Open Finance Planner</Title>
+            </AppShell.Header>
+          </header>
+
+          {/* Semantic nav element */}
+          <nav aria-label="Main navigation">
+            <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
+              <SidebarNavigation
+                activeSection={activeSection}
+                onSectionChange={setActiveSection}
+              />
+            </AppShell.Navbar>
+          </nav>
+
+          {/* Semantic main element */}
+          <main id="main-content">
+            <AppShell.Main>
+              <Container size="lg" py="xl">
+                {renderContent()}
+              </Container>
+            </AppShell.Main>
+          </main>
         </AppShell>
       </MantineProvider>
     </PWAProvider>

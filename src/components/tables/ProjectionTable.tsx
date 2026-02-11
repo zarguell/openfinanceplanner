@@ -24,6 +24,8 @@ interface TableRow {
  * - Responsive horizontal scroll on mobile
  * - Formatted currency values
  * - Synchronized with chart via useChartData hook
+ * - Accessible with proper table caption and ARIA attributes
+ * - Memoized to prevent unnecessary re-renders
  */
 export function ProjectionTable() {
   const { points } = useChartData();
@@ -59,14 +61,25 @@ export function ProjectionTable() {
     );
   }
 
+  const startAge = points[0]?.age ?? 0;
+  const endAge = points[points.length - 1]?.age ?? 0;
+
   return (
     <Paper p="md" withBorder radius="md">
-      <Text size="lg" fw={600} mb="md">
+      <Text size="lg" fw={600} mb="md" id="projection-table-title">
         Year-by-Year Projection
       </Text>
 
       <ScrollArea type="auto" offsetScrollbars>
-        <Table striped highlightOnHover withTableBorder>
+        <Table
+          striped
+          highlightOnHover
+          withTableBorder
+          aria-describedby="projection-table-title"
+        >
+          <caption style={{ captionSide: 'bottom', textAlign: 'center', marginTop: '1rem' }}>
+            Year-by-year financial projection from age {startAge} to {endAge}, showing balance, growth, and spending for each year.
+          </caption>
           <Table.Thead>
             <Table.Tr>
               <Table.Th style={{ minWidth: 80 }}>Year</Table.Th>

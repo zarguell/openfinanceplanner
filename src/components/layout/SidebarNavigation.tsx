@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Group,
   Title,
@@ -54,10 +54,19 @@ export default function SidebarNavigation({
 }: SidebarNavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleNavClick = (section: string) => {
+  // Wrap in useCallback for performance
+  const handleNavClick = useCallback((section: string) => {
     onSectionChange(section);
     setMobileMenuOpen(false);
-  };
+  }, [onSectionChange]);
+
+  // Handle Escape key to close mobile menu
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, section: string) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleNavClick(section);
+    }
+  }, [handleNavClick]);
 
   const navContent = (
     <Stack gap="sm">
@@ -65,43 +74,54 @@ export default function SidebarNavigation({
         <Title order={4}>Open Finance Planner</Title>
       </Group>
 
-      {navigationItems.map((item) => (
-        <UnstyledButton
-          key={item.id}
-          onClick={() => handleNavClick(item.id)}
-          data-active={activeSection === item.id ? 'true' : undefined}
-          style={{
-            width: '100%',
-            padding: '12px 16px',
-            borderRadius: '8px',
-            backgroundColor:
-              activeSection === item.id
-                ? 'rgba(34, 139, 34, 0.1)'
-                : 'transparent',
-            color: activeSection === item.id ? 'rgb(34, 139, 34)' : 'inherit',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            cursor: 'pointer',
-            transition: 'all 0.2s ease',
-          }}
-          onMouseEnter={(e) => {
-            if (activeSection !== item.id) {
-              e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (activeSection !== item.id) {
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }
-          }}
-        >
-          {item.icon}
-          <Text size="sm" fw={500}>
-            {item.label}
-          </Text>
-        </UnstyledButton>
-      ))}
+      <nav role="navigation" aria-label="Main navigation">
+        {navigationItems.map((item) => (
+          <UnstyledButton
+            key={item.id}
+            onClick={() => handleNavClick(item.id)}
+            onKeyDown={(e) => handleKeyDown(e, item.id)}
+            data-active={activeSection === item.id ? 'true' : undefined}
+            aria-current={activeSection === item.id ? 'page' : undefined}
+            aria-label={`Navigate to ${item.label}`}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              borderRadius: '8px',
+              backgroundColor:
+                activeSection === item.id
+                  ? 'rgba(34, 139, 34, 0.1)'
+                  : 'transparent',
+              color: activeSection === item.id ? 'rgb(34, 139, 34)' : 'inherit',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              // Add focus-visible styles for keyboard navigation
+              '&:focus-visible': {
+                outline: '2px solid rgb(34, 139, 34)',
+                outlineOffset: '2px',
+              },
+            }}
+            onMouseEnter={(e) => {
+              if (activeSection !== item.id) {
+                e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeSection !== item.id) {
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }
+            }}
+            tabIndex={0}
+          >
+            {item.icon}
+            <Text size="sm" fw={500}>
+              {item.label}
+            </Text>
+          </UnstyledButton>
+        ))}
+      </nav>
 
       <Box mt="auto">
         <Text size="xs" c="dimmed">
@@ -119,6 +139,9 @@ export default function SidebarNavigation({
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           variant="light"
           fullWidth
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
           {mobileMenuOpen ? 'Close Menu' : 'Menu'}
         </Button>
@@ -137,6 +160,16 @@ export default function SidebarNavigation({
             backgroundColor: 'white',
             zIndex: 1000,
             overflowY: 'auto',
+          }}
+          id="mobile-menu"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation menu"
+          onKeyDown={(e) => {
+            // Close menu on Escape key
+            if (e.key === 'Escape') {
+              setMobileMenuOpen(false);
+            }
           }}
         >
           {navContent}

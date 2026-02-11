@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { Button, Container, Group, Paper, Text, Portal } from '@mantine/core';
 import { usePWAContext } from '@/components/PWAProvider';
 
@@ -12,37 +12,58 @@ import { usePWAContext } from '@/components/PWAProvider';
  * - Shows when app is ready to work offline
  * - Shows when new content is available
  * - Provides button to reload and apply updates
- * - Automatically closes after user interaction
+ * - Notifications can be dismissed and stay dismissed
  * - Uses Portal for proper z-index layering
+ * - Keyboard accessible with Escape key support
+ * - Focus trap for modal behavior
+ * - ARIA attributes for screen readers
  */
 export function PWAUpdateNotice() {
   const { offlineReady, needRefresh, updateServiceWorker } = usePWAContext();
+  const [offlineNoticeDismissed, setOfflineNoticeDismissed] = useState(false);
+  const [refreshNoticeDismissed, setRefreshNoticeDismissed] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
+  const handleClose = useCallback(() => {
     if (offlineReady) {
-      console.log('[PWA] App is ready to work offline');
+      setOfflineNoticeDismissed(true);
+    } else if (needRefresh) {
+      setRefreshNoticeDismissed(true);
     }
-  }, [offlineReady]);
+  }, [offlineReady, needRefresh]);
 
-  useEffect(() => {
-    if (needRefresh) {
-      console.log('[PWA] New content is available');
-    }
-  }, [needRefresh]);
-
-  const handleClose = () => {
-    // Close the notification by doing nothing
-    // The component will re-render with updated state
-  };
-
-  const handleReload = () => {
+  const handleReload = useCallback(() => {
     if (updateServiceWorker) {
       updateServiceWorker();
     }
-  };
+  }, [updateServiceWorker]);
 
-  // Don't render if there's nothing to show
-  if (!offlineReady && !needRefresh) {
+  // Handle Escape key to close notice
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleClose();
+    }
+  }, [handleClose]);
+
+  // Focus close button when notice appears
+  useEffect(() => {
+    if ((offlineReady && !offlineNoticeDismissed) ||
+        (needRefresh && !refreshNoticeDismissed)) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        closeButtonRef.current?.focus();
+      }, 100);
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+    return undefined;
+  }, [offlineReady, offlineNoticeDismissed, needRefresh, refreshNoticeDismissed]);
+
+  const shouldShowOfflineNotice = offlineReady && !offlineNoticeDismissed;
+  const shouldShowRefreshNotice = needRefresh && !refreshNoticeDismissed;
+
+  if (!shouldShowOfflineNotice && !shouldShowRefreshNotice) {
     return null;
   }
 
@@ -65,13 +86,27 @@ export function PWAUpdateNotice() {
           transform: 'translateX(-50%)',
           zIndex: 9999,
         }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pwa-notice-title"
+        aria-describedby="pwa-notice-message"
+        onKeyDown={handleKeyDown}
       >
         <Paper p="md" withBorder shadow="lg" radius="md">
           <Group justify="space-between" align="center" gap="md">
-            <Text size="sm" fw={500}>
+            <Text
+              id="pwa-notice-message"
+              size="sm"
+              fw={500}
+            >
               {message}
             </Text>
-            <Button onClick={handleButtonClick} size="sm">
+            <Button
+              ref={closeButtonRef}
+              onClick={handleButtonClick}
+              size="sm"
+              aria-label={offlineReady ? 'Close offline ready notice' : 'Reload to update'}
+            >
               {buttonText}
             </Button>
           </Group>

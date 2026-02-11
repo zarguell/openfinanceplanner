@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useStore } from '@/store';
 import { calculateProjection } from '@/core/projection';
 
@@ -8,26 +8,51 @@ import { calculateProjection } from '@/core/projection';
  *
  * This hook should be used in the main App component to ensure projections
  * are calculated whenever profile data is updated.
+ *
+ * Features:
+ * - 300ms debounce to prevent excessive calculations during rapid input
+ * - Cleanup on unmount to prevent memory leaks
+ * - Error handling with automatic projection clearing
  */
 export function useProjectionCalculator() {
   const profile = useStore((state) => state.profile);
   const setProjection = useStore((state) => state.setProjection);
   const clearProjection = useStore((state) => state.clearProjection);
 
+  // Store timeout reference for debounce cleanup
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined
+  );
+
   useEffect(() => {
-    // Only calculate projections if we have a valid profile
-    if (profile) {
-      try {
-        const projection = calculateProjection(profile);
-        setProjection(projection);
-      } catch (error) {
-        console.error('Error calculating projection:', error);
-        // Clear projection on error
+    // Clear any pending calculation timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // Debounce calculation by 300ms
+    timeoutRef.current = setTimeout(() => {
+      // Only calculate projections if we have a valid profile
+      if (profile) {
+        try {
+          const projection = calculateProjection(profile);
+          setProjection(projection);
+        } catch (error) {
+          console.error('Error calculating projection:', error);
+          // Clear projection on error
+          clearProjection();
+        }
+      } else {
+        // Clear projection if no profile
         clearProjection();
       }
-    } else {
-      // Clear projection if no profile
-      clearProjection();
-    }
+    }, 300);
+
+    // Cleanup function to clear timeout on unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [profile, setProjection, clearProjection]);
 }

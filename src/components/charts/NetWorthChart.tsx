@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import {
   AreaChart,
   Area,
@@ -33,13 +33,14 @@ const CHART_MARGIN = { top: 10, right: 30, left: 0, bottom: 0 };
  * - Export functionality for downloading chart data
  * - Chart type switching between area and line
  * - Date range filtering
+ * - Memoized to prevent unnecessary re-renders
  *
  * From 17-RESEARCH.md Pattern 4:
  * - Uses linearGradient for gradient fill
  * - Uses tickFormatter for Y-axis currency formatting
  * - isAnimationActive for smooth initial render
  */
-export function NetWorthChart() {
+export const NetWorthChart = memo(function NetWorthChart() {
   const { points, years } = useChartData();
   const [chartType, setChartType] = useState<NetWorthChartType>('area');
 
@@ -176,4 +177,4 @@ export function NetWorthChart() {
       </Text>
     </InteractiveChartWrapper>
   );
-}
+});

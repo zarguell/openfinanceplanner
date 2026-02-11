@@ -59,6 +59,11 @@ vi.mock('lucide-react', () => ({
   Settings: () => <span data-testid="icon-settings" />,
   Menu: () => <span data-testid="icon-menu" />,
   X: () => <span data-testid="icon-close" />,
+  Target: () => <span data-testid="icon-target" />,
+  Flag: () => <span data-testid="icon-flag" />,
+  DollarSign: () => <span data-testid="icon-dollar" />,
+  BarChart3: () => <span data-testid="icon-bar-chart" />,
+  Layers: () => <span data-testid="icon-layers" />,
 }));
 
 describe('SidebarNavigation', () => {

@@ -11,13 +11,13 @@ import {
 import { useStore } from '@/store';
 import type { UserProfile } from '@/core/types';
 import { NumericInput } from './NumericInput';
-import { useEffect } from 'react';
+import { useEffect, useCallback, useMemo } from 'react';
 
 export function ProfileForm() {
   const profile = useStore((state) => state.profile);
   const setProfile = useStore((state) => state.setProfile);
 
-  const getInitialValues = () => {
+  const getInitialValues = useCallback(() => {
     if (profile) {
       return {
         age: profile.age,
@@ -42,7 +42,37 @@ export function ProfileForm() {
       city: '',
       currency: 'USD',
     };
-  };
+  }, [profile]);
+
+  // Move validation outside component or use useMemo to prevent recreation on each render
+  const validate = useMemo(() => ({
+    age: (value: number | string) => {
+      if (!value || value === '') return 'Age is required';
+      const num = typeof value === 'string' ? parseFloat(value) : value;
+      if (isNaN(num)) return 'Must be a valid number';
+      if (num < 18 || num > 100) return 'Age must be between 18 and 100';
+      return null;
+    },
+    currentSavings: (value: number | string) => {
+      if (!value || value === '') return 'Savings is required';
+      const num = typeof value === 'string' ? parseFloat(value) : value;
+      if (isNaN(num) || num < 0) return 'Must be a positive number';
+      return null;
+    },
+    annualSpending: (value: number | string) => {
+      if (!value || value === '') return 'Annual spending is required';
+      const num = typeof value === 'string' ? parseFloat(value) : value;
+      if (isNaN(num) || num < 0) return 'Must be a positive number';
+      return null;
+    },
+    annualGrowthRate: (value: number | string) => {
+      const num = typeof value === 'string' ? parseFloat(value) : value;
+      if (isNaN(num)) return 'Must be a valid number';
+      if (num < 0) return 'Cannot be negative';
+      if (num > 100) return 'Unrealistic growth rate';
+      return null;
+    },
+  }), []);
 
   const form = useForm<{
     age: number | string;
@@ -57,65 +87,71 @@ export function ProfileForm() {
   }>({
     mode: 'controlled',
     initialValues: getInitialValues(),
-    validate: {
-      age: (value) => {
-        if (!value || value === '') return 'Age is required';
-        const num = typeof value === 'string' ? parseFloat(value) : value;
-        if (isNaN(num)) return 'Must be a valid number';
-        if (num < 18 || num > 100) return 'Age must be between 18 and 100';
-        return null;
-      },
-      currentSavings: (value) => {
-        if (!value || value === '') return 'Savings is required';
-        const num = typeof value === 'string' ? parseFloat(value) : value;
-        if (isNaN(num) || num < 0) return 'Must be a positive number';
-        return null;
-      },
-      annualSpending: (value) => {
-        if (!value || value === '') return 'Annual spending is required';
-        const num = typeof value === 'string' ? parseFloat(value) : value;
-        if (isNaN(num) || num < 0) return 'Must be a positive number';
-        return null;
-      },
-      annualGrowthRate: (value) => {
-        const num = typeof value === 'string' ? parseFloat(value) : value;
-        if (isNaN(num)) return 'Must be a valid number';
-        if (num < 0) return 'Cannot be negative';
-        if (num > 100) return 'Unrealistic growth rate';
-        return null;
-      },
-    },
+    validate,
   });
 
   useEffect(() => {
     const initialValues = getInitialValues();
     form.setValues(initialValues);
-  }, [profile, form]);
+  }, [profile, form, getInitialValues]);
 
-  const handleSubmit = (values: typeof form.values) => {
-    const profile: UserProfile = {
-      age: Number(values.age),
-      currentSavings: Number(values.currentSavings),
-      annualSpending: Number(values.annualSpending),
-      annualGrowthRate: Number(values.annualGrowthRate),
-      ...(values.householdStatus && {
-        householdStatus: values.householdStatus as
-          | 'single'
-          | 'married'
-          | 'partnered'
-          | 'other',
-      }),
-      ...((values.country || values.state || values.city) && {
-        location: {
-          country: values.country || '',
-          ...(values.state && { state: values.state }),
-          ...(values.city && { city: values.city }),
-        },
-      }),
-      ...(values.currency && { currency: values.currency }),
+  // Memoize error IDs for accessibility
+  const ageErrorId = useMemo(() => 'age-error', []);
+  const savingsErrorId = useMemo(() => 'savings-error', []);
+  const spendingErrorId = useMemo(() => 'spending-error', []);
+  const growthErrorId = useMemo(() => 'growth-error', []);
+
+  // Wrap handleSubmit in useCallback for performance
+  const handleSubmit = useCallback((values: typeof form.values) => {
+    const toNumber = (value: number | string | undefined | null): number => {
+      if (value === '' || value === undefined || value === null) return 0;
+      if (typeof value === 'number') return value;
+      const num = parseFloat(String(value).replace(/,/g, ''));
+      return isNaN(num) ? 0 : num;
     };
 
-    setProfile(profile);
+    try {
+      const profileData: UserProfile = {
+        age: toNumber(values.age),
+        currentSavings: toNumber(values.currentSavings),
+        annualSpending: toNumber(values.annualSpending),
+        annualGrowthRate: toNumber(values.annualGrowthRate),
+        ...(values.householdStatus && {
+          householdStatus: values.householdStatus as
+            | 'single'
+            | 'married'
+            | 'partnered'
+            | 'other',
+        }),
+        ...((values.country || values.state || values.city) && {
+          location: {
+            country: values.country || '',
+            ...(values.state && { state: values.state }),
+            ...(values.city && { city: values.city }),
+          },
+        }),
+        ...(values.currency && { currency: values.currency }),
+      };
+
+      setProfile(profileData);
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      // Re-throw to let form handle error display
+      throw error;
+    }
+  }, [setProfile]);
+
+  // Get input props with accessibility attributes
+  const getInputProps = (field: string, errorId: string) => {
+    const props = form.getInputProps(field);
+    const hasError = form.errors[field] !== undefined;
+
+    return {
+      ...props,
+      'aria-describedby': hasError ? errorId : undefined,
+      'aria-invalid': hasError ? true : undefined,
+      id: field,
+    };
   };
 
   return (
@@ -125,12 +161,21 @@ export function ProfileForm() {
           Enter Your Financial Profile
         </Text>
 
+        {/* Live region for form-level errors */}
+        {Object.keys(form.errors).length > 0 && (
+          <div role="alert" aria-live="assertive" aria-atomic="true">
+            <Text c="red" size="sm">
+              Please correct the errors below before submitting.
+            </Text>
+          </div>
+        )}
+
         <NumericInput
           label="Age"
           placeholder="Your age"
           withAsterisk
           key={form.key('age')}
-          {...form.getInputProps('age')}
+          {...getInputProps('age', ageErrorId)}
         />
 
         <NumericInput
@@ -140,7 +185,7 @@ export function ProfileForm() {
           thousandSeparator
           withAsterisk
           key={form.key('currentSavings')}
-          {...form.getInputProps('currentSavings')}
+          {...getInputProps('currentSavings', savingsErrorId)}
         />
 
         <NumericInput
@@ -150,7 +195,7 @@ export function ProfileForm() {
           thousandSeparator
           withAsterisk
           key={form.key('annualSpending')}
-          {...form.getInputProps('annualSpending')}
+          {...getInputProps('annualSpending', spendingErrorId)}
         />
 
         <NumericInput
@@ -159,7 +204,7 @@ export function ProfileForm() {
           suffix="%"
           decimalScale={2}
           key={form.key('annualGrowthRate')}
-          {...form.getInputProps('annualGrowthRate')}
+          {...getInputProps('annualGrowthRate', growthErrorId)}
         />
 
         <Select
@@ -211,7 +256,13 @@ export function ProfileForm() {
         />
 
         <Group justify="flex-end">
-          <Button type="submit" onClick={() => form.onSubmit(handleSubmit)()}>
+          <Button
+            type="submit"
+            onClick={() => form.onSubmit(handleSubmit)()}
+            aria-describedby={
+              Object.keys(form.errors).length > 0 ? 'form-errors' : undefined
+            }
+          >
             Save Profile
           </Button>
         </Group>

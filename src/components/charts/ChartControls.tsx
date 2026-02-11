@@ -60,7 +60,7 @@ export function ChartControls({
   disabled = false,
 }: ChartControlsProps) {
   return (
-    <Group gap={8}>
+    <Group gap={8} role="group" aria-label="Chart controls">
       {chartTypes && chartTypes.length > 0 && onChartTypeChange && (
         <SegmentedControl
           data={chartTypes.map((type) => ({
@@ -70,6 +70,7 @@ export function ChartControls({
           value={selectedChartType ?? chartTypes[0]}
           onChange={(value) => onChartTypeChange(value as ChartType)}
           disabled={disabled}
+          aria-label="Select chart type"
         />
       )}
 
@@ -81,6 +82,7 @@ export function ChartControls({
             onClick={onDownload}
             disabled={disabled}
             data-testid="download"
+            aria-label="Download chart as PNG"
           >
             <Download size={16} />
           </ActionIcon>
@@ -94,6 +96,7 @@ export function ChartControls({
           onClick={onZoomIn}
           disabled={disabled}
           data-testid="zoom-in"
+          aria-label="Zoom in on chart"
         >
           <ZoomIn size={16} />
         </ActionIcon>
@@ -106,6 +109,7 @@ export function ChartControls({
           onClick={onZoomOut}
           disabled={disabled}
           data-testid="zoom-out"
+          aria-label="Zoom out on chart"
         >
           <ZoomOut size={16} />
         </ActionIcon>
@@ -119,6 +123,7 @@ export function ChartControls({
             onClick={onFilterToggle}
             disabled={disabled}
             data-testid="filter"
+            aria-label="Filter chart data"
           >
             <Filter size={16} />
           </ActionIcon>
@@ -133,6 +138,7 @@ export function ChartControls({
             onClick={onRefresh}
             disabled={disabled}
             data-testid="refresh"
+            aria-label="Refresh chart data"
           >
             <RefreshCw size={16} />
           </ActionIcon>
@@ -147,6 +153,7 @@ export function ChartControls({
             onClick={onSettingsToggle}
             disabled={disabled}
             data-testid="settings"
+            aria-label="Open chart settings"
           >
             <Settings size={16} />
           </ActionIcon>

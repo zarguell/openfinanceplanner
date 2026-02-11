@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import {
   BarChart,
   Bar,
@@ -36,10 +36,11 @@ interface CashFlowChartProps {
  * - Export functionality for downloading chart data
  * - Chart type switching between bar and stacked bar
  * - Date range filtering
+ * - Memoized to prevent unnecessary re-renders
  *
  * @param data - Array of simulation results with year-by-year financial data
  */
-export function CashFlowChart({ data }: CashFlowChartProps) {
+export const CashFlowChart = memo(function CashFlowChart({ data }: CashFlowChartProps) {
   const [chartType, setChartType] = useState<'bar'>('bar');
 
   const handleZoomIn = () => {
@@ -166,4 +167,4 @@ export function CashFlowChart({ data }: CashFlowChartProps) {
       </Text>
     </InteractiveChartWrapper>
   );
-}
+});

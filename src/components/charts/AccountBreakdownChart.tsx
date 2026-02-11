@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import { memo } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
 import { Paper, Text, Group, Stack, Badge } from '@mantine/core';
@@ -38,10 +39,11 @@ const COLORS = [
  * - Tooltip with exact values on hover
  * - Summary statistics (total value, account count)
  * - Responsive sizing via ResponsiveChartWrapper
+ * - Memoized to prevent unnecessary re-renders
  *
  * @param accounts - Array of account objects with balances
  */
-export function AccountBreakdownChart({
+export const AccountBreakdownChart = memo(function AccountBreakdownChart({
   accounts,
 }: AccountBreakdownChartProps) {
   // Calculate total portfolio value first (needed for empty check and tooltip)
@@ -154,7 +156,7 @@ export function AccountBreakdownChart({
       </Stack>
     </Paper>
   );
-}
+});
 
 /**
  * Get a human-readable label for account type

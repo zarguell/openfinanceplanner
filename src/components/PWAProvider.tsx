@@ -3,6 +3,7 @@ import {
   useContext,
   useEffect,
   useState,
+  useRef,
   ReactNode,
 } from 'react';
 import { useRegisterSW } from 'virtual:pwa-register/react';
@@ -60,6 +61,9 @@ interface PWAProviderProps {
  * ```
  */
 export function PWAProvider({ children }: PWAProviderProps) {
+  // Store interval ID for cleanup
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // Service worker state
   const { offlineReady, needRefresh, updateServiceWorker } = useRegisterSW({
     onRegisteredSW(swUrl, registration) {
@@ -67,13 +71,10 @@ export function PWAProvider({ children }: PWAProviderProps) {
 
       // Check for updates every hour
       if (registration) {
-        setInterval(
-          () => {
-            registration.update();
-            console.log('[PWA] Checking for updates');
-          },
-          60 * 60 * 1000
-        );
+        intervalRef.current = setInterval(() => {
+          registration.update();
+          console.log('[PWA] Checking for updates');
+        }, 60 * 60 * 1000);
       }
     },
     onRegisterError(error) {
@@ -81,21 +82,28 @@ export function PWAProvider({ children }: PWAProviderProps) {
     },
   });
 
-  // Install prompt state
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        console.log('[PWA] Cleared update check interval');
+      }
+    };
+  }, []);
+
+  // Install prompt state - initialize from media query to avoid setState in effect
   const [deferredPrompt, setDeferredPrompt] =
     useState<BeforeInstallPromptEvent | null>(null);
-  const [canInstall, setCanInstall] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
+  const [canInstall, setCanInstall] = useState(
+    !window.matchMedia('(display-mode: standalone)').matches
+  );
+  const [isInstalled, setIsInstalled] = useState(
+    window.matchMedia('(display-mode: standalone)').matches
+  );
 
   useEffect(() => {
-    // Check if app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsInstalled(true);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCanInstall(false);
-      return;
-    }
+    // Listen for the beforeinstallprompt event
 
     // Listen for the beforeinstallprompt event
     const handler = (e: Event) => {
