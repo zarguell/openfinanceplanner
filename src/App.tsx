@@ -6,6 +6,7 @@ import {
   Title,
   Text,
   AppShell,
+  Box,
 } from '@mantine/core';
 import { ProfileForm } from './components/forms';
 import { ProjectionTable } from '@/components/tables';
@@ -161,10 +162,19 @@ function App() {
         <AppShell padding="md">
           {/* Semantic nav element */}
           <nav aria-label="Main navigation">
+            {/* Mobile menu button - outside navbar so it's always visible */}
+            <Box display={{ base: 'block', md: 'none' }} p="md">
+              <SidebarNavigation
+                activeSection={activeSection}
+                onSectionChange={setActiveSection}
+                mobileOnly={true}
+              />
+            </Box>
             <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
               <SidebarNavigation
                 activeSection={activeSection}
                 onSectionChange={setActiveSection}
+                mobileOnly={false}
               />
             </AppShell.Navbar>
           </nav>

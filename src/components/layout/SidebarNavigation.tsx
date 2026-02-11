@@ -47,11 +47,13 @@ const navigationItems: NavigationItem[] = [
 interface SidebarNavigationProps {
   activeSection: string;
   onSectionChange: (section: string) => void;
+  mobileOnly?: boolean;
 }
 
 export default function SidebarNavigation({
   activeSection,
   onSectionChange,
+  mobileOnly = false,
 }: SidebarNavigationProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -128,9 +130,10 @@ export default function SidebarNavigation({
     </Stack>
   );
 
-  return (
-    <>
-      <Box display={{ base: 'block', md: 'none' }} p="md">
+  // Mobile-only component: shows hamburger button and mobile menu
+  if (mobileOnly) {
+    return (
+      <>
         <Button
           leftSection={<Menu size={20} />}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -142,106 +145,109 @@ export default function SidebarNavigation({
         >
           {mobileMenuOpen ? 'Close Menu' : 'Menu'}
         </Button>
-      </Box>
 
-      {mobileMenuOpen && (
-        <Box
-          p="md"
-          display={{ base: 'block', md: 'none' }}
-          style={{
-            position: 'fixed',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            backgroundColor: 'white',
-            zIndex: 1000,
-            overflowY: 'auto',
-          }}
-          id="mobile-menu"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Mobile navigation menu"
-          onKeyDown={(e) => {
-            // Close menu on Escape key
-            if (e.key === 'Escape') {
-              setMobileMenuOpen(false);
-            }
-          }}
-        >
-          <Group justify="space-between" align="center" mb="md">
-            <Title order={4}>Open Finance Planner</Title>
-            <Button
-              variant="subtle"
-              leftSection={<X size={18} />}
-              onClick={() => setMobileMenuOpen(false)}
-              aria-label="Close menu"
-            >
-              Close
-            </Button>
-          </Group>
-          <nav role="navigation" aria-label="Main navigation">
-            {navigationItems.map((item) => (
-              <UnstyledButton
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                onKeyDown={(e) => handleKeyDown(e, item.id)}
-                data-active={activeSection === item.id ? 'true' : undefined}
-                aria-current={activeSection === item.id ? 'page' : undefined}
-                aria-label={`Navigate to ${item.label}`}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  borderRadius: '8px',
-                  backgroundColor:
-                    activeSection === item.id
-                      ? 'rgba(34, 139, 34, 0.1)'
-                      : 'transparent',
-                  color: activeSection === item.id ? 'rgb(34, 139, 34)' : 'inherit',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '12px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  outline: 'none',
-                }}
-                onMouseEnter={(e) => {
-                  if (activeSection !== item.id) {
-                    e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeSection !== item.id) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }
-                }}
-                tabIndex={0}
+        {mobileMenuOpen && (
+          <Box
+            p="md"
+            display={{ base: 'block', md: 'none' }}
+            style={{
+              position: 'fixed',
+              top: '0',
+              left: '0',
+              right: '0',
+              bottom: '0',
+              backgroundColor: 'white',
+              zIndex: 1000,
+              overflowY: 'auto',
+            }}
+            id="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
+            onKeyDown={(e) => {
+              // Close menu on Escape key
+              if (e.key === 'Escape') {
+                setMobileMenuOpen(false);
+              }
+            }}
+          >
+            <Group justify="space-between" align="center" mb="md">
+              <Title order={4}>Open Finance Planner</Title>
+              <Button
+                variant="subtle"
+                leftSection={<X size={18} />}
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close menu"
               >
-                {item.icon}
-                <Text size="sm" fw={500}>
-                  {item.label}
-                </Text>
-              </UnstyledButton>
-            ))}
-          </nav>
-          <Box mt="auto">
-            <Text size="xs" c="dimmed">
-              v1.0.0
-            </Text>
+                Close
+              </Button>
+            </Group>
+            <nav role="navigation" aria-label="Main navigation">
+              {navigationItems.map((item) => (
+                <UnstyledButton
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  onKeyDown={(e) => handleKeyDown(e, item.id)}
+                  data-active={activeSection === item.id ? 'true' : undefined}
+                  aria-current={activeSection === item.id ? 'page' : undefined}
+                  aria-label={`Navigate to ${item.label}`}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor:
+                      activeSection === item.id
+                        ? 'rgba(34, 139, 34, 0.1)'
+                        : 'transparent',
+                    color: activeSection === item.id ? 'rgb(34, 139, 34)' : 'inherit',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    outline: 'none',
+                  }}
+                  onMouseEnter={(e) => {
+                    if (activeSection !== item.id) {
+                      e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (activeSection !== item.id) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                  tabIndex={0}
+                >
+                  {item.icon}
+                  <Text size="sm" fw={500}>
+                    {item.label}
+                  </Text>
+                </UnstyledButton>
+              ))}
+            </nav>
+            <Box mt="auto">
+              <Text size="xs" c="dimmed">
+                v1.0.0
+              </Text>
+            </Box>
           </Box>
-        </Box>
-      )}
+        )}
+      </>
+    );
+  }
 
-      <Box
-        p="md"
-        display={{ base: 'none', md: 'block' }}
-        style={{
-          position: 'sticky',
-          top: '0',
-        }}
-      >
-        {navContent}
-      </Box>
-    </>
+  // Desktop component: shows only the sidebar navigation
+  return (
+    <Box
+      p="md"
+      display={{ base: 'none', md: 'block' }}
+      style={{
+        position: 'sticky',
+        top: '0',
+      }}
+    >
+      {navContent}
+    </Box>
   );
 }
