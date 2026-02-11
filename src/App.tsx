@@ -160,9 +160,8 @@ function App() {
         </a>
 
         <AppShell padding="md">
-          {/* Semantic nav element */}
-          <nav aria-label="Main navigation">
-            {/* Mobile menu button - outside navbar so it's always visible */}
+          <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
+            {/* Mobile menu button */}
             <Box display={{ base: 'block', md: 'none' }} p="md">
               <SidebarNavigation
                 activeSection={activeSection}
@@ -170,23 +169,23 @@ function App() {
                 mobileOnly={true}
               />
             </Box>
-            <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
+            {/* Desktop sidebar navigation */}
+            <Box display={{ base: 'none', md: 'block' }}>
               <SidebarNavigation
                 activeSection={activeSection}
                 onSectionChange={setActiveSection}
                 mobileOnly={false}
               />
-            </AppShell.Navbar>
-          </nav>
+            </Box>
+          </AppShell.Navbar>
 
-          {/* Semantic main element */}
-          <main id="main-content">
-            <AppShell.Main>
+          <AppShell.Main>
+            <main id="main-content">
               <Container size="lg" py="xl">
                 {renderContent()}
               </Container>
-            </AppShell.Main>
-          </main>
+            </main>
+          </AppShell.Main>
         </AppShell>
       </MantineProvider>
     </PWAProvider>
