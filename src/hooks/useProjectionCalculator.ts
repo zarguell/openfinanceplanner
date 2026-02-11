@@ -16,8 +16,6 @@ import { calculateProjection } from '@/core/projection';
  */
 export function useProjectionCalculator() {
   const profile = useStore((state) => state.profile);
-  const setProjection = useStore((state) => state.setProjection);
-  const clearProjection = useStore((state) => state.clearProjection);
 
   // Store timeout reference for debounce cleanup
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
@@ -36,15 +34,16 @@ export function useProjectionCalculator() {
       if (profile) {
         try {
           const projection = calculateProjection(profile);
-          setProjection(projection);
+          // Use store directly to avoid extracting functions
+          useStore.getState().setProjection(projection);
         } catch (error) {
           console.error('Error calculating projection:', error);
           // Clear projection on error
-          clearProjection();
+          useStore.getState().clearProjection();
         }
       } else {
         // Clear projection if no profile
-        clearProjection();
+        useStore.getState().clearProjection();
       }
     }, 300);
 
@@ -54,5 +53,5 @@ export function useProjectionCalculator() {
         clearTimeout(timeoutRef.current);
       }
     };
-  }, [profile, setProjection, clearProjection]);
+  }, [profile]); // Only depend on profile, not on store functions
 }
