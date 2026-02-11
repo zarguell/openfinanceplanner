@@ -16,6 +16,7 @@ import {
   FileText,
   Settings,
   Menu,
+  X,
   Target,
   Flag,
   DollarSign,
@@ -168,7 +169,66 @@ export default function SidebarNavigation({
             }
           }}
         >
-          {navContent}
+          <Group justify="space-between" align="center" mb="md">
+            <Title order={4}>Open Finance Planner</Title>
+            <Button
+              variant="subtle"
+              leftSection={<X size={18} />}
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              Close
+            </Button>
+          </Group>
+          <nav role="navigation" aria-label="Main navigation">
+            {navigationItems.map((item) => (
+              <UnstyledButton
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                onKeyDown={(e) => handleKeyDown(e, item.id)}
+                data-active={activeSection === item.id ? 'true' : undefined}
+                aria-current={activeSection === item.id ? 'page' : undefined}
+                aria-label={`Navigate to ${item.label}`}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  backgroundColor:
+                    activeSection === item.id
+                      ? 'rgba(34, 139, 34, 0.1)'
+                      : 'transparent',
+                  color: activeSection === item.id ? 'rgb(34, 139, 34)' : 'inherit',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  outline: 'none',
+                }}
+                onMouseEnter={(e) => {
+                  if (activeSection !== item.id) {
+                    e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.05)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeSection !== item.id) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
+                tabIndex={0}
+              >
+                {item.icon}
+                <Text size="sm" fw={500}>
+                  {item.label}
+                </Text>
+              </UnstyledButton>
+            ))}
+          </nav>
+          <Box mt="auto">
+            <Text size="xs" c="dimmed">
+              v1.0.0
+            </Text>
+          </Box>
         </Box>
       )}
 

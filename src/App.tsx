@@ -10,8 +10,6 @@ import {
 import { ProfileForm } from './components/forms';
 import { ProjectionTable } from '@/components/tables';
 import { NetWorthChart } from '@/components/charts';
-import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
-import { PWAUpdateNotice } from '@/components/PWAUpdateNotice';
 import { PWAProvider } from '@/components/PWAProvider';
 import SidebarNavigation from '@/components/layout/SidebarNavigation';
 import { useProjectionCalculator } from '@/hooks/useProjectionCalculator';
@@ -135,9 +133,6 @@ function App() {
   return (
     <PWAProvider>
       <MantineProvider defaultColorScheme="light">
-        <PWAInstallPrompt />
-        <PWAUpdateNotice />
-
         {/* Skip navigation link for keyboard users */}
         <a
           href="#main-content"
@@ -164,13 +159,6 @@ function App() {
         </a>
 
         <AppShell padding="md">
-          {/* Semantic header element */}
-          <header role="banner">
-            <AppShell.Header p="md">
-              <Title order={4}>Open Finance Planner</Title>
-            </AppShell.Header>
-          </header>
-
           {/* Semantic nav element */}
           <nav aria-label="Main navigation">
             <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
