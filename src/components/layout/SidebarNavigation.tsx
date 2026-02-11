@@ -97,11 +97,7 @@ export default function SidebarNavigation({
               gap: '12px',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              // Add focus-visible styles for keyboard navigation
-              '&:focus-visible': {
-                outline: '2px solid rgb(34, 139, 34)',
-                outlineOffset: '2px',
-              },
+              outline: 'none',
             }}
             onMouseEnter={(e) => {
               if (activeSection !== item.id) {

@@ -151,13 +151,13 @@ function App() {
             color: 'white',
             textDecoration: 'none',
           }}
-          onFocus={(e) => {
-            e.target.style.left = '8px';
-            e.target.style.top = '8px';
+          onFocus={(e: React.FocusEvent<HTMLAnchorElement>) => {
+            e.currentTarget.style.left = '8px';
+            e.currentTarget.style.top = '8px';
           }}
-          onBlur={(e) => {
-            e.target.style.left = '-9999px';
-            e.target.style.top = '0';
+          onBlur={(e: React.FocusEvent<HTMLAnchorElement>) => {
+            e.currentTarget.style.left = '-9999px';
+            e.currentTarget.style.top = '0';
           }}
         >
           Skip to main content

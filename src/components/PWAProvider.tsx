@@ -104,8 +104,6 @@ export function PWAProvider({ children }: PWAProviderProps) {
 
   useEffect(() => {
     // Listen for the beforeinstallprompt event
-
-    // Listen for the beforeinstallprompt event
     const handler = (e: Event) => {
       // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
