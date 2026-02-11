@@ -5,10 +5,15 @@ yarn.lock
 pnpm-lock.yaml
 
 # Build outputs
-dist
-build
-out
-.next
+dist/
+build/
+out/
+.next/
+
+# NPM
+npm
+.npmrc
+.npmignore
 
 # Cache
 .cache
