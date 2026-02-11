@@ -7,6 +7,9 @@ import {
   Text,
   AppShell,
   Box,
+  Group,
+  Button,
+  Burger,
 } from '@mantine/core';
 import { ProfileForm } from './components/forms';
 import { ProjectionTable } from '@/components/tables';
@@ -20,6 +23,7 @@ import { useState } from 'react';
 function App() {
   useProjectionCalculator();
   const [activeSection, setActiveSection] = useState('dashboard');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const renderContent = () => {
     switch (activeSection) {
@@ -159,18 +163,39 @@ function App() {
           Skip to main content
         </a>
 
-        <AppShell padding="md">
-          <AppShell.Navbar p="md" w={{ base: 0, md: 250 }}>
-            {/* Mobile menu button */}
-            <Box display={{ base: 'block', md: 'none' }} p="md">
-              <SidebarNavigation
-                activeSection={activeSection}
-                onSectionChange={setActiveSection}
-                mobileOnly={true}
-              />
-            </Box>
+        <AppShell
+          padding="md"
+          header={{ height: 60 }}
+        >
+          <AppShell.Header>
+            <Group justify="space-between" w="100%" h="100%" px="md" align="center">
+              <Title order={4}>Open Finance Planner</Title>
+              <Group gap="sm">
+                {/* Desktop sidebar toggle button */}
+                <Box display={{ base: 'none', md: 'block' }}>
+                  <Button
+                    onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                    variant="subtle"
+                    aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+                  >
+                    <Burger opened={!sidebarCollapsed} />
+                  </Button>
+                </Box>
+                {/* Mobile hamburger button */}
+                <Box display={{ base: 'block', md: 'none' }}>
+                  <SidebarNavigation
+                    activeSection={activeSection}
+                    onSectionChange={setActiveSection}
+                    mobileOnly={true}
+                  />
+                </Box>
+              </Group>
+            </Group>
+          </AppShell.Header>
+
+          <AppShell.Navbar p="md" w={{ base: 0, md: sidebarCollapsed ? 0 : 250 }}>
             {/* Desktop sidebar navigation */}
-            <Box display={{ base: 'none', md: 'block' }}>
+            <Box display={{ base: 'none', md: sidebarCollapsed ? 'none' : 'block' }}>
               <SidebarNavigation
                 activeSection={activeSection}
                 onSectionChange={setActiveSection}

@@ -138,41 +138,56 @@ export default function SidebarNavigation({
           leftSection={<Menu size={20} />}
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           variant="light"
-          fullWidth
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-menu"
           aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
-          {mobileMenuOpen ? 'Close Menu' : 'Menu'}
+          {mobileMenuOpen ? 'Close' : 'Menu'}
         </Button>
 
         {mobileMenuOpen && (
-          <Box
-            p="md"
-            display={{ base: 'block', md: 'none' }}
-            style={{
-              position: 'fixed',
-              top: '0',
-              left: '0',
-              right: '0',
-              bottom: '0',
-              backgroundColor: 'white',
-              zIndex: 1000,
-              overflowY: 'auto',
-            }}
-            id="mobile-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile navigation menu"
-            onKeyDown={(e) => {
-              // Close menu on Escape key
-              if (e.key === 'Escape') {
-                setMobileMenuOpen(false);
-              }
-            }}
-          >
+          <>
+            {/* Backdrop */}
+            <Box
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                zIndex: 999,
+              }}
+              aria-hidden="true"
+            />
+            {/* Mobile menu */}
+            <Box
+              p="md"
+              display={{ base: 'block', md: 'none' }}
+              style={{
+                position: 'fixed',
+                top: '60px',
+                left: '0',
+                right: '0',
+                bottom: '0',
+                backgroundColor: 'white',
+                zIndex: 1000,
+                overflowY: 'auto',
+              }}
+              id="mobile-menu"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Mobile navigation menu"
+              onKeyDown={(e) => {
+                // Close menu on Escape key
+                if (e.key === 'Escape') {
+                  setMobileMenuOpen(false);
+                }
+              }}
+            >
             <Group justify="space-between" align="center" mb="md">
-              <Title order={4}>Open Finance Planner</Title>
+              <Title order={4}>Navigation</Title>
               <Button
                 variant="subtle"
                 leftSection={<X size={18} />}
@@ -232,6 +247,7 @@ export default function SidebarNavigation({
               </Text>
             </Box>
           </Box>
+          </>
         )}
       </>
     );
