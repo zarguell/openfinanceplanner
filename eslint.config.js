@@ -70,6 +70,8 @@ export default [
     files: ['tests/**/*.js', 'vitest.config.js'],
     languageOptions: {
       globals: {
+        
+        ...globals.browser,
         ...globals.node,
         describe: 'readonly',
         it: 'readonly',
