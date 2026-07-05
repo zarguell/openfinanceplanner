@@ -67,7 +67,7 @@ export default [
     },
   },
   {
-    files: ['tests/**/*.js', 'vitest.config.js'],
+    files: ['tests/**/*.js', 'vitest.config.js', 'playwright.config.js'],
     languageOptions: {
       globals: {
         
