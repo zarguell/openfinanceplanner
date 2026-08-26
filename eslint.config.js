@@ -24,6 +24,10 @@ export default [
       'no-unreachable': 'warn',
       'no-var': 'error',
       'prefer-const': 'error',
+      // Disabled new ESLint 10 recommended rules to preserve lint parity with v9;
+      // remove these overrides once the codebase is cleaned up.
+      'no-useless-assignment': 'off',
+      'preserve-caught-error': 'off',
     },
   },
   {

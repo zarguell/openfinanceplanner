@@ -24,11 +24,12 @@
   "author": "zarguell <zac.arguelles@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.0",
     "@playwright/test": "^1.58.1",
     "@vitest/browser-playwright": "^4.1.9",
     "@vitest/coverage-v8": "^4.1.9",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
+    "globals": "^17.11.0",
     "playwright": "^1.50.1",
     "prettier": "^3.8.0",
     "vitest": "^4.1.9"
